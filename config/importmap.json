@@ -1,0 +1,9 @@
+{
+  "_comment": "Bare-specifier → URL map injected into every rendered page so models can `import` libraries naturally. URLs are served by the local render server from node_modules (pinned versions = deterministic, offline). Add a library by installing it (pinned) and adding its ESM entry here.",
+  "imports": {
+    "three": "/vendor/three/build/three.module.js",
+    "three/addons/": "/vendor/three/examples/jsm/",
+    "gsap": "/vendor/gsap/index.js",
+    "gsap/": "/vendor/gsap/"
+  }
+}

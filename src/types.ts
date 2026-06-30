@@ -28,6 +28,18 @@ export interface RenderConfig {
   maxFullPageHeight: number;
   /** Delay after load to let fonts/animations settle. */
   waitMs: number;
+  /**
+   * Timeout for the screenshot call itself. Heavy canvas/WebGL animations can
+   * saturate the main thread, so this defaults higher than Playwright's 30s.
+   */
+  screenshotTimeoutMs?: number;
+  /**
+   * Make a model's animated render reproducible: seed Math.random with a fixed
+   * PRNG and (when freezeClock) drive a virtual clock forward by exactly waitMs
+   * so requestAnimationFrame advances deterministically before capture.
+   */
+  seed?: number;
+  freezeClock?: boolean;
 }
 
 export interface GridConfig {
@@ -40,6 +52,15 @@ export interface GridConfig {
   labelColor: string;
   labelFontSize: number;
   title?: string;
+  /**
+   * "banner" (default): a caption strip above each screenshot.
+   * "overlay": the label floats in a translucent pill over the top-left of the
+   *   screenshot, so the render itself fills the whole cell (best for full-bleed
+   *   visual scenes — 3D, particles, SVG art).
+   */
+  labelStyle?: "banner" | "overlay";
+  /** Background of the overlay pill (any CSS color, supports rgba). */
+  labelOverlayBg?: string;
 }
 
 export interface GenerationConfig {
@@ -59,7 +80,12 @@ export interface BenchmarkConfig {
   render: RenderConfig;
   grid: GridConfig;
   generation: GenerationConfig;
-  models: ModelEntry[];
+  /**
+   * Either an inline array of models, or a path (relative to the config file)
+   * to a JSON file containing such an array — so many configs can share one
+   * lineup, e.g. "models/standard-9.json".
+   */
+  models: ModelEntry[] | string;
 }
 
 /** Result of a single model generation, persisted as result.json per model. */

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cinematic Crystal Orb</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #050508;
+            font-family: 'Inter', sans-serif;
+        }
+        canvas {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+        }
+    </style>
+    <!-- Import Map for Three.js r160 and Addons -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+</head>
+<body>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+        import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+        import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+
+        // --- Configuration ---
+        const CONFIG = {
+            bloomStrength: 1.8,
+            bloomRadius: 0.5,
+            bloomThreshold: 0.1,
+            particleCount: 1500,
+            crystalColor: 0x00aaff,
+            crystalEmissive: 0x002244,
+            wireframeColor: 0x00ffff,
+            bgColor: 0x020205
+        };
+
+        // --- Scene Setup ---
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(CONFIG.bgColor);
+        scene.fog = new THREE.FogExp2(CONFIG.bgColor, 0.035);
+
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
+        camera.position.set(0, 0, 12);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.toneMapping = THREE.ReinhardToneMapping;
+        document.body.appendChild(renderer.domElement);
+
+        // --- Post Processing (Bloom) ---
+        const renderScene = new RenderPass(scene, camera);
+        
+        const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
+        bloomPass.threshold = CONFIG.bloomThreshold;
+        bloomPass.strength = CONFIG.bloomStrength;
+        bloomPass.radius = CONFIG.bloomRadius;
+
+        const composer = new EffectComposer(renderer);
+        composer.addPass(renderScene);
+        composer.addPass(bloomPass);
+
+        // --- The Crystal Orb ---
+        const crystalGroup = new THREE.Group();
+        scene.add(crystalGroup);
+
+        // 1. Inner Core (Solid, reflective)
+        const coreGeometry = new THREE.IcosahedronGeometry(2, 1);
+        const coreMaterial = new THREE.MeshPhysicalMaterial({
+            color: 0x111111,
+            metalness: 0.9,
+            roughness: 0.1,
+            clearcoat: 1.0,
+            clearcoatRoughness: 0.1,
+            emissive: CONFIG.crystalEmissive,
+            emissiveIntensity: 0.2,
+            flatShading: true
+        });
+        const core = new THREE.Mesh(coreGeometry, coreMaterial);
+        crystalGroup.add(core);
+
+        // 2. Outer Wireframe (Glowing Cage)
+        const wireGeometry = new THREE.IcosahedronGeometry(2.2, 1);
+        const wireMaterial = new THREE.MeshBasicMaterial({
+            color: CONFIG.wireframeColor,
+            wireframe: true,
+            transparent: true,
+            opacity: 0.15
+        });
+        const wireframe = new THREE.Mesh(wireGeometry, wireMaterial);
+        crystalGroup.add(wireframe);
+
+        // 3. Floating Particles (Stars/Dust)
+        const particlesGeometry = new THREE.BufferGeometry();
+        const posArray = new Float32Array(CONFIG.particleCount * 3);
+        const scaleArray = new Float32Array(CONFIG.particleCount);
+
+        for(let i = 0; i < CONFIG.particleCount * 3; i+=3) {
+            // Sphere distribution
+            const r = 5 + Math.random() * 15;
+            const theta = Math.random() * Math.PI * 2;
+            const phi = Math.acos(2 * Math.random() - 1);
+            
+            posArray[i] = r * Math.sin(phi) * Math.cos(theta);
+            posArray[i+1] = r * Math.sin(phi) * Math.sin(theta);
+            posArray[i+2] = r * Math.cos(phi);
+
+            scaleArray[i/3] = Math.random();
+        }
+
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        particlesGeometry.setAttribute('aScale', new THREE.BufferAttribute(scaleArray, 1));
+
+        const particlesMaterial = new THREE.PointsMaterial({
+            size: 0.05,
+            color: 0xffffff,
+            transparent: true,
+            opacity: 0.8,
+            blending: THREE.AdditiveBlending
+        });
+
+        const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particlesMesh);
+
+        // --- Lighting ---
+        const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
+        scene.add(ambientLight);
+
+        // Colored Point Lights
+        const light1 = new THREE.PointLight(0x0088ff, 50, 20);
+        light1.position.set(5, 5, 5);
+        scene.add(light1);
+
+        const light2 = new THREE.PointLight(0xff00aa, 50, 20);
+        light2.position.set(-5, -5, 5);
+        scene.add(light2);
+
+        const light3 = new THREE.PointLight(0x00ffaa, 30, 20);
+        light3.position.set(0, 8, -5);
+        scene.add(light3);
+
+        // --- Animation Loop ---
+        const clock = new THREE.Clock();
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            const time = clock.getElapsedTime();
+
+            // Rotate Crystal
+            crystalGroup.rotation.y = time * 0.15;
+            crystalGroup.rotation.z = time * 0.05;
+            
+            // Subtle breathing effect
+            const scale = 1 + Math.sin(time * 0.8) * 0.02;
+            core.scale.set(scale, scale, scale);
+
+            // Rotate Wireframe opposite direction
+            wireframe.rotation.y = -time * 0.1;
+            wireframe.rotation.x = time * 0.05;
+
+            // Animate Lights (Orbiting)
+            light1.position.x = Math.sin(time * 0.5) * 6;
+            light1.position.z = Math.cos(time * 0.5) * 6;
+            light1.position.y = Math.sin(time * 0.3) * 4;
+
+            light2.position.x = Math.sin(time * 0.5 + Math.PI) * 6;
+            light2.position.z = Math.cos(time * 0.5 + Math.PI) * 6;
+            light2.position.y = Math.cos(time * 0.3) * 4;
+
+            // Animate Particles (Drift)
+            particlesMesh.rotation.y = time * 0.02;
+            particlesMesh.rotation.x = time * 0.01;
+
+            // Camera subtle movement
+            camera.position.x = Math.sin(time * 0.1) * 0.5;
+            camera.position.y = Math.cos(time * 0.1) * 0.5;
+            camera.lookAt(0, 0, 0);
+
+            // Render with Bloom
+            composer.render();
+        }
+
+        // --- Resize Handler ---
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            composer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Start
+        animate();
+    </script>
+</body>
+</html>

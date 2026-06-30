@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mont Ventoux</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+        svg {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice">
+        <defs>
+            <linearGradient id="skyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#FFD700" />
+                <stop offset="100%" stop-color="#FF4500" />
+            </linearGradient>
+            <linearGradient id="mountainGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#8B4513" />
+                <stop offset="100%" stop-color="#A0522D" />
+            </linearGradient>
+            <linearGradient id="sunGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#FFD700" />
+                <stop offset="100%" stop-color="#FFA500" />
+            </linearGradient>
+            <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+                <feGaussianBlur stdDeviation="5" result="blur" />
+                <feComposite in="SourceGraphic" in2="blur" operator="over" />
+            </filter>
+            <pattern id="cloudPattern" patternUnits="userSpaceOnUse" width="20" height="10">
+                <circle cx="5" cy="5" r="3" fill="white" fill-opacity="0.8" />
+            </pattern>
+        </defs>
+
+        <!-- Sky -->
+        <rect width="100" height="100" fill="url(#skyGradient)" />
+
+        <!-- Mountains -->
+        <path d="M0,60 Q25,20 50,60 T100,60" fill="url(#mountainGradient)" />
+
+        <!-- Sun -->
+        <circle cx="30" cy="30" r="10" fill="url(#sunGradient)" filter="url(#glow)" />
+        <animateTransform attributeName="transform" type="rotate" from="0 30 30" to="360 30 30" dur="20s" repeatCount="indefinite" />
+
+        <!-- Clouds -->
+        <rect x="0" y="10" width="100" height="10" fill="url(#cloudPattern)" />
+        <animateTransform attributeName="transform" type="translate" from="0,0" to="10,0" dur="30s" repeatCount="indefinite" />
+
+        <!-- Text -->
+        <text x="50" y="85" font-family="'Helvetica', sans-serif" font-size="8" text-anchor="middle" fill="white" font-weight="bold">MONT VENTOUX</text>
+        <text x="50" y="95" font-family="'Helvetica', sans-serif" font-size="4" text-anchor="middle" fill="white">PROVENCE, FRANCE</text>
+    </svg>
+</body>
+</html>

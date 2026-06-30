@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SVG Travel Poster</title>
+  <style>
+    html, body { height: 100%; margin: 0; background: #070912; }
+    svg { width: 100vw; height: 100vh; display: block; }
+    .grain {
+      mix-blend-mode: overlay;
+      opacity: .14;
+    }
+    .title {
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      font-weight: 800;
+    }
+    .subtitle{
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      opacity: .92;
+    }
+    .capsule {
+      filter: drop-shadow(0 10px 30px rgba(0,0,0,.35));
+    }
+    .soft {
+      filter: drop-shadow(0 10px 24px rgba(0,0,0,.35));
+    }
+    .stroke-glow {
+      filter: drop-shadow(0 0 18px rgba(255, 210, 120, .35));
+    }
+  </style>
+</head>
+<body>
+<svg viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Travel art poster: mountain and sun at golden hour">
+  <defs>
+    <!-- Background sky gradient -->
+    <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0A1030"/>
+      <stop offset="35%" stop-color="#4B1D3A"/>
+      <stop offset="62%" stop-color="#9B3A2A"/>
+      <stop offset="78%" stop-color="#E58B2D"/>
+      <stop offset="100%" stop-color="#0B122B"/>
+    </linearGradient>
+
+    <!-- Sun halo -->
+    <radialGradient id="sunHalo" cx="50%" cy="50%" r="60%">
+      <stop offset="0%" stop-color="#FFE6A8" stop-opacity="1"/>
+      <stop offset="18%" stop-color="#FFD070" stop-opacity="0.95"/>
+      <stop offset="40%" stop-color="#FF9A4A" stop-opacity="0.55"/>
+      <stop offset="70%" stop-color="#FF5A7A" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Warm shimmer gradient for sun rays -->
+    <linearGradient id="sunRays" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FFEABF" stop-opacity=".9"/>
+      <stop offset="35%" stop-color="#FFC86B" stop-opacity=".85"/>
+      <stop offset="70%" stop-color="#FF7C45" stop-opacity=".45"/>
+      <stop offset="100%" stop-color="#FF3D6A" stop-opacity=".12"/>
+    </linearGradient>
+
+    <!-- Clouds -->
+    <linearGradient id="cloudGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#E9C7FF" stop-opacity=".12"/>
+      <stop offset="35%" stop-color="#FFD7A3" stop-opacity=".25"/>
+      <stop offset="70%" stop-color="#FFFFFF" stop-opacity=".14"/>
+      <stop offset="100%" stop-color="#9EE7FF" stop-opacity=".10"/>
+    </linearGradient>
+
+    <!-- Distant mountain gradients -->
+    <linearGradient id="mountA" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2B1D4E"/>
+      <stop offset="60%" stop-color="#3A245C"/>
+      <stop offset="100%" stop-color="#1A1438"/>
+    </linearGradient>
+
+    <linearGradient id="mountB" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3B2A66"/>
+      <stop offset="58%" stop-color="#4C2B4D"/>
+      <stop offset="100%" stop-color="#22103A"/>
+    </linearGradient>
+
+    <linearGradient id="mountC" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#6A2E2A"/>
+      <stop offset="60%" stop-color="#3D1B3D"/>
+      <stop offset="100%" stop-color="#140F2A"/>
+    </linearGradient>
+
+    <!-- Foreground land -->
+    <linearGradient id="landGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2C1237"/>
+      <stop offset="45%" stop-color="#5A1F2C"/>
+      <stop offset="100%" stop-color="#0B0E1F"/>
+    </linearGradient>
+
+    <!-- Perspective lines -->
+    <linearGradient id="ridgeLine" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#FFD38B" stop-opacity=".0"/>
+      <stop offset="18%" stop-color="#FFD38B" stop-opacity=".55"/>
+      <stop offset="60%" stop-color="#FF9D57" stop-opacity=".30"/>
+      <stop offset="100%" stop-color="#FFD38B" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Typography background capsule -->
+    <linearGradient id="typeCapsule" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0B122B" stop-opacity=".65"/>
+      <stop offset="45%" stop-color="#2B1746" stop-opacity=".45"/>
+      <stop offset="100%" stop-color="#0B122B" stop-opacity=".65"/>
+    </linearGradient>
+
+    <!-- Grain (procedural-ish via simple noise using feTurbulence) -->
+    <filter id="softGrain" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="7" result="noise"/>
+      <feColorMatrix type="matrix" values="
+        1 0 0 0 0
+        0 1 0 0 0
+        0 0 1 0 0
+        0 0 0 .35 0" result="n2"/>
+      <feBlend in="SourceGraphic" in2="n2" mode="overlay"/>
+    </filter>
+
+    <filter id="blurGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="10" result="b"/>
+      <feColorMatrix in="b" type="matrix" values="
+        1 0 0 0 0
+        0 1 0 0 0
+        0 0 1 0 0
+        0 0 0 .65 0" result="bb"/>
+      <feMerge>
+        <feMergeNode in="bb"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Soft vignette -->
+    <radialGradient id="vignette" cx="50%" cy="45%" r="70%">
+      <stop offset="0%" stop-color="#000" stop-opacity="0"/>
+      <stop offset="65%" stop-color="#000" stop-opacity=".15"/>
+      <stop offset="100%" stop-color="#000" stop-opacity=".55"/>
+    </radialGradient>
+
+    <!-- Animated shimmer mask for sun core/rays -->
+    <linearGradient id="shimmer" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="40%" stop-color="#ffffff" stop-opacity=".25"/>
+      <stop offset="50%" stop-color="#ffffff" stop-opacity=".95"/>
+      <stop offset="60%" stop-color="#ffffff" stop-opacity=".25"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+
+    <mask id="sunShimmerMask">
+      <rect x="0" y="0" width="1200" height="800" fill="black"/>
+      <rect x="-200" y="0" width="900" height="800" fill="url(#shimmer)">
+        <animate attributeName="x" dur="2.4s" repeatCount="indefinite" values="-260; 520"/>
+        <animate attributeName="opacity" dur="1.2s" repeatCount="indefinite" values=".55;1;.55"/>
+      </rect>
+    </mask>
+  </defs>
+
+  <!-- Backdrop -->
+  <rect x="0" y="0" width="1200" height="800" fill="url(#skyGrad)"/>
+  <rect x="0" y="0" width="1200" height="800" fill="url(#vignette)" opacity=".9"/>
+
+  <!-- Subtle grid geometry -->
+  <g opacity=".10">
+    <path d="M-40 710 L1240 710" stroke="#8CE0FF" stroke-width="1"/>
+    <path d="M-40 600 L1240 600" stroke="#8CE0FF" stroke-width="1" opacity=".55"/>
+    <path d="M-40 490 L1240 490" stroke="#8CE0FF" stroke-width="1" opacity=".35"/>
+    <path d="M-40 380 L1240 380" stroke="#8CE0FF" stroke-width="1" opacity=".28"/>
+    <path d="M-40 270 L1240 270" stroke="#8CE0FF" stroke-width="1" opacity=".22"/>
+    <path d="M120 860 L120 -60" stroke="#FFD38B" stroke-width="1" opacity=".20"/>
+    <path d="M330 860 L330 -60" stroke="#FFD38B" stroke-width="1" opacity=".12"/>
+    <path d="M540 860 L540 -60" stroke="#FFD38B" stroke-width="1" opacity=".10"/>
+    <path d="M750 860 L750 -60" stroke="#FFD38B" stroke-width="1" opacity=".12"/>
+    <path d="M960 860 L960 -60" stroke="#FFD38B" stroke-width="1" opacity=".10"/>
+    <path d="M1170 860 L1170 -60" stroke="#FFD38B" stroke-width="1" opacity=".12"/>
+  </g>
+
+  <!-- Sun + shimmering rays -->
+  <g class="stroke-glow" transform="translate(800,215)">
+    <circle r="140" fill="url(#sunHalo)" filter="url(#blurGlow)">
+      <animate attributeName="r" dur="3.2s" repeatCount="indefinite" values="140;152;140"/>
+      <animate attributeName="opacity" dur="2.6s" repeatCount="indefinite" values=".9;1;.9"/>
+    </circle>
+
+    <!-- Rays -->
+    <g mask="url(#sunShimmerMask)" opacity=".95">
+      <g>
+        <path d="M0 -200 L35 -135 L-35 -135 Z" fill="url(#sunRays)">
+          <animateTransform attributeName="transform" type="rotate" dur="5.5s" repeatCount="indefinite" values="0;10"/>
+        </path>
+        <path d="M92 -174 L130 -110 L50 -140 Z" fill="url(#sunRays)" opacity=".8"/>
+        <path d="M174 -92 L200 -35 L140 -50 Z" fill="url(#sunRays)" opacity=".75"/>
+        <path d="M200 0 L135 35 L135 -35 Z" fill="url(#sunRays)" opacity=".85"/>
+        <path d="M174 92 L140 50 L200 35 Z" fill="url(#sunRays)" opacity=".75"/>
+        <path d="M92 174 L50 140 L110 200 Z" fill="url(#sunRays)" opacity=".78"/>
+        <path d="M0 200 L-35 135 L35 135 Z" fill="url(#sunRays)" opacity=".9"/>
+        <path d="M-92 174 L-110 200 L-50 140 Z" fill="url(#sunRays)" opacity=".72"/>
+        <path d="M-174 92 L-140 50 L-200 35 Z" fill="url(#sunRays)" opacity=".76"/>
+        <path d="M-200 0 L-135 -35 L-135 35 Z" fill="url(#sunRays)" opacity=".86"/>
+        <path d="M-174 -92 L-200 -35 L-140 -50 Z" fill="url(#sunRays)" opacity=".74"/>
+        <path d="M-92 -174 L-50 -140 L-110 -200 Z" fill="url(#sunRays)" opacity=".78"/>
+      </g>
+    </g>
+
+    <!-- Sun core -->
+    <circle r="62" fill="#FFE6A8">
+      <animate attributeName="r" dur="2.2s" repeatCount="indefinite" values="60;66;60"/>
+      <animate attributeName="cy" dur="2.8s" repeatCount="indefinite" values="0; -1.5; 0"/>
+    </circle>
+
+    <!-- Core ring -->
+    <circle r="85" fill="none" stroke="#FFC86B" stroke-opacity=".55" stroke-width="2">
+      <animate attributeName="stroke-opacity" dur="2.2s" repeatCount="indefinite" values=".35;.7;.35"/>
+    </circle>
+  </g>
+
+  <!-- Parallax clouds (gentle drift) -->
+  <g opacity=".95">
+    <!-- Cloud layer 1 -->
+    <g fill="url(#cloudGrad)" filter="url(#softGrain)">
+      <g>
+        <path d="M120 220
+                 C140 185, 190 175, 220 198
+                 C240 172, 285 168, 305 196
+                 C345 180, 395 200, 388 240
+                 C408 255, 404 292, 375 300
+                 C340 315, 280 318, 240 309
+                 C205 316, 155 302, 142 275
+                 C112 268, 102 240, 120 220 Z">
+          <animateTransform attributeName="transform" type="translate" dur="18s" repeatCount="indefinite" values="-40,0; 70,0"/>
+        </path>
+      </g>
+      <g opacity=".8">
+        <path d="M540 170
+                 C560 142, 605 132, 633 150
+                 C655 124, 705 122, 727 150
+                 C760 138, 810 158, 800 196
+                 C820 212, 814 246, 788 254
+                 C750 270, 680 270, 642 260
+                 C610 268, 565 252, 555 225
+                 C530 217, 520 191, 540 170 Z">
+          <animateTransform attributeName="transform" type="translate" dur="22s" repeatCount="indefinite" values="50,0; -90,0"/>
+        </path>
+      </g>
+    </g>
+
+    <!-- Cloud layer 2 -->
+    <g fill="url(#cloudGrad)" opacity=".8">
+      <path d="M80 310
+               C105 288, 150 282, 175 300
+               C200 275, 250 276, 268 305
+               C300 292, 345 310, 338 348
+               C362 367, 350 405, 318 408
+               C284 413, 225 408, 198 398
+               C166 410, 110 396, 104 362
+               C76 356, 60 330, 80 310 Z">
+        <animateTransform attributeName="transform" type="translate" dur="26s" repeatCount="indefinite" values="-30,0; 90,0"/>
+      </path>
+
+      <path d="M640 335
+               C665 313, 715 305, 742 322
+               C770 295, 820 296, 845 326
+               C885 318, 925 345, 910 382
+               C940 405, 920 448, 880 445
+               C835 442, 775 430, 750 418
+               C720 430, 670 423, 652 392
+               C620 385, 610 358, 640 335 Z" opacity=".85">
+        <animateTransform attributeName="transform" type="translate" dur="30s" repeatCount="indefinite" values="80,0; -120,0"/>
+      </path>
+    </g>
+  </g>
+
+  <!-- Distant mountains (layered, geometric silhouettes) -->
+  <g class="soft" opacity="1">
+    <!-- Back ridge -->
+    <path d="M-40 520
+             L140 380
+             L265 455
+             L390 315
+             L520 440
+             L650 355
+             L760 430
+             L910 330
+             L1030 405
+             L1240 360
+             L1240 820
+             L-40 820 Z"
+          fill="url(#mountA)">
+      <animate attributeName="transform" dur="10s" repeatCount="indefinite" type="translate" values="0,0; -8,4; 0,0"/>
+    </path>
+
+    <!-- Mid mountains -->
+    <path d="M-40 610
+             L110 470
+             L210 530
+             L325 420
+             L470 565
+             L595 435
+             L710 545
+             L840 445
+             L960 520
+             L1240 460
+             L1240 820
+             L-40 820 Z"
+          fill="url(#mountB)">
+      <animate attributeName="transform" dur="12s" repeatCount="indefinite" type="translate" values="0,0; 10,-4; 0,0"/>
+    </path>
+
+    <!-- Foreground ridge -->
+    <path d="M-40 700
+             L160 585
+             L265 660
+             L410 560
+             L560 705
+             L690 595
+             L830 705
+             L980 620
+             L1130 675
+             L1240 640
+             L1240 820
+             L-40 820 Z"
+          fill="url(#mountC)">
+      <animate attributeName="transform" dur="14s" repeatCount="indefinite" type="translate" values="0,0; -6,-2; 0,0"/>
+    </path>
+
+    <!-- Land base -->
+    <path d="M0 760
+             C160 705, 260 735, 360 770
+             C470 808, 640 790, 740 765
+             C865 733, 980 758, 1200 725
+             L1200 820 L0 820 Z"
+          fill="url(#landGrad)" opacity=".98"/>
+  </g>
+
+  <!-- Sunlight ridges / atmospheric lines -->
+  <g opacity=".7">
+    <path d="M80 675 L260 585 L420 640 L610 560 L780 630 L980 560 L1130 605"
+          fill="none" stroke="url(#ridgeLine)" stroke-width="3" stroke-linecap="round">
+      <animate attributeName="stroke-opacity" dur="2.8s" repeatCount="indefinite" values=".2;.75;.2"/>
+    </path>
+    <path d="M110 720 L290 625 L450 685 L640 605 L800 685 L1000 615 L1150 665"
+          fill="none" stroke="#FFD38B" stroke-opacity=".20" stroke-width="2" stroke-linecap="round">
+      <animate attributeName="stroke-opacity" dur="3.2s" repeatCount="indefinite" values=".15;.35;.15"/>
+    </path>
+  </g>
+
+  <!-- Geometric foreground accents -->
+  <g opacity=".95">
+    <g transform="translate(0,0)">
+      <path d="M140 720 L250 660 L320 705 L230 760 Z" fill="#1B1135" opacity=".85"/>
+      <path d="M260 740 L350 690 L430 730 L330 785 Z" fill="#2A1647" opacity=".75"/>
+      <path d="M860 750 L950 690 L1035 740 L930 795 Z" fill="#2B1442" opacity=".78"/>
+      <path d="M690 735 L800 665 L880 715 L780 775 Z" fill="#331B4A" opacity=".72"/>
+    </g>
+  </g>
+
+  <!-- Typography block -->
+  <g transform="translate(120, 90)">
+    <rect x="0" y="490" width="960" height="190" rx="34" fill="url(#typeCapsule)" class="capsule" opacity=".92"/>
+    <rect x="24" y="512" width="912" height="146" rx="28" fill="none" stroke="#FFD38B" stroke-opacity=".35" stroke-width="1.5"/>
+
+    <text x="56" y="610" class="title" font-size="66" fill="#FFE9BF">
+      <tspan letter-spacing="0.06em">AURORA RIDGE</tspan>
+    </text>
+
+    <text x="56" y="666" class="subtitle" font-size="18" fill="#D9F6FF">
+      SKY • STONE • GOLDEN HOUR
+    </text>
+
+    <g transform="translate(720,560)" opacity=".95">
+      <path d="M0 0 C35 -20, 70 -10, 95 10 C70 30, 35 45, 0 30 C-20 20, -20 5, 0 0 Z"
+            fill="#FFCA6A" fill-opacity=".18" stroke="#FFCA6A" stroke-opacity=".45" stroke-width="1.2"/>
+      <path d="M20 12 L60 -6 L75 10 L38 26 Z" fill="#FFCA6A" fill-opacity=".25"/>
+      <circle cx="52" cy="16" r="4" fill="#FFE9BF">
+        <animate attributeName="r" dur="1.6s" repeatCount="indefinite" values="3.2;5.1;3.2"/>
+        <animate attributeName="opacity" dur="1.6s" repeatCount="indefinite" values=".7;1;.7"/>
+      </circle>
+    </g>
+  </g>
+
+  <!-- Subtle animated “breathing” vignette glow -->
+  <g opacity=".35" filter="url(#blurGlow)">
+    <ellipse cx="780" cy="420" rx="420" ry="260" fill="#FF9A4A" opacity=".10">
+      <animate attributeName="opacity" dur="3.8s" repeatCount="indefinite" values=".06;.16;.06"/>
+      <animate attributeName="rx" dur="4.8s" repeatCount="indefinite" values="410;435;410"/>
+      <animate attributeName="ry" dur="4.8s" repeatCount="indefinite" values="250;285;250"/>
+    </ellipse>
+  </g>
+
+  <!-- Foreground grain overlay -->
+  <g class="grain" filter="url(#softGrain)" opacity=".18">
+    <rect x="0" y="0" width="1200" height="800" fill="#FFFFFF"/>
+  </g>
+
+  <!-- Accessibility: ensure there is no reliance on animation only -->
+  <title>Aurora Ridge — golden hour mountain poster</title>
+</svg>
+</body>
+</html>

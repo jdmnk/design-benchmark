@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Golden Horizon | Travel Art</title>
+    <style>
+        * {
+            margin:填满;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #0a0a12;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+        }
+        svg {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+        }
+        @keyframes sunPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.9; transform: scale(1.02); }
+        }
+        @keyframes cloudDrift {
+            0% { transform: translateX(-5%); }
+            100% { transform: translateX(5%); }
+        }
+        @keyframes shimmer {
+            0% { filter: drop-shadow(0 0量与5px #ffaa33); }
+            50% { filter: drop-shadow(0 0 10px #ffdd88); }
+            100% { filter: drop-shadow(0 0 5px #ffaa33); }
+        }
+        @keyframes parallaxSlow {
+            0% { transform: translateY(0px); }
+            100% { transform: translateY(-3px); }
+        }
+        @keyframes parallaxMedium {
+            0% { transform: translateY(0px); }
+            100% { transform: translateY(-5px); }
+        }
+    </style>
+</head>
+<body>
+    <svg viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
+        <defs>
+            <!-- Gradients -->
+            <linearGradient id="skyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#1a0b2e" />
+                <stop offset="30%" stop-color="#4a1e6e" />
+                <stop offset="70%" stop-color="#c96d2c" />
+                <stop offset="100%" stop-color="#f5b041" />
+            </linearGradient>
+            <linearGradient id="sunGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#ffdd00" />
+                <stop offset="100%" stop-color="#ff8800" />
+            </linearGradient>
+            <linearGradient id="mountainGradient1" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#3a1c71" />
+                <stop offset="100%" stop-color="#d76d77" />
+            </linearGradient>
+            <linearGradient id="mountainGradient2" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#5a2a8a" />
+                <stop offset="100%" stop-color="#e57a7a" />
+            </linearGradient>
+            <linearGradient id="mountainGradient3" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#7a3aa3" />
+                <stop offset="100%" stop-color="#f28a8a" />
+            </linearGradient>
+            <radialGradient id="sunGlow" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#ffdd88" stop-opacity="0.8" />
+                <stop offset="70%" stop-color="#ff8800" stop-opacity="0.4" />
+                <stop offset="100%" stop-color="#ff5500" stop-opacity="0" />
+            </radialGradient>
+            <linearGradient id="cloudGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#ffffff" stop-opacity="0.1" />
+                <stop offset="50%" stop-color="#ffffff" stop-opacity="0.2" />
+                <stop offset="100%" stop-color="#ffffff" stop-opacity="0.1" />
+            </linearGradient>
+            <!-- Typography -->
+            <path id="textPath" d="M 200 650 Q 600 620 1000 650" />
+            <filter id="textGlow" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="3" result="blur" />
+                <feMerge>
+                    <feMergeNode in="blur" />
+                    <feMergeNode in="SourceGraphic" />
+                </feMerge>
+            </filter>
+        </defs>
+
+        <!-- Sky -->
+        <rect width="1200" height="800" fill="url(#skyGradient)" />
+
+        <!-- Sun Glow -->
+        <circle cx="600" cy="200" r="180" fill="url(#sunGlow)" opacity="0.6">
+            <animate attributeName="opacity" values="0.6;0.8;0.6" dur="8s" repeatCount="indefinite" />
+        </circle>
+
+        <!-- Sun -->
+        <circle cx="600" cy="200" r="80" fill="url(#sunGradient)" style="animation: sunPulse 6s infinite ease-in-out;">
+            <animate attributeName="r" values="80;82;80" dur="5s" repeatCount="indefinite" />
+        </circle>
+
+        <!-- Mountains -->
+        <g style="animation: parallaxSlow17s infinite alternate ease-in-out;">
+            <polygon points="0,800 300,400 600,800" fill="url(#mountainGradient1)" />
+            <polygon points="300,800 600,300 900,800" fill="url(#mountainGradient2)" />
+            <polygon points="600,800 900,500 1200,800" fill="url(#mountainGradient3)" />
+        </g>
+
+        <!-- Secondary Mountains (foreground) -->
+        <g style="animation: parallaxMedium 12s infinite alternate ease-in-out;">
+            <polygon points="0,800 150,600 300,800" fill="#3a1c71" opacity="0.8" />
+            <polygon points="900,800 1050,650 1200,800" fill="#5a2a8a" opacity="0.8" />
+        </g>
+
+        <!-- Clouds -->
+        <g style="animation: cloudDrift 25s infinite alternate ease-in-out;">
+            <ellipse cx="300" cy="350" rx="120" ry="40" fill="url(#cloudGradient)" />
+            <ellipse cx="500" cy="300" rx="100" ry="35" fill="url(#cloudGradient)" />
+            <ellipse cx="900" cy="400" rx="140" ry="45" fill="url(#cloudGradient)" />
+            <ellipse cx="1100" cy="320" rx="90" ry="30" fill="url(#cloudGradient)" />
+        </g>
+
+        <!-- Typography: Destination -->
+        <text x="600" y="150" text-anchor="middle" font-family="Georgia, serif" font-size="80" font-weight="bold" fill="#ffffff" filter="url(#textGlow">
+            GOLDEN HORIZON
+        </text>
+
+        <!-- Subtitle on path -->
+        <text font-family="'Arial', sans-serif" font-size="28" font-weight="300" fill="#ffdd88" letter-spacing="2">
+            <textPath href="#textPath" startOffset="50%" text-anchor="middle">
+                • ALPINE SUNSET • ETERNAL PEACE •
+            </textPath>
+            <animate attributeName="fill" values="#ffdd88;#ffffff;#ffdd88" dur="10s" repeatCount="indefinite" />
+        </text>
+
+        <!-- Geometric sun rays -->
+        <g style="animation: shimmer 7s infinite; transform-origin: 600px 200px;">
+            <polygon points="600,120 620,180 580,180" fill="#ffdd00" opacity="0.7" />
+            <polygon points="600,280 620,220 580,220" fill="#ffdd00" opacity="0.7" />
+            <polygon points="480,200 540,190 540,210" fill="#ffdd00" opacity="0.7" />
+            <polygon points="720,200 660,190 660,210" fill="#ffdd00" opacity="0.7" />
+            <polygon points="550,150 590,130 590,170" fill="#ffdd00" opacity="0.7" />
+            <polygon points="650,150 610,130 610,170" fill="#ffdd00" opacity="0.7" />
+            <polygon points="550,250 590,270 590,230" fill="#ffdd00" opacity="0.7" />
+            <polygon points="650,250 610,270 610,230" fill="#ffdd00" opacity="0.7" />
+        </g>
+
+        <!-- Subtle floating particles -->
+        <g>
+            <circle cx="150" cy="500" r="2" fill="#ffffff" opacity="0.4">
+                <animate attributeName="cy" values="500;480;500" dur="8s" repeatCount="indefinite" />
+                <animate attributeName="opacity" values="0.4;0.8;0.4" dur="8s" repeatCount="indefinite" />
+            </circle>
+            <circle cx="1050" cy="550" r="2" fill="#ffffff" opacity="0.4">
+                <animate attributeName="cy" values="550;530;550" dur="6s" repeatCount="indefinite" />
+                <animate attributeName="opacity" values="0.4;0.8;0.4" dur="6s" repeatCount="indefinite" />
+            </circle>
+            <circle cx="400" cy="600" r="1.5" fill="#ffaa33" opacity="0.5">
+                <animate attributeName="cy" values="600;580;600" dur="7s" repeatCount="indefinite" />
+                <animate attributeName="opacity" values="0.5;0.9;0.5" dur="7s" repeatCount="indefinite" />
+            </circle>
+        </g>
+    </svg>
+</body>
+</html>

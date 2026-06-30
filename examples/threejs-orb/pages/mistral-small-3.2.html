@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glowing Crystalline Orb</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #000;
+        }
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <script type="module">
+        import * as THREE from 'three';
+        import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+        import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+        import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+        import { GSAP } from 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js';
+
+        // Scene setup
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        document.body.appendChild(renderer.domElement);
+
+        // Post-processing
+        const composer = new EffectComposer(renderer);
+        const renderPass = new RenderPass(scene, camera);
+        const bloomPass = new UnrealBloomPass(
+            new THREE.Vector2(window.innerWidth, window.innerHeight),
+            1.5,
+            1,
+            0.5
+        );
+        composer.addPass(renderPass);
+        composer.addPass(bloomPass);
+
+        // Lights
+        const ambientLight = new THREE.AmbientLight(0x222222);
+        scene.add(ambientLight);
+
+        const pointLight1 = new THREE.PointLight(0xff00ff, 1, 100);
+        pointLight1.position.set(10, 10, 10);
+        scene.add(pointLight1);
+
+        const pointLight2 = new THREE.PointLight(0x00ffff, 1, 100);
+        pointLight2.position.set(-10, -10, 10);
+        scene.add(pointLight2);
+
+        // Crystalline Icosahedron
+        const geometry = new THREE.IcosahedronGeometry(5, 3);
+        const material = new THREE.MeshPhongMaterial({
+            color: 0x00aaff,
+            emissive: 0x00aaff,
+            emissiveIntensity: 0.5,
+            shininess: 100,
+            side: THREE.DoubleSide,
+            transparent: true,
+            opacity: 0.8
+        });
+
+        const icosahedron = new THREE.Mesh(geometry, material);
+        scene.add(icosahedron);
+
+        // Stars
+        const starGeometry = new THREE.BufferGeometry();
+        const starMaterial = new THREE.PointsMaterial({
+            color: 0xffffff,
+            size: 0.1,
+            transparent: true,
+            opacity: 0.8
+        });
+
+        const starVertices = [];
+        for (let i = 0; i < 1000; i++) {
+            const x = (Math.random() - 0.5) * 200;
+            const y = (Math.random() - 0.5) * 200;
+            const z = (Math.random() - 0.5) * 200;
+            starVertices.push(x, y, z);
+        }
+
+        starGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starVertices, 3));
+        const stars = new THREE.Points(starGeometry, starMaterial);
+        scene.add(stars);
+
+        // Camera position
+        camera.position.z = 20;
+
+        // Animation
+        const animate = () => {
+            requestAnimationFrame(animate);
+
+            // Rotate icosahedron
+            icosahedron.rotation.x += 0.001;
+            icosahedron.rotation.y += 0.002;
+
+            // Animate stars
+            stars.rotation.y += 0.0005;
+
+            // Animate lights
+            pointLight1.position.x = Math.sin(Date.now() * 0.001) * 10;
+            pointLight1.position.y = Math.cos(Date.now() * 0.001) * 10;
+
+            pointLight2.position.x = Math.cos(Date.now() * 0.001) * 10;
+            pointLight2.position.y = Math.sin(Date.now() * 0.001) * 10;
+
+            // Render
+            composer.render();
+        };
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            bloomPass.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Start animation
+        animate();
+    </script>
+</body>
+</html>

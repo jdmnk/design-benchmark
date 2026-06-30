@@ -1,105 +1,144 @@
 # Design Bench
 
-A **visual design benchmark for LLMs**. You give one design brief; many models each
-produce a complete HTML page; we render every page in a headless browser, screenshot
-it, and tile the screenshots into a single **side-by-side grid PNG** so you can eyeball
-which model designs best.
+A **visual benchmark for LLMs**. You give one creative brief; many models each generate a
+single self-contained web page; we render every page in a headless browser, screenshot it,
+and tile the screenshots into one **side-by-side grid PNG** so you can eyeball which model
+did best.
+
+It's built for *visual* tasks — not just landing pages but **three.js 3D scenes, canvas
+particle systems, hand-coded SVG art, pure-CSS scenes**, anything that renders.
 
 ![example grid](docs/example-grid.png)
 
-> A real run: six cheap models (Claude Haiku 4.5, GPT-4o mini, Gemini 2.5 Flash, DeepSeek
-> V3.1, Llama 3.3 70B, Qwen3 Coder) each designing the same landing page. See
-> **[`examples/`](examples/)** for this and two more runs (a dark-mode dashboard and a
-> budget-tier brand site), including the actual HTML each model produced.
+> One brief ("design an SVG travel poster"), nine models, rendered side by side. See
+> **[`examples/`](examples/)** for this plus 3D, particle, CSS, and landing-page runs —
+> including the actual HTML each model produced.
 
 ---
 
 ## Goal
 
-Most LLM benchmarks score text or code with automated metrics. Design quality is
-visual and subjective — the fastest way to judge it is to **look at the outputs next to
-each other**. Design Bench optimises for exactly that:
+Design quality is visual and subjective — the fastest way to judge it is to **look at the
+outputs next to each other**. Design Bench optimises for exactly that:
 
-1. **One prompt, many models** — the comparison is apples-to-apples by construction.
+1. **One prompt, many models** — apples-to-apples by construction.
 2. **Real renders, not code diffs** — we run the model's HTML in Chromium and screenshot
    what a user would actually see.
-3. **One artifact to judge** — a single grid image (3 per row by default) is the whole
-   point; everything else is plumbing.
+3. **One artifact to judge** — a single grid image (3 per row by default), each cell
+   labelled with the model name, its time-to-completion, and output tokens.
 
-It is deliberately small and hackable. The structure and execution model mimic existing
-config-driven LLM benchmarks (e.g. [`akitaonrails/llm-coding-benchmark`](https://github.com/akitaonrails/llm-coding-benchmark)
-— a `config/models.json` registry routed through OpenRouter's OpenAI-compatible API) and
-visual front-end benchmarks (e.g. [`WebPAI/DesignBench`](https://github.com/webpai/designbench)
-— generate code, render it in a browser, screenshot for comparison). We borrow those
-conventions and build our own benchmark on top.
+The structure/execution mimics existing config-driven LLM benchmarks (a `models.json`-style
+registry routed through OpenRouter's OpenAI-compatible API, à la
+[`akitaonrails/llm-coding-benchmark`](https://github.com/akitaonrails/llm-coding-benchmark))
+and visual front-end benchmarks (generate code → render in a browser → screenshot, à la
+[`WebPAI/DesignBench`](https://github.com/webpai/designbench)).
 
 ---
 
 ## How it works
 
-A run is four stages, executed in order. Each writes artifacts to disk, so any later
-stage can be re-run on its own.
+Four stages, run in order. Each writes artifacts to disk, so any later stage can be re-run
+on its own.
 
 ```
 config ──▶ ① generate ──▶ ② render ──▶ ③ grid ──▶ ④ report
             (LLM API)      (Chromium)    (sharp)     (markdown)
 ```
 
-1. **generate** — Send `systemPrompt` + `prompt` to every model (in parallel, with a
-   concurrency cap). Extract the HTML document from each reply and save it.
-2. **render** — Open each `output.html` in headless Chromium at a fixed viewport and take
-   a PNG screenshot (full-page by default, height-clamped so nothing is absurdly tall).
-3. **grid** — Scale every screenshot to a fixed cell width, add a label caption with the
-   model name, and composite them into one grid image, N columns wide.
-4. **report** — Write a `report.md` (status table + embedded grid) and a `summary.json`.
+1. **generate** — Send `systemPrompt` + `prompt` to every model (in parallel), extract the
+   HTML document from each reply, save it.
+2. **render** — Serve each page from a local HTTP server and screenshot it in headless
+   Chromium at a fixed viewport.
+3. **grid** — Scale every screenshot to a fixed cell width, label it (model name + time +
+   tokens), and composite into one grid image, N columns wide.
+4. **report** — Write `report.md` (status table + embedded grid) and `summary.json`.
 
 ### The config is the run
 
 Everything about a run lives in one JSON file (default
-[`config/benchmark.config.json`](config/benchmark.config.json)) — the prompt, the system
-prompt, which models, render settings, and grid layout. To run a different benchmark,
-write a different config. See [`config/examples/dashboard.config.json`](config/examples/dashboard.config.json)
-for a second one (different prompt, 2-column grid, viewport-only screenshots).
+[`config/benchmark.config.json`](config/benchmark.config.json)) — the prompt, system
+prompt, model list, render settings, and grid layout. To run a different benchmark, write
+a different config. See [`config/examples/`](config/examples) for 3D, particle, SVG, CSS,
+and dashboard configs. A [JSON schema](config/schema.json) is wired in via `$schema` for
+editor autocomplete.
 
 ```jsonc
 {
-  "name": "saas-landing-page",          // → results/saas-landing-page/
-  "systemPrompt": "You are a world-class product designer...",
-  "prompt": "Design a landing page for a fictional SaaS product...",
-  "render": { "viewportWidth": 1280, "fullPage": true, "maxFullPageHeight": 4000 },
-  "grid":   { "columns": 3, "cellWidth": 640, "title": "Design Bench — saas-landing-page" },
-  "generation": { "temperature": 0.7, "maxTokens": 8000, "concurrency": 4, "retries": 1 },
-  "models": [
-    { "slug": "claude-opus-4.8", "label": "Claude Opus 4.8", "provider": "openrouter", "id": "anthropic/claude-opus-4.1" },
-    { "slug": "gpt-5",           "label": "GPT-5",           "provider": "openrouter", "id": "openai/gpt-5" }
-    // ...
-  ]
+  "name": "threejs-orb",
+  "systemPrompt": "You are a creative three.js developer...",
+  "prompt": "Create a mesmerizing full-screen scene of a glowing orb...",
+  "render": {
+    "viewportWidth": 1280, "viewportHeight": 800,
+    "fullPage": false,            // fixed dense top-crop, not the whole scrollable page
+    "waitMs": 4000,
+    "freezeClock": true, "seed": 7 // reproducible animated frame (see Determinism)
+  },
+  "grid": {
+    "columns": 3, "cellWidth": 620,
+    "labelStyle": "overlay"       // label floats over the render (vs "banner" above it)
+  },
+  "generation": { "temperature": 0.9, "maxTokens": 9000, "concurrency": 9 },
+  "models": "models/standard-9.json"   // inline array, or a path to a shared lineup
 }
 ```
 
-A [JSON schema](config/schema.json) is wired in via `$schema`, so editors give you
-autocomplete and validation.
+`models` can be an inline array or a **path to a shared lineup file** so many configs use
+the same models — the examples all use
+[`config/models/standard-9.json`](config/models/standard-9.json): Claude Haiku 4.5,
+GPT-5.4 nano, GPT-OSS 120B, Gemini 2.5 Flash, GLM 4.7 Flash, DeepSeek V3.2, Qwen3 Coder
+Flash, Kimi K2.5, Mistral Small 3.2.
+
+---
+
+## Libraries & imports (no restrictions)
+
+Renders are served over a **local HTTP server** (not `file://`), and an **importmap** is
+injected into every page. So models can write modern code naturally:
+
+```html
+<script type="module">
+  import * as THREE from 'three';
+  import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+  import gsap from 'gsap';
+  // ...
+</script>
+```
+
+Those bare specifiers resolve to **pinned, locally-vendored** copies (served from
+`node_modules`), so it's deterministic and offline — no fragile CDN URLs, no add-on 404s
+leaving a black screen. Add a library by installing it (pinned) and adding its ESM entry
+to [`config/importmap.json`](config/importmap.json). Models can also still use full CDN
+URLs or no libraries at all. The artifact stays a **single HTML document** per model.
+
+## Determinism
+
+Animated renders are made reproducible (`render.freezeClock` + `render.seed`):
+
+- **Seed** — `Math.random` is replaced with a seeded PRNG before any model code runs.
+- **Freeze clock** — `requestAnimationFrame`, `performance.now`, and `Date.now` are driven
+  by a virtual clock that advances by exactly `waitMs` worth of 60fps frames, then we
+  capture. The render no longer depends on CPU speed or wall-clock timing.
+
+Result: re-running a model's scene produces the **same frame** — verified pixel-identical
+for both Canvas2D and WebGL. (Leave `freezeClock` off for CSS/SMIL-animated pages, which
+run on compositor time rather than rAF; those settle with a real `waitMs` wait instead.)
 
 ---
 
 ## Providers
 
-Calls go through **OpenRouter** by default — it's a single API and key for ~all models,
-which is why it's the primary backend. Because the industry standardised on the OpenAI
-`/chat/completions` wire format, the same client code also talks to any OpenAI-compatible
-endpoint, and a native Anthropic provider is included too.
+Calls go through **OpenRouter** by default — one API/key for ~all models. Because the
+industry standardised on the OpenAI `/chat/completions` format, the same client also talks
+to any OpenAI-compatible endpoint, and a native Anthropic provider is included.
 
-Set a model's `provider` field to one of:
+| `provider`   | Backend                                  | Env vars |
+|--------------|------------------------------------------|----------|
+| `openrouter` | OpenRouter (default, recommended)        | `OPENROUTER_API_KEY` |
+| `openai`     | OpenAI **or** any OpenAI-compatible host | `OPENAI_API_KEY`, optional `OPENAI_BASE_URL` |
+| `anthropic`  | Anthropic Messages API directly          | `ANTHROPIC_API_KEY` |
 
-| `provider`   | Backend                                   | Env vars |
-|--------------|-------------------------------------------|----------|
-| `openrouter` | OpenRouter (default, recommended)         | `OPENROUTER_API_KEY` |
-| `openai`     | OpenAI **or** any OpenAI-compatible host  | `OPENAI_API_KEY`, optional `OPENAI_BASE_URL` (Together, Groq, vLLM, LM Studio, …) |
-| `anthropic`  | Anthropic Messages API directly           | `ANTHROPIC_API_KEY` |
-
-You only need a key for the providers your config actually uses. Model `id`s are
-provider-specific — on OpenRouter they look like `anthropic/claude-opus-4.1` or
-`openai/gpt-5` (browse them at <https://openrouter.ai/models>).
+Model `id`s are provider-specific — on OpenRouter they look like `anthropic/claude-haiku-4.5`
+or `google/gemini-2.5-flash` (browse at <https://openrouter.ai/models>).
 
 ---
 
@@ -108,18 +147,18 @@ provider-specific — on OpenRouter they look like `anthropic/claude-opus-4.1` o
 Requires Node 20+.
 
 ```bash
-npm install                 # installs deps + downloads Chromium (Playwright)
+npm install                 # deps + vendored libs (three, gsap) + Chromium
 cp .env.example .env        # then add your OPENROUTER_API_KEY
 ```
 
-Headless Chromium needs some system libraries. The standard way to install them:
+Headless Chromium needs some system libraries:
 
 ```bash
 sudo npx playwright install-deps chromium
 ```
 
-**No sudo?** Use the included rootless helper — it downloads and extracts the libs +
-fonts into a local `.runtime/` folder (no root) and writes an env file to source:
+**No sudo?** Use the rootless helper, which installs the libs + fonts into a local
+`.runtime/` folder and writes an env file to source:
 
 ```bash
 bash scripts/setup-browser-deps.sh
@@ -131,26 +170,15 @@ source .runtime/env.sh
 ## Run
 
 ```bash
-# Full pipeline (generate → render → grid → report)
-npm run bench
-
-# A different config (see examples/ for the outputs of these)
-npm run bench -- --config config/examples/dashboard.config.json
-npm run bench -- --config config/examples/coffee-brand.config.json
-
-# Only some models (by slug), repeatable / comma-separated
-npm run bench -- --model claude-opus-4.8 --model gpt-5
-
-# Re-run a single stage using artifacts already on disk
-npm run bench -- --stage render
-npm run bench -- --stage grid
-
-# Try the whole pipeline with NO API calls (placeholder pages) — great first smoke test
-npm run bench -- --dry-run
+npm run bench                                                      # default config
+npm run bench -- --config config/examples/threejs-orb.config.json # a different one
+npm run bench -- --model claude-haiku-4.5 --model gemini-2.5-flash # only some models
+npm run bench -- --stage grid                                      # re-run one stage
+npm run bench -- --dry-run                                         # no API calls (smoke test)
 ```
 
-CLI flags: `--config/-c`, `--stage/-s` (`all|generate|render|grid|report`),
-`--model/-m`, `--dry-run`, `--help/-h`.
+CLI: `--config/-c`, `--stage/-s` (`all|generate|render|grid|report`), `--model/-m`,
+`--dry-run`, `--help`.
 
 ---
 
@@ -164,70 +192,59 @@ results/<run-name>/
 └── models/<slug>/
     ├── raw.txt               ← the model's full raw reply
     ├── output.html           ← HTML extracted from the reply (what gets rendered)
-    ├── screenshot.png        ← Chromium screenshot of output.html
+    ├── screenshot.png        ← Chromium screenshot
     └── result.json           ← status, timing, token usage
 ```
-
----
 
 ## Project structure
 
 ```
 design-bench/
 ├── config/
-│   ├── benchmark.config.json     # the default run (edit this)
+│   ├── benchmark.config.json     # the default run
 │   ├── schema.json               # JSON schema for configs
-│   └── examples/dashboard.config.json
-├── scripts/
-│   └── setup-browser-deps.sh     # rootless Chromium deps installer
+│   ├── importmap.json            # bare-specifier → vendored-lib map
+│   ├── models/standard-9.json    # the shared 9-model lineup
+│   └── examples/*.config.json    # threejs, particles, svg, css, dashboard…
+├── scripts/setup-browser-deps.sh # rootless Chromium deps installer
 ├── src/
-│   ├── run.ts                    # CLI entry / orchestrator
-│   ├── config.ts                 # load, validate, defaults, --model filtering
-│   ├── generate.ts               # stage ①: query models, extract + save HTML
-│   ├── render.ts                 # stage ②: Chromium screenshots (Playwright)
-│   ├── grid.ts                   # stage ③: composite the grid (sharp)
-│   ├── report.ts                 # stage ④: report.md + summary.json
-│   ├── html.ts                   # pull an HTML doc out of a messy reply
-│   ├── paths.ts                  # on-disk layout for a run
-│   ├── types.ts                  # shared types
-│   └── providers/
-│       ├── index.ts              # provider registry (reads env keys)
-│       ├── openaiCompatible.ts   # OpenRouter + any OpenAI-compatible host
-│       └── anthropic.ts          # native Anthropic Messages API
-└── results/                      # generated artifacts (gitignored)
+│   ├── run.ts                    # CLI / orchestrator
+│   ├── config.ts                 # load, validate, defaults, shared-lineup resolution
+│   ├── generate.ts               # ① query models, extract + save HTML
+│   ├── render.ts                 # ② screenshots (HTTP server + seed + virtual clock)
+│   ├── server.ts                 # local static server + importmap injection
+│   ├── grid.ts                   # ③ composite the grid + labels (sharp)
+│   ├── report.ts                 # ④ report.md + summary.json
+│   ├── html.ts · paths.ts · types.ts
+│   └── providers/                # openrouter/openai-compatible + anthropic
+└── examples/                     # committed real runs (grids you can look at)
 ```
 
 ---
 
-## Design choices & rationale
+## Design choices
 
-- **TypeScript + `tsx`.** Run the source directly, no build step. Strict mode on.
-- **Plain `fetch`, no SDK.** One tiny OpenAI-compatible client covers OpenRouter, OpenAI,
-  and the long tail of compatible hosts; Anthropic gets a ~30-line adapter. Fewer deps,
-  less to break.
-- **Playwright (Chromium)** for rendering. It's the de-facto tool for headless screenshots
-  and what comparable visual benchmarks use. Full-page capture with a height clamp gives
-  the fairest view of a whole design without runaway images.
-- **`sharp`** for the grid. Fast, dependency-light image compositing; labels are rendered
-  as small SVG banners and rasterised by sharp.
-- **HTML extraction is defensive.** Models wrap output inconsistently (fenced blocks,
-  prose around the doc). `html.ts` tries ```html fences → any doc-like fence → raw
-  `<!doctype>…</html>` slice → a body-ish fallback, so messy replies still render.
-- **Config-as-run.** One JSON file fully determines a run and names its results folder,
-  mirroring the `models.json`-style registries used by other LLM benchmarks. Swap files,
-  not code.
-- **Stages are resumable.** Each stage persists to disk and can be re-run alone — iterate
-  on grid layout without re-paying for generation, for instance.
-- **`--dry-run`.** Exercises render → grid → report with deterministic placeholder pages
-  and zero API spend, so the pipeline (and your environment) can be verified before
-  spending tokens.
+- **TypeScript + `tsx`** — run the source directly, no build step, strict mode.
+- **Plain `fetch`, no SDK** — one OpenAI-compatible client covers OpenRouter/OpenAI/etc.;
+  Anthropic gets a ~30-line adapter.
+- **Single-file artifact** — one HTML document per model is the most comparable, showable,
+  diffable output. The HTTP-server + importmap gives flexibility without multi-file sprawl.
+- **HTTP server + injected importmap** — lets models use ES modules, importmaps, and
+  three.js add-ons normally, while keeping libraries pinned + vendored for determinism.
+- **Fixed dense top-crop** (`fullPage: false`) — every cell is the same aspect, so the grid
+  stays tidy and "presentation-ready" no matter how each model laid out its page.
+- **Overlay labels** — model name + time + tokens float over the render (`labelStyle:
+  "overlay"`), matching a clean side-by-side gallery look; `"banner"` puts them above.
+- **Determinism by construction** — seeded RNG + virtual clock make animated renders
+  reproducible.
+- **Stages are resumable**; **`--dry-run`** exercises render→grid→report with zero API spend.
 
 ## Scoring
 
-This benchmark is intentionally **judgment-first**: the output is a grid you look at. It
-records timing/tokens but assigns no automated design score — visual quality is the thing
-being measured, and a human (or a vision-model judge you add downstream) is the rubric.
-The grid is built to make that judgment fast.
+Judgment-first by design: the output is a grid you look at. It records time and tokens but
+assigns no automated design score — visual quality is the thing being measured, and a human
+(or a vision-model judge you add downstream) is the rubric. The grid is built to make that
+judgment fast.
 
 ## License
 

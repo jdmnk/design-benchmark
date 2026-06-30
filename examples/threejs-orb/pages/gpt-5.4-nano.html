@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Crystalline Orb</title>
+  <style>
+    html, body { margin:0; height:100%; background:#05060a; overflow:hidden; }
+    canvas { display:block; width:100vw; height:100vh; }
+  </style>
+</head>
+<body>
+  <script type="module">
+    import * as THREE from 'three';
+    import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+    import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+    import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+    import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+    import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+
+    // ---------- Renderer ----------
+    const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+    renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0x04050a, 1);
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    document.body.appendChild(renderer.domElement);
+
+    // ---------- Scene & Camera ----------
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0x05060a, 0.04);
+
+    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.05, 150);
+    camera.position.set(0, 0.1, 6.2);
+
+    // ---------- Background stars (procedural sky) ----------
+    const starCount = 2400;
+    const starGeo = new THREE.BufferGeometry();
+    const starPos = new Float32Array(starCount * 3);
+    const starCol = new Float32Array(starCount * 3);
+    const rand = (a, b) => a + (b - a) * Math.random();
+
+    // Biased distribution: more far away for depth
+    for (let i = 0; i < starCount; i++) {
+      const r = Math.pow(Math.random(), 0.35) * 55 + 5;
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos(rand(-1, 1));
+      const x = r * Math.sin(phi) * Math.cos(theta);
+      const y = r * Math.cos(phi) * 0.8;
+      const z = r * Math.sin(phi) * Math.sin(theta);
+
+      starPos[i * 3 + 0] = x;
+      starPos[i * 3 + 1] = y;
+      starPos[i * 3 + 2] = z;
+
+      // cool-to-warm twinkle palette
+      const t = Math.random();
+      const c1 = new THREE.Color(0x8be9ff); // cyan
+      const c2 = new THREE.Color(0xffa3d6); // pink
+      const c3 = new THREE.Color(0xb8ffbf); // mint
+      const c = (t < 0.55) ? c1 : (t < 0.8 ? c3 : c2);
+
+      starCol[i * 3 + 0] = c.r * rand(0.75, 1.25);
+      starCol[i * 3 + 1] = c.g * rand(0.75, 1.25);
+      starCol[i * 3 + 2] = c.b * rand(0.75, 1.25);
+    }
+
+    starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+    starGeo.setAttribute('color', new THREE.BufferAttribute(starCol, 3));
+
+    const starsMat = new THREE.PointsMaterial({
+      size: 0.055,
+      sizeAttenuation: true,
+      transparent: true,
+      opacity: 0.95,
+      vertexColors: true,
+      depthWrite: false
+    });
+
+    const stars = new THREE.Points(starGeo, starsMat);
+    scene.add(stars);
+
+    // ---------- Orbs / Crystalline Core (Icosahedron) ----------
+    const group = new THREE.Group();
+    scene.add(group);
+
+    // Subtle base platform glow (invisible mesh just to help bloom)
+    const coreGroup = new THREE.Group();
+    group.add(coreGroup);
+
+    // Icosahedron with emissive + refraction-ish look using Fresnel + noise in custom shader
+    const coreGeo = new THREE.IcosahedronGeometry(1.45, 3);
+
+    // Custom shader for crystalline glow, facets, and fresnel.
+    const coreMat = new THREE.ShaderMaterial({
+      uniforms: {
+        uTime: { value: 0 },
+        uCamPos: { value: new THREE.Vector3() },
+        uAccent: { value: new THREE.Color(0x7df9ff) },
+        uAccent2: { value: new THREE.Color(0xff6fd8) },
+        uAccent3: { value: new THREE.Color(0xb4ff93) }
+      },
+      vertexShader: `
+        varying vec3 vNormal;
+        varying vec3 vWorldPos;
+        varying vec3 vViewDir;
+
+        void main() {
+          vec4 worldPos = modelMatrix * vec4(position, 1.0);
+          vWorldPos = worldPos.xyz;
+
+          vNormal = normalize(mat3(modelMatrix) * normal);
+          vec3 viewDir = cameraPosition - vWorldPos;
+          vViewDir = normalize(viewDir);
+
+          gl_Position = projectionMatrix * viewMatrix * worldPos;
+        }
+      `,
+      fragmentShader: `
+        precision highp float;
+        varying vec3 vNormal;
+        varying vec3 vWorldPos;
+        varying vec3 vViewDir;
+
+        uniform float uTime;
+        uniform vec3 uCamPos;
+        uniform vec3 uAccent;
+        uniform vec3 uAccent2;
+        uniform vec3 uAccent3;
+
+        // Hash/noise
+        float hash(vec3 p){
+          p = fract(p * 0.3183099 + vec3(0.1,0.2,0.3));
+          p *= 17.0;
+          return fract(p.x*p.y*p.z*(p.x+p.y+p.z));
+        }
+
+        float noise(vec3 p){
+          vec3 i = floor(p);
+          vec3 f = fract(p);
+          f = f*f*(3.0-2.0*f);
+
+          float n000 = hash(i + vec3(0,0,0));
+          float n100 = hash(i + vec3(1,0,0));
+          float n010 = hash(i + vec3(0,1,0));
+          float n110 = hash(i + vec3(1,1,0));
+          float n001 = hash(i + vec3(0,0,1));
+          float n101 = hash(i + vec3(1,0,1));
+          float n011 = hash(i + vec3(0,1,1));
+          float n111 = hash(i + vec3(1,1,1));
+
+          float n00 = mix(n000, n100, f.x);
+          float n10 = mix(n010, n110, f.x);
+          float n01 = mix(n001, n101, f.x);
+          float n11 = mix(n011, n111, f.x);
+
+          float n0 = mix(n00, n10, f.y);
+          float n1 = mix(n01, n11, f.y);
+
+          return mix(n0, n1, f.z);
+        }
+
+        void main() {
+          vec3 N = normalize(vNormal);
+          vec3 V = normalize(vViewDir);
+
+          float ndv = clamp(dot(N, V), 0.0, 1.0);
+
+          // Facet-ish shimmering based on normal direction quantization
+          vec3 q = floor(N * 12.0) / 12.0;
+          float facet = 1.0 - abs(dot(N, normalize(q + vec3(0.001))));
+          facet = smoothstep(0.05, 0.22, facet);
+
+          // Animated internal shimmer
+          vec3 p = vWorldPos * 1.25;
+          float t = uTime * 0.65;
+          float n = noise(p + vec3(t, -t*0.8, t*0.35));
+          float n2 = noise(p * 1.8 - vec3(t*1.2, t*0.6, -t*0.9));
+          float shimmer = mix(n, n2, 0.5);
+
+          // Fresnel edge glow
+          float fresnel = pow(1.0 - ndv, 2.8);
+
+          // Color blending (cyan/magenta/mint)
+          float m = fract(shimmer * 2.0 + dot(N, vec3(0.2,0.7,0.3))*0.1 + uTime*0.03);
+          vec3 baseColor = mix(uAccent, uAccent2, smoothstep(0.35, 0.75, m));
+          baseColor = mix(baseColor, uAccent3, smoothstep(0.1, 0.9, 1.0-m));
+
+          // Micro glow lines using angular pattern
+          float lines = pow(smoothstep(0.72, 0.98, abs(fract((dot(N, vec3(2.1, 3.3, 1.7)))*2.0 + uTime*0.12) - 0.5)), 2.2);
+          lines *= (0.35 + 0.65 * fresnel);
+
+          // Final emissive-like response
+          float glow = (0.25 + 1.65 * fresnel) * (0.55 + 0.65*shimmer) + 0.25*lines;
+          glow *= (0.75 + 0.25*facet);
+
+          // Transparent-ish core to feel crystalline; but still punch through bloom
+          float alpha = clamp(0.25 + 0.55*fresnel + 0.25*facet, 0.05, 0.95);
+
+          vec3 finalColor = baseColor * glow;
+
+          // Slight dark base to keep cinematic contrast
+          finalColor += baseColor * (0.08 + 0.08*shimmer) * (0.5 + 0.5*ndv);
+
+          gl_FragColor = vec4(finalColor, alpha);
+        }
+      `,
+      transparent: true,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+      side: THREE.DoubleSide
+    });
+
+    // Add a faint shell for volume
+    const shellGeo = new THREE.IcosahedronGeometry(1.52, 2);
+    const shellMat = coreMat.clone();
+    shellMat.uniforms = THREE.UniformsUtils.clone(coreMat.uniforms);
+    shellMat.uniforms.uAccent.value = new THREE.Color(0x93f6ff);
+    shellMat.uniforms.uAccent2.value = new THREE.Color(0xff7de3);
+    shellMat.uniforms.uAccent3.value = new THREE.Color(0xbaff96);
+    shellMat.transparent = true;
+    shellMat.blending = THREE.AdditiveBlending;
+    shellMat.depthWrite = false;
+
+    const core = new THREE.Mesh(coreGeo, coreMat);
+    const shell = new THREE.Mesh(shellGeo, shellMat);
+    shell.scale.set(1.03, 1.03, 1.03);
+
+    coreGroup.add(shell);
+    coreGroup.add(core);
+
+    // Base bloom disk (not visible geometry, but helps light feel anchored)
+    const diskGeo = new THREE.RingGeometry(0.25, 1.9, 64);
+    const diskMat = new THREE.MeshBasicMaterial({
+      color: 0x7df9ff,
+      transparent: true,
+      opacity: 0.08,
+      side: THREE.DoubleSide,
+      depthWrite: false
+    });
+    const disk = new THREE.Mesh(diskGeo, diskMat);
+    disk.rotation.x = -Math.PI / 2;
+    disk.position.y = -1.25;
+    coreGroup.add(disk);
+
+    // ---------- Colored point lights ----------
+    const lightsGroup = new THREE.Group();
+    coreGroup.add(lightsGroup);
+
+    const p1 = new THREE.PointLight(0x76f5ff, 3.2, 18, 2.2);
+    p1.position.set(3.3, 2.2, 2.4);
+
+    const p2 = new THREE.PointLight(0xff6fd8, 2.6, 16, 2.0);
+    p2.position.set(-2.8, -1.6, 3.2);
+
+    const p3 = new THREE.PointLight(0xb8ffbf, 2.1, 14, 2.0);
+    p3.position.set(0.2, 3.3, -3.0);
+
+    lightsGroup.add(p1, p2, p3);
+
+    // Subtle ambient fill
+    const ambient = new THREE.AmbientLight(0x1a2140, 0.55);
+    scene.add(ambient);
+
+    // ---------- Drift particles around the orb ----------
+    const driftCount = 1200;
+    const driftGeo = new THREE.BufferGeometry();
+    const driftPos = new Float32Array(driftCount * 3);
+    const driftCol = new Float32Array(driftCount * 3);
+    const driftPhase = new Float32Array(driftCount);
+    const driftRadius = new Float32Array(driftCount);
+
+    for (let i = 0; i < driftCount; i++) {
+      const r = 2.1 + Math.pow(Math.random(), 0.45) * 3.6;
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos(rand(-1, 1));
+
+      driftPos[i * 3 + 0] = r * Math.sin(phi) * Math.cos(theta);
+      driftPos[i * 3 + 1] = r * Math.cos(phi) * 0.75;
+      driftPos[i * 3 + 2] = r * Math.sin(phi) * Math.sin(theta);
+
+      const t = Math.random();
+      const cA = new THREE.Color(0x7df9ff);
+      const cB = new THREE.Color(0xff6fd8);
+      const cC = new THREE.Color(0xb4ff93);
+      const c = (t < 0.5) ? cA : (t < 0.8 ? cC : cB);
+
+      driftCol[i * 3 + 0] = c.r * rand(0.65, 1.2);
+      driftCol[i * 3 + 1] = c.g * rand(0.65, 1.2);
+      driftCol[i * 3 + 2] = c.b * rand(0.65, 1.2);
+
+      driftPhase[i] = Math.random() * Math.PI * 2;
+      driftRadius[i] = r;
+    }
+
+    driftGeo.setAttribute('position', new THREE.BufferAttribute(driftPos, 3));
+    driftGeo.setAttribute('color', new THREE.BufferAttribute(driftCol, 3));
+
+    driftGeo.userData.phase = driftPhase;
+    driftGeo.userData.radius = driftRadius;
+    driftGeo.userData.basePos = driftPos.slice();
+
+    const driftMat = new THREE.PointsMaterial({
+      size: 0.03,
+      sizeAttenuation: true,
+      transparent: true,
+      opacity: 0.95,
+      vertexColors: true,
+      depthWrite: false
+    });
+
+    const drift = new THREE.Points(driftGeo, driftMat);
+    coreGroup.add(drift);
+
+    // ---------- Postprocessing: bloom + subtle vignette ----------
+    const composer = new EffectComposer(renderer);
+    composer.addPass(new RenderPass(scene, camera));
+
+    const bloom = new UnrealBloomPass(
+      new THREE.Vector2(window.innerWidth, window.innerHeight),
+      1.25,  // strength
+      0.55,  // radius
+      0.18   // threshold
+    );
+    composer.addPass(bloom);
+
+    // Vignette & contrast polish shader pass
+    const vignetteShader = {
+      uniforms: {
+        tDiffuse: { value: null },
+        uTime: { value: 0 }
+      },
+      vertexShader: `
+        varying vec2 vUv;
+        void main() {
+          vUv = uv;
+          gl_Position = vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        precision highp float;
+        varying vec2 vUv;
+        uniform sampler2D tDiffuse;
+        uniform float uTime;
+
+        void main() {
+          vec2 uv = vUv;
+          vec3 col = texture2D(tDiffuse, uv).rgb;
+
+          // Vignette
+          vec2 p = uv - 0.5;
+          float d = length(p);
+          float vign = smoothstep(0.62, 0.98, d);
+
+          // Gentle filmic lift
+          col = col * (1.0 - 0.10*vign) + vec3(0.02, 0.02, 0.03) * vign;
+
+          // Subtle chroma tension
+          float shift = 0.0025 * sin(uTime*0.7);
+          vec3 colR = texture2D(tDiffuse, uv + vec2(shift, 0.0)).rgb;
+          vec3 colB = texture2D(tDiffuse, uv - vec2(shift, 0.0)).rgb;
+          col = mix(col, vec3(colR.r, col.g, colB.b), 0.18);
+
+          gl_FragColor = vec4(col, 1.0);
+        }
+      `
+    };
+
+    const vignettePass = new ShaderPass(vignetteShader);
+    composer.addPass(vignettePass);
+
+    composer.addPass(new OutputPass());
+
+    // ---------- Resize ----------
+    function onResize() {
+      const w = window.innerWidth, h = window.innerHeight;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+      composer.setSize(w, h);
+      bloom.setSize(w, h);
+    }
+    window.addEventListener('resize', onResize);
+
+    // ---------- Animation ----------
+    const clock = new THREE.Clock();
+
+    // Quick, immediate "premium" movement on load (no user interaction)
+    // We'll start with a slight spin and easing values.
+    let startTime = performance.now();
+    let entered = false;
+
+    function animate() {
+      requestAnimationFrame(animate);
+      const t = clock.getElapsedTime();
+      const dt = t; // used for smooth expressions
+
+      // Update core shader time
+      coreMat.uniforms.uTime.value = t;
+      shellMat.uniforms.uTime.value = t;
+      vignettePass.uniforms.uTime.value = t;
+
+      // Camera target drift for cinematic parallax
+      const camX = Math.sin(t * 0.22) * 0.35;
+      const camY = Math.cos(t * 0.17) * 0.18;
+      camera.position.x = camX;
+      camera.position.y = camY;
+      camera.lookAt(0, 0.05, 0);
+
+      // Rotate core group slowly but with tasteful wobble
+      const spin = t * 0.28;
+      const wobble = Math.sin(t * 0.55) * 0.22;
+      coreGroup.rotation.y = spin;
+      coreGroup.rotation.x = wobble * 0.45 + Math.sin(t * 0.33) * 0.08;
+      coreGroup.rotation.z = Math.sin(t * 0.21) * 0.06;
+
+      // Light orbiting
+      const orbit1 = t * 0.22;
+      const orbit2 = t * 0.17;
+      p1.position.set(3.7*Math.cos(orbit1), 2.0*Math.sin(t*0.31)+1.6, 3.2*Math.sin(orbit1));
+      p2.position.set(-3.2*Math.cos(orbit2), -1.9*Math.cos(t*0.27)-0.6, 3.4*Math.sin(orbit2));
+      p3.position.set(0.8*Math.sin(t*0.19)+0.2, 3.2*Math.cos(t*0.23), -3.1*Math.cos(t*0.19));
+
+      // Particle drift around the orb
+      const posAttr = drift.geometry.attributes.position;
+      const basePos = drift.geometry.userData.basePos;
+      const phase = drift.geometry.userData.phase;
+      const rad = drift.geometry.userData.radius;
+
+      for (let i = 0; i < driftCount; i++) {
+        const b3 = i * 3;
+
+        const ph = phase[i];
+        // small helical motion
+        const a = ph + t * (0.35 + (rad[i]-2.1) * 0.04);
+        const sway = Math.sin(t*0.9 + ph) * 0.12;
+
+        const x0 = basePos[b3+0];
+        const y0 = basePos[b3+1];
+        const z0 = basePos[b3+2];
+
+        // rotate around Y with slight tilt
+        const radiusXZ = Math.hypot(x0, z0);
+        const ang0 = Math.atan2(z0, x0);
+        const ang = ang0 + t * 0.18 + sway;
+
+        const nx = Math.cos(ang) * radiusXZ;
+        const nz = Math.sin(ang) * radiusXZ;
+
+        const ny = y0 + Math.sin(a) * 0.16 + Math.cos(t*0.6 + ph) * 0.08;
+
+        // gentle breathing scale
+        const breath = 1.0 + 0.05*Math.sin(t*0.45 + ph);
+        posAttr.array[b3+0] = nx * breath;
+        posAttr.array[b3+1] = ny * breath;
+        posAttr.array[b3+2] = nz * breath;
+      }
+      posAttr.needsUpdate = true;
+
+      // Twinkle stars
+      starsMat.opacity = 0.9 + 0.06 * Math.sin(t*0.45);
+      // size pulse
+      starsMat.size = 0.05 + 0.012*Math.sin(t*0.3);
+
+      // Make the bloom feel strong quickly
+      // (composer already has bloom; this subtly animates its strength for immediate impact)
+      const quick = Math.min(1, (performance.now() - startTime) / 900);
+      if (!entered && quick > 0.98) entered = true;
+      bloom.strength = 0.9 + 0.55 * quick + 0.25 * Math.sin(t*0.7)*0.5;
+      bloom.threshold = 0.15 + 0.02*Math.sin(t*0.8);
+
+      composer.render();
+    }
+
+    // ---------- Start with instant motion (no waiting for user) ----------
+    // Kick clock for immediate visuals
+    clock.start();
+    // Slight initial time offset for shader richness right away
+    coreMat.uniforms.uTime.value = 0.65;
+    shellMat.uniforms.uTime.value = 0.65;
+
+    animate();
+  </script>
+</body>
+</html>

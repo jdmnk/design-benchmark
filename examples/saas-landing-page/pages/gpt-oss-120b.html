@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Nimbus – AI‑Powered Note‑Taking</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+    --clr-primary: #0d6efd;
+    --clr-primary-dark: #0a58ca;
+    --clr-bg: #f8fafc;
+    --clr-surface: #ffffff;
+    --clr-muted: #6c757d;
+    --clr-text: #212529;
+    --clr-header: #343a40;
+    --radius: .5rem;
+    --shadow: 0 4px 12px rgba(0,0,0,.08);
+    --font-base: 'Inter', sans-serif;
+}
+
+/* Reset & base */
+*,
+*::before,
+*::after { box-sizing: border-box; margin:0; padding:0; }
+html { scroll-behavior: smooth; }
+body {
+    font-family: var(--font-base);
+    line-height: 1.6;
+    color: var(--clr-text);
+    background: var(--clr-bg);
+}
+img { max-width: 100%; display: block; }
+a { color: var(--clr-primary); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* Layout helpers */
+.container {
+    width: min(90%, 1200px);
+    margin: 0 auto;
+    padding: 2rem 0;
+}
+.section {
+    padding: 4rem 0;
+}
+.text-center { text-align: center; }
+.mt-2 { margin-top: .5rem; }
+.mt-4 { margin-top: 1rem; }
+.mb-4 { margin-bottom: 1rem; }
+.btn {
+    display: inline-block;
+    padding: .75rem 1.5rem;
+    font-weight: 600;
+    color: #fff;
+    background: var(--clr-primary);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    transition: background .3s;
+}
+.btn:hover { background: var(--clr-primary-dark); }
+
+/* Hero */
+.hero {
+    background: var(--clr-surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 4rem 2rem;
+    text-align: center;
+}
+.hero h1 {
+    font-size: clamp(2rem,5vw,3.5rem);
+    font-weight: 700;
+    color: var(--clr-header);
+}
+.hero p {
+    font-size: 1.125rem;
+    color: var(--clr-muted);
+    max-width: 600px;
+    margin: 1rem auto;
+}
+.hero .cta {
+    margin-top: 2rem;
+}
+
+/* Features */
+.features {
+    display: grid;
+    gap: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+.feature-card {
+    background: var(--clr-surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 2rem;
+    text-align: center;
+}
+.feature-card svg {
+    width: 48px;
+    height: 48px;
+    fill: var(--clr-primary);
+    margin-bottom: .75rem;
+}
+.feature-card h3 {
+    font-size: 1.25rem;
+    margin-bottom: .5rem;
+    color: var(--clr-header);
+}
+.feature-card p {
+    font-size: .95rem;
+    color: var(--clr-muted);
+}
+
+/* Testimonial */
+.testimonial {
+    background: var(--clr-primary);
+    color: #fff;
+    border-radius: var(--radius);
+    padding: 3rem 2rem;
+    text-align: center;
+}
+.testimonial blockquote {
+    font-size: 1.2rem;
+    line-height: 1.5;
+    margin: 0 auto 1.5rem;
+    max-width: 800px;
+    position: relative;
+}
+.testimonial blockquote::before,
+.testimonial blockquote::after {
+    content: '“';
+    font-size: 4rem;
+    opacity: .3;
+    position: absolute;
+}
+.testimonial blockquote::before { left: -10px; top: -10px; }
+.testimonial blockquote::after { right: -10px; bottom: -10px; transform: rotate(180deg); }
+.testimonial .author {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .75rem;
+}
+.testimonial .author img {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+}
+.testimonial .author span {
+    font-weight: 600;
+}
+
+/* Pricing teaser */
+.pricing {
+    background: var(--clr-surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 3rem 2rem;
+    text-align: center;
+}
+.pricing h2 {
+    font-size: 2rem;
+    margin-bottom: .5rem;
+    color: var(--clr-header);
+}
+.pricing p {
+    margin-bottom: 1.5rem;
+    color: var(--clr-muted);
+}
+.pricing .price {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--clr-primary);
+    margin-bottom: .75rem;
+}
+.pricing .cta { margin-top: 1rem; }
+
+/* Footer */
+footer {
+    background: var(--clr-header);
+    color: #fff;
+    padding: 2rem 0;
+    font-size: .9rem;
+}
+footer .footer-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    justify-content: space-between;
+}
+footer a { color: #adb5bd; }
+footer a:hover { color: #fff; }
+footer .logo { font-weight: 700; font-size: 1.25rem; }
+footer .social {
+    display: flex;
+    gap: .75rem;
+}
+footer .social a {
+    font-size: 1.25rem;
+}
+@media (max-width: 600px) {
+    .hero { padding: 3rem 1rem; }
+    .pricing { padding: 2rem 1rem; }
+}
+</style>
+</head>
+<body>
+
+<header class="section">
+    <div class="container text-center">
+        <h1 style="font-size:2rem; font-weight:600; color:#fff;">Nimbus</h1>
+    </div>
+</header>
+
+<section class="hero section">
+    <div class="container">
+        <h1>Capture Ideas Instantly with AI</h1>
+        <p>Nimbus turns your thoughts into organized notes, summaries, and action items—automatically. Focus on creating, let the AI handle the rest.</p>
+        <a href="#pricing" class="btn cta">Get Started Free</a>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <h2 class="text-center mb-4">Features</h2>
+        <div class="features">
+            <div class="feature-card">
+                <svg viewBox="0 0 24 24"><path d="M3 3h18v2H3V3zm0 4h12v2H3V7zm0 4h18v2H3v-2zm0 4h12v2H3v-2zm0 4h18v2H3v-2z"/></svg>
+                <h3>Smart Capture</h3>
+                <p>Record voice, images or typed notes and let Nimbus auto‑categorize and tag them.</p>
+            </div>
+            <div class="feature-card">
+                <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 00-3.16 19.49c.5.09.68-.22.68-.48v-1.71c-2.78.6-3.36-1.34-3.36-1.34-.45-1.15-1.1-1.46-1.1-1.46-.9-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03 .88 1.5 2.31 1.07 2.87 .82 .09-.64 .35-1.07 .64-1.32-2.22-.25-4.56-1.11-4.56-4.95 0-1.09 .39-1.99 1.03-2.69-.1-.25-.45-1.26 .1-2.63 0 0 .84-.27 2.75 1.02A9.55 9.55 0 0112 6.8c.85.004 1.71.115 2.51.337 1.9-1.29 2.74-1.02 2.74-1.02 .55 1.37 .2 2.38 .1 2.63 .64 .7 1.03 1.6 1.03 2.69 0 3.85-2.34 4.7-4.57 4.95 .36 .31 .68 .93 .68 1.88v2.79c0 .27 .18 .58 .69 .48A10 10 0 0012 2z"/></svg>
+                <h3>AI Summaries</h3>
+                <p>Get concise, actionable summaries of long notes or meeting recordings in seconds.</p>
+            </div>
+            <div class="feature-card">
+                <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14l4-4h12c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>
+                <h3>Collaboration</h3>
+                <p>Share notes with teammates, comment in real‑time, and keep everyone on the same page.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="testimonial section">
+    <div class="container">
+        <blockquote>
+            “Nimbus turned my scattered ideas into a crystal‑clear roadmap. The AI does the heavy lifting, so I can actually get work done.”
+        </blockquote>
+        <div class="author">
+            <img src="https://i.pravatar.cc/48?img=7" alt="Jane Doe">
+            <span>Jane Doe, Product Lead at SkyTech</span>
+        </div>
+    </div>
+</section>
+
+<section id="pricing" class="pricing section">
+    <div class="container">
+        <h2>Ready to Elevate Your Notes?</h2>
+        <p>Start with a free trial. No credit card required.</p>
+        <div class="price">$0 / month</div>
+        <a href="#" class="btn">Create Your Account</a>
+    </div>
+</section>
+
+<footer>
+    <div class="container footer-grid">
+        <div class="logo">Nimbus</div>
+        <nav>
+            <a href="#">Features</a> |
+            <a href="#">Pricing</a> |
+            <a href="#">Blog</a> |
+            <a href="#">Contact</a>
+        </nav>
+        <div class="social">
+            <a href="#" aria-label="Twitter">🐦</a>
+            <a href="#" aria-label="LinkedIn">🔗</a>
+            <a href="#" aria-label="GitHub">🐙</a>
+        </div>
+    </div>
+    <p class="text-center mt-4">&copy; 2026 Nimbus Labs. All rights reserved.</p>
+</footer>
+
+</body>
+</html>

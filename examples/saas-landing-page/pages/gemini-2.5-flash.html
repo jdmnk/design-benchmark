@@ -3,108 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nimbus - AI Note-Taking App</title>
+    <title>Nimbus - AI Note-Taking, Reimagined</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
     <style>
-        /* CSS Variables for consistent theming */
         :root {
             --primary-color: #6C63FF; /* A vibrant purple */
-            --secondary-color: #8C84FF; /* Lighter purple for accents */
-            --background-light: #F9FAFB; /* Light gray background */
-            --background-dark: #1A202C; /* Dark gray for footer */
-            --text-color-dark: #2D3748; /* Dark text for readability */
-            --text-color-light: #4A5568; /* Slightly lighter dark text */
-            --text-color-white: #FFFFFF;
+            --secondary-color: #5E56E9; /* Slightly darker primary */
+            --accent-color: #FFD700; /* Gold for highlights */
+            --text-color: #333333;
+            --light-text-color: #666666;
+            --background-light: #F9FAFB;
+            --background-dark: #1A202C; /* Dark background for footer */
+            --white: #FFFFFF;
             --border-color: #E2E8F0;
-            --shadow-light: 0 4px 12px rgba(0, 0, 0, 0.05);
-            --shadow-medium: 0 10px 20px rgba(0, 0, 0, 0.08);
 
-            --font-heading: 'Poppins', sans-serif;
+            --font-display: 'Poppins', sans-serif;
             --font-body: 'Inter', sans-serif;
+
+            --spacing-xs: 0.5rem;
+            --spacing-sm: 1rem;
+            --spacing-md: 1.5rem;
+            --spacing-lg: 2.5rem;
+            --spacing-xl: 4rem;
+            --spacing-xxl: 6rem;
+
+            --border-radius-sm: 0.5rem;
+            --border-radius-md: 0.75rem;
+            --box-shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            --box-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --box-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
         }
 
-        /* Base Styles */
+        /* Base styles */
         body {
             font-family: var(--font-body);
-            color: var(--text-color-dark);
+            color: var(--text-color);
             margin: 0;
-            padding: 0;
             line-height: 1.6;
-            background-color: var(--background-light);
+            background-color: var(--white);
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
 
         h1, h2, h3, h4, h5, h6 {
-            font-family: var(--font-heading);
-            color: var(--text-color-dark);
-            margin-top: 0;
-            margin-bottom: 0.5em;
+            font-family: var(--font-display);
+            color: var(--text-color);
             line-height: 1.2;
+            margin-top: 0;
         }
 
         h1 { font-size: 3.5rem; font-weight: 700; }
         h2 { font-size: 2.5rem; font-weight: 700; }
         h3 { font-size: 1.75rem; font-weight: 600; }
-        p { margin-bottom: 1em; }
-
-        a {
-            color: var(--primary-color);
-            text-decoration: none;
-            transition: color 0.2s ease;
-        }
-
-        a:hover {
-            color: var(--secondary-color);
-        }
+        p { font-size: 1.125rem; }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 1.5rem;
+            padding: 0 var(--spacing-md);
         }
-
-        /* Utility Classes */
-        .text-center { text-align: center; }
-        .text-primary { color: var(--primary-color); }
-        .bg-primary { background-color: var(--primary-color); }
-        .bg-dark { background-color: var(--background-dark); }
-        .text-white { color: var(--text-color-white); }
-        .py-10 { padding-top: 10rem; padding-bottom: 10rem; }
-        .py-8 { padding-top: 8rem; padding-bottom: 8rem; }
-        .py-6 { padding-top: 6rem; padding-bottom: 6rem; }
-        .py-4 { padding-top: 4rem; padding-bottom: 4rem; }
-        .mb-8 { margin-bottom: 4rem; }
-        .mb-4 { margin-bottom: 2rem; }
-        .mt-4 { margin-top: 2rem; }
-        .mx-auto { margin-left: auto; margin-right: auto; }
 
         /* Buttons */
         .btn {
-            display: inline-block;
-            padding: 1rem 2.5rem;
-            border-radius: 0.5rem;
-            font-size: 1.1rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--spacing-sm) var(--spacing-lg);
+            border-radius: var(--border-radius-md);
             font-weight: 600;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
             text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
             border: none;
+            font-size: 1.125rem;
         }
 
         .btn-primary {
             background-color: var(--primary-color);
-            color: var(--text-color-white);
-            box-shadow: var(--shadow-medium);
+            color: var(--white);
+            box-shadow: var(--box-shadow-md);
         }
 
         .btn-primary:hover {
             background-color: var(--secondary-color);
+            box-shadow: var(--box-shadow-lg);
             transform: translateY(-2px);
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
         }
 
         .btn-secondary {
@@ -115,51 +101,39 @@
 
         .btn-secondary:hover {
             background-color: var(--primary-color);
-            color: var(--text-color-white);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-light);
+            color: var(--white);
         }
 
-        /* Header/Navigation */
-        .header {
-            padding: 1.5rem 0;
-            position: sticky;
-            top: 0;
-            background-color: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+        /* Sections */
+        section {
+            padding: var(--spacing-xxl) 0;
         }
 
-        .header .container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .section-header {
+            text-align: center;
+            margin-bottom: var(--spacing-xl);
         }
 
-        .logo {
-            font-family: var(--font-heading);
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--primary-color);
-            text-decoration: none;
+        .section-header h2 {
+            margin-bottom: var(--spacing-md);
         }
 
-        .nav-links a {
-            margin-left: 2.5rem;
-            font-weight: 500;
-            color: var(--text-color-light);
-            font-size: 1.05rem;
-        }
-
-        .nav-links a:hover {
-            color: var(--primary-color);
+        .section-header p {
+            max-width: 700px;
+            margin: 0 auto;
+            color: var(--light-text-color);
         }
 
         /* Hero Section */
         .hero {
-            background: linear-gradient(135deg, var(--background-light) 0%, #E0E7FF 100%);
-            padding: 12rem 0 10rem 0;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: var(--white);
+            text-align: center;
+            padding: var(--spacing-xxl) 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 80vh;
             position: relative;
             overflow: hidden;
         }
@@ -167,532 +141,401 @@
         .hero::before {
             content: '';
             position: absolute;
-            top: -50px;
-            left: -50px;
-            width: 300px;
-            height: 300px;
-            background: radial-gradient(circle, rgba(108, 99, 255, 0.15) 0%, transparent 70%);
-            border-radius: 50%;
-            z-index: 0;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: pulse-gradient 10s infinite alternate;
         }
 
-        .hero::after {
-            content: '';
-            position: absolute;
-            bottom: -50px;
-            right: -50px;
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(circle, rgba(108, 99, 255, 0.1) 0%, transparent 70%);
-            border-radius: 50%;
-            z-index: 0;
+        @keyframes pulse-gradient {
+            0% { transform: scale(1); opacity: 0.8; }
+            100% { transform: scale(1.1); opacity: 1; }
         }
 
-
-        .hero .container {
-            text-align: center;
+        .hero-content {
             position: relative;
             z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
         }
 
         .hero h1 {
             font-size: 4.5rem;
-            line-height: 1.1;
-            margin-bottom: 1rem;
-            max-width: 900px;
+            font-weight: 700;
+            margin-bottom: var(--spacing-md);
+            color: var(--white);
+            text-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .hero p {
+            font-size: 1.5rem;
+            margin-bottom: var(--spacing-xl);
+            opacity: 0.9;
+            max-width: 700px;
             margin-left: auto;
             margin-right: auto;
-            letter-spacing: -0.05em;
         }
 
-        .hero h1 .highlight {
-            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .hero .btn {
+            font-size: 1.25rem;
+            padding: var(--spacing-md) var(--spacing-xl);
+            background-color: var(--accent-color);
+            color: var(--primary-color);
+            font-weight: 700;
         }
 
-        .hero p.subheadline {
-            font-size: 1.5rem;
-            color: var(--text-color-light);
-            max-width: 700px;
-            margin: 1.5rem auto 3rem auto;
-        }
-
-        .hero .cta-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 1.5rem;
+        .hero .btn:hover {
+            background-color: var(--white);
+            color: var(--primary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
         }
 
         /* Features Section */
         .features {
-            background-color: var(--text-color-white);
-            padding: 8rem 0;
-        }
-
-        .features h2 {
-            margin-bottom: 1rem;
-        }
-
-        .features p.section-description {
-            font-size: 1.25rem;
-            color: var(--text-color-light);
-            max-width: 800px;
-            margin: 1rem auto 4rem auto;
-        }
-
-        .feature-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2rem;
-            margin-top: 4rem;
-        }
-
-        .feature-item {
             background-color: var(--background-light);
-            padding: 2.5rem;
-            border-radius: 1rem;
-            box-shadow: var(--shadow-light);
-            text-align: left;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-lg);
+        }
+
+        .feature-card {
+            background-color: var(--white);
+            padding: var(--spacing-lg);
+            border-radius: var(--border-radius-md);
+            box-shadow: var(--box-shadow-sm);
+            text-align: center;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             border: 1px solid var(--border-color);
         }
 
-        .feature-item:hover {
+        .feature-card:hover {
             transform: translateY(-5px);
-            box-shadow: var(--shadow-medium);
+            box-shadow: var(--box-shadow-lg);
         }
 
-        .feature-item .icon {
+        .feature-card .icon {
             font-size: 3rem;
             color: var(--primary-color);
-            margin-bottom: 1rem;
-            display: block;
+            margin-bottom: var(--spacing-md);
+            display: inline-block;
         }
 
-        .feature-item h3 {
-            font-size: 1.5rem;
-            margin-bottom: 0.75rem;
-            color: var(--text-color-dark);
+        .feature-card h3 {
+            margin-bottom: var(--spacing-sm);
+            color: var(--text-color);
         }
 
-        .feature-item p {
-            color: var(--text-color-light);
+        .feature-card p {
             font-size: 1rem;
+            color: var(--light-text-color);
         }
 
         /* Testimonial Section */
         .testimonial {
-            background-color: var(--background-light);
-            padding: 10rem 0;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .testimonial::before {
-            content: '';
-            position: absolute;
-            top: 20%;
-            left: -100px;
-            width: 200px;
-            height: 200px;
-            background: radial-gradient(circle, rgba(108, 99, 255, 0.08) 0%, transparent 70%);
-            border-radius: 50%;
-            z-index: 0;
-        }
-
-        .testimonial::after {
-            content: '';
-            position: absolute;
-            bottom: 15%;
-            right: -100px;
-            width: 250px;
-            height: 250px;
-            background: radial-gradient(circle, rgba(108, 99, 255, 0.06) 0%, transparent 70%);
-            border-radius: 50%;
-            z-index: 0;
+            background-color: var(--white);
+            text-align: center;
         }
 
         .testimonial-card {
-            max-width: 900px;
+            max-width: 800px;
             margin: 0 auto;
-            background-color: var(--text-color-white);
-            padding: 4rem;
-            border-radius: 1.5rem;
-            box-shadow: var(--shadow-medium);
-            text-align: center;
+            padding: var(--spacing-xl);
+            background-color: var(--background-light);
+            border-radius: var(--border-radius-md);
+            box-shadow: var(--box-shadow-md);
+            position: relative;
+            border: 1px solid var(--border-color);
+        }
+
+        .testimonial-card::before {
+            content: "“";
+            font-family: serif;
+            font-size: 8rem;
+            color: var(--primary-color);
+            opacity: 0.1;
+            position: absolute;
+            top: -20px;
+            left: 20px;
+            z-index: 0;
+            line-height: 1;
+        }
+
+        .testimonial-card p {
+            font-size: 1.5rem;
+            font-style: italic;
+            color: var(--text-color);
+            margin-bottom: var(--spacing-md);
             position: relative;
             z-index: 1;
         }
 
-        .testimonial-card .quote-icon {
-            font-size: 4rem;
-            color: var(--primary-color);
-            opacity: 0.2;
-            margin-bottom: -1rem;
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: var(--spacing-md);
+            position: relative;
+            z-index: 1;
         }
 
-        .testimonial-card p.quote {
-            font-size: 1.75rem;
-            font-style: italic;
-            color: var(--text-color-dark);
-            margin-bottom: 2rem;
-            line-height: 1.4;
-        }
-
-        .testimonial-card .author-avatar {
-            width: 80px;
-            height: 80px;
+        .testimonial-author img {
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
             object-fit: cover;
-            margin-bottom: 1rem;
-            border: 3px solid var(--primary-color);
+            margin-right: var(--spacing-sm);
+            border: 2px solid var(--primary-color);
         }
 
-        .testimonial-card .author-name {
+        .testimonial-author-info strong {
+            display: block;
             font-weight: 600;
-            font-size: 1.2rem;
-            color: var(--text-color-dark);
-            margin-bottom: 0.25rem;
+            color: var(--text-color);
         }
 
-        .testimonial-card .author-title {
-            font-size: 1rem;
-            color: var(--text-color-light);
+        .testimonial-author-info span {
+            font-size: 0.9rem;
+            color: var(--light-text-color);
         }
 
         /* Pricing Teaser */
         .pricing-teaser {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-            padding: 8rem 0;
-            color: var(--text-color-white);
+            background-color: var(--primary-color);
+            color: var(--white);
             text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .pricing-teaser::before {
-            content: '';
-            position: absolute;
-            top: -20%;
-            left: -5%;
-            width: 150px;
-            height: 150px;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
-            border-radius: 50%;
-        }
-
-        .pricing-teaser::after {
-            content: '';
-            position: absolute;
-            bottom: -20%;
-            right: -5%;
-            width: 200px;
-            height: 200px;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-            border-radius: 50%;
         }
 
         .pricing-teaser h2 {
-            color: var(--text-color-white);
-            margin-bottom: 1rem;
+            color: var(--white);
+            margin-bottom: var(--spacing-md);
         }
 
         .pricing-teaser p {
             font-size: 1.25rem;
             max-width: 700px;
-            margin: 1rem auto 3rem auto;
+            margin: 0 auto var(--spacing-xl) auto;
             opacity: 0.9;
         }
 
-        .pricing-teaser .btn-white {
-            background-color: var(--text-color-white);
+        .pricing-teaser .btn {
+            background-color: var(--accent-color);
             color: var(--primary-color);
-            box-shadow: var(--shadow-medium);
+            font-weight: 700;
+            padding: var(--spacing-md) var(--spacing-xl);
+            font-size: 1.25rem;
         }
 
-        .pricing-teaser .btn-white:hover {
-            background-color: rgba(255, 255, 255, 0.9);
-            transform: translateY(-2px);
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+        .pricing-teaser .btn:hover {
+            background-color: var(--white);
+            color: var(--primary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
         }
 
         /* Footer */
         .footer {
             background-color: var(--background-dark);
-            color: rgba(255, 255, 255, 0.7);
-            padding: 4rem 0;
-            font-size: 0.95rem;
+            color: var(--white);
+            padding: var(--spacing-xl) 0;
+            font-size: 0.9rem;
         }
 
-        .footer .container {
+        .footer-content {
             display: flex;
-            justify-content: space-between;
             flex-wrap: wrap;
-            gap: 2rem;
+            justify-content: space-between;
+            gap: var(--spacing-lg);
         }
 
-        .footer-col {
+        .footer-logo {
+            font-family: var(--font-display);
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--white);
+            text-decoration: none;
+            margin-bottom: var(--spacing-sm);
+            display: block;
+        }
+
+        .footer-section {
             flex: 1;
             min-width: 200px;
         }
 
-        .footer-col h4 {
-            color: var(--text-color-white);
-            font-size: 1.1rem;
-            margin-bottom: 1.5rem;
+        .footer-section h4 {
+            color: var(--white);
+            margin-bottom: var(--spacing-md);
+            font-weight: 600;
+            font-family: var(--font-body);
         }
 
-        .footer-col ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .footer-col ul li {
-            margin-bottom: 0.75rem;
-        }
-
-        .footer-col ul li a {
+        .footer-section p, .footer-section ul {
             color: rgba(255, 255, 255, 0.7);
-            transition: color 0.2s ease;
+            margin: 0;
+            padding: 0;
+            list-style: none;
         }
 
-        .footer-col ul li a:hover {
-            color: var(--text-color-white);
+        .footer-section ul li {
+            margin-bottom: var(--spacing-xs);
         }
 
-        .footer-logo {
-            font-family: var(--font-heading);
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--text-color-white);
-            margin-bottom: 1rem;
-            display: block;
+        .footer-section ul li a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: color 0.3s ease;
         }
 
-        .footer-col p {
-            font-size: 0.9rem;
-            line-height: 1.8;
+        .footer-section ul li a:hover {
+            color: var(--white);
         }
 
         .footer-bottom {
             text-align: center;
-            padding-top: 3rem;
-            margin-top: 3rem;
+            margin-top: var(--spacing-xl);
+            padding-top: var(--spacing-md);
             border-top: 1px solid rgba(255, 255, 255, 0.1);
-            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.6);
         }
 
-        /* Responsive Design */
+        /* Utility classes for icons (replace with actual SVG/FontAwesome in production) */
+        .icon-lightbulb::before { content: "💡"; }
+        .icon-brain::before { content: "🧠"; }
+        .icon-share::before { content: "🔗"; }
+        .icon-cloud::before { content: "☁️"; }
+        .icon-lock::before { content: "🔒"; }
+        .icon-search::before { content: "🔍"; }
+
+        /* Responsive adjustments */
         @media (max-width: 1024px) {
-            .hero h1 {
-                font-size: 3.5rem;
-            }
-            .hero p.subheadline {
-                font-size: 1.25rem;
-            }
-            .feature-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
+            .hero h1 { font-size: 3.5rem; }
+            .hero p { font-size: 1.25rem; }
+            h2 { font-size: 2rem; }
         }
 
         @media (max-width: 768px) {
-            .header .container {
-                flex-direction: column;
-                gap: 1rem;
-            }
-            .nav-links {
-                display: flex;
-                flex-wrap: wrap;
-                justify-content: center;
-                gap: 1.5rem;
-            }
-            .nav-links a {
-                margin: 0;
-            }
-            .hero {
-                padding: 8rem 0 6rem 0;
-            }
-            .hero h1 {
-                font-size: 2.8rem;
-            }
-            .hero p.subheadline {
-                font-size: 1.1rem;
-            }
-            .hero .cta-buttons {
-                flex-direction: column;
-                gap: 1rem;
-            }
-            .btn {
-                width: 80%;
-                margin: 0 auto;
-                max-width: 300px;
-            }
-            h2 {
-                font-size: 2rem;
-            }
-            .features, .testimonial, .pricing-teaser {
-                padding: 6rem 0;
-            }
-            .feature-grid {
-                grid-template-columns: 1fr;
-            }
-            .feature-item {
-                text-align: center;
-            }
-            .feature-item .icon {
-                margin-left: auto;
-                margin-right: auto;
-            }
-            .testimonial-card {
-                padding: 3rem 1.5rem;
-            }
-            .testimonial-card p.quote {
-                font-size: 1.4rem;
-            }
-            .footer .container {
-                flex-direction: column;
-                text-align: center;
-            }
-            .footer-col {
-                min-width: unset;
-                width: 100%;
-            }
-            .footer-col ul {
-                display: flex;
-                flex-wrap: wrap;
-                justify-content: center;
-                gap: 1rem;
-            }
-            .footer-col ul li {
-                margin-bottom: 0;
-            }
+            h1 { font-size: 2.8rem; }
+            h2 { font-size: 1.8rem; }
+            p { font-size: 1rem; }
+            .hero { min-height: 70vh; padding: var(--spacing-xl) 0; }
+            .hero h1 { font-size: 2.8rem; }
+            .hero p { font-size: 1.1rem; margin-bottom: var(--spacing-lg); }
+            .hero .btn { padding: var(--spacing-sm) var(--spacing-lg); font-size: 1rem; }
+            .features-grid { grid-template-columns: 1fr; }
+            .testimonial-card p { font-size: 1.2rem; }
+            .footer-content { flex-direction: column; text-align: center; }
+            .footer-section { min-width: unset; }
+            .footer-logo { margin-bottom: var(--spacing-md); }
+            .footer-section h4 { margin-top: var(--spacing-md); }
         }
 
         @media (max-width: 480px) {
-            h1 { font-size: 2.5rem; }
-            h2 { font-size: 1.8rem; }
-            h3 { font-size: 1.4rem; }
-            .hero p.subheadline { font-size: 1rem; }
-            .btn { padding: 0.8rem 2rem; font-size: 1rem; }
-            .testimonial-card p.quote { font-size: 1.2rem; }
+            h1 { font-size: 2.2rem; }
+            h2 { font-size: 1.6rem; }
+            .hero h1 { font-size: 2.2rem; }
+            .hero p { font-size: 1rem; }
+            .btn { font-size: 0.9rem; padding: 0.8rem 1.5rem; }
+            .section-header p { font-size: 0.9rem; }
+            .testimonial-card p { font-size: 1rem; }
         }
-
-        /* Simple Iconography (using text for demonstration) */
-        .icon::before {
-            font-style: normal;
-            font-weight: normal;
-            display: inline-block;
-            text-decoration: inherit;
-            speak: none;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-
-        .icon-lightbulb::before { content: '💡'; }
-        .icon-star::before { content: '⭐'; }
-        .icon-lock::before { content: '🔒'; }
-        .icon-magic::before { content: '✨'; }
-        .icon-share::before { content: '🔗'; }
-        .icon-cloud::before { content: '☁️'; }
-        .icon-quote::before { content: '❝'; } /* Or a custom SVG if preferred */
-
     </style>
 </head>
 <body>
 
-    <header class="header">
-        <div class="container">
-            <a href="#" class="logo">Nimbus</a>
-            <nav class="nav-links">
-                <a href="#features">Features</a>
-                <a href="#testimonials">Testimonials</a>
-                <a href="#pricing">Pricing</a>
-                <a href="#">Login</a>
-                <a href="#" class="btn btn-primary">Sign Up Free</a>
-            </nav>
-        </div>
-    </header>
-
+    <!-- Hero Section -->
     <section class="hero">
-        <div class="container">
-            <h1>Unlock Your Ideas with <span class="highlight">AI-Powered Notes</span></h1>
-            <p class="subheadline">Nimbus transforms your thoughts into organized, actionable insights. Never forget a brilliant idea again.</p>
-            <div class="cta-buttons">
-                <a href="#" class="btn btn-primary">Start Your Free Trial</a>
-                <a href="#" class="btn btn-secondary">Learn More</a>
-            </div>
+        <div class="container hero-content">
+            <h1>Unlock Your Ideas with AI-Powered Notes.</h1>
+            <p>Nimbus transforms your thoughts, meetings, and research into actionable insights with intelligent organization and instant recall.</p>
+            <a href="#pricing" class="btn btn-primary">Start Your Free Trial</a>
         </div>
     </section>
 
+    <!-- Features Section -->
     <section id="features" class="features">
-        <div class="container text-center">
-            <h2 class="mb-4">Intelligent Features, Effortless Productivity</h2>
-            <p class="section-description">Nimbus goes beyond basic note-taking, leveraging AI to enhance every step of your creative process.</p>
-
-            <div class="feature-grid">
-                <div class="feature-item">
+        <div class="container">
+            <div class="section-header">
+                <h2>Intelligent Note-Taking, Effortlessly</h2>
+                <p>Nimbus leverages cutting-edge AI to make your notes smarter, more organized, and always accessible, so you can focus on what matters most.</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <span class="icon icon-brain"></span>
+                    <h3>AI-Powered Summaries</h3>
+                    <p>Instantly condense lengthy articles, meeting transcripts, or research papers into concise, key takeaways.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="icon icon-search"></span>
+                    <h3>Smart Search & Recall</h3>
+                    <p>Find any piece of information in seconds, even if you don't remember the exact keywords. Nimbus understands context.</p>
+                </div>
+                <div class="feature-card">
                     <span class="icon icon-lightbulb"></span>
-                    <h3>Smart Summarization</h3>
-                    <p>Instantly condense long articles, meetings, or research notes into key takeaways, saving you valuable time.</p>
+                    <h3>Idea Generation</h3>
+                    <p>Spark new ideas and overcome creative blocks with AI prompts and connections based on your existing notes.</p>
                 </div>
-                <div class="feature-item">
-                    <span class="icon icon-magic"></span>
-                    <h3>AI Idea Generation</h3>
-                    <p>Stuck? Let Nimbus suggest related concepts, expand on your points, or even draft content based on your notes.</p>
-                </div>
-                <div class="feature-item">
+                <div class="feature-card">
                     <span class="icon icon-share"></span>
-                    <h3>Seamless Organization</h3>
-                    <p>Automated tagging, intelligent search, and intuitive linking keep your knowledge base perfectly structured.</p>
+                    <h3>Seamless Collaboration</h3>
+                    <p>Share notes, get feedback, and collaborate with your team in real-time, no matter where you are.</p>
                 </div>
-                <div class="feature-item">
+                <div class="feature-card">
                     <span class="icon icon-cloud"></span>
                     <h3>Cross-Device Sync</h3>
-                    <p>Access and edit your notes securely from any device, anywhere, ensuring your ideas are always at hand.</p>
+                    <p>Access your notes from any device – desktop, tablet, or mobile – with automatic, secure cloud synchronization.</p>
                 </div>
-                <div class="feature-item">
+                <div class="feature-card">
                     <span class="icon icon-lock"></span>
                     <h3>Secure & Private</h3>
-                    <p>Your data is encrypted and protected with industry-leading security standards. Your privacy is our priority.</p>
-                </div>
-                <div class="feature-item">
-                    <span class="icon icon-star"></span>
-                    <h3>Customizable Workflows</h3>
-                    <p>Tailor Nimbus to your unique needs with custom templates, integrations, and personalized AI prompts.</p>
+                    <p>Your data is encrypted and protected with industry-leading security measures. Your notes are yours alone.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="testimonials" class="testimonial">
+    <!-- Testimonial Section -->
+    <section class="testimonial">
         <div class="container">
+            <div class="section-header">
+                <h2>What Our Users Say</h2>
+            </div>
             <div class="testimonial-card">
-                <span class="icon-quote quote-icon"></span>
-                <p class="quote">"Nimbus has revolutionized how I capture and process information. The AI summarization alone saves me hours every week. It's like having a personal research assistant!"</p>
-                <img src="https://images.unsplash.com/photo-1535713875002-d1d0cfdfeeab?auto=format&fit=crop&q=80&w=250&h=250&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Avatar of John Doe" class="author-avatar">
-                <p class="author-name">John Doe</p>
-                <p class="author-title">Senior Product Manager at InnovateCo</p>
+                <p>"Nimbus has revolutionized how I manage my research. The AI summaries save me hours each week, and finding old notes is now incredibly easy. It's an indispensable tool for any professional."</p>
+                <div class="testimonial-author">
+                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734b584?auto=format&fit=crop&q=80&w=300&h=300&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Sarah Chen">
+                    <div class="testimonial-author-info">
+                        <strong>Sarah Chen</strong>
+                        <span>Product Manager, InnovateX</span>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
+    <!-- Pricing Teaser Section -->
     <section id="pricing" class="pricing-teaser">
         <div class="container">
-            <h2 class="text-white mb-4">Ready to Elevate Your Note-Taking?</h2>
-            <p>Choose the plan that fits your needs and unlock the full potential of AI-powered productivity. Flexible options for individuals and teams.</p>
-            <a href="#" class="btn btn-white">View Pricing Plans</a>
+            <h2>Ready to Elevate Your Productivity?</h2>
+            <p>Experience the future of note-taking. Nimbus offers flexible plans to fit your individual needs or your entire team.</p>
+            <a href="#" class="btn btn-primary">View Pricing Plans</a>
         </div>
     </section>
 
+    <!-- Footer -->
     <footer class="footer">
-        <div class="container">
-            <div class="footer-col">
+        <div class="container footer-content">
+            <div class="footer-section">
                 <a href="#" class="footer-logo">Nimbus</a>
-                <p>Intelligent note-taking for the modern mind. Empowering clarity, creativity, and productivity with AI.</p>
+                <p>AI Note-Taking, Reimagined.</p>
+                <p>&copy; 2023 Nimbus. All rights reserved.</p>
             </div>
-            <div class="footer-col">
+            <div class="footer-section">
                 <h4>Product</h4>
                 <ul>
                     <li><a href="#">Features</a></li>
@@ -701,7 +544,7 @@
                     <li><a href="#">Security</a></li>
                 </ul>
             </div>
-            <div class="footer-col">
+            <div class="footer-section">
                 <h4>Company</h4>
                 <ul>
                     <li><a href="#">About Us</a></li>
@@ -710,18 +553,18 @@
                     <li><a href="#">Contact</a></li>
                 </ul>
             </div>
-            <div class="footer-col">
+            <div class="footer-section">
                 <h4>Support</h4>
                 <ul>
                     <li><a href="#">Help Center</a></li>
-                    <li><a href="#">API Docs</a></li>
+                    <li><a href="#">FAQ</a></li>
                     <li><a href="#">Terms of Service</a></li>
                     <li><a href="#">Privacy Policy</a></li>
                 </ul>
             </div>
         </div>
         <div class="footer-bottom">
-            &copy; 2023 Nimbus. All rights reserved.
+            <p>Made with ❤️ for smarter minds.</p>
         </div>
     </footer>
 

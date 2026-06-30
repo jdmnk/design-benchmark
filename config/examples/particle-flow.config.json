@@ -1,0 +1,33 @@
+{
+  "$schema": "../schema.json",
+  "name": "particle-flow",
+  "description": "Canvas particle-system benchmark: each model builds a full-screen animated particle flow field. No libraries required.",
+  "systemPrompt": "You are a generative/creative coder. Output a SINGLE self-contained HTML document using plain Canvas 2D and requestAnimationFrame (no external libraries). The animation must fill the entire viewport (100vw x 100vh), start automatically on load, and look striking within 2 seconds with no user interaction. PERFORMANCE IS CRITICAL: use at most ~3000 particles, keep all setup non-blocking (no huge synchronous loops), and stay smoothly at 60fps so the page never freezes. Use a tasteful, vivid palette on a dark background with soft fading trails — the result should glow without washing out to solid white. Return ONLY the HTML document.",
+  "prompt": "Create a beautiful full-screen animated particle flow field on an HTML canvas: thousands of small particles advected by a smooth noise-driven vector field, leaving soft fading trails, with a vivid but tasteful color palette on a dark background. It should feel alive and organic — like glowing silk or a nebula in motion.",
+  "render": {
+    "viewportWidth": 1280,
+    "viewportHeight": 800,
+    "fullPage": false,
+    "waitMs": 2500,
+    "freezeClock": true,
+    "seed": 7
+  },
+  "grid": {
+    "columns": 3,
+    "cellWidth": 620,
+    "padding": 8,
+    "background": "#050507",
+    "labelStyle": "overlay",
+    "labelColor": "#ffffff",
+    "labelFontSize": 22,
+    "labelOverlayBg": "rgba(8,10,14,0.6)"
+  },
+  "generation": {
+    "temperature": 0.9,
+    "maxTokens": 9000,
+    "concurrency": 9,
+    "timeoutMs": 240000,
+    "retries": 0
+  },
+  "models": "../models/standard-9.json"
+}

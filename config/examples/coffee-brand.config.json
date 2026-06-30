@@ -2,11 +2,8 @@
   "$schema": "../schema.json",
   "name": "coffee-brand",
   "description": "A visually expressive brief on the ultra-cheap / budget tier — can small models still produce a bold, characterful design? 3-column full-page grid.",
-
   "systemPrompt": "You are an award-winning brand and web designer. Output a single, self-contained HTML document with embedded CSS (Google Fonts via <link> are allowed). Be bold and characterful — strong color, expressive typography, real visual hierarchy.",
-
   "prompt": "Design a striking single-page website for a fictional artisanal coffee brand called 'Ember'. Include a full-bleed hero with the brand name, an evocative tagline and a 'Shop beans' call-to-action, a short brand story section, a 3-up grid of signature roasts with names and tasting notes, and a footer with newsletter signup. Use a warm, premium palette and confident typography. Return ONLY a single complete HTML document.",
-
   "render": {
     "viewportWidth": 1280,
     "viewportHeight": 900,
@@ -14,25 +11,15 @@
     "maxFullPageHeight": 4200,
     "waitMs": 1800
   },
-
   "grid": {
     "columns": 3,
     "cellWidth": 600,
     "title": "Design Bench — coffee-brand (budget tier)"
   },
-
   "generation": {
     "temperature": 0.8,
     "maxTokens": 9000,
     "concurrency": 4
   },
-
-  "models": [
-    { "slug": "mistral-nemo",   "label": "Mistral Nemo",         "provider": "openrouter", "id": "mistralai/mistral-nemo" },
-    { "slug": "mistral-small",  "label": "Mistral Small 3.2",    "provider": "openrouter", "id": "mistralai/mistral-small-3.2-24b-instruct" },
-    { "slug": "nova-lite",      "label": "Amazon Nova Lite",     "provider": "openrouter", "id": "amazon/nova-lite-v1" },
-    { "slug": "gemini-flash-lite", "label": "Gemini 2.5 Flash-Lite", "provider": "openrouter", "id": "google/gemini-2.5-flash-lite" },
-    { "slug": "gpt-5-nano",     "label": "GPT-5 nano",           "provider": "openrouter", "id": "openai/gpt-5-nano" },
-    { "slug": "llama-3.3-70b",  "label": "Llama 3.3 70B",        "provider": "openrouter", "id": "meta-llama/llama-3.3-70b-instruct" }
-  ]
+  "models": "../models/standard-9.json"
 }

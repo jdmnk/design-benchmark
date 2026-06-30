@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Golden Peaks Travel Poster</title>
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #0d1222; }
+        svg { display: block; }
+    </style>
+</head>
+<body>
+    <svg viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" width="100vw" height="100vh">
+        <defs>
+            <!-- Sky Gradient (Evening) -->
+            <linearGradient id="skyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" style="stop-color:#3a1c71;stop-opacity:1" />
+                <stop offset="30%" style="stop-color:#d76d77;stop-opacity:1" />
+                <stop offset="70%" style="stop-color:#ffaf7b;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#f12711;stop-opacity:1" />
+            </linearGradient>
+
+            <!-- Mountain Base Gradient -->
+            <linearGradient id="mountainBase" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" style="stop-color:#4a0000;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#0d1222;stop-opacity:1" />
+            </linearGradient>
+
+            <!-- Mountain Front Gradient (Shadow side) -->
+            <linearGradient id="mountainFront" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" style="stop-color:#6A11CB;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#2575FC;stop-opacity:1" />
+            </linearGradient>
+
+            <!-- Sun Gradient -->
+            <radialGradient id="sunGradient" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+                <stop offset="0%" style="stop-color:#FEE140;stop-opacity:1" />
+                <stop offset="70%" style="stop-color:#FA709A;stop-opacity:0.8" />
+                <stop offset="100%" style="stop-color:#fee140;stop-opacity:0" />
+            </radialGradient>
+
+            <!-- Cloud Gradient -->
+            <linearGradient id="cloudGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:0.2" />
+                <stop offset="50%" style="stop-color:#FFFFFF;stop-opacity:0.4" />
+                <stop offset="100%" style="stop-color:#FFFFFF;stop-opacity:0.2" />
+            </linearGradient>
+
+            <!-- Text Path -->
+            <path id="textPath" d="M 0 0 L 1920 0 L 1920 1080 L 0 1080 Z" />
+        </defs>
+
+        <!-- Background Sky -->
+        <rect x="0" y="0" width="100%" height="100%" fill="url(#skyGradient)" />
+
+        <!-- Distant Mountains (Darker, lower opacity) -->
+        <polygon points="0,1080 300,600 700,750 1100,550 1500,800 1920,700 1920,1080" fill="url(#mountainBase)" opacity="0.6">
+            <animate attributeName="points" dur="20s" repeatCount="indefinite"
+                values="0,1080 300,600 700,750 1100,550 1500,800 1920,700 1920,1080;
+                        0,1080 300,610 700,760 1100,560 1500,810 1920,690 1920,1080;
+                        0,1080 300,600 700,750 1100,550 1500,800 1920,700 1920,1080"
+                keyTimes="0;0.5;1" />
+        </polygon>
+
+        <!-- Main Mountain Range (Front layer) -->
+        <polygon points="0,1080 500,450 900,650 1400,300 1920,500 1920,1080" fill="url(#mountainFront)">
+             <animate attributeName="points" dur="15s" repeatCount="indefinite"
+                values="0,1080 500,450 900,650 1400,300 1920,500 1920,1080;
+                        0,1080 500,460 900,660 1400,310 1920,510 1920,1080;
+                        0,1080 500,450 900,650 1400,300 1920,500 1920,1080"
+                keyTimes="0;0.5;1" />
+        </polygon>
+
+        <!-- Sun -->
+        <circle cx="1500" cy="200" r="180" fill="url(#sunGradient)">
+            <animate attributeName="r" dur="10s" repeatCount="indefinite"
+                values="180;190;180"
+                keyTimes="0;0.5;1" />
+            <animate attributeName="cx" dur="25s" repeatCount="indefinite"
+                values="1500;1480;1500"
+                keyTimes="0;0.5;1" />
+             <animate attributeName="cy" dur="20s" repeatCount="indefinite"
+                values="200;210;200"
+                keyTimes="0;0.5;1" />
+        </circle>
+
+        <!-- Clouds -->
+        <g opacity="0.8">
+            <rect x="-300" y="100" width="400" height="80" rx="40" ry="40" fill="url(#cloudGradient)">
+                <animate attributeName="x" from="-300" to="1920" dur="40s" repeatCount="indefinite" />
+                <animate attributeName="y" from="100" to="120" dur="20s" repeatCount="indefinite" values="100;120;100" keyTimes="0;0.05;1" />
+            </rect>
+            <rect x="0" y="250" width="500" height="100" rx="50" ry="50" fill="url(#cloudGradient)">
+                <animate attributeName="x" from="0" to="2200" dur="50s" repeatCount="indefinite" />
+                 <animate attributeName="y" from="250" to="230" dur="25s" repeatCount="indefinite" values="250;230;250" keyTimes="0;0.05;1" />
+            </rect>
+            <rect x="800" y="150" width="300" height="60" rx="30" ry="30" fill="url(#cloudGradient)">
+                <animate attributeName="x" from="800" to="2400" dur="35s" repeatCount="indefinite" />
+                 <animate attributeName="y" from="150" to="160" dur="18s" repeatCount="indefinite" values="150;160;150" keyTimes="0;0.05;1" />
+            </rect>
+        </g>
+
+        <!-- Text - Place Name -->
+        <text x="50%" y="80%" dominant-baseline="middle" text-anchor="middle" fill="#FFFFFF"
+              font-family="'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif" font-size="120">
+            <tspan x="960" y="800" font-weight="bold" letter-spacing="10">GOLDEN PEAKS</tspan>
+            <tspan x="960" y="930" font-size="60" letter-spacing="5" fill="#FFD700"  font-weight="normal">SERENITY</tspan>
+             <animateTransform attributeName="transform"
+                               attributeType="XML"
+                               type="translate"
+                               from="0 0"
+                               to="0 -5"
+                               dur="4s"
+                               repeatCount="indefinite"
+                               keyTimes="0;0.5;1"
+                               values="0 0; 0 -10; 0 0" />
+        </text>
+
+    </svg>
+</body>
+</html>

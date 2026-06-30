@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nimbus | AI-Powered Note-Taking</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctaButton = document.querySelector('.hero-cta');
+            ctaButton.addEventListener('click', function() {
+                this.textContent = 'Redirecting...';
+                this.classList.add('clicked');
+                setTimeout(() => {
+                    alert('In a real implementation, this would open a signup form or redirect to the app.');
+                    this.textContent = 'Start Free Trial';
+                    this.classList.remove('clicked');
+                }, 500);
+            });
+        });
+    </script>
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --primary-dark: #4338CA;
+            --secondary: #0EA5E9;
+            --accent: #8B5CF6;
+            --light: #F8FAFC;
+            --dark: #0F172A;
+            --gray: #64748B;
+            --light-gray: #E2E8F0;
+            --border-radius: 12px;
+            --shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.1);
+            --shadow-lg: 0 20px 40px -10px rgba(15, 23, 42, 0.15);
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--dark);
+            background-color: white;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Header */
+        header {
+            padding: 24px 0;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 24px;
+            color: var(--dark);
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 40px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--gray);
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        nav a:hover {
+            color: var(--primary);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 16px;
+        }
+
+        .btn {
+            padding: 12px 28px;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--light-gray);
+            color: var(--dark);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            box-shadow: var(--shadow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-primary.clicked {
+            background: linear-gradient(135deg, var(--primary-dark), #7C3AED);
+        }
+
+        /* Hero */
+        .hero {
+            padding: 100px 0 120px;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 500px;
+            background: linear-gradient(to bottom, #F1F5F9, transparent);
+            z-index: -1;
+        }
+
+        .hero h1 {
+            font-size: 64px;
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, var(--dark), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-subtitle {
+            font-size: 22px;
+            color: var(--gray);
+            max-width: 600px;
+            margin: 0 auto 48px;
+            font-weight: 400;
+        }
+
+        .hero-cta {
+            padding: 18px 48px;
+            font-size: 18px;
+            margin-bottom: 80px;
+        }
+
+        .hero-visual {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--light-gray);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-visual::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+        }
+
+        .mockup {
+            height: 400px;
+            background: linear-gradient(135deg, #F8FAFC, #E2E8F0);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .mockup-content {
+            text-align: left;
+            padding: 40px;
+            max-width: 500px;
+        }
+
+        .mockup-title {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--primary);
+            font-size: 14px;
+            margin-bottom: 16px;
+            font-weight: 500;
+        }
+
+        .mockup-text {
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 24px;
+            line-height: 1.3;
+        }
+
+        .mockup-ai {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--light);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        .mockup-ai::before {
+            content: '✨';
+        }
+
+        /* Features */
+        .features {
+            padding: 100px 0;
+            background: var(--light);
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 80px;
+            color: var(--dark);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 40px 32px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 1px solid transparent;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--light-gray);
+        }
+
+        .feature-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 28px;
+            font-size: 28px;
+        }
+
+        .feature-1 .feature-icon {
+            background: linear-gradient(135deg, #E0F2FE, #BAE6FD);
+            color: var(--secondary);
+        }
+
+        .feature-2 .feature-icon {
+            background: linear-gradient(135deg, #F3E8FF, #E9D5FF);
+            color: var(--accent);
+        }
+
+        .feature-3 .feature-icon {
+            background: linear-gradient(135deg, #FEF3C7, #FDE68A);
+            color: #D97706;
+        }
+
+        .feature-card h3 {
+            font-size: 24px;
+            margin-bottom: 16px;
+            color: var(--dark);
+        }
+
+        .feature-card p {
+            color: var(--gray);
+            font-size: 17px;
+        }
+
+        /* Testimonial */
+        .testimonial {
+            padding: 100px 0;
+            text-align: center;
+        }
+
+        .testimonial-content {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .testimonial-text {
+            font-size: 28px;
+            font-weight: 400;
+            line-height: 1.5;
+            color: var(--dark);
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .testimonial-text::before,
+        .testimonial-text::after {
+            font-size: 60px;
+            color: var(--light-gray);
+            line-height: 1;
+            position: absolute;
+        }
+
+        .testimonial-text::before {
+            content: '“';
+            top: -20px;
+            left: -40px;
+        }
+
+        .testimonial-text::after {
+            content: '”';
+            bottom: -60px;
+            right: -40px;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .author-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 20px;
+        }
+
+        .author-info h4 {
+            font-size: 18px;
+            color: var(--dark);
+            margin-bottom: 4px;
+        }
+
+        .author-info p {
+            color: var(--gray);
+            font-size: 15px;
+        }
+
+        /* Pricing */
+        .pricing {
+            padding: 80px 0 100px;
+            background: var(--light);
+        }
+
+        .pricing-teaser {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 60px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            max-width: 800px;
+            margin: 0 auto;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+            position: relative;
+        }
+
+        .pricing-teaser::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
+            border-radius: var(--border-radius);
+            z-index: -1;
+        }
+
+        .pricing-teaser h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+            color: var(--dark);
+        }
+
+        .pricing-teaser p {
+            font-size: 18px;
+            color: var(--gray);
+            margin-bottom: 32px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .price {
+            font-size: 64px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 40px;
+        }
+
+        .price span {
+            font-size: 24px;
+            color: var(--gray);
+            font-weight: 500;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 80px 0 40px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 60px;
+            margin-bottom: 60px;
+        }
+
+        .footer-column h4 {
+            font-size: 16px;
+            margin-bottom: 24px;
+            color: #94A3B8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column li {
+            margin-bottom: 16px;
+        }
+
+        .footer-column a {
+            color: #CBD5E1;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-column a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            padding-top: 40px;
+            border-top: 1px solid #334155;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #94A3B8;
+            font-size: 14px;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 20px;
+            color: white;
+            text-decoration: none;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .social-links a {
+            color: #94A3B8;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .social-links a:hover {
+            color: white;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .hero h1 {
+                font-size: 48px;
+            }
+            
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                display: none;
+            }
+            
+            .hero h1 {
+                font-size: 36px;
+            }
+            
+            .hero-subtitle {
+                font-size: 18px;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .section-title {
+                font-size: 32px;
+            }
+            
+            .testimonial-text {
+                font-size: 22px;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+            
+            .footer-bottom {
+                flex-direction: column;
+                gap: 24px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="#" class="logo">
+                    <div class="logo-icon">N</div>
+                    Nimbus
+                </a>
+                <nav>
+                    <ul>
+                        <li><a href="#">Features</a></li>
+                        <li><a href="#">Use Cases</a></li>
+                        <li><a href="#">Integrations</a></li>
+                        <li><a href="#">Pricing</a></li>
+                        <li><a href="#">Resources</a></li>
+                    </ul>
+                </nav>
+                <div class="header-actions">
+                    <button class="btn btn-outline">Sign In</button>
+                    <button class="btn btn-primary">Get Started</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <h1>Your thoughts, organized by AI</h1>
+                <p class="hero-subtitle">Nimbus transforms how you capture, connect, and recall information. Let artificial intelligence do the heavy lifting while you focus on what matters.</p>
+                <button class="btn btn-primary hero-cta">Start Free Trial</button>
+                
+                <div class="hero-visual">
+                    <div class="mockup">
+                        <div class="mockup-content">
+                            <div class="mockup-title">Meeting Notes • Today</div>
+                            <div class="mockup-text">Project timeline needs adjustment. The AI suggests moving Phase 2 to Q3 based on resource availability.</div>
+                            <div class="mockup-ai">AI Insight Generated</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="features">
+            <div class="container">
+                <h2 class="section-title">Powerful features, seamless experience</h2>
+                <div class="features-grid">
+                    <div class="feature-card feature-1">
+                        <div class="feature-icon">🤖</div>
+                        <h3>AI-Powered Summarization</h3>
+                        <p>Turn lengthy recordings and documents into concise, actionable summaries. Nimbus extracts key points, decisions, and action items automatically.</p>
+                    </div>
+                    <div class="feature-card feature-2">
+                        <div class="feature-icon">🔗</div>
+                        <h3>Intelligent Connections</h3>
+                        <p>Our AI discovers hidden relationships between notes, ideas, and projects. Never lose a thought in isolation again.</p>
+                    </div>
+                    <div class="feature-card feature-3">
+                        <div class="feature-icon">🎯</div>
+                        <h3>Context-Aware Recall</h3>
+                        <p>Find exactly what you need when you need it. Nimbus understands context and surfaces relevant notes based on your current work.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="testimonial">
+            <div class="container">
+                <div class="testimonial-content">
+                    <div class="testimonial-text">
+                        Nimbus has fundamentally changed how our team manages knowledge. We've reduced meeting follow-up time by 70% and our ideas are finally connected.
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">SR</div>
+                        <div class="author-info">
+                            <h4>Sarah Rodriguez</h4>
+                            <p>Head of Product, TechFlow Inc.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="pricing">
+            <div class="container">
+                <div class="pricing-teaser">
+                    <h2>Ready to transform your note-taking?</h2>
+                    <p>Start with our free plan, upgrade anytime. Teams of 10+ get custom pricing with advanced features.</p>
+                    <div class="price">$12<span>/month</span></div>
+                    <button class="btn btn-primary">View All Plans</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div>
+                    <a href="#" class="footer-logo">
+                        <div class="logo-icon">N</div>
+                        Nimbus
+                    </a>
+                    <p style="color: #94A3B8; margin-top: 24px; max-width: 300px;">The future of intelligent note-taking. Capture, connect, create.</p>
+                </div>
+                <div class="footer-column">
+                    <h4>Product</h4>
+                    <ul>
+                        <li><a href="#">Features</a></li>
+                        <li><a href="#">Integrations</a></li>
+                        <li><a href="#">Pricing</a></li>
+                        <li><a href="#">Roadmap</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="#">About</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="#">Privacy</a></li>
+                        <li><a href="#">Terms</a></li>
+                        <li><a href="#">Security</a></li>
+                        <li><a href="#">Cookies</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div>© 2023 Nimbus AI. All rights reserved.</div>
+                <div class="social-links">
+                    <a href="#">Twitter</a>
+                    <a href="#">LinkedIn</a>
+                    <a href="#">GitHub</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

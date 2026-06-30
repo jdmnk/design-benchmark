@@ -2,24 +2,19 @@
   "$schema": "../schema.json",
   "name": "analytics-dashboard",
   "description": "A second example run: a denser UI brief, a 2-column grid, viewport-only screenshots, and a mix of OpenRouter + native providers.",
-
   "systemPrompt": "You are a senior product designer. Output a single, self-contained HTML document with embedded CSS. No external assets.",
-
   "prompt": "Design a dark-mode analytics dashboard for a fictional product 'Pulse'. Include a left sidebar nav, a top bar with search and user avatar, a row of 4 KPI stat cards, a large line chart placeholder, a bar chart placeholder, and a recent-activity table. Use a refined, modern data-app aesthetic. Return ONLY a single complete HTML document.",
-
   "render": {
     "viewportWidth": 1440,
     "viewportHeight": 900,
     "fullPage": false,
     "waitMs": 1200
   },
-
   "grid": {
     "columns": 2,
     "cellWidth": 760,
     "title": "Design Bench — analytics-dashboard"
   },
-
   "generation": {
     "temperature": 0.6,
     "maxTokens": 10000,
@@ -27,11 +22,5 @@
     "timeoutMs": 300000,
     "retries": 0
   },
-
-  "models": [
-    { "slug": "haiku",    "label": "Claude Haiku 4.5",  "provider": "openrouter", "id": "anthropic/claude-haiku-4.5" },
-    { "slug": "gpt5nano", "label": "GPT-5 nano",        "provider": "openrouter", "id": "openai/gpt-5-nano" },
-    { "slug": "gemini",   "label": "Gemini 2.5 Flash",  "provider": "openrouter", "id": "google/gemini-2.5-flash" },
-    { "slug": "deepseek", "label": "DeepSeek V3.1",     "provider": "openrouter", "id": "deepseek/deepseek-chat-v3.1" }
-  ]
+  "models": "../models/standard-9.json"
 }
