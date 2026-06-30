@@ -1,0 +1,97 @@
+{
+  "name": "saas-landing-page",
+  "prompt": "Design a landing page for a fictional SaaS product called \"Nimbus\" — an AI note-taking app. Include a hero section with a headline, subheadline and call-to-action, a 3-column features section, a testimonial, a pricing teaser, and a footer. Use a cohesive color palette, good typography, spacing, and visual hierarchy. Make it look like a premium real product. Return ONLY a single complete HTML document.",
+  "generatedAt": "2026-06-30T12:09:16.371Z",
+  "models": [
+    {
+      "slug": "claude-haiku-4.5",
+      "label": "Claude Haiku 4.5",
+      "provider": "openrouter",
+      "modelId": "anthropic/claude-haiku-4.5",
+      "ok": true,
+      "htmlExtracted": true,
+      "elapsedMs": 30312,
+      "usage": {
+        "promptTokens": 158,
+        "completionTokens": 7260,
+        "totalTokens": 7418
+      },
+      "startedAt": "2026-06-30T11:59:56.567Z"
+    },
+    {
+      "slug": "gpt-4o-mini",
+      "label": "GPT-4o mini",
+      "provider": "openrouter",
+      "modelId": "openai/gpt-4o-mini",
+      "ok": true,
+      "htmlExtracted": true,
+      "elapsedMs": 16636,
+      "usage": {
+        "promptTokens": 141,
+        "completionTokens": 1037,
+        "totalTokens": 1178
+      },
+      "startedAt": "2026-06-30T11:59:56.576Z"
+    },
+    {
+      "slug": "gemini-2.5-flash",
+      "label": "Gemini 2.5 Flash",
+      "provider": "openrouter",
+      "modelId": "google/gemini-2.5-flash",
+      "ok": true,
+      "htmlExtracted": true,
+      "elapsedMs": 33032,
+      "usage": {
+        "promptTokens": 137,
+        "completionTokens": 6723,
+        "totalTokens": 6860
+      },
+      "startedAt": "2026-06-30T11:59:56.577Z"
+    },
+    {
+      "slug": "deepseek-v3.1",
+      "label": "DeepSeek V3.1",
+      "provider": "openrouter",
+      "modelId": "deepseek/deepseek-chat-v3.1",
+      "ok": true,
+      "htmlExtracted": true,
+      "elapsedMs": 139379,
+      "usage": {
+        "promptTokens": 142,
+        "completionTokens": 3440,
+        "totalTokens": 3582
+      },
+      "startedAt": "2026-06-30T12:06:50.304Z"
+    },
+    {
+      "slug": "llama-3.3-70b",
+      "label": "Llama 3.3 70B",
+      "provider": "openrouter",
+      "modelId": "meta-llama/llama-3.3-70b-instruct",
+      "ok": true,
+      "htmlExtracted": true,
+      "elapsedMs": 56765,
+      "usage": {
+        "promptTokens": 148,
+        "completionTokens": 1297,
+        "totalTokens": 1445
+      },
+      "startedAt": "2026-06-30T12:00:13.212Z"
+    },
+    {
+      "slug": "qwen3-coder",
+      "label": "Qwen3 Coder",
+      "provider": "openrouter",
+      "modelId": "qwen/qwen3-coder",
+      "ok": true,
+      "htmlExtracted": true,
+      "elapsedMs": 58660,
+      "usage": {
+        "promptTokens": 145,
+        "completionTokens": 4097,
+        "totalTokens": 4242
+      },
+      "startedAt": "2026-06-30T12:00:26.881Z"
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "name": "analytics-dashboard",
+  "prompt": "Design a dark-mode analytics dashboard for a fictional product 'Pulse'. Include a left sidebar nav, a top bar with search and user avatar, a row of 4 KPI stat cards, a large line chart placeholder, a bar chart placeholder, and a recent-activity table. Use a refined, modern data-app aesthetic. Return ONLY a single complete HTML document.",
+  "generatedAt": "2026-06-30T12:19:36.262Z",
+  "models": [
+    {
+      "slug": "haiku",
+      "label": "Claude Haiku 4.5",
+      "provider": "openrouter",
+      "modelId": "anthropic/claude-haiku-4.5",
+      "ok": true,
+      "htmlExtracted": true,
+      "elapsedMs": 34414,
+      "usage": {
+        "promptTokens": 110,
+        "completionTokens": 8263,
+        "totalTokens": 8373
+      },
+      "startedAt": "2026-06-30T12:09:30.741Z"
+    },
+    {
+      "slug": "gpt5nano",
+      "label": "GPT-5 nano",
+      "provider": "openrouter",
+      "modelId": "openai/gpt-5-nano",
+      "ok": true,
+      "htmlExtracted": true,
+      "elapsedMs": 71112,
+      "usage": {
+        "promptTokens": 105,
+        "completionTokens": 9716,
+        "totalTokens": 9821
+      },
+      "startedAt": "2026-06-30T12:09:30.749Z"
+    },
+    {
+      "slug": "gemini",
+      "label": "Gemini 2.5 Flash",
+      "provider": "openrouter",
+      "modelId": "google/gemini-2.5-flash",
+      "ok": true,
+      "htmlExtracted": true,
+      "elapsedMs": 29480,
+      "usage": {
+        "promptTokens": 98,
+        "completionTokens": 5614,
+        "totalTokens": 5712
+      },
+      "startedAt": "2026-06-30T12:09:30.750Z"
+    },
+    {
+      "slug": "deepseek",
+      "label": "DeepSeek V3.1",
+      "provider": "openrouter",
+      "modelId": "deepseek/deepseek-chat-v3.1",
+      "ok": true,
+      "htmlExtracted": true,
+      "elapsedMs": 184864,
+      "usage": {
+        "promptTokens": 101,
+        "completionTokens": 5047,
+        "totalTokens": 5148
+      },
+      "startedAt": "2026-06-30T12:16:25.578Z"
+    }
+  ]
+}

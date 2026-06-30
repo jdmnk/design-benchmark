@@ -23,13 +23,15 @@
   "generation": {
     "temperature": 0.6,
     "maxTokens": 10000,
-    "concurrency": 3
+    "concurrency": 3,
+    "timeoutMs": 300000,
+    "retries": 0
   },
 
   "models": [
-    { "slug": "opus",     "label": "Claude Opus 4.8",   "provider": "openrouter", "id": "anthropic/claude-opus-4.1" },
-    { "slug": "gpt5",     "label": "GPT-5",             "provider": "openrouter", "id": "openai/gpt-5" },
-    { "slug": "gemini",   "label": "Gemini 2.5 Pro",    "provider": "openrouter", "id": "google/gemini-2.5-pro" },
-    { "slug": "qwen",     "label": "Qwen3 Coder",       "provider": "openrouter", "id": "qwen/qwen3-coder" }
+    { "slug": "haiku",    "label": "Claude Haiku 4.5",  "provider": "openrouter", "id": "anthropic/claude-haiku-4.5" },
+    { "slug": "gpt5nano", "label": "GPT-5 nano",        "provider": "openrouter", "id": "openai/gpt-5-nano" },
+    { "slug": "gemini",   "label": "Gemini 2.5 Flash",  "provider": "openrouter", "id": "google/gemini-2.5-flash" },
+    { "slug": "deepseek", "label": "DeepSeek V3.1",     "provider": "openrouter", "id": "deepseek/deepseek-chat-v3.1" }
   ]
 }

@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nimbus - AI-Powered Note Taking</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #818cf8;
+            --secondary: #0f172a;
+            --accent: #06b6d4;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --bg-light: #f8fafc;
+            --bg-white: #ffffff;
+            --border: #e2e8f0;
+            --success: #10b981;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            color: var(--text-primary);
+            background-color: var(--bg-white);
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            background: var(--bg-white);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            background-color: rgba(255, 255, 255, 0.95);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-cta {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn-secondary {
+            padding: 0.75rem 1.5rem;
+            background: transparent;
+            color: var(--primary);
+            border: 1.5px solid var(--primary);
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary);
+            color: var(--bg-white);
+        }
+
+        .btn-primary {
+            padding: 0.75rem 1.5rem;
+            background: var(--primary);
+            color: var(--bg-white);
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(99, 102, 241, 0.2);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 6rem 5%;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(6, 182, 212, 0.05) 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -5%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(6, 182, 212, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+            letter-spacing: -1px;
+        }
+
+        .hero h1 span {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-bottom: 2.5rem;
+            line-height: 1.8;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 4rem;
+        }
+
+        .btn-large {
+            padding: 1rem 2.5rem;
+            font-size: 1rem;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary.btn-large {
+            box-shadow: 0 20px 40px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-secondary.btn-large {
+            background: var(--bg-light);
+        }
+
+        .btn-secondary.btn-large:hover {
+            background: var(--border);
+        }
+
+        .hero-image {
+            width: 100%;
+            max-width: 600px;
+            height: 400px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            border-radius: 16px;
+            box-shadow: 0 40px 80px rgba(99, 102, 241, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-image::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400"><defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></pattern></defs><rect width="600" height="400" fill="url(%23grid)" /><circle cx="300" cy="200" r="80" fill="rgba(255,255,255,0.1)" /><circle cx="150" cy="100" r="50" fill="rgba(255,255,255,0.05)" /><circle cx="450" cy="300" r="60" fill="rgba(255,255,255,0.05)" /></svg>');
+            opacity: 0.5;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 6rem 5%;
+            background: var(--bg-white);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .section-header p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            padding: 2.5rem;
+            background: var(--bg-light);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(99, 102, 241, 0.1);
+            border-color: var(--primary);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* Testimonial Section */
+        .testimonial {
+            padding: 6rem 5%;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(6, 182, 212, 0.08) 100%);
+        }
+
+        .testimonial-container {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .testimonial-content {
+            background: var(--bg-white);
+            padding: 3rem;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .testimonial-text {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 2rem;
+            line-height: 1.8;
+            font-style: italic;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+        }
+
+        .author-avatar {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+
+        .author-info h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .author-info p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .stars {
+            color: #fbbf24;
+            font-size: 1.1rem;
+            letter-spacing: 2px;
+        }
+
+        /* Pricing Section */
+        .pricing {
+            padding: 6rem 5%;
+            background: var(--bg-white);
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+            margin-top: 3rem;
+        }
+
+        .pricing-card {
+            padding: 2.5rem;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            background: var(--bg-white);
+            transition: all 0.3s ease;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .pricing-card.featured {
+            border-color: var(--primary);
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(6, 182, 212, 0.05) 100%);
+            transform: scale(1.05);
+            box-shadow: 0 20px 40px rgba(99, 102, 241, 0.15);
+        }
+
+        .pricing-badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            display: none;
+        }
+
+        .pricing-card.featured .pricing-badge {
+            display: block;
+        }
+
+        .pricing-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .pricing-price {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .pricing-price span {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .pricing-description {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .pricing-features {
+            list-style: none;
+            margin-bottom: 2rem;
+            flex-grow: 1;
+        }
+
+        .pricing-features li {
+            padding: 0.75rem 0;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .pricing-features li:last-child {
+            border-bottom: none;
+        }
+
+        .pricing-features li::before {
+            content: '✓';
+            color: var(--success);
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .pricing-cta {
+            width: 100%;
+            padding: 0.85rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .pricing-card:not(.featured) .pricing-cta {
+            background: var(--bg-light);
+            color: var(--primary);
+            border: 1.5px solid var(--border);
+        }
+
+        .pricing-card:not(.featured) .pricing-cta:hover {
+            background: var(--border);
+        }
+
+        .pricing-card.featured .pricing-cta {
+            background: var(--primary);
+            color: white;
+        }
+
+        .pricing-card.featured .pricing-cta:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--secondary);
+            color: var(--bg-light);
+            padding: 4rem 5% 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            margin-bottom: 3rem;
+        }
+
+        .footer-section h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--bg-white);
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-section a {
+            color: var(--bg-light);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .footer-section a:hover {
+            color: var(--primary);
+        }
+
+        .footer-logo {
+            font-size: 1.3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .footer-bottom p {
+            color: var(--bg-light);
+            font-size: 0.9rem;
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .footer-social a {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .footer-social a:hover {
+            background: var(--primary);
+            transform: translateY(-4px);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn-large {
+                width: 100%;
+            }
+
+            .section-header h2 {
+                font-size: 2rem;
+            }
+
+            .pricing-card.featured {
+                transform: scale(1);
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="logo">Nimbus</div>
+        <ul class="nav-links">
+            <li><a href="#features">Features</a></li>
+            <li><a href="#pricing">Pricing</a></li>
+            <li><a href="#about">About</a></li>
+        </ul>
+        <div class="nav-cta">
+            <button class="btn-secondary">Sign In</button>
+            <button class="btn-primary">Get Started</button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Your thoughts, <span>organized by AI</span></h1>
+            <p>Capture, organize, and discover your ideas with intelligent note-taking powered by artificial intelligence. Never lose a thought again.</p>
+            <div class="hero-buttons">
+                <button class="btn-primary btn-large">Start Free Trial</button>
+                <button class="btn-secondary btn-large">Watch Demo</button>
+            </div>
+        </div>
+        <div class="hero-image"></div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="section-header">
+            <h2>Powerful Features</h2>
+            <p>Everything you need to capture and organize your thoughts intelligently</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🧠</div>
+                <h3>AI-Powered Organization</h3>
+                <p>Automatically categorize and tag your notes using advanced machine learning. Our AI learns your patterns and organizes notes exactly how you think.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔍</div>
+                <h3>Intelligent Search</h3>
+                <p>Find what you need instantly with semantic search. Search by meaning, not just keywords. Ask questions and get answers from your notes.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">✨</div>
+                <h3>Smart Summaries</h3>
+                <p>Get AI-generated summaries of your notes and documents. Understand key points at a glance and never miss important information again.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonial Section -->
+    <section class="testimonial">
+        <div class="testimonial-container">
+            <div class="testimonial-content">
+                <div class="stars">★★★★★</div>
+                <p class="testimonial-text">"Nimbus has completely transformed how I take notes. The AI organization is like having a personal assistant for my brain. I've saved hours every week."</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">SJ</div>
+                    <div class="author-info">
+                        <h4>Sarah Johnson</h4>
+                        <p>Product Manager at TechCorp</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="pricing" id="pricing">
+        <div class="section-header">
+            <h2>Simple, Transparent Pricing</h2>
+            <p>Choose the perfect plan for your needs. Always flexible to scale.</p>
+        </div>
+        <div class="pricing-grid">
+            <div class="pricing-card">
+                <div class="pricing-badge">Popular</div>
+                <h3 class="pricing-name">Starter</h3>
+                <div class="pricing-price">$9<span>/month</span></div>
+                <p class="pricing-description">Perfect for individuals</p>
+                <ul class="pricing-features">
+                    <li>Up to 1,000 notes</li>
+                    <li>Basic AI organization</li>
+                    <li>Mobile app access</li>
+                    <li>Email support</li>
+                </ul>
+                <button class="pricing-cta btn-large">Get Started</button>
+            </div>
+            <div class="pricing-card featured">
+                <div class="pricing-badge">Most Popular</div>
+                <h3 class="pricing-name">Professional</h3>
+                <div class="pricing-price">$29<span>/month</span></div>
+                <p class="pricing-description">For power users</p>
+                <ul class="pricing-features">
+                    <li>Unlimited notes</li>
+                    <li>Advanced AI features</li>
+                    <li>Priority support</li>
+                    <li>Team collaboration</li>
+                </ul>
+                <button class="pricing-cta btn-large">Start Free Trial</button>
+            </div>
+            <div class="pricing-card">
+                <div class="pricing-badge">Popular</div>
+                <h3 class="pricing-name">Enterprise</h3>
+                <div class="pricing-price">Custom</div>
+                <p class="pricing-description">For organizations</p>
+                <ul class="pricing-features">
+                    <li>Everything in Pro</li>
+                    <li>Custom integrations</li>
+                    <li>Dedicated support</li>
+                    <li>SSO & security</li>
+                </ul>
+                <button class="pricing-cta btn-large">Contact Sales</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <div class="footer-logo">Nimbus</div>
+                <p style="color: var(--bg-light); font-size: 0.95rem; line-height: 1.6;">Intelligent note-taking for the modern mind. Capture, organize, and discover your ideas effortlessly.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Product</h4>
+                <ul>
+                    <li><a href="#">Features</a></li>
+                    <li><a href="#">Pricing</a></li>
+                    <li><a href="#">Security</a></li>
+                    <li><a href="#">Roadmap</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="#">Cookie Policy</a></li>
+                    <li><a href="#">GDPR</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Nimbus. All rights reserved.</p>
+            <div class="footer-social">
+                <a href="#">𝕏</a>
+                <a href="#">𝓛</a>
+                <a href="#">𝓯</a>
+                <a href="#">𝓘</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

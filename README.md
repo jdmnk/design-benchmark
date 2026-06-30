@@ -7,8 +7,10 @@ which model designs best.
 
 ![example grid](docs/example-grid.png)
 
-> The grid above is from a `--dry-run` (placeholder pages), included so the repo shows
-> output without needing API keys. A real run renders each model's actual design.
+> A real run: six cheap models (Claude Haiku 4.5, GPT-4o mini, Gemini 2.5 Flash, DeepSeek
+> V3.1, Llama 3.3 70B, Qwen3 Coder) each designing the same landing page. See
+> **[`examples/`](examples/)** for this and two more runs (a dark-mode dashboard and a
+> budget-tier brand site), including the actual HTML each model produced.
 
 ---
 
@@ -132,8 +134,9 @@ source .runtime/env.sh
 # Full pipeline (generate → render → grid → report)
 npm run bench
 
-# A different config
+# A different config (see examples/ for the outputs of these)
 npm run bench -- --config config/examples/dashboard.config.json
+npm run bench -- --config config/examples/coffee-brand.config.json
 
 # Only some models (by slug), repeatable / comma-separated
 npm run bench -- --model claude-opus-4.8 --model gpt-5
