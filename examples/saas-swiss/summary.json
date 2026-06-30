@@ -1,7 +1,7 @@
 {
   "name": "saas-swiss",
   "prompt": "Design the top of the landing page for a fictional SaaS product called «MERIDIAN», a real-time data-analytics platform. Render it in a strict Swiss / International Typographic Style and pack the content densely so it all fits within the first screen (roughly the top 800px).\n\nStyle rules (follow exactly):\n- Typeface: Helvetica / Arial / Inter only. Build on a visible 12-column grid with consistent gutters; everything flush-left.\n- Palette: off-white background #F4F4F1, near-black text #111111, and ONE accent color, signal red #E2231A. No gradients, no drop shadows, no rounded corners, no emoji, no photos.\n- Typography: a very large, tight headline; clear hierarchy; small uppercase labels with letter-spacing for section/eyebrow text. Use rules (thin horizontal/vertical lines) to structure the page.\n\nContent and order (top to bottom, all above the fold):\n1. A top navigation bar: the wordmark «MERIDIAN» on the left; nav links Product, Customers, Pricing, Docs; and a red 'Start free' button on the right.\n2. A hero: an eyebrow label, an oversized headline of at most 6 words, a one-sentence subheadline, and two calls to action (a solid red primary, a bordered secondary).\n3. A full-width thin horizontal rule.\n4. A row of four numbered feature columns (01–04), each with a short bold title and a one-line description.\n5. A thin 'Trusted by' row of 5–6 plausible company wordmarks rendered as plain text.\n\nReturn ONLY a single complete HTML document.",
-  "generatedAt": "2026-06-30T19:04:43.095Z",
+  "generatedAt": "2026-06-30T20:00:07.962Z",
   "models": [
     {
       "slug": "glm-5.2",
@@ -16,7 +16,11 @@
         "completionTokens": 2740,
         "totalTokens": 3167
       },
-      "startedAt": "2026-06-30T18:59:27.840Z"
+      "startedAt": "2026-06-30T18:59:27.840Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
     },
     {
       "slug": "glm-5.1",
@@ -31,7 +35,11 @@
         "completionTokens": 4831,
         "totalTokens": 5251
       },
-      "startedAt": "2026-06-30T18:59:27.849Z"
+      "startedAt": "2026-06-30T18:59:27.849Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
     },
     {
       "slug": "gpt-5.4-mini",
@@ -46,7 +54,11 @@
         "completionTokens": 2026,
         "totalTokens": 2449
       },
-      "startedAt": "2026-06-30T18:59:27.850Z"
+      "startedAt": "2026-06-30T18:59:27.850Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
     },
     {
       "slug": "claude-haiku-4.5",
@@ -61,7 +73,11 @@
         "completionTokens": 2904,
         "totalTokens": 3372
       },
-      "startedAt": "2026-06-30T18:59:27.851Z"
+      "startedAt": "2026-06-30T18:59:27.851Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
     },
     {
       "slug": "qwen3.7-plus",
@@ -76,7 +92,11 @@
         "completionTokens": 3354,
         "totalTokens": 3804
       },
-      "startedAt": "2026-06-30T18:59:27.852Z"
+      "startedAt": "2026-06-30T18:59:27.852Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
     },
     {
       "slug": "gemini-3.1-flash-lite",
@@ -91,7 +111,11 @@
         "completionTokens": 1439,
         "totalTokens": 1883
       },
-      "startedAt": "2026-06-30T18:59:27.853Z"
+      "startedAt": "2026-06-30T18:59:27.853Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
     },
     {
       "slug": "deepseek-v4-pro",
@@ -106,7 +130,11 @@
         "completionTokens": 14465,
         "totalTokens": 14890
       },
-      "startedAt": "2026-06-30T18:59:27.854Z"
+      "startedAt": "2026-06-30T18:59:27.854Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
     },
     {
       "slug": "mimo-v2.5",
@@ -117,7 +145,11 @@
       "error": "This operation was aborted",
       "htmlExtracted": false,
       "elapsedMs": 300008,
-      "startedAt": "2026-06-30T18:59:27.854Z"
+      "startedAt": "2026-06-30T18:59:27.854Z",
+      "render": {
+        "rendered": false,
+        "error": "no output.html (generation produced no HTML)"
+      }
     },
     {
       "slug": "minimax-m3",
@@ -132,7 +164,11 @@
         "completionTokens": 10000,
         "totalTokens": 10584
       },
-      "startedAt": "2026-06-30T18:59:27.855Z"
+      "startedAt": "2026-06-30T18:59:27.855Z",
+      "render": {
+        "rendered": false,
+        "blank": true
+      }
     }
   ]
 }

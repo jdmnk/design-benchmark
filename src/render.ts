@@ -1,7 +1,8 @@
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { chromium, type Browser } from "playwright";
-import type { BenchmarkConfig, ModelEntry } from "./types.js";
+import sharp from "sharp";
+import type { BenchmarkConfig, GenerationResult, ModelEntry, RenderInfo } from "./types.js";
 import { runPaths } from "./paths.js";
 import { startRenderServer } from "./server.js";
 
@@ -9,8 +10,39 @@ export interface RenderOutcome {
   slug: string;
   label: string;
   ok: boolean;
+  blank?: boolean;
   screenshotPath?: string;
   error?: string;
+}
+
+/**
+ * A near-uniform screenshot (very low per-channel variance) is a blank/black
+ * page that "rendered" but shows nothing — a real failure mode we must not count
+ * as a success. ~3/255 std-dev tolerates AA/compression noise while still
+ * catching solid-color pages. (Per the resilience guide's pixel-stat gate.)
+ */
+const BLANK_STDDEV = 3;
+
+async function isBlankScreenshot(path: string): Promise<boolean> {
+  try {
+    const stats = await sharp(path).stats();
+    const rgb = stats.channels.slice(0, 3).map((c) => c.stdev);
+    return Math.max(...rgb) < BLANK_STDDEV;
+  } catch {
+    return false;
+  }
+}
+
+/** Merge what the render stage learned back into the model's result.json. */
+function persistRenderInfo(resultPath: string, info: RenderInfo) {
+  if (!existsSync(resultPath)) return;
+  try {
+    const result = JSON.parse(readFileSync(resultPath, "utf8")) as GenerationResult;
+    result.render = info;
+    writeFileSync(resultPath, JSON.stringify(result, null, 2));
+  } catch {
+    /* best-effort */
+  }
 }
 
 /**
@@ -35,18 +67,20 @@ export async function render(
     importMapPath: resolve("config/importmap.json"),
   });
 
-  const browser: Browser = await chromium.launch({ args: ["--no-sandbox"] });
+  const browser: Browser = await chromium.launch({
+    // --disable-dev-shm-usage avoids "/dev/shm too small" renderer crashes in
+    // containers (per the resilience guide); --no-sandbox for rootless hosts.
+    args: ["--no-sandbox", "--disable-dev-shm-usage"],
+  });
   const outcomes: RenderOutcome[] = [];
   try {
     for (const model of models) {
       const htmlPath = paths.html(model.slug);
+      const resultPath = paths.result(model.slug);
       if (!existsSync(htmlPath)) {
-        outcomes.push({
-          slug: model.slug,
-          label: model.label,
-          ok: false,
-          error: "no output.html (generation produced no HTML)",
-        });
+        const error = "no output.html (generation produced no HTML)";
+        persistRenderInfo(resultPath, { rendered: false, error });
+        outcomes.push({ slug: model.slug, label: model.label, ok: false, error });
         console.log(`  • ${model.slug.padEnd(20)} skipped (no html)`);
         continue;
       }
@@ -56,6 +90,10 @@ export async function render(
         deviceScaleFactor: r.deviceScaleFactor,
       });
       const page = await context.newPage();
+      // Capture failure signals BEFORE navigating so we can explain blanks.
+      let pageError: string | undefined;
+      page.on("pageerror", (e) => { if (!pageError) pageError = `JS error: ${e.message}`; });
+      page.on("crash", () => { if (!pageError) pageError = "renderer crashed (out of memory?)"; });
       try {
         // Before any page script runs: seed Math.random, and (when freezing)
         // install a virtual clock + requestAnimationFrame shim we fully control.
@@ -76,6 +114,17 @@ export async function render(
           );
         } else if (r.waitMs > 0) {
           await page.waitForTimeout(r.waitMs);
+          // networkidle fires before client-side animation paints; a double rAF
+          // guarantees at least one painted frame before we capture (the guide's
+          // #1 fix for false blanks). Skipped when freezing (rAF is shimmed).
+          await page
+            .evaluate(
+              () =>
+                new Promise<void>((res) =>
+                  requestAnimationFrame(() => requestAnimationFrame(() => res())),
+                ),
+            )
+            .catch(() => {});
         }
 
         // Clamp absurdly tall pages so the grid stays usable.
@@ -89,27 +138,29 @@ export async function render(
           }
         }
 
+        const shotPath = paths.screenshot(model.slug);
         await page.screenshot({
-          path: paths.screenshot(model.slug),
+          path: shotPath,
           fullPage: r.fullPage && !clip,
           clip,
           timeout: r.screenshotTimeoutMs ?? 60000,
         });
+
+        const blank = await isBlankScreenshot(shotPath);
+        persistRenderInfo(resultPath, { rendered: !blank, blank, error: blank ? pageError : undefined });
         outcomes.push({
           slug: model.slug,
           label: model.label,
           ok: true,
-          screenshotPath: paths.screenshot(model.slug),
+          blank,
+          screenshotPath: shotPath,
         });
-        console.log(`  • ${model.slug.padEnd(20)} rendered`);
+        console.log(`  • ${model.slug.padEnd(20)} ${blank ? "rendered (blank)" : "rendered"}${blank && pageError ? ` — ${pageError}` : ""}`);
       } catch (err) {
-        outcomes.push({
-          slug: model.slug,
-          label: model.label,
-          ok: false,
-          error: (err as Error).message,
-        });
-        console.log(`  • ${model.slug.padEnd(20)} render FAIL (${(err as Error).message})`);
+        const error = pageError ?? (err as Error).message;
+        persistRenderInfo(resultPath, { rendered: false, error });
+        outcomes.push({ slug: model.slug, label: model.label, ok: false, error });
+        console.log(`  • ${model.slug.padEnd(20)} render FAIL (${error})`);
       } finally {
         await context.close();
       }

@@ -90,8 +90,11 @@ async function main() {
 
   if (run("report")) {
     console.log("\n④ Report — writing report.md + summary.json");
-    if (results.length === 0) results = loadResults(cfg, models);
-    const { reportPath } = writeReport(cfg, results);
+    // Reload from disk so the report picks up the render stage's findings
+    // (render status, blank, etc.) which were persisted into result.json.
+    const fromDisk = loadResults(cfg, models);
+    const reportResults = fromDisk.length ? fromDisk : results;
+    const { reportPath } = writeReport(cfg, reportResults);
     console.log(`  → ${reportPath}`);
   }
 

@@ -2,7 +2,7 @@
 
 Swiss / International Typographic Style SaaS landing page. Detailed, prescriptive brief so model outputs are directly comparable. Dense toward the top; captured as a fixed top-crop.
 
-**Models:** 9 · **Rendered:** 8/9
+**Models:** 9 · **Rendered:** 7/9
 
 ## Prompt
 
@@ -30,14 +30,14 @@ Swiss / International Typographic Style SaaS landing page. Detailed, prescriptiv
 
 | Model | ID | Provider | Status | Time | Tokens | Note |
 |-------|----|----------|--------|------|--------|------|
-| GLM 5.2 | `z-ai/glm-5.2` | openrouter | ✅ html | 42.1s | 3167 |  |
-| GLM 5.1 | `z-ai/glm-5.1` | openrouter | ✅ html | 138.2s | 5251 |  |
-| GPT-5.4 mini | `openai/gpt-5.4-mini` | openrouter | ✅ html | 13.2s | 2449 |  |
-| Claude Haiku 4.5 | `anthropic/claude-haiku-4.5` | openrouter | ✅ html | 22.4s | 3372 |  |
-| Qwen3.7 Plus | `qwen/qwen3.7-plus` | openrouter | ✅ html | 61.9s | 3804 |  |
-| Gemini 3.1 Flash-Lite | `google/gemini-3.1-flash-lite` | openrouter | ✅ html | 5.5s | 1883 |  |
-| DeepSeek V4 Pro | `deepseek/deepseek-v4-pro` | openrouter | ✅ html | 178.7s | 14890 |  |
+| GLM 5.2 | `z-ai/glm-5.2` | openrouter | ✅ rendered | 42.1s | 3167 |  |
+| GLM 5.1 | `z-ai/glm-5.1` | openrouter | ✅ rendered | 138.2s | 5251 |  |
+| GPT-5.4 mini | `openai/gpt-5.4-mini` | openrouter | ✅ rendered | 13.2s | 2449 |  |
+| Claude Haiku 4.5 | `anthropic/claude-haiku-4.5` | openrouter | ✅ rendered | 22.4s | 3372 |  |
+| Qwen3.7 Plus | `qwen/qwen3.7-plus` | openrouter | ✅ rendered | 61.9s | 3804 |  |
+| Gemini 3.1 Flash-Lite | `google/gemini-3.1-flash-lite` | openrouter | ✅ rendered | 5.5s | 1883 |  |
+| DeepSeek V4 Pro | `deepseek/deepseek-v4-pro` | openrouter | ✅ rendered | 178.7s | 14890 |  |
 | MiMo v2.5 | `xiaomi/mimo-v2.5` | openrouter | ❌ error | 300.0s | — | This operation was aborted |
-| MiniMax M3 | `minimax/minimax-m3` | openrouter | ✅ html | 81.7s | 10584 |  |
+| MiniMax M3 | `minimax/minimax-m3` | openrouter | ⬛ blank | 81.7s | 10584 |  |
 
 Per-model artifacts live in `models/<slug>/` (`raw.txt`, `output.html`, `screenshot.png`, `result.json`).

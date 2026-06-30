@@ -1,7 +1,7 @@
 {
   "name": "sunset-svg",
   "prompt": "Illustrate a serene sunset landscape as a single inline SVG. Match this composition so results are comparable:\n\n- Sky fills the top ~55% of the scene: a smooth vertical sunset gradient, deep blue/indigo at the very top, through magenta/pink, to warm orange/gold near the horizon.\n- The sun is a soft glowing circle sitting LOW on the horizon, centered horizontally (about 50% width) and positioned just above and slightly behind the tallest mountain peak.\n- A layered mountain range as silhouettes across the middle of the scene: 2–3 overlapping ridgelines, each darker/closer toward the front, with the tallest peak near the center directly in front of the sun.\n- A few soft, elongated clouds in the upper sky, tinted warm by the sunset.\n- A river in the foreground (bottom ~20%) widening as it flows toward the viewer from the base of the mountains, reflecting the sun as a vertical shimmer of warm light down its center.\n\nSmooth gradients, clean layered vector shapes, a cohesive warm palette, clear depth. Optionally add subtle ambient motion (slowly drifting clouds or a shimmering reflection). It is JUST the scene — no text, no UI, no border. Return ONLY a single complete HTML document.",
-  "generatedAt": "2026-06-30T19:18:58.624Z",
+  "generatedAt": "2026-06-30T20:00:14.162Z",
   "models": [
     {
       "slug": "glm-5.2",
@@ -16,7 +16,11 @@
         "completionTokens": 7692,
         "totalTokens": 8075
       },
-      "startedAt": "2026-06-30T19:13:39.622Z"
+      "startedAt": "2026-06-30T19:13:39.622Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
     },
     {
       "slug": "glm-5.1",
@@ -27,7 +31,11 @@
       "error": "This operation was aborted",
       "htmlExtracted": false,
       "elapsedMs": 300005,
-      "startedAt": "2026-06-30T19:13:39.631Z"
+      "startedAt": "2026-06-30T19:13:39.631Z",
+      "render": {
+        "rendered": false,
+        "error": "no output.html (generation produced no HTML)"
+      }
     },
     {
       "slug": "gpt-5.4-mini",
@@ -42,7 +50,11 @@
         "completionTokens": 2147,
         "totalTokens": 2526
       },
-      "startedAt": "2026-06-30T19:13:39.632Z"
+      "startedAt": "2026-06-30T19:13:39.632Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
     },
     {
       "slug": "claude-haiku-4.5",
@@ -57,7 +69,11 @@
         "completionTokens": 2596,
         "totalTokens": 3017
       },
-      "startedAt": "2026-06-30T19:13:39.633Z"
+      "startedAt": "2026-06-30T19:13:39.633Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
     },
     {
       "slug": "qwen3.7-plus",
@@ -72,7 +88,11 @@
         "completionTokens": 7507,
         "totalTokens": 7907
       },
-      "startedAt": "2026-06-30T19:13:39.634Z"
+      "startedAt": "2026-06-30T19:13:39.634Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
     },
     {
       "slug": "gemini-3.1-flash-lite",
@@ -87,7 +107,11 @@
         "completionTokens": 920,
         "totalTokens": 1301
       },
-      "startedAt": "2026-06-30T19:13:39.635Z"
+      "startedAt": "2026-06-30T19:13:39.635Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
     },
     {
       "slug": "deepseek-v4-pro",
@@ -98,7 +122,11 @@
       "error": "This operation was aborted",
       "htmlExtracted": false,
       "elapsedMs": 300003,
-      "startedAt": "2026-06-30T19:13:39.636Z"
+      "startedAt": "2026-06-30T19:13:39.636Z",
+      "render": {
+        "rendered": false,
+        "error": "no output.html (generation produced no HTML)"
+      }
     },
     {
       "slug": "mimo-v2.5",
@@ -109,7 +137,11 @@
       "error": "This operation was aborted",
       "htmlExtracted": false,
       "elapsedMs": 300005,
-      "startedAt": "2026-06-30T19:13:39.636Z"
+      "startedAt": "2026-06-30T19:13:39.636Z",
+      "render": {
+        "rendered": false,
+        "error": "no output.html (generation produced no HTML)"
+      }
     },
     {
       "slug": "minimax-m3",
@@ -120,7 +152,11 @@
       "error": "Empty completion. Raw: {\"id\":\"gen-1782846819-2fAt1rdRmz21iBOkvjll\",\"object\":\"chat.completion\",\"created\":1782846819,\"model\":\"minimax/minimax-m3-20260531\",\"provider\":\"Novita\",\"system_fingerprint\":null,\"service_tier\":null,\"choices\":[{\"index\":0,\"logprobs\":null,\"finish_reason\":\"length\",\"native_finish_reason\":\"length\",\"message\":{\"role\":\"assistant\",\"content\":null,\"refusal\":null,\"reasoning\":\"\\nThe user wants a serene sunset landscape as a single inline SVG. Let me plan this out carefully.\\n\\nComposition requirements:\\n- viewB",
       "htmlExtracted": false,
       "elapsedMs": 103286,
-      "startedAt": "2026-06-30T19:13:39.637Z"
+      "startedAt": "2026-06-30T19:13:39.637Z",
+      "render": {
+        "rendered": false,
+        "error": "no output.html (generation produced no HTML)"
+      }
     }
   ]
 }

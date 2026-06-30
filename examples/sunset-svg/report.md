@@ -24,12 +24,12 @@ A single inline-SVG sunset scene: sun setting behind a mountain range, with clou
 
 | Model | ID | Provider | Status | Time | Tokens | Note |
 |-------|----|----------|--------|------|--------|------|
-| GLM 5.2 | `z-ai/glm-5.2` | openrouter | ✅ html | 91.8s | 8075 |  |
+| GLM 5.2 | `z-ai/glm-5.2` | openrouter | ✅ rendered | 91.8s | 8075 |  |
 | GLM 5.1 | `z-ai/glm-5.1` | openrouter | ❌ error | 300.0s | — | This operation was aborted |
-| GPT-5.4 mini | `openai/gpt-5.4-mini` | openrouter | ✅ html | 12.6s | 2526 |  |
-| Claude Haiku 4.5 | `anthropic/claude-haiku-4.5` | openrouter | ✅ html | 12.7s | 3017 |  |
-| Qwen3.7 Plus | `qwen/qwen3.7-plus` | openrouter | ✅ html | 137.3s | 7907 |  |
-| Gemini 3.1 Flash-Lite | `google/gemini-3.1-flash-lite` | openrouter | ✅ html | 3.6s | 1301 |  |
+| GPT-5.4 mini | `openai/gpt-5.4-mini` | openrouter | ✅ rendered | 12.6s | 2526 |  |
+| Claude Haiku 4.5 | `anthropic/claude-haiku-4.5` | openrouter | ✅ rendered | 12.7s | 3017 |  |
+| Qwen3.7 Plus | `qwen/qwen3.7-plus` | openrouter | ✅ rendered | 137.3s | 7907 |  |
+| Gemini 3.1 Flash-Lite | `google/gemini-3.1-flash-lite` | openrouter | ✅ rendered | 3.6s | 1301 |  |
 | DeepSeek V4 Pro | `deepseek/deepseek-v4-pro` | openrouter | ❌ error | 300.0s | — | This operation was aborted |
 | MiMo v2.5 | `xiaomi/mimo-v2.5` | openrouter | ❌ error | 300.0s | — | This operation was aborted |
 | MiniMax M3 | `minimax/minimax-m3` | openrouter | ❌ error | 103.3s | — | Empty completion. Raw: {"id":"gen-1782846819-2fAt1rdRmz21iBOkvjll","object":"cha |

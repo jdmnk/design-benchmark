@@ -129,6 +129,32 @@ Result: re-running a model's scene produces the **same frame** — verified pixe
 for both Canvas2D and WebGL. (Leave `freezeClock` off for CSS/SMIL-animated pages, which
 run on compositor time rather than rAF; those settle with a real `waitMs` wait instead.)
 
+## Resilience
+
+A render benchmark's success rate shouldn't be dominated by black screens, truncated code,
+and timeouts. We apply the high-leverage fixes from
+[`docs/render-benchmark-design-guide.md`](docs/render-benchmark-design-guide.md):
+
+- **"Did it render" is separate from quality.** Each model's `result.json` records a
+  `render` verdict, and the report's headline is an honest **render rate** (`5/9`), not a
+  quality score.
+- **Blank/black detection.** A screenshot with near-zero pixel variance "rendered" but
+  shows nothing; we flag it `blank` (sharp pixel-stats gate) instead of counting it as a
+  success — this caught a model whose token-truncated page screenshotted as solid white.
+- **Truncation is a first-class signal.** We read the provider's `finish_reason`; a `length`
+  stop marks the result `truncated` (a cut-off `</svg>`/`</html>` is the #1 cause of broken
+  renders). Per-model `maxTokens` is configurable to avoid it.
+- **Paint before capture.** `networkidle` fires before client-side animation paints, so for
+  non-frozen renders we wait a double `requestAnimationFrame` before screenshotting (the
+  guide's #1 fix for false blanks); frozen renders step frames deterministically.
+- **Failure signals captured.** `pageerror` / `crash` listeners record *why* a page blanked,
+  surfaced in the report and web app.
+- **Container-safe Chromium** (`--disable-dev-shm-usage`) and an explicit screenshot timeout.
+
+What we deliberately *don't* do (out of scope for a small, local, judgment-first bench):
+heavy sandboxing (gVisor/Firecracker), VLM-judge/rubric scoring, self-repair loops, and
+few-shot skeletons (which would change *what* the benchmark measures — we test models cold).
+
 ---
 
 ## Providers

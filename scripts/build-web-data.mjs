@@ -22,6 +22,13 @@ const read = (p) => JSON.parse(readFileSync(join(ROOT, p), "utf8"));
 function statusOf(name, m) {
   if (!m.ok) return "error";
   if (!m.htmlExtracted) return "no-html";
+  // Prefer the render stage's persisted verdict (rendered / blank); fall back
+  // to screenshot existence for older runs.
+  if (m.render) {
+    if (m.render.blank) return "blank";
+    if (!m.render.rendered) return "render-failed";
+    return m.truncated ? "truncated" : "rendered";
+  }
   const shot = join(ROOT, "results", name, "models", m.slug, "screenshot.png");
   return existsSync(shot) ? "rendered" : "render-failed";
 }
@@ -61,7 +68,8 @@ const benchmarks = BENCHES.map(({ configPath }) => {
     status: statusOf(id, m),
     elapsedMs: m.elapsedMs,
     outputTokens: m.usage?.completionTokens ?? m.usage?.totalTokens ?? null,
-    error: cleanError(m.error),
+    truncated: Boolean(m.truncated),
+    error: cleanError(m.error ?? m.render?.error),
     page: pageSet.has(m.slug) ? `pages/${id}/${m.slug}.html` : null,
   }));
 
@@ -79,7 +87,7 @@ const benchmarks = BENCHES.map(({ configPath }) => {
     },
     grid: { image: `grids/${id}.png`, columns: cfg.grid?.columns ?? 3 },
     models,
-    rendered: models.filter((m) => m.status === "rendered").length,
+    rendered: models.filter((m) => m.status === "rendered" || m.status === "truncated").length,
     total: models.length,
   };
 });

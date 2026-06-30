@@ -1,7 +1,7 @@
 {
   "name": "black-hole",
   "prompt": "Render a realistic supermassive black hole — the 'Gargantua' look from the film Interstellar — as a full-screen three.js scene. Match this exact composition so results are comparable:\n\n- The black hole (event horizon) is a perfectly black sphere centered in the frame, its diameter about 28% of the viewport height.\n- A bright, thin accretion disk lies in a HORIZONTAL plane around the sphere and is viewed nearly edge-on: the camera sits only about 5–8 degrees above the disk plane, so the disk reads as a near-horizontal bright band cutting across the sphere's middle and extending well past it on both sides.\n- Gravitational lensing: the far side of the disk appears bent UP and OVER the top of the black sphere AND mirrored UNDER the bottom, forming the signature bright halo arcs above and below the horizon (not merely a flat ring). Approximate this with extra bright arcs wrapping over and under the sphere.\n- A thin, bright photon ring hugs the very edge of the black sphere.\n- Disk coloring: hot white-yellow on the inner edge fading outward to amber then deep orange (#fff3d0 → #ffae3b → #c8551a). Make one side of the disk slightly brighter than the other (relativistic beaming).\n- Background: near-black space with a sparse, dim starfield. The disk rotates slowly.\n\nKeep the black hole centered and the disk horizontal. Return ONLY a single complete HTML document.",
-  "generatedAt": "2026-06-30T19:13:23.485Z",
+  "generatedAt": "2026-06-30T20:00:11.209Z",
   "models": [
     {
       "slug": "glm-5.2",
@@ -12,7 +12,11 @@
       "error": "Empty completion. Raw: {\"id\":\"gen-1782846341-oWpp9xzXO4vL8u1hTJIT\",\"object\":\"chat.completion\",\"created\":1782846341,\"model\":\"z-ai/glm-5.2-20260616\",\"provider\":\"StreamLake\",\"system_fingerprint\":null,\"service_tier\":null,\"choices\":[{\"index\":0,\"logprobs\":null,\"finish_reason\":\"length\",\"native_finish_reason\":\"length\",\"message\":{\"role\":\"assistant\",\"content\":null,\"refusal\":null,\"reasoning\":\"The user wants a Gargantua-style black hole in three.js. Let me design this carefully.\\n\\nKey elements:\\n1. Black sphere (event horizon) c",
       "htmlExtracted": false,
       "elapsedMs": 231744,
-      "startedAt": "2026-06-30T19:05:41.145Z"
+      "startedAt": "2026-06-30T19:05:41.145Z",
+      "render": {
+        "rendered": false,
+        "error": "no output.html (generation produced no HTML)"
+      }
     },
     {
       "slug": "glm-5.1",
@@ -23,7 +27,11 @@
       "error": "This operation was aborted",
       "htmlExtracted": false,
       "elapsedMs": 300006,
-      "startedAt": "2026-06-30T19:05:41.156Z"
+      "startedAt": "2026-06-30T19:05:41.156Z",
+      "render": {
+        "rendered": false,
+        "error": "no output.html (generation produced no HTML)"
+      }
     },
     {
       "slug": "gpt-5.4-mini",
@@ -38,7 +46,11 @@
         "completionTokens": 2388,
         "totalTokens": 2823
       },
-      "startedAt": "2026-06-30T19:05:41.157Z"
+      "startedAt": "2026-06-30T19:05:41.157Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
     },
     {
       "slug": "claude-haiku-4.5",
@@ -53,7 +65,11 @@
         "completionTokens": 2668,
         "totalTokens": 3151
       },
-      "startedAt": "2026-06-30T19:05:41.158Z"
+      "startedAt": "2026-06-30T19:05:41.158Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
     },
     {
       "slug": "qwen3.7-plus",
@@ -68,7 +84,11 @@
         "completionTokens": 5821,
         "totalTokens": 6277
       },
-      "startedAt": "2026-06-30T19:05:41.160Z"
+      "startedAt": "2026-06-30T19:05:41.160Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
     },
     {
       "slug": "gemini-3.1-flash-lite",
@@ -83,7 +103,11 @@
         "completionTokens": 1270,
         "totalTokens": 1711
       },
-      "startedAt": "2026-06-30T19:05:41.160Z"
+      "startedAt": "2026-06-30T19:05:41.160Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
     },
     {
       "slug": "deepseek-v4-pro",
@@ -98,7 +122,11 @@
         "completionTokens": 4461,
         "totalTokens": 4897
       },
-      "startedAt": "2026-06-30T19:05:41.161Z"
+      "startedAt": "2026-06-30T19:05:41.161Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
     },
     {
       "slug": "mimo-v2.5",
@@ -109,7 +137,11 @@
       "error": "This operation was aborted",
       "htmlExtracted": false,
       "elapsedMs": 300004,
-      "startedAt": "2026-06-30T19:05:41.162Z"
+      "startedAt": "2026-06-30T19:05:41.162Z",
+      "render": {
+        "rendered": false,
+        "error": "no output.html (generation produced no HTML)"
+      }
     },
     {
       "slug": "minimax-m3",
@@ -120,7 +152,11 @@
       "error": "Empty completion. Raw: {\"id\":\"gen-1782846341-Jwkiwa4aWMMev0gnb1Pj\",\"object\":\"chat.completion\",\"created\":1782846341,\"model\":\"minimax/minimax-m3-20260531\",\"provider\":\"AtlasCloud\",\"system_fingerprint\":null,\"service_tier\":null,\"choices\":[{\"index\":0,\"logprobs\":null,\"finish_reason\":\"length\",\"native_finish_reason\":\"length\",\"message\":{\"role\":\"assistant\",\"content\":null,\"refusal\":null,\"reasoning\":\"\\nThe user wants a realistic supermassive black hole scene in three.js, mimicking the \\\"Gargantua\\\" look from Interstellar. Let me t",
       "htmlExtracted": false,
       "elapsedMs": 133019,
-      "startedAt": "2026-06-30T19:05:41.163Z"
+      "startedAt": "2026-06-30T19:05:41.163Z",
+      "render": {
+        "rendered": false,
+        "error": "no output.html (generation produced no HTML)"
+      }
     }
   ]
 }

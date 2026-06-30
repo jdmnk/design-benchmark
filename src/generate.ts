@@ -90,6 +90,8 @@ async function generateOne(
         ok: true,
         rawResponse: undefined, // kept on disk in raw.txt, not duplicated here
         htmlExtracted: Boolean(html),
+        finishReason: res.finishReason,
+        truncated: res.finishReason === "length",
         elapsedMs: Date.now() - start,
         usage: res.usage,
         startedAt,

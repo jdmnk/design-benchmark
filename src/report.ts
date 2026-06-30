@@ -11,16 +11,23 @@ export function writeReport(
 ): { reportPath: string; summaryPath: string } {
   const paths = runPaths(cfg.name);
 
+  const statusOf = (r: (typeof results)[number]) => {
+    if (!r.ok) return "❌ error";
+    if (!r.htmlExtracted) return "⚠️ no html";
+    if (r.render && !r.render.rendered) return r.render.blank ? "⬛ blank" : "❌ render failed";
+    if (r.render?.rendered) return r.truncated ? "✂️ rendered (truncated)" : "✅ rendered";
+    return r.truncated ? "✂️ html (truncated)" : "✅ html";
+  };
   const rows = results
     .map((r) => {
       const tokens = r.usage?.totalTokens ?? "—";
-      const status = r.ok ? (r.htmlExtracted ? "✅ html" : "⚠️ no html") : "❌ error";
-      const note = r.ok ? "" : (r.error ?? "").replace(/\|/g, "\\|").slice(0, 80);
-      return `| ${r.label} | \`${r.modelId}\` | ${r.provider} | ${status} | ${(r.elapsedMs / 1000).toFixed(1)}s | ${tokens} | ${note} |`;
+      const note = (r.error ?? r.render?.error ?? "").replace(/\|/g, "\\|").slice(0, 80);
+      return `| ${r.label} | \`${r.modelId}\` | ${r.provider} | ${statusOf(r)} | ${(r.elapsedMs / 1000).toFixed(1)}s | ${tokens} | ${note} |`;
     })
     .join("\n");
 
-  const okCount = results.filter((r) => r.ok && r.htmlExtracted).length;
+  // "Rendered" = produced a real, non-blank screenshot (executability rate).
+  const okCount = results.filter((r) => r.render?.rendered).length;
 
   const md = `# ${cfg.name}
 

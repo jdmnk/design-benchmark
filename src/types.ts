@@ -89,6 +89,16 @@ export interface BenchmarkConfig {
   models: ModelEntry[] | string;
 }
 
+/** What the render stage observed for a model, merged back into result.json. */
+export interface RenderInfo {
+  /** A non-blank screenshot was produced. */
+  rendered: boolean;
+  /** Screenshot exists but is (near-)uniform — a blank/black page. */
+  blank?: boolean;
+  /** First page error / crash captured, or the render failure reason. */
+  error?: string;
+}
+
 /** Result of a single model generation, persisted as result.json per model. */
 export interface GenerationResult {
   slug: string;
@@ -101,6 +111,10 @@ export interface GenerationResult {
   rawResponse?: string;
   /** Extracted HTML document written to output.html. */
   htmlExtracted: boolean;
+  /** Why the model stopped, e.g. "stop", "length" (= truncated), "max_tokens". */
+  finishReason?: string;
+  /** The completion was cut off at the token limit — a common cause of broken renders. */
+  truncated?: boolean;
   elapsedMs: number;
   usage?: {
     promptTokens?: number;
@@ -108,6 +122,8 @@ export interface GenerationResult {
     totalTokens?: number;
   };
   startedAt: string;
+  /** Filled in by the render stage. */
+  render?: RenderInfo;
 }
 
 export interface ChatMessage {
@@ -126,6 +142,8 @@ export interface ChatRequest {
 export interface ChatResponse {
   text: string;
   usage?: GenerationResult["usage"];
+  /** Provider's stop reason, normalized to the OpenAI vocabulary where possible. */
+  finishReason?: string;
 }
 
 export interface Provider {

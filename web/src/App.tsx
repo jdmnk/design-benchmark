@@ -1,6 +1,6 @@
 import data from "./data/benchmarks.json";
 
-type Status = "rendered" | "no-html" | "render-failed" | "error";
+type Status = "rendered" | "truncated" | "blank" | "no-html" | "render-failed" | "error";
 
 interface Model {
   label: string;
@@ -9,6 +9,7 @@ interface Model {
   status: Status;
   elapsedMs: number;
   outputTokens: number | null;
+  truncated?: boolean;
   error: string | null;
   page: string | null;
 }
@@ -31,6 +32,8 @@ const REPO = "https://github.com/jdmnk/design-benchmark";
 
 const STATUS_LABEL: Record<Status, string> = {
   rendered: "rendered",
+  truncated: "truncated",
+  blank: "blank",
   "no-html": "no HTML",
   "render-failed": "render failed",
   error: "error",

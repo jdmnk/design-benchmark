@@ -179,8 +179,10 @@ details[open] > summary::before { content: "▾ "; }
 .status .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
 .status--rendered .dot { background: #4ade80; }
 .status--rendered { color: #88e0a3; }
-.status--no-html .dot, .status--render-failed .dot { background: #f0b34a; }
-.status--no-html, .status--render-failed { color: #e0b66a; }
+.status--truncated .dot { background: #6fb6ff; }
+.status--truncated { color: #93c0ff; }
+.status--blank .dot, .status--no-html .dot, .status--render-failed .dot { background: #f0b34a; }
+.status--blank, .status--no-html, .status--render-failed { color: #e0b66a; }
 .status--error .dot { background: var(--accent); }
 .status--error { color: #e0857f; }
 

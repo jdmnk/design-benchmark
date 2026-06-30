@@ -27,11 +27,11 @@ Realistic supermassive black hole ('Gargantua' from Interstellar) in three.js/We
 |-------|----|----------|--------|------|--------|------|
 | GLM 5.2 | `z-ai/glm-5.2` | openrouter | ❌ error | 231.7s | — | Empty completion. Raw: {"id":"gen-1782846341-oWpp9xzXO4vL8u1hTJIT","object":"cha |
 | GLM 5.1 | `z-ai/glm-5.1` | openrouter | ❌ error | 300.0s | — | This operation was aborted |
-| GPT-5.4 mini | `openai/gpt-5.4-mini` | openrouter | ✅ html | 13.0s | 2823 |  |
-| Claude Haiku 4.5 | `anthropic/claude-haiku-4.5` | openrouter | ✅ html | 11.9s | 3151 |  |
-| Qwen3.7 Plus | `qwen/qwen3.7-plus` | openrouter | ✅ html | 106.5s | 6277 |  |
-| Gemini 3.1 Flash-Lite | `google/gemini-3.1-flash-lite` | openrouter | ✅ html | 4.8s | 1711 |  |
-| DeepSeek V4 Pro | `deepseek/deepseek-v4-pro` | openrouter | ✅ html | 55.3s | 4897 |  |
+| GPT-5.4 mini | `openai/gpt-5.4-mini` | openrouter | ✅ rendered | 13.0s | 2823 |  |
+| Claude Haiku 4.5 | `anthropic/claude-haiku-4.5` | openrouter | ✅ rendered | 11.9s | 3151 |  |
+| Qwen3.7 Plus | `qwen/qwen3.7-plus` | openrouter | ✅ rendered | 106.5s | 6277 |  |
+| Gemini 3.1 Flash-Lite | `google/gemini-3.1-flash-lite` | openrouter | ✅ rendered | 4.8s | 1711 |  |
+| DeepSeek V4 Pro | `deepseek/deepseek-v4-pro` | openrouter | ✅ rendered | 55.3s | 4897 |  |
 | MiMo v2.5 | `xiaomi/mimo-v2.5` | openrouter | ❌ error | 300.0s | — | This operation was aborted |
 | MiniMax M3 | `minimax/minimax-m3` | openrouter | ❌ error | 133.0s | — | Empty completion. Raw: {"id":"gen-1782846341-Jwkiwa4aWMMev0gnb1Pj","object":"cha |
 

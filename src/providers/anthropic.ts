@@ -45,10 +45,15 @@ export function makeAnthropicProvider(opts: { apiKey: string }): Provider {
           .filter((b: any) => b.type === "text")
           .map((b: any) => b.text)
           .join("");
-        if (!text) throw new Error(`Empty completion. Raw: ${JSON.stringify(data).slice(0, 500)}`);
+        if (!text) throw new Error(`Empty completion. Raw: ${JSON.stringify(data).slice(0, 300)}`);
+
+        // Normalize Anthropic's "max_tokens" to the OpenAI "length" vocabulary.
+        const stop = data?.stop_reason;
+        const finishReason = stop === "max_tokens" ? "length" : stop ?? undefined;
 
         return {
           text,
+          finishReason,
           usage: data?.usage
             ? {
                 promptTokens: data.usage.input_tokens,

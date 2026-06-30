@@ -40,11 +40,19 @@ export function makeOpenAICompatibleProvider(opts: {
         }
 
         const data = (await res.json()) as any;
-        const text: string = data?.choices?.[0]?.message?.content ?? "";
-        if (!text) throw new Error(`Empty completion. Raw: ${JSON.stringify(data).slice(0, 500)}`);
+        const choice = data?.choices?.[0];
+        const text: string = choice?.message?.content ?? "";
+        const finishReason: string | undefined = choice?.finish_reason ?? undefined;
+        if (!text) {
+          // Reasoning models sometimes spend the whole budget on `reasoning` and
+          // return empty content with finish_reason "length" — surface that.
+          const why = finishReason === "length" ? " (hit token limit before producing output)" : "";
+          throw new Error(`Empty completion${why}. Raw: ${JSON.stringify(data).slice(0, 300)}`);
+        }
 
         return {
           text,
+          finishReason,
           usage: data?.usage
             ? {
                 promptTokens: data.usage.prompt_tokens,
