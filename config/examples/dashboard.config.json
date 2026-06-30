@@ -1,0 +1,35 @@
+{
+  "$schema": "../schema.json",
+  "name": "analytics-dashboard",
+  "description": "A second example run: a denser UI brief, a 2-column grid, viewport-only screenshots, and a mix of OpenRouter + native providers.",
+
+  "systemPrompt": "You are a senior product designer. Output a single, self-contained HTML document with embedded CSS. No external assets.",
+
+  "prompt": "Design a dark-mode analytics dashboard for a fictional product 'Pulse'. Include a left sidebar nav, a top bar with search and user avatar, a row of 4 KPI stat cards, a large line chart placeholder, a bar chart placeholder, and a recent-activity table. Use a refined, modern data-app aesthetic. Return ONLY a single complete HTML document.",
+
+  "render": {
+    "viewportWidth": 1440,
+    "viewportHeight": 900,
+    "fullPage": false,
+    "waitMs": 1200
+  },
+
+  "grid": {
+    "columns": 2,
+    "cellWidth": 760,
+    "title": "Design Bench — analytics-dashboard"
+  },
+
+  "generation": {
+    "temperature": 0.6,
+    "maxTokens": 10000,
+    "concurrency": 3
+  },
+
+  "models": [
+    { "slug": "opus",     "label": "Claude Opus 4.8",   "provider": "openrouter", "id": "anthropic/claude-opus-4.1" },
+    { "slug": "gpt5",     "label": "GPT-5",             "provider": "openrouter", "id": "openai/gpt-5" },
+    { "slug": "gemini",   "label": "Gemini 2.5 Pro",    "provider": "openrouter", "id": "google/gemini-2.5-pro" },
+    { "slug": "qwen",     "label": "Qwen3 Coder",       "provider": "openrouter", "id": "qwen/qwen3-coder" }
+  ]
+}

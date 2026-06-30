@@ -1,0 +1,64 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Design Bench config",
+  "type": "object",
+  "required": ["name", "prompt", "models"],
+  "additionalProperties": true,
+  "properties": {
+    "name": { "type": "string", "description": "Run name; also the results/<name> folder." },
+    "description": { "type": "string" },
+    "systemPrompt": { "type": "string", "description": "System message sent to every model." },
+    "prompt": { "type": "string", "description": "The single design brief sent to every model." },
+    "render": {
+      "type": "object",
+      "properties": {
+        "viewportWidth": { "type": "integer" },
+        "viewportHeight": { "type": "integer" },
+        "deviceScaleFactor": { "type": "number" },
+        "fullPage": { "type": "boolean" },
+        "maxFullPageHeight": { "type": "integer" },
+        "waitMs": { "type": "integer" }
+      }
+    },
+    "grid": {
+      "type": "object",
+      "properties": {
+        "columns": { "type": "integer", "minimum": 1 },
+        "cellWidth": { "type": "integer" },
+        "padding": { "type": "integer" },
+        "background": { "type": "string" },
+        "labelHeight": { "type": "integer" },
+        "labelColor": { "type": "string" },
+        "labelFontSize": { "type": "integer" },
+        "title": { "type": "string" }
+      }
+    },
+    "generation": {
+      "type": "object",
+      "properties": {
+        "temperature": { "type": "number" },
+        "maxTokens": { "type": "integer" },
+        "concurrency": { "type": "integer", "minimum": 1 },
+        "timeoutMs": { "type": "integer" },
+        "retries": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "models": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["slug", "label", "provider", "id"],
+        "properties": {
+          "slug": { "type": "string" },
+          "label": { "type": "string" },
+          "provider": { "type": "string", "enum": ["openrouter", "openai", "anthropic"] },
+          "id": { "type": "string" },
+          "temperature": { "type": "number" },
+          "maxTokens": { "type": "integer" },
+          "skipByDefault": { "type": "boolean" }
+        }
+      }
+    }
+  }
+}

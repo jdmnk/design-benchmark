@@ -1,0 +1,26 @@
+{
+  "name": "design-bench",
+  "version": "0.1.0",
+  "description": "A visual design benchmark for LLMs. Ask many models to design & render an HTML page, screenshot each, and lay them out in a side-by-side grid.",
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "bench": "tsx src/run.ts",
+    "generate": "tsx src/run.ts --stage generate",
+    "render": "tsx src/run.ts --stage render",
+    "grid": "tsx src/run.ts --stage grid",
+    "report": "tsx src/run.ts --stage report",
+    "typecheck": "tsc --noEmit",
+    "postinstall": "playwright install chromium"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "playwright": "^1.48.0",
+    "sharp": "^0.33.5"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0"
+  }
+}
