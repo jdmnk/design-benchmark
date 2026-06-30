@@ -54,11 +54,12 @@ export interface GridConfig {
   title?: string;
   /**
    * "banner" (default): a caption strip above each screenshot.
-   * "overlay": the label floats in a translucent pill over the top-left of the
-   *   screenshot, so the render itself fills the whole cell (best for full-bleed
-   *   visual scenes — 3D, particles, SVG art).
+   * "overlay": the label floats in a translucent pill over the top-left.
+   * "topbar": a thin one-line strip across the top of the render (compact).
+   * overlay/topbar let the render fill the whole cell (best for full-bleed
+   * visual scenes — 3D, particles, SVG art).
    */
-  labelStyle?: "banner" | "overlay";
+  labelStyle?: "banner" | "overlay" | "topbar";
   /** Background of the overlay pill (any CSS color, supports rgba). */
   labelOverlayBg?: string;
 }

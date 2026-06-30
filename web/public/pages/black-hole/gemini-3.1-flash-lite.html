@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gargantua Simulation</title>
+    <style>
+        body { margin: 0; overflow: hidden; background: #000; }
+        canvas { display: block; }
+    </style>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+</head>
+<body>
+    <script type="module">
+        import * as THREE from 'three';
+
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Black Hole Horizon
+        const geometry = new THREE.SphereGeometry(1, 64, 64);
+        const material = new THREE.MeshBasicMaterial({ color: 0x000000 });
+        const blackHole = new THREE.Mesh(geometry, material);
+        scene.add(blackHole);
+
+        // Accretion Disk (Torus)
+        const diskGroup = new THREE.Group();
+        const diskGeo = new THREE.TorusGeometry(2.5, 0.6, 2, 128);
+        
+        // Custom shader for disk color and beaming
+        const diskMat = new THREE.ShaderMaterial({
+            uniforms: { time: { value: 0 } },
+            vertexShader: `
+                varying vec2 vUv;
+                void main() {
+                    vUv = uv;
+                    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                }
+            `,
+            fragmentShader: `
+                varying vec2 vUv;
+                void main() {
+                    float dist = distance(vUv.x, 0.5);
+                    vec3 color = mix(vec3(1.0, 0.95, 0.8), vec3(0.78, 0.33, 0.1), dist * 2.0);
+                    float beaming = 1.0 + (vUv.x - 0.5) * 0.5;
+                    gl_FragColor = vec4(color * beaming, 1.0 - dist * 1.5);
+                }
+            `,
+            transparent: true,
+            side: THREE.DoubleSide
+        });
+
+        const disk = new THREE.Mesh(diskGeo, diskMat);
+        disk.rotation.x = Math.PI / 2;
+        diskGroup.add(disk);
+
+        // Lensing Arcs (Top and Bottom)
+        const arcGeo = new THREE.TorusGeometry(1.2, 0.1, 4, 64, Math.PI);
+        const arcMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.6 });
+        const topArc = new THREE.Mesh(arcGeo, arcMat);
+        topArc.position.y = 0.2;
+        const botArc = new THREE.Mesh(arcGeo, arcMat);
+        botArc.rotation.z = Math.PI;
+        botArc.position.y = -0.2;
+        diskGroup.add(topArc, botArc);
+
+        scene.add(diskGroup);
+
+        // Photon Ring
+        const ring = new THREE.Mesh(new THREE.TorusGeometry(1.02, 0.02, 16, 64), new THREE.MeshBasicMaterial({ color: 0xffffff }));
+        ring.rotation.x = Math.PI / 2;
+        scene.add(ring);
+
+        // Stars
+        const starGeo = new THREE.BufferGeometry();
+        const starPos = new Float32Array(1000 * 3);
+        for(let i=0; i<3000; i++) starPos[i] = (Math.random() - 0.5) * 100;
+        starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+        const stars = new THREE.Points(starGeo, new THREE.PointsMaterial({ size: 0.05 }));
+        scene.add(stars);
+
+        camera.position.set(0, 0.8, 8);
+        camera.lookAt(0, 0, 0);
+
+        function animate(t) {
+            requestAnimationFrame(animate);
+            diskGroup.rotation.z = t * 0.0002;
+            renderer.render(scene, camera);
+        }
+        animate(0);
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>

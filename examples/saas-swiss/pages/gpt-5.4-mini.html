@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MERIDIAN — Real-time data analytics</title>
+  <style>
+    :root{
+      --bg:#F4F4F1;
+      --text:#111111;
+      --red:#E2231A;
+      --line:#111111;
+      --gutter:24px;
+      --pad:32px;
+      --max:1440px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family: Helvetica, Arial, Inter, sans-serif;
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+    }
+
+    .page{
+      max-width:var(--max);
+      margin:0 auto;
+      padding:24px var(--pad) 20px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(12, minmax(0, 1fr));
+      column-gap:var(--gutter);
+    }
+
+    .nav{
+      align-items:center;
+      padding-bottom:18px;
+    }
+
+    .wordmark{
+      grid-column:1 / 3;
+      font-size:20px;
+      font-weight:700;
+      letter-spacing:0.08em;
+      line-height:1;
+    }
+
+    .navlinks{
+      grid-column:4 / 10;
+      display:flex;
+      gap:28px;
+      align-items:center;
+      justify-content:flex-start;
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:0.12em;
+      line-height:1;
+    }
+
+    .navlinks a,
+    .footerlinks a,
+    .button,
+    .button-outline{
+      color:var(--text);
+      text-decoration:none;
+    }
+
+    .navcta{
+      grid-column:11 / 13;
+      justify-self:end;
+    }
+
+    .button,
+    .button-outline{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:40px;
+      padding:0 16px;
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:0.12em;
+      line-height:1;
+      white-space:nowrap;
+    }
+
+    .button{
+      background:var(--red);
+      color:#fff;
+      border:1px solid var(--red);
+    }
+
+    .button-outline{
+      border:1px solid var(--line);
+      background:transparent;
+    }
+
+    .hero{
+      padding:28px 0 18px;
+      align-items:end;
+    }
+
+    .eyebrow{
+      grid-column:1 / 3;
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:0.14em;
+      line-height:1.2;
+    }
+
+    .headline{
+      grid-column:1 / 10;
+      margin:12px 0 0;
+      font-size:clamp(68px, 8vw, 104px);
+      line-height:0.9;
+      font-weight:700;
+      letter-spacing:-0.05em;
+      text-transform:uppercase;
+      max-width:9ch;
+    }
+
+    .subheadline{
+      grid-column:1 / 7;
+      margin-top:18px;
+      font-size:18px;
+      line-height:1.35;
+      max-width:34ch;
+    }
+
+    .actions{
+      grid-column:1 / 6;
+      display:flex;
+      gap:12px;
+      margin-top:22px;
+      align-items:center;
+    }
+
+    .rule{
+      height:1px;
+      background:var(--line);
+      margin:22px 0 18px;
+      opacity:1;
+    }
+
+    .features{
+      padding-top:2px;
+      align-items:start;
+    }
+
+    .feature{
+      border-left:1px solid var(--line);
+      padding-left:14px;
+      min-height:92px;
+    }
+
+    .f1{grid-column:1 / 4}
+    .f2{grid-column:4 / 7}
+    .f3{grid-column:7 / 10}
+    .f4{grid-column:10 / 13}
+
+    .number{
+      font-size:12px;
+      font-weight:700;
+      letter-spacing:0.12em;
+      line-height:1;
+      margin-bottom:14px;
+    }
+
+    .ftitle{
+      font-size:18px;
+      font-weight:700;
+      line-height:1.05;
+      margin-bottom:8px;
+    }
+
+    .fdesc{
+      font-size:13px;
+      line-height:1.35;
+      max-width:20ch;
+    }
+
+    .trusted{
+      align-items:center;
+      margin-top:18px;
+      padding-top:10px;
+      border-top:1px solid rgba(17,17,17,0.55);
+    }
+
+    .trustedlabel{
+      grid-column:1 / 2;
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:0.12em;
+      line-height:1;
+    }
+
+    .footerlinks{
+      grid-column:2 / 13;
+      display:grid;
+      grid-template-columns:repeat(6, minmax(0, 1fr));
+      gap:12px;
+      font-size:14px;
+      line-height:1;
+      font-weight:700;
+      letter-spacing:0.02em;
+    }
+
+    .footerlinks span{display:block}
+
+    @media (max-width: 900px){
+      .page{padding-left:20px;padding-right:20px}
+      .navlinks{grid-column:4 / 11; gap:18px}
+      .navcta{grid-column:11 / 13}
+      .headline{grid-column:1 / 12}
+      .subheadline{grid-column:1 / 9}
+      .actions{grid-column:1 / 8}
+      .f1,.f2,.f3,.f4{grid-column:auto}
+      .features{grid-template-columns:repeat(2, minmax(0, 1fr)); row-gap:18px}
+      .trustedlabel{grid-column:1 / 3}
+      .footerlinks{grid-column:3 / 13; grid-template-columns:repeat(3, minmax(0, 1fr)); row-gap:10px}
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="grid nav">
+      <div class="wordmark">MERIDIAN</div>
+      <nav class="navlinks" aria-label="Primary">
+        <a href="#">Product</a>
+        <a href="#">Customers</a>
+        <a href="#">Pricing</a>
+        <a href="#">Docs</a>
+      </nav>
+      <div class="navcta">
+        <a class="button" href="#">Start free</a>
+      </div>
+    </header>
+
+    <section class="grid hero">
+      <div class="eyebrow">Real-time analytics platform</div>
+      <h1 class="headline">See data<br>as it moves</h1>
+      <p class="subheadline">MERIDIAN unifies live pipelines, metrics, and alerts in one fast workspace for teams that need decisions now.</p>
+      <div class="actions">
+        <a class="button" href="#">Start free</a>
+        <a class="button-outline" href="#">View product</a>
+      </div>
+    </section>
+
+    <div class="rule"></div>
+
+    <section class="grid features" aria-label="Feature highlights">
+      <article class="feature f1">
+        <div class="number">01</div>
+        <div class="ftitle">Live streams</div>
+        <div class="fdesc">Ingest and inspect event data with sub-second visibility.</div>
+      </article>
+      <article class="feature f2">
+        <div class="number">02</div>
+        <div class="ftitle">Unified metrics</div>
+        <div class="fdesc">Track product, revenue, and operational signals in one model.</div>
+      </article>
+      <article class="feature f3">
+        <div class="number">03</div>
+        <div class="ftitle">Alerting</div>
+        <div class="fdesc">Detect anomalies instantly and route them to the right team.</div>
+      </article>
+      <article class="feature f4">
+        <div class="number">04</div>
+        <div class="ftitle">Fast dashboards</div>
+        <div class="fdesc">Build crisp views that stay responsive under heavy load.</div>
+      </article>
+    </section>
+
+    <section class="grid trusted" aria-label="Trusted by">
+      <div class="trustedlabel">Trusted by</div>
+      <div class="footerlinks" aria-label="Company wordmarks">
+        <span>Northstar</span>
+        <span>Helix</span>
+        <span>Vanta</span>
+        <span>Arbor</span>
+        <span>Quarry</span>
+        <span>Monarch</span>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

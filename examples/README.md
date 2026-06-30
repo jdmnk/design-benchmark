@@ -1,69 +1,63 @@
 # Examples
 
-Real runs of Design Bench. Every example uses the **same 9 models** — a consistent
-lineup of cheap-but-modern models from the major labs (see
+Real runs of Design Bench. There's also a **showcase web app** that presents these with
+the prompts and per-model metadata — see [`web/`](../web).
+
+Every example uses the **same 9 models** (see
 [`config/models/standard-9.json`](../config/models/standard-9.json)):
 
-> Claude Haiku 4.5 · GPT-5.4 nano · GPT-OSS 120B · Gemini 2.5 Flash · GLM 4.7 Flash · DeepSeek V3.2 · Qwen3 Coder Flash · Kimi K2.5 · Mistral Small 3.2
+> GLM 5.2 · GLM 5.1 · GPT-5.4 mini · Claude Haiku 4.5 · Qwen3.7 Plus · Gemini 3.1 Flash-Lite · DeepSeek V4 Pro · MiMo v2.5 · MiniMax M3
 
-Each folder has the `grid.png` (the deliverable), a `report.md`, and a `summary.json`
-(per-model time + tokens). Each grid cell is labelled with the model name and its
-**time-to-completion + output tokens**. Reproduce any of them with:
+Each folder has the `grid.png` (the deliverable), a `report.md`, a `summary.json`
+(per-model time + tokens + status), and `pages/` (the actual HTML each model produced —
+open them in a browser). Each grid cell carries a thin top-bar label: model name · time ·
+output tokens. Reproduce any with:
 
 ```bash
-npm run bench -- --config config/examples/<name>.config.json
+npm run bench                                                  # saas-swiss (default)
+npm run bench -- --config config/examples/black-hole.config.json
+npm run bench -- --config config/examples/sunset-svg.config.json
 ```
 
-These runs are deterministic where it matters: animation examples seed `Math.random`
-and step a virtual clock, so re-running produces the **same frame** (verified
-pixel-identical for both Canvas2D and WebGL).
+The prompts are deliberately **detailed and prescriptive** so the comparison is about
+execution, not interpretation.
 
 ---
 
-## threejs-orb — 3D / WebGL
+## saas-swiss — Swiss / International Typographic Style landing page
 
-Each model writes a full-screen three.js scene of a glowing orb. Models `import * as THREE from 'three'`
-and pull in add-ons (`three/addons/...`) naturally — the local render server resolves
-them from a pinned, vendored copy. The actual generated HTML is in
-[`threejs-orb/pages/`](threejs-orb/pages) — open any of them.
+A precise brief (MERIDIAN, a data-analytics SaaS) in strict Swiss style — Helvetica grid,
+one signal-red accent, numbered feature columns — packed densely toward the top and
+captured as a fixed crop. Config: [`config/benchmark.config.json`](../config/benchmark.config.json).
 
-![threejs-orb](threejs-orb/grid.png)
+![saas-swiss](saas-swiss/grid.png)
 
-## svg-poster — vector art
+## black-hole — Interstellar "Gargantua" in three.js / WebGL
 
-Each model hand-codes a single inline `<svg>` poster. Bold typography, layered gradients,
-ambient animation. Source SVGs in [`svg-poster/pages/`](svg-poster/pages).
+A hard, very prescriptive 3D brief: black event-horizon sphere, near-edge-on accretion
+disk, gravitational-lensing halo arcs, photon ring, specific colors and camera. It
+discriminates sharply — several slower/reasoning models time out or exhaust tokens before
+answering (visible in the per-model table). Config:
+[`config/examples/black-hole.config.json`](../config/examples/black-hole.config.json).
 
-![svg-poster](svg-poster/grid.png)
+![black-hole](black-hole/grid.png)
 
-## particle-flow — Canvas 2D
+## sunset-svg — a single inline-SVG scene
 
-A full-screen animated particle flow field, plain Canvas + requestAnimationFrame, no
-libraries. Frame-stepped deterministically so the captured frame is reproducible.
+Sun setting behind a layered mountain range, with clouds and a reflecting river — exact
+composition specified so outputs line up. Pure hand-coded vector art, no libraries.
+Config: [`config/examples/sunset-svg.config.json`](../config/examples/sunset-svg.config.json).
 
-![particle-flow](particle-flow/grid.png)
-
-## css-cosmos — pure CSS
-
-No JS, no images — an animated cosmic scene with HTML + CSS only.
-
-![css-cosmos](css-cosmos/grid.png)
-
-## saas-landing-page — "website" mode
-
-The other rendering mode: full-page screenshots with caption banners instead of overlay
-labels. Six… nine models design the same SaaS landing page. Real generated HTML in
-[`saas-landing-page/pages/`](saas-landing-page/pages).
-
-![saas-landing-page](saas-landing-page/grid.png)
+![sunset-svg](sunset-svg/grid.png)
 
 ---
 
-### Notes from these runs
+### Notes
 
-- All on cheap models — a full 9-model creative run is a few cents.
-- Cells render full-bleed and are cropped to a fixed dense top (fixed viewport, not full
-  page), so the grid stays tidy regardless of how each model laid things out.
 - A model that errors, times out, or returns no HTML renders as a graceful "no output"
-  placeholder (still labelled with its time) — the grid always builds. You can see this
-  on Kimi K2.5 in css-cosmos, which exceeded the time budget.
+  placeholder (still labelled with its time) — the grid always builds. The `summary.json`
+  and the web app record the exact reason.
+- The black-hole and sunset briefs are intentionally hard; the same few reasoning-heavy
+  models (GLM 5.1, MiMo v2.5, MiniMax M3, DeepSeek V4 Pro) repeatedly time out or return
+  empty completions on them, while GPT-5.4 mini, Claude Haiku 4.5, Qwen3.7 Plus, Gemini
+  3.1 Flash-Lite and GLM 5.2 are the consistent finishers.

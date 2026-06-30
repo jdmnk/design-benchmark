@@ -1,0 +1,39 @@
+{
+  "$schema": "../schema.json",
+  "name": "black-hole",
+  "description": "Realistic supermassive black hole ('Gargantua' from Interstellar) in three.js/WebGL. Prescriptive composition so outputs are directly comparable. Deterministic captured frame.",
+
+  "systemPrompt": "You are a creative WebGL / three.js developer. Output a SINGLE self-contained HTML document. three.js r160 is available as an ES module — import it with `import * as THREE from 'three'` and add-ons from `three/addons/...` inside a <script type=\"module\"> (an importmap resolves these for you). The scene must fill the entire viewport (100vw x 100vh), start animating automatically with no user interaction, and look right within 2 seconds. Follow the composition exactly — this is a controlled comparison, do not improvise the layout or camera.",
+
+  "prompt": "Render a realistic supermassive black hole — the 'Gargantua' look from the film Interstellar — as a full-screen three.js scene. Match this exact composition so results are comparable:\n\n- The black hole (event horizon) is a perfectly black sphere centered in the frame, its diameter about 28% of the viewport height.\n- A bright, thin accretion disk lies in a HORIZONTAL plane around the sphere and is viewed nearly edge-on: the camera sits only about 5–8 degrees above the disk plane, so the disk reads as a near-horizontal bright band cutting across the sphere's middle and extending well past it on both sides.\n- Gravitational lensing: the far side of the disk appears bent UP and OVER the top of the black sphere AND mirrored UNDER the bottom, forming the signature bright halo arcs above and below the horizon (not merely a flat ring). Approximate this with extra bright arcs wrapping over and under the sphere.\n- A thin, bright photon ring hugs the very edge of the black sphere.\n- Disk coloring: hot white-yellow on the inner edge fading outward to amber then deep orange (#fff3d0 → #ffae3b → #c8551a). Make one side of the disk slightly brighter than the other (relativistic beaming).\n- Background: near-black space with a sparse, dim starfield. The disk rotates slowly.\n\nKeep the black hole centered and the disk horizontal. Return ONLY a single complete HTML document.",
+
+  "render": {
+    "viewportWidth": 1280,
+    "viewportHeight": 800,
+    "fullPage": false,
+    "waitMs": 4000,
+    "freezeClock": true,
+    "seed": 7
+  },
+
+  "grid": {
+    "columns": 3,
+    "cellWidth": 620,
+    "padding": 8,
+    "background": "#050507",
+    "labelStyle": "topbar",
+    "labelColor": "#ffffff",
+    "labelFontSize": 20,
+    "labelOverlayBg": "rgba(10,12,16,0.66)"
+  },
+
+  "generation": {
+    "temperature": 0.7,
+    "maxTokens": 14000,
+    "concurrency": 9,
+    "timeoutMs": 300000,
+    "retries": 0
+  },
+
+  "models": "../models/standard-9.json"
+}

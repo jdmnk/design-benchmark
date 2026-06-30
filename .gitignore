@@ -1,6 +1,9 @@
 node_modules/
 .runtime/
 .env
+web/node_modules/
+web/dist/
+.vercel/
 results/*/
 !results/.gitkeep
 *.log

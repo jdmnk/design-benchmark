@@ -31,7 +31,7 @@
         "labelColor": { "type": "string" },
         "labelFontSize": { "type": "integer" },
         "title": { "type": "string" },
-        "labelStyle": { "type": "string", "enum": ["banner", "overlay"], "description": "banner = caption strip above each cell; overlay = pill over the render's top-left." },
+        "labelStyle": { "type": "string", "enum": ["banner", "overlay", "topbar"], "description": "banner = caption strip above each cell; overlay = pill over the render's top-left; topbar = thin one-line strip across the top of the render." },
         "labelOverlayBg": { "type": "string", "description": "Background color of the overlay pill (supports rgba)." }
       }
     },

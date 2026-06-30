@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MERIDIAN – Real-Time Data Analytics Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+            background-color: #F4F4F1;
+            color: #111111;
+            line-height: 1.4;
+            font-size: 14px;
+        }
+
+        /* Grid system: 12 columns, 16px gutters */
+        .container {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 16px;
+            padding: 0 16px;
+            max-width: 1440px;
+            margin: 0 auto;
+        }
+
+        /* ─────────────────────────────────────────────────────────────────────────────────────── */
+        /* NAVIGATION BAR */
+        /* ─────────────────────────────────────────────────────────────────────────────────────── */
+
+        nav {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 16px;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid #111111;
+        }
+
+        .nav-wordmark {
+            grid-column: 1 / 3;
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+        }
+
+        .nav-links {
+            grid-column: 3 / 10;
+            display: flex;
+            gap: 40px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            font-size: 13px;
+            text-decoration: none;
+            color: #111111;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            color: #E2231A;
+        }
+
+        .nav-cta {
+            grid-column: 10 / -1;
+            text-align: right;
+        }
+
+        .btn-primary {
+            display: inline-block;
+            background-color: #E2231A;
+            color: #F4F4F1;
+            padding: 10px 20px;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .btn-primary:hover {
+            background-color: #B81A14;
+        }
+
+        /* ─────────────────────────────────────────────────────────────────────────────────────── */
+        /* HERO SECTION */
+        /* ─────────────────────────────────────────────────────────────────────────────────────── */
+
+        .hero {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 16px;
+            padding: 40px 0 60px 0;
+        }
+
+        .hero-eyebrow {
+            grid-column: 1 / -1;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: #E2231A;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .hero-headline {
+            grid-column: 1 / 9;
+            font-size: 56px;
+            font-weight: 700;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+        }
+
+        .hero-subheadline {
+            grid-column: 1 / 9;
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 1.5;
+            margin-top: 20px;
+            max-width: 520px;
+        }
+
+        .hero-ctas {
+            grid-column: 1 / 9;
+            display: flex;
+            gap: 16px;
+            margin-top: 32px;
+        }
+
+        .btn-secondary {
+            display: inline-block;
+            background-color: transparent;
+            color: #111111;
+            padding: 10px 20px;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            border: 1px solid #111111;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .btn-secondary:hover {
+            background-color: #111111;
+            color: #F4F4F1;
+        }
+
+        /* ─────────────────────────────────────────────────────────────────────────────────────── */
+        /* DIVIDER RULE */
+        /* ─────────────────────────────────────────────────────────────────────────────────────── */
+
+        .divider {
+            grid-column: 1 / -1;
+            height: 1px;
+            background-color: #111111;
+            margin: 20px 0;
+        }
+
+        /* ─────────────────────────────────────────────────────────────────────────────────────── */
+        /* FEATURES ROW */
+        /* ─────────────────────────────────────────────────────────────────────────────────────── */
+
+        .features {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 16px;
+            padding: 40px 0;
+        }
+
+        .feature {
+            grid-column: span 3;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .feature-number {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #E2231A;
+            margin-bottom: 8px;
+        }
+
+        .feature-title {
+            font-size: 15px;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-bottom: 8px;
+        }
+
+        .feature-description {
+            font-size: 13px;
+            font-weight: 400;
+            line-height: 1.4;
+            color: #111111;
+        }
+
+        /* ─────────────────────────────────────────────────────────────────────────────────────── */
+        /* TRUSTED BY SECTION */
+        /* ─────────────────────────────────────────────────────────────────────────────────────── */
+
+        .trusted-by {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 16px;
+            padding: 40px 0;
+            border-top: 1px solid #111111;
+            border-bottom: 1px solid #111111;
+        }
+
+        .trusted-label {
+            grid-column: 1 / 2;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            font-weight: 600;
+            align-self: center;
+        }
+
+        .trusted-logos {
+            grid-column: 2 / -1;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 32px;
+        }
+
+        .logo {
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: #111111;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation -->
+        <nav>
+            <div class="nav-wordmark">MERIDIAN</div>
+            <ul class="nav-links">
+                <li><a href="#product">Product</a></li>
+                <li><a href="#customers">Customers</a></li>
+                <li><a href="#pricing">Pricing</a></li>
+                <li><a href="#docs">Docs</a></li>
+            </ul>
+            <div class="nav-cta">
+                <a href="#start" class="btn-primary">Start free</a>
+            </div>
+        </nav>
+
+        <!-- Hero Section -->
+        <div class="hero">
+            <div class="hero-eyebrow">Real-Time Intelligence</div>
+            <h1 class="hero-headline">See your data flow live</h1>
+            <p class="hero-subheadline">Stream, process, and visualize terabytes of data with sub-second latency. Built for teams that move fast.</p>
+            <div class="hero-ctas">
+                <a href="#start" class="btn-primary">Start free trial</a>
+                <a href="#demo" class="btn-secondary">Watch demo</a>
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <div class="divider"></div>
+
+        <!-- Features -->
+        <div class="features">
+            <div class="feature">
+                <div class="feature-number">01</div>
+                <div class="feature-title">Ingest at Scale</div>
+                <div class="feature-description">Collect millions of events per second from any source without buffering.</div>
+            </div>
+            <div class="feature">
+                <div class="feature-number">02</div>
+                <div class="feature-title">Query Instantly</div>
+                <div class="feature-description">Run complex aggregations across petabytes in under one second.</div>
+            </div>
+            <div class="feature">
+                <div class="feature-number">03</div>
+                <div class="feature-title">Visualize Anywhere</div>
+                <div class="feature-description">Build dashboards and alerts with our API or drag-and-drop editor.</div>
+            </div>
+            <div class="feature">
+                <div class="feature-number">04</div>
+                <div class="feature-title">Integrate Seamlessly</div>
+                <div class="feature-description">Connect to Kafka, S3, Postgres, Snowflake, and 100+ data sources.</div>
+            </div>
+        </div>
+
+        <!-- Trusted By -->
+        <div class="trusted-by">
+            <div class="trusted-label">Trusted by</div>
+            <div class="trusted-logos">
+                <div class="logo">Vertex</div>
+                <div class="logo">Prism</div>
+                <div class="logo">Lattice</div>
+                <div class="logo">Apex</div>
+                <div class="logo">Nexus</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

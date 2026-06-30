@@ -10,9 +10,11 @@ particle systems, hand-coded SVG art, pure-CSS scenes**, anything that renders.
 
 ![example grid](docs/example-grid.png)
 
-> One brief ("design an SVG travel poster"), nine models, rendered side by side. See
-> **[`examples/`](examples/)** for this plus 3D, particle, CSS, and landing-page runs —
-> including the actual HTML each model produced.
+> One brief (a Swiss-style SaaS landing page), nine models, rendered side by side. See
+> **[`examples/`](examples/)** for this plus an Interstellar-style black hole (three.js)
+> and a hand-coded SVG sunset — including the actual HTML each model produced. There's
+> also a **[showcase web app](web/)** (React/Vite, deployable to Vercel) that presents the
+> runs with their prompts and per-model metadata.
 
 ---
 
@@ -64,9 +66,9 @@ editor autocomplete.
 
 ```jsonc
 {
-  "name": "threejs-orb",
+  "name": "black-hole",
   "systemPrompt": "You are a creative three.js developer...",
-  "prompt": "Create a mesmerizing full-screen scene of a glowing orb...",
+  "prompt": "Render a realistic supermassive black hole — Interstellar's Gargantua...",
   "render": {
     "viewportWidth": 1280, "viewportHeight": 800,
     "fullPage": false,            // fixed dense top-crop, not the whole scrollable page
@@ -75,18 +77,22 @@ editor autocomplete.
   },
   "grid": {
     "columns": 3, "cellWidth": 620,
-    "labelStyle": "overlay"       // label floats over the render (vs "banner" above it)
+    "labelStyle": "topbar"        // thin one-line strip on top (vs "overlay" pill / "banner" above)
   },
-  "generation": { "temperature": 0.9, "maxTokens": 9000, "concurrency": 9 },
-  "models": "models/standard-9.json"   // inline array, or a path to a shared lineup
+  "generation": { "temperature": 0.7, "maxTokens": 14000, "concurrency": 9 },
+  "models": "../models/standard-9.json" // inline array, or a path to a shared lineup
 }
 ```
 
+Each grid cell's label shows **model name · time · output tokens**. Label styles: `topbar`
+(thin one-line strip over the top of the render), `overlay` (corner pill), or `banner` (a
+caption strip above each cell, used with full-page website screenshots).
+
 `models` can be an inline array or a **path to a shared lineup file** so many configs use
 the same models — the examples all use
-[`config/models/standard-9.json`](config/models/standard-9.json): Claude Haiku 4.5,
-GPT-5.4 nano, GPT-OSS 120B, Gemini 2.5 Flash, GLM 4.7 Flash, DeepSeek V3.2, Qwen3 Coder
-Flash, Kimi K2.5, Mistral Small 3.2.
+[`config/models/standard-9.json`](config/models/standard-9.json): GLM 5.2, GLM 5.1,
+GPT-5.4 mini, Claude Haiku 4.5, Qwen3.7 Plus, Gemini 3.1 Flash-Lite, DeepSeek V4 Pro,
+MiMo v2.5, MiniMax M3.
 
 ---
 
@@ -182,6 +188,23 @@ CLI: `--config/-c`, `--stage/-s` (`all|generate|render|grid|report`), `--model/-
 
 ---
 
+## Showcase web app
+
+[`web/`](web) is a small React + Vite + TypeScript site that presents the runs as a single
+scrollable page — each benchmark shows its grid, and an expandable section reveals the full
+prompt and a per-model table (status, time, output tokens, error reason, and a link to the
+actual generated page). It's built to deploy to **Vercel** (config in `vercel.json`; set
+the project root to the repo and it runs `cd web && npm install && npm run build`).
+
+```bash
+node scripts/build-web-data.mjs   # regenerate web data from the latest runs (do this after a run)
+cd web && npm install && npm run dev
+```
+
+`scripts/build-web-data.mjs` reads the configs + committed example runs and writes
+`web/src/data/benchmarks.json` plus the grid images and per-model HTML into `web/public/`,
+so Vercel builds purely from committed files.
+
 ## Output layout
 
 ```
@@ -205,7 +228,8 @@ design-bench/
 │   ├── schema.json               # JSON schema for configs
 │   ├── importmap.json            # bare-specifier → vendored-lib map
 │   ├── models/standard-9.json    # the shared 9-model lineup
-│   └── examples/*.config.json    # threejs, particles, svg, css, dashboard…
+│   └── examples/*.config.json    # black-hole (3D), sunset-svg…
+├── web/                          # showcase app (React/Vite/TS, deploy to Vercel)
 ├── scripts/setup-browser-deps.sh # rootless Chromium deps installer
 ├── src/
 │   ├── run.ts                    # CLI / orchestrator
@@ -233,8 +257,9 @@ design-bench/
   three.js add-ons normally, while keeping libraries pinned + vendored for determinism.
 - **Fixed dense top-crop** (`fullPage: false`) — every cell is the same aspect, so the grid
   stays tidy and "presentation-ready" no matter how each model laid out its page.
-- **Overlay labels** — model name + time + tokens float over the render (`labelStyle:
-  "overlay"`), matching a clean side-by-side gallery look; `"banner"` puts them above.
+- **Compact labels** — model name + time + tokens in a thin one-line strip over the render
+  (`labelStyle: "topbar"`), for a clean gallery look that wastes no space; `"overlay"`
+  (corner pill) and `"banner"` (strip above) are also available.
 - **Determinism by construction** — seeded RNG + virtual clock make animated renders
   reproducible.
 - **Stages are resumable**; **`--dry-run`** exercises render→grid→report with zero API spend.

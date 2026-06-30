@@ -1,0 +1,126 @@
+{
+  "name": "sunset-svg",
+  "prompt": "Illustrate a serene sunset landscape as a single inline SVG. Match this composition so results are comparable:\n\n- Sky fills the top ~55% of the scene: a smooth vertical sunset gradient, deep blue/indigo at the very top, through magenta/pink, to warm orange/gold near the horizon.\n- The sun is a soft glowing circle sitting LOW on the horizon, centered horizontally (about 50% width) and positioned just above and slightly behind the tallest mountain peak.\n- A layered mountain range as silhouettes across the middle of the scene: 2–3 overlapping ridgelines, each darker/closer toward the front, with the tallest peak near the center directly in front of the sun.\n- A few soft, elongated clouds in the upper sky, tinted warm by the sunset.\n- A river in the foreground (bottom ~20%) widening as it flows toward the viewer from the base of the mountains, reflecting the sun as a vertical shimmer of warm light down its center.\n\nSmooth gradients, clean layered vector shapes, a cohesive warm palette, clear depth. Optionally add subtle ambient motion (slowly drifting clouds or a shimmering reflection). It is JUST the scene — no text, no UI, no border. Return ONLY a single complete HTML document.",
+  "generatedAt": "2026-06-30T19:18:58.624Z",
+  "models": [
+    {
+      "slug": "glm-5.2",
+      "label": "GLM 5.2",
+      "provider": "openrouter",
+      "modelId": "z-ai/glm-5.2",
+      "ok": true,
+      "htmlExtracted": true,
+      "elapsedMs": 91827,
+      "usage": {
+        "promptTokens": 383,
+        "completionTokens": 7692,
+        "totalTokens": 8075
+      },
+      "startedAt": "2026-06-30T19:13:39.622Z"
+    },
+    {
+      "slug": "glm-5.1",
+      "label": "GLM 5.1",
+      "provider": "openrouter",
+      "modelId": "z-ai/glm-5.1",
+      "ok": false,
+      "error": "This operation was aborted",
+      "htmlExtracted": false,
+      "elapsedMs": 300005,
+      "startedAt": "2026-06-30T19:13:39.631Z"
+    },
+    {
+      "slug": "gpt-5.4-mini",
+      "label": "GPT-5.4 mini",
+      "provider": "openrouter",
+      "modelId": "openai/gpt-5.4-mini",
+      "ok": true,
+      "htmlExtracted": true,
+      "elapsedMs": 12591,
+      "usage": {
+        "promptTokens": 379,
+        "completionTokens": 2147,
+        "totalTokens": 2526
+      },
+      "startedAt": "2026-06-30T19:13:39.632Z"
+    },
+    {
+      "slug": "claude-haiku-4.5",
+      "label": "Claude Haiku 4.5",
+      "provider": "openrouter",
+      "modelId": "anthropic/claude-haiku-4.5",
+      "ok": true,
+      "htmlExtracted": true,
+      "elapsedMs": 12710,
+      "usage": {
+        "promptTokens": 421,
+        "completionTokens": 2596,
+        "totalTokens": 3017
+      },
+      "startedAt": "2026-06-30T19:13:39.633Z"
+    },
+    {
+      "slug": "qwen3.7-plus",
+      "label": "Qwen3.7 Plus",
+      "provider": "openrouter",
+      "modelId": "qwen/qwen3.7-plus",
+      "ok": true,
+      "htmlExtracted": true,
+      "elapsedMs": 137299,
+      "usage": {
+        "promptTokens": 400,
+        "completionTokens": 7507,
+        "totalTokens": 7907
+      },
+      "startedAt": "2026-06-30T19:13:39.634Z"
+    },
+    {
+      "slug": "gemini-3.1-flash-lite",
+      "label": "Gemini 3.1 Flash-Lite",
+      "provider": "openrouter",
+      "modelId": "google/gemini-3.1-flash-lite",
+      "ok": true,
+      "htmlExtracted": true,
+      "elapsedMs": 3553,
+      "usage": {
+        "promptTokens": 381,
+        "completionTokens": 920,
+        "totalTokens": 1301
+      },
+      "startedAt": "2026-06-30T19:13:39.635Z"
+    },
+    {
+      "slug": "deepseek-v4-pro",
+      "label": "DeepSeek V4 Pro",
+      "provider": "openrouter",
+      "modelId": "deepseek/deepseek-v4-pro",
+      "ok": false,
+      "error": "This operation was aborted",
+      "htmlExtracted": false,
+      "elapsedMs": 300003,
+      "startedAt": "2026-06-30T19:13:39.636Z"
+    },
+    {
+      "slug": "mimo-v2.5",
+      "label": "MiMo v2.5",
+      "provider": "openrouter",
+      "modelId": "xiaomi/mimo-v2.5",
+      "ok": false,
+      "error": "This operation was aborted",
+      "htmlExtracted": false,
+      "elapsedMs": 300005,
+      "startedAt": "2026-06-30T19:13:39.636Z"
+    },
+    {
+      "slug": "minimax-m3",
+      "label": "MiniMax M3",
+      "provider": "openrouter",
+      "modelId": "minimax/minimax-m3",
+      "ok": false,
+      "error": "Empty completion. Raw: {\"id\":\"gen-1782846819-2fAt1rdRmz21iBOkvjll\",\"object\":\"chat.completion\",\"created\":1782846819,\"model\":\"minimax/minimax-m3-20260531\",\"provider\":\"Novita\",\"system_fingerprint\":null,\"service_tier\":null,\"choices\":[{\"index\":0,\"logprobs\":null,\"finish_reason\":\"length\",\"native_finish_reason\":\"length\",\"message\":{\"role\":\"assistant\",\"content\":null,\"refusal\":null,\"reasoning\":\"\\nThe user wants a serene sunset landscape as a single inline SVG. Let me plan this out carefully.\\n\\nComposition requirements:\\n- viewB",
+      "htmlExtracted": false,
+      "elapsedMs": 103286,
+      "startedAt": "2026-06-30T19:13:39.637Z"
+    }
+  ]
+}

@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MERIDIAN — Real-time Data Analytics</title>
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html {
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, Inter, sans-serif;
+    background: #F4F4F1;
+    color: #111111;
+    line-height: 1.35;
+  }
+
+  .container {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+
+  /* ── Navigation ── */
+  nav {
+    border-bottom: 1px solid #111;
+  }
+
+  nav .container {
+    display: flex;
+    align-items: center;
+    height: 52px;
+  }
+
+  .wordmark {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 28px;
+    margin-left: 48px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: #111;
+  }
+
+  .nav-links a:hover { color: #E2231A; }
+
+  .nav-right {
+    margin-left: auto;
+  }
+
+  .btn-red {
+    display: inline-block;
+    background: #E2231A;
+    color: #F4F4F1;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 8px 22px;
+    border: 1px solid #E2231A;
+    transition: background 0.15s;
+  }
+
+  .btn-red:hover { background: #b81d15; border-color: #b81d15; }
+
+  /* ── Hero ── */
+  .hero {
+    padding: 52px 0 44px;
+  }
+
+  .eyebrow {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #E2231A;
+    margin-bottom: 14px;
+  }
+
+  .hero h1 {
+    font-size: 80px;
+    font-weight: 700;
+    line-height: 0.88;
+    letter-spacing: -0.035em;
+    margin-bottom: 18px;
+  }
+
+  .hero-sub {
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.5;
+    max-width: 440px;
+    margin-bottom: 26px;
+    color: #333;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 14px;
+  }
+
+  .btn-primary {
+    display: inline-block;
+    background: #E2231A;
+    color: #F4F4F1;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 12px 28px;
+    border: 1px solid #E2231A;
+    transition: background 0.15s;
+  }
+
+  .btn-primary:hover { background: #b81d15; border-color: #b81d15; }
+
+  .btn-outline {
+    display: inline-block;
+    background: transparent;
+    color: #111;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 12px 28px;
+    border: 1px solid #111;
+    transition: background 0.15s;
+  }
+
+  .btn-outline:hover { background: #111; color: #F4F4F1; }
+
+  /* ── Divider ── */
+  .rule {
+    border: none;
+    border-top: 1px solid #111;
+  }
+
+  /* ── Features ── */
+  .features {
+    padding: 28px 0 0;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    column-gap: 0;
+  }
+
+  .feature {
+    padding: 16px 24px 20px 0;
+    border-top: 1px solid #111;
+    position: relative;
+  }
+
+  .feature:not(:first-child) {
+    border-left: 1px solid #111;
+    padding-left: 24px;
+  }
+
+  .feature-num {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    color: #E2231A;
+    margin-bottom: 8px;
+  }
+
+  .feature-title {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+  }
+
+  .feature-desc {
+    font-size: 12.5px;
+    font-weight: 400;
+    line-height: 1.45;
+    color: #555;
+  }
+
+  /* ── Trusted ── */
+  .trusted {
+    padding: 20px 0 24px;
+    border-top: 1px solid #111;
+  }
+
+  .trusted-label {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: #999;
+    margin-bottom: 10px;
+  }
+
+  .trusted-row {
+    display: flex;
+    gap: 0;
+    align-items: center;
+  }
+
+  .trusted-row span {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #aaa;
+    padding: 0 28px;
+    border-right: 1px solid #ccc;
+  }
+
+  .trusted-row span:first-child { padding-left: 0; }
+  .trusted-row span:last-child { border-right: none; }
+</style>
+</head>
+<body>
+
+<!-- 1. Navigation -->
+<nav>
+  <div class="container">
+    <div class="wordmark">MERIDIAN</div>
+    <ul class="nav-links">
+      <li><a href="#">Product</a></li>
+      <li><a href="#">Customers</a></li>
+      <li><a href="#">Pricing</a></li>
+      <li><a href="#">Docs</a></li>
+    </ul>
+    <div class="nav-right">
+      <a href="#" class="btn-red">Start free</a>
+    </div>
+  </div>
+</nav>
+
+<!-- 2. Hero -->
+<section class="hero">
+  <div class="container">
+    <div class="eyebrow">Real-time analytics platform</div>
+    <h1>Data moves.<br>Decisions follow.</h1>
+    <p class="hero-sub">Meridian turns live data streams into actionable intelligence the moment your business needs it.</p>
+    <div class="hero-actions">
+      <a href="#" class="btn-primary">Get started</a>
+      <a href="#" class="btn-outline">Watch demo</a>
+    </div>
+  </div>
+</section>
+
+<!-- 3. Divider -->
+<hr class="rule">
+
+<!-- 4. Features -->
+<section class="features">
+  <div class="container">
+    <div class="features-grid">
+      <div class="feature">
+        <div class="feature-num">01</div>
+        <div class="feature-title">Live ingestion</div>
+        <div class="feature-desc">Stream millions of events per second with sub-millisecond latency.</div>
+      </div>
+      <div class="feature">
+        <div class="feature-num">02</div>
+        <div class="feature-title">Ad-hoc queries</div>
+        <div class="feature-desc">Explore any dataset instantly without pre-aggregation or indexing.</div>
+      </div>
+      <div class="feature">
+        <div class="feature-num">03</div>
+        <div class="feature-title">Anomaly detection</div>
+        <div class="feature-desc">Automated alerts surface deviations before they become incidents.</div>
+      </div>
+      <div class="feature">
+        <div class="feature-num">04</div>
+        <div class="feature-title">Unified dashboards</div>
+        <div class="feature-desc">Combine metrics from every source into a single operational view.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5. Trusted by -->
+<section class="trusted">
+  <div class="container">
+    <div class="trusted-label">Trusted by</div>
+    <div class="trusted-row">
+      <span>Vantage</span>
+      <span>Northvolt</span>
+      <span>Klarna</span>
+      <span>Arable</span>
+      <span>Clearbit</span>
+      <span>Verkada</span>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>

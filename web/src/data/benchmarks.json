@@ -1,0 +1,337 @@
+{
+  "benchmarks": [
+    {
+      "id": "saas-swiss",
+      "title": "Saas Swiss",
+      "description": "Swiss / International Typographic Style SaaS landing page. Detailed, prescriptive brief so model outputs are directly comparable. Dense toward the top; captured as a fixed top-crop.",
+      "prompt": "Design the top of the landing page for a fictional SaaS product called «MERIDIAN», a real-time data-analytics platform. Render it in a strict Swiss / International Typographic Style and pack the content densely so it all fits within the first screen (roughly the top 800px).\n\nStyle rules (follow exactly):\n- Typeface: Helvetica / Arial / Inter only. Build on a visible 12-column grid with consistent gutters; everything flush-left.\n- Palette: off-white background #F4F4F1, near-black text #111111, and ONE accent color, signal red #E2231A. No gradients, no drop shadows, no rounded corners, no emoji, no photos.\n- Typography: a very large, tight headline; clear hierarchy; small uppercase labels with letter-spacing for section/eyebrow text. Use rules (thin horizontal/vertical lines) to structure the page.\n\nContent and order (top to bottom, all above the fold):\n1. A top navigation bar: the wordmark «MERIDIAN» on the left; nav links Product, Customers, Pricing, Docs; and a red 'Start free' button on the right.\n2. A hero: an eyebrow label, an oversized headline of at most 6 words, a one-sentence subheadline, and two calls to action (a solid red primary, a bordered secondary).\n3. A full-width thin horizontal rule.\n4. A row of four numbered feature columns (01–04), each with a short bold title and a one-line description.\n5. A thin 'Trusted by' row of 5–6 plausible company wordmarks rendered as plain text.\n\nReturn ONLY a single complete HTML document.",
+      "systemPrompt": "You are an elite product and web designer who specializes in the Swiss / International Typographic Style. Output a SINGLE self-contained HTML document with all CSS embedded. No external assets, no images, no icon fonts, and no JavaScript. Follow the brief precisely — this is a controlled comparison, not a place to improvise layout or content.",
+      "render": {
+        "viewport": "1280×800",
+        "fullPage": false,
+        "waitMs": 1200,
+        "deterministic": false
+      },
+      "grid": {
+        "image": "grids/saas-swiss.png",
+        "columns": 3
+      },
+      "models": [
+        {
+          "label": "GLM 5.2",
+          "modelId": "z-ai/glm-5.2",
+          "provider": "openrouter",
+          "status": "rendered",
+          "elapsedMs": 42141,
+          "outputTokens": 2740,
+          "error": null,
+          "page": "pages/saas-swiss/glm-5.2.html"
+        },
+        {
+          "label": "GLM 5.1",
+          "modelId": "z-ai/glm-5.1",
+          "provider": "openrouter",
+          "status": "rendered",
+          "elapsedMs": 138246,
+          "outputTokens": 4831,
+          "error": null,
+          "page": "pages/saas-swiss/glm-5.1.html"
+        },
+        {
+          "label": "GPT-5.4 mini",
+          "modelId": "openai/gpt-5.4-mini",
+          "provider": "openrouter",
+          "status": "rendered",
+          "elapsedMs": 13163,
+          "outputTokens": 2026,
+          "error": null,
+          "page": "pages/saas-swiss/gpt-5.4-mini.html"
+        },
+        {
+          "label": "Claude Haiku 4.5",
+          "modelId": "anthropic/claude-haiku-4.5",
+          "provider": "openrouter",
+          "status": "rendered",
+          "elapsedMs": 22425,
+          "outputTokens": 2904,
+          "error": null,
+          "page": "pages/saas-swiss/claude-haiku-4.5.html"
+        },
+        {
+          "label": "Qwen3.7 Plus",
+          "modelId": "qwen/qwen3.7-plus",
+          "provider": "openrouter",
+          "status": "rendered",
+          "elapsedMs": 61863,
+          "outputTokens": 3354,
+          "error": null,
+          "page": "pages/saas-swiss/qwen3.7-plus.html"
+        },
+        {
+          "label": "Gemini 3.1 Flash-Lite",
+          "modelId": "google/gemini-3.1-flash-lite",
+          "provider": "openrouter",
+          "status": "rendered",
+          "elapsedMs": 5461,
+          "outputTokens": 1439,
+          "error": null,
+          "page": "pages/saas-swiss/gemini-3.1-flash-lite.html"
+        },
+        {
+          "label": "DeepSeek V4 Pro",
+          "modelId": "deepseek/deepseek-v4-pro",
+          "provider": "openrouter",
+          "status": "rendered",
+          "elapsedMs": 178731,
+          "outputTokens": 14465,
+          "error": null,
+          "page": "pages/saas-swiss/deepseek-v4-pro.html"
+        },
+        {
+          "label": "MiMo v2.5",
+          "modelId": "xiaomi/mimo-v2.5",
+          "provider": "openrouter",
+          "status": "error",
+          "elapsedMs": 300008,
+          "outputTokens": null,
+          "error": "Timed out before completing.",
+          "page": null
+        },
+        {
+          "label": "MiniMax M3",
+          "modelId": "minimax/minimax-m3",
+          "provider": "openrouter",
+          "status": "rendered",
+          "elapsedMs": 81721,
+          "outputTokens": 10000,
+          "error": null,
+          "page": "pages/saas-swiss/minimax-m3.html"
+        }
+      ],
+      "rendered": 8,
+      "total": 9
+    },
+    {
+      "id": "black-hole",
+      "title": "Black Hole",
+      "description": "Realistic supermassive black hole ('Gargantua' from Interstellar) in three.js/WebGL. Prescriptive composition so outputs are directly comparable. Deterministic captured frame.",
+      "prompt": "Render a realistic supermassive black hole — the 'Gargantua' look from the film Interstellar — as a full-screen three.js scene. Match this exact composition so results are comparable:\n\n- The black hole (event horizon) is a perfectly black sphere centered in the frame, its diameter about 28% of the viewport height.\n- A bright, thin accretion disk lies in a HORIZONTAL plane around the sphere and is viewed nearly edge-on: the camera sits only about 5–8 degrees above the disk plane, so the disk reads as a near-horizontal bright band cutting across the sphere's middle and extending well past it on both sides.\n- Gravitational lensing: the far side of the disk appears bent UP and OVER the top of the black sphere AND mirrored UNDER the bottom, forming the signature bright halo arcs above and below the horizon (not merely a flat ring). Approximate this with extra bright arcs wrapping over and under the sphere.\n- A thin, bright photon ring hugs the very edge of the black sphere.\n- Disk coloring: hot white-yellow on the inner edge fading outward to amber then deep orange (#fff3d0 → #ffae3b → #c8551a). Make one side of the disk slightly brighter than the other (relativistic beaming).\n- Background: near-black space with a sparse, dim starfield. The disk rotates slowly.\n\nKeep the black hole centered and the disk horizontal. Return ONLY a single complete HTML document.",
+      "systemPrompt": "You are a creative WebGL / three.js developer. Output a SINGLE self-contained HTML document. three.js r160 is available as an ES module — import it with `import * as THREE from 'three'` and add-ons from `three/addons/...` inside a <script type=\"module\"> (an importmap resolves these for you). The scene must fill the entire viewport (100vw x 100vh), start animating automatically with no user interaction, and look right within 2 seconds. Follow the composition exactly — this is a controlled comparison, do not improvise the layout or camera.",
+      "render": {
+        "viewport": "1280×800",
+        "fullPage": false,
+        "waitMs": 4000,
+        "deterministic": true
+      },
+      "grid": {
+        "image": "grids/black-hole.png",
+        "columns": 3
+      },
+      "models": [
+        {
+          "label": "GLM 5.2",
+          "modelId": "z-ai/glm-5.2",
+          "provider": "openrouter",
+          "status": "error",
+          "elapsedMs": 231744,
+          "outputTokens": null,
+          "error": "Empty completion — model returned no content (often a reasoning model that ran out of tokens before answering).",
+          "page": null
+        },
+        {
+          "label": "GLM 5.1",
+          "modelId": "z-ai/glm-5.1",
+          "provider": "openrouter",
+          "status": "error",
+          "elapsedMs": 300006,
+          "outputTokens": null,
+          "error": "Timed out before completing.",
+          "page": null
+        },
+        {
+          "label": "GPT-5.4 mini",
+          "modelId": "openai/gpt-5.4-mini",
+          "provider": "openrouter",
+          "status": "rendered",
+          "elapsedMs": 12979,
+          "outputTokens": 2388,
+          "error": null,
+          "page": "pages/black-hole/gpt-5.4-mini.html"
+        },
+        {
+          "label": "Claude Haiku 4.5",
+          "modelId": "anthropic/claude-haiku-4.5",
+          "provider": "openrouter",
+          "status": "rendered",
+          "elapsedMs": 11937,
+          "outputTokens": 2668,
+          "error": null,
+          "page": "pages/black-hole/claude-haiku-4.5.html"
+        },
+        {
+          "label": "Qwen3.7 Plus",
+          "modelId": "qwen/qwen3.7-plus",
+          "provider": "openrouter",
+          "status": "rendered",
+          "elapsedMs": 106481,
+          "outputTokens": 5821,
+          "error": null,
+          "page": "pages/black-hole/qwen3.7-plus.html"
+        },
+        {
+          "label": "Gemini 3.1 Flash-Lite",
+          "modelId": "google/gemini-3.1-flash-lite",
+          "provider": "openrouter",
+          "status": "rendered",
+          "elapsedMs": 4844,
+          "outputTokens": 1270,
+          "error": null,
+          "page": "pages/black-hole/gemini-3.1-flash-lite.html"
+        },
+        {
+          "label": "DeepSeek V4 Pro",
+          "modelId": "deepseek/deepseek-v4-pro",
+          "provider": "openrouter",
+          "status": "render-failed",
+          "elapsedMs": 55266,
+          "outputTokens": 4461,
+          "error": null,
+          "page": "pages/black-hole/deepseek-v4-pro.html"
+        },
+        {
+          "label": "MiMo v2.5",
+          "modelId": "xiaomi/mimo-v2.5",
+          "provider": "openrouter",
+          "status": "error",
+          "elapsedMs": 300004,
+          "outputTokens": null,
+          "error": "Timed out before completing.",
+          "page": null
+        },
+        {
+          "label": "MiniMax M3",
+          "modelId": "minimax/minimax-m3",
+          "provider": "openrouter",
+          "status": "error",
+          "elapsedMs": 133019,
+          "outputTokens": null,
+          "error": "Empty completion — model returned no content (often a reasoning model that ran out of tokens before answering).",
+          "page": null
+        }
+      ],
+      "rendered": 4,
+      "total": 9
+    },
+    {
+      "id": "sunset-svg",
+      "title": "Sunset Svg",
+      "description": "A single inline-SVG sunset scene: sun setting behind a mountain range, with clouds and a river. Prescriptive composition so outputs are directly comparable.",
+      "prompt": "Illustrate a serene sunset landscape as a single inline SVG. Match this composition so results are comparable:\n\n- Sky fills the top ~55% of the scene: a smooth vertical sunset gradient, deep blue/indigo at the very top, through magenta/pink, to warm orange/gold near the horizon.\n- The sun is a soft glowing circle sitting LOW on the horizon, centered horizontally (about 50% width) and positioned just above and slightly behind the tallest mountain peak.\n- A layered mountain range as silhouettes across the middle of the scene: 2–3 overlapping ridgelines, each darker/closer toward the front, with the tallest peak near the center directly in front of the sun.\n- A few soft, elongated clouds in the upper sky, tinted warm by the sunset.\n- A river in the foreground (bottom ~20%) widening as it flows toward the viewer from the base of the mountains, reflecting the sun as a vertical shimmer of warm light down its center.\n\nSmooth gradients, clean layered vector shapes, a cohesive warm palette, clear depth. Optionally add subtle ambient motion (slowly drifting clouds or a shimmering reflection). It is JUST the scene — no text, no UI, no border. Return ONLY a single complete HTML document.",
+      "systemPrompt": "You are a master SVG illustrator who codes vector art by hand. Output a SINGLE self-contained HTML document containing one inline <svg> that fills the viewport: set viewBox=\"0 0 1280 800\", preserveAspectRatio=\"xMidYMid slice\", and width/height 100% with no page margins. Use only vector shapes, gradients, and (optionally) gentle CSS/SMIL animation — NO external images, NO libraries, NO text. Follow the composition exactly — this is a controlled comparison, do not improvise the layout.",
+      "render": {
+        "viewport": "1280×800",
+        "fullPage": false,
+        "waitMs": 3000,
+        "deterministic": false
+      },
+      "grid": {
+        "image": "grids/sunset-svg.png",
+        "columns": 3
+      },
+      "models": [
+        {
+          "label": "GLM 5.2",
+          "modelId": "z-ai/glm-5.2",
+          "provider": "openrouter",
+          "status": "rendered",
+          "elapsedMs": 91827,
+          "outputTokens": 7692,
+          "error": null,
+          "page": "pages/sunset-svg/glm-5.2.html"
+        },
+        {
+          "label": "GLM 5.1",
+          "modelId": "z-ai/glm-5.1",
+          "provider": "openrouter",
+          "status": "error",
+          "elapsedMs": 300005,
+          "outputTokens": null,
+          "error": "Timed out before completing.",
+          "page": null
+        },
+        {
+          "label": "GPT-5.4 mini",
+          "modelId": "openai/gpt-5.4-mini",
+          "provider": "openrouter",
+          "status": "rendered",
+          "elapsedMs": 12591,
+          "outputTokens": 2147,
+          "error": null,
+          "page": "pages/sunset-svg/gpt-5.4-mini.html"
+        },
+        {
+          "label": "Claude Haiku 4.5",
+          "modelId": "anthropic/claude-haiku-4.5",
+          "provider": "openrouter",
+          "status": "rendered",
+          "elapsedMs": 12710,
+          "outputTokens": 2596,
+          "error": null,
+          "page": "pages/sunset-svg/claude-haiku-4.5.html"
+        },
+        {
+          "label": "Qwen3.7 Plus",
+          "modelId": "qwen/qwen3.7-plus",
+          "provider": "openrouter",
+          "status": "rendered",
+          "elapsedMs": 137299,
+          "outputTokens": 7507,
+          "error": null,
+          "page": "pages/sunset-svg/qwen3.7-plus.html"
+        },
+        {
+          "label": "Gemini 3.1 Flash-Lite",
+          "modelId": "google/gemini-3.1-flash-lite",
+          "provider": "openrouter",
+          "status": "rendered",
+          "elapsedMs": 3553,
+          "outputTokens": 920,
+          "error": null,
+          "page": "pages/sunset-svg/gemini-3.1-flash-lite.html"
+        },
+        {
+          "label": "DeepSeek V4 Pro",
+          "modelId": "deepseek/deepseek-v4-pro",
+          "provider": "openrouter",
+          "status": "error",
+          "elapsedMs": 300003,
+          "outputTokens": null,
+          "error": "Timed out before completing.",
+          "page": null
+        },
+        {
+          "label": "MiMo v2.5",
+          "modelId": "xiaomi/mimo-v2.5",
+          "provider": "openrouter",
+          "status": "error",
+          "elapsedMs": 300005,
+          "outputTokens": null,
+          "error": "Timed out before completing.",
+          "page": null
+        },
+        {
+          "label": "MiniMax M3",
+          "modelId": "minimax/minimax-m3",
+          "provider": "openrouter",
+          "status": "error",
+          "elapsedMs": 103286,
+          "outputTokens": null,
+          "error": "Empty completion — model returned no content (often a reasoning model that ran out of tokens before answering).",
+          "page": null
+        }
+      ],
+      "rendered": 5,
+      "total": 9
+    }
+  ]
+}

@@ -123,6 +123,25 @@ async function composeCell(
   stats: string,
   g: BenchmarkConfig["grid"],
 ): Promise<Cell> {
+  // Topbar style: a thin one-line strip across the top of the render (compact).
+  if (g.labelStyle === "topbar") {
+    const caption = stats ? `${label}   ·   ${stats}` : label;
+    const bar = Buffer.from(
+      svgTopBar(
+        g.cellWidth,
+        caption,
+        g.labelColor,
+        g.labelFontSize,
+        g.labelOverlayBg ?? "rgba(10,12,16,0.66)",
+      ),
+    );
+    const cell = await sharp(image)
+      .composite([{ input: bar, top: 0, left: 0 }])
+      .png()
+      .toBuffer();
+    return { label, image: cell, width: g.cellWidth, height: imgHeight };
+  }
+
   // Overlay style: render fills the whole cell, label floats in a corner pill.
   if (g.labelStyle === "overlay") {
     const overlay = Buffer.from(
@@ -199,6 +218,26 @@ function svgBanner(
   <text x="${width / 2}" y="${height / 2}" fill="${color}"
         font-family="Helvetica, Arial, sans-serif" font-size="${fontSize}"
         font-weight="600" text-anchor="middle" dominant-baseline="central">${escapeXml(
+          text,
+        )}</text>
+</svg>`;
+}
+
+/** A thin full-width strip across the top of a cell with one line of text. */
+function svgTopBar(
+  width: number,
+  text: string,
+  color: string,
+  fontSize: number,
+  bg: string,
+): string {
+  const barH = Math.round(fontSize * 1.7);
+  const padX = Math.round(fontSize * 0.7);
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${barH}">
+  <rect width="100%" height="100%" fill="${bg}"/>
+  <text x="${padX}" y="${barH / 2}" fill="${color}"
+        font-family="Helvetica, Arial, sans-serif" font-size="${fontSize}"
+        font-weight="600" text-anchor="start" dominant-baseline="central">${escapeXml(
           text,
         )}</text>
 </svg>`;

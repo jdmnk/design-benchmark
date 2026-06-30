@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sunset Landscape</title>
+  <style>
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: #000;
+    }
+    svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+<svg viewBox="0 0 1280 800" preserveAspectRatio="xMidYMid slice" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <defs>
+    <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#16214b"/>
+      <stop offset="28%" stop-color="#5b2f7c"/>
+      <stop offset="52%" stop-color="#d95a92"/>
+      <stop offset="74%" stop-color="#f39a4f"/>
+      <stop offset="100%" stop-color="#ffd98a"/>
+    </linearGradient>
+
+    <radialGradient id="sunGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fff7d1" stop-opacity="1"/>
+      <stop offset="22%" stop-color="#ffe08a" stop-opacity="0.95"/>
+      <stop offset="48%" stop-color="#ffb85c" stop-opacity="0.45"/>
+      <stop offset="72%" stop-color="#ff9a46" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#ff9a46" stop-opacity="0"/>
+    </radialGradient>
+
+    <linearGradient id="riverGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3f4d7a"/>
+      <stop offset="35%" stop-color="#24365d"/>
+      <stop offset="100%" stop-color="#10223f"/>
+    </linearGradient>
+
+    <linearGradient id="riverShimmer" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fff2b8" stop-opacity="0.0"/>
+      <stop offset="20%" stop-color="#fff2b8" stop-opacity="0.45"/>
+      <stop offset="50%" stop-color="#ffd977" stop-opacity="0.95"/>
+      <stop offset="78%" stop-color="#ffb54f" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#ffb54f" stop-opacity="0"/>
+    </linearGradient>
+
+    <linearGradient id="cloudGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ffd8a2" stop-opacity="0"/>
+      <stop offset="30%" stop-color="#ffd8a2" stop-opacity="0.55"/>
+      <stop offset="70%" stop-color="#ffb9a0" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#ffd8a2" stop-opacity="0"/>
+    </linearGradient>
+
+    <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="22"/>
+    </filter>
+
+    <filter id="cloudBlur" x="-20%" y="-40%" width="140%" height="180%">
+      <feGaussianBlur stdDeviation="6"/>
+    </filter>
+
+    <filter id="waterBlur" x="-30%" y="-10%" width="160%" height="120%">
+      <feGaussianBlur stdDeviation="2.8"/>
+    </filter>
+  </defs>
+
+  <!-- Sky -->
+  <rect x="0" y="0" width="1280" height="800" fill="url(#skyGrad)"/>
+
+  <!-- Soft cloud bands -->
+  <g filter="url(#cloudBlur)" opacity="0.8">
+    <ellipse cx="250" cy="150" rx="120" ry="22" fill="url(#cloudGrad)">
+      <animateTransform attributeName="transform" type="translate" values="-18 0;18 0;-18 0" dur="28s" repeatCount="indefinite"/>
+    </ellipse>
+    <ellipse cx="520" cy="120" rx="150" ry="26" fill="url(#cloudGrad)">
+      <animateTransform attributeName="transform" type="translate" values="20 0;-20 0;20 0" dur="34s" repeatCount="indefinite"/>
+    </ellipse>
+    <ellipse cx="860" cy="165" rx="170" ry="24" fill="url(#cloudGrad)">
+      <animateTransform attributeName="transform" type="translate" values="-16 0;16 0;-16 0" dur="31s" repeatCount="indefinite"/>
+    </ellipse>
+    <ellipse cx="1080" cy="135" rx="105" ry="18" fill="url(#cloudGrad)">
+      <animateTransform attributeName="transform" type="translate" values="14 0;-14 0;14 0" dur="27s" repeatCount="indefinite"/>
+    </ellipse>
+  </g>
+
+  <!-- Sun glow behind mountain -->
+  <circle cx="640" cy="460" r="120" fill="url(#sunGlow)" filter="url(#softGlow)"/>
+  <circle cx="640" cy="460" r="52" fill="#ffd97a" opacity="0.95"/>
+  <circle cx="640" cy="460" r="34" fill="#fff1bf" opacity="0.9"/>
+
+  <!-- Distant mountain range -->
+  <path d="M0,510
+           L90,470 L180,485 L270,445 L360,475 L450,430 L560,470
+           L640,405 L735,470 L830,438 L930,480 L1030,450 L1130,488 L1280,460
+           L1280,800 L0,800 Z"
+        fill="#37224a"/>
+
+  <!-- Mid mountain range -->
+  <path d="M0,560
+           L110,530 L210,540 L300,500 L395,545 L505,475 L580,520
+           L640,388 L710,525 L790,495 L875,542 L970,500 L1085,540 L1180,510 L1280,540
+           L1280,800 L0,800 Z"
+        fill="#241735"/>
+
+  <!-- Front mountain range with tallest central peak -->
+  <path d="M0,620
+           L120,590 L220,605 L320,560 L410,610 L505,540 L590,595
+           L640,360 L700,585 L790,548 L880,605 L980,565 L1080,610 L1185,585 L1280,600
+           L1280,800 L0,800 Z"
+        fill="#160f22"/>
+
+  <!-- Foreground river -->
+  <path d="M535,800
+           C540,735 548,690 568,642
+           C592,584 615,560 640,545
+           C665,560 688,584 712,642
+           C732,690 740,735 745,800
+           Z"
+        fill="url(#riverGrad)"/>
+
+  <!-- River reflections -->
+  <path d="M620,800
+           C616,738 622,698 631,664
+           C636,646 639,631 640,616
+           C641,631 644,646 649,664
+           C658,698 664,738 660,800
+           Z"
+        fill="url(#riverShimmer)" filter="url(#waterBlur)" opacity="0.95">
+    <animate attributeName="opacity" values="0.72;1;0.72" dur="4.5s" repeatCount="indefinite"/>
+  </path>
+
+  <path d="M585,800
+           C592,748 603,705 618,666
+           C625,649 633,636 640,625
+           C647,636 655,649 662,666
+           C677,705 688,748 695,800
+           Z"
+        fill="#ffe7a1" opacity="0.2" filter="url(#waterBlur)">
+    <animate attributeName="opacity" values="0.12;0.28;0.12" dur="5.2s" repeatCount="indefinite"/>
+  </path>
+
+  <!-- Subtle shoreline darkening -->
+  <path d="M0,620
+           C150,608 240,604 320,618
+           C380,628 447,633 525,624
+           C585,617 615,612 640,610
+           C665,612 695,617 755,624
+           C833,633 900,628 960,618
+           C1040,604 1130,608 1280,620
+           L1280,800 L0,800 Z"
+        fill="#0e0a16" opacity="0.22"/>
+
+  <!-- Warm haze at horizon -->
+  <rect x="0" y="430" width="1280" height="120" fill="#ffb25b" opacity="0.12" filter="url(#softGlow)"/>
+</svg>
+</body>
+</html>

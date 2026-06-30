@@ -1,36 +1,34 @@
 {
   "$schema": "./schema.json",
-  "name": "saas-landing-page",
-  "description": "Single-prompt visual design benchmark. Every model designs the same page; we screenshot each render and tile them into a grid.",
+  "name": "saas-swiss",
+  "description": "Swiss / International Typographic Style SaaS landing page. Detailed, prescriptive brief so model outputs are directly comparable. Dense toward the top; captured as a fixed top-crop.",
 
-  "systemPrompt": "You are a world-class product designer and front-end engineer. You produce complete, self-contained, production-quality HTML documents with embedded CSS (and JS only if needed). Designs must be modern, polished, and visually striking.",
+  "systemPrompt": "You are an elite product and web designer who specializes in the Swiss / International Typographic Style. Output a SINGLE self-contained HTML document with all CSS embedded. No external assets, no images, no icon fonts, and no JavaScript. Follow the brief precisely — this is a controlled comparison, not a place to improvise layout or content.",
 
-  "prompt": "Design a landing page for a fictional SaaS product called \"Nimbus\" — an AI note-taking app. Include a hero section with a headline, subheadline and call-to-action, a 3-column features section, a testimonial, a pricing teaser, and a footer. Use a cohesive color palette, good typography, spacing, and visual hierarchy. Make it look like a premium real product. Return ONLY a single complete HTML document.",
+  "prompt": "Design the top of the landing page for a fictional SaaS product called «MERIDIAN», a real-time data-analytics platform. Render it in a strict Swiss / International Typographic Style and pack the content densely so it all fits within the first screen (roughly the top 800px).\n\nStyle rules (follow exactly):\n- Typeface: Helvetica / Arial / Inter only. Build on a visible 12-column grid with consistent gutters; everything flush-left.\n- Palette: off-white background #F4F4F1, near-black text #111111, and ONE accent color, signal red #E2231A. No gradients, no drop shadows, no rounded corners, no emoji, no photos.\n- Typography: a very large, tight headline; clear hierarchy; small uppercase labels with letter-spacing for section/eyebrow text. Use rules (thin horizontal/vertical lines) to structure the page.\n\nContent and order (top to bottom, all above the fold):\n1. A top navigation bar: the wordmark «MERIDIAN» on the left; nav links Product, Customers, Pricing, Docs; and a red 'Start free' button on the right.\n2. A hero: an eyebrow label, an oversized headline of at most 6 words, a one-sentence subheadline, and two calls to action (a solid red primary, a bordered secondary).\n3. A full-width thin horizontal rule.\n4. A row of four numbered feature columns (01–04), each with a short bold title and a one-line description.\n5. A thin 'Trusted by' row of 5–6 plausible company wordmarks rendered as plain text.\n\nReturn ONLY a single complete HTML document.",
 
   "render": {
     "viewportWidth": 1280,
-    "viewportHeight": 900,
-    "deviceScaleFactor": 1,
-    "fullPage": true,
-    "maxFullPageHeight": 4000,
-    "waitMs": 1500
+    "viewportHeight": 800,
+    "fullPage": false,
+    "waitMs": 1200
   },
 
   "grid": {
     "columns": 3,
-    "cellWidth": 640,
-    "padding": 24,
-    "background": "#0f1115",
-    "labelHeight": 44,
+    "cellWidth": 620,
+    "padding": 8,
+    "background": "#050507",
+    "labelStyle": "topbar",
     "labelColor": "#ffffff",
-    "labelFontSize": 22,
-    "title": "Design Bench — saas-landing-page"
+    "labelFontSize": 20,
+    "labelOverlayBg": "rgba(10,12,16,0.66)"
   },
 
   "generation": {
-    "temperature": 0.7,
-    "maxTokens": 8000,
-    "concurrency": 4,
+    "temperature": 0.6,
+    "maxTokens": 10000,
+    "concurrency": 9,
     "timeoutMs": 300000,
     "retries": 0
   },

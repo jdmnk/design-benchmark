@@ -1,0 +1,138 @@
+{
+  "name": "saas-swiss",
+  "prompt": "Design the top of the landing page for a fictional SaaS product called «MERIDIAN», a real-time data-analytics platform. Render it in a strict Swiss / International Typographic Style and pack the content densely so it all fits within the first screen (roughly the top 800px).\n\nStyle rules (follow exactly):\n- Typeface: Helvetica / Arial / Inter only. Build on a visible 12-column grid with consistent gutters; everything flush-left.\n- Palette: off-white background #F4F4F1, near-black text #111111, and ONE accent color, signal red #E2231A. No gradients, no drop shadows, no rounded corners, no emoji, no photos.\n- Typography: a very large, tight headline; clear hierarchy; small uppercase labels with letter-spacing for section/eyebrow text. Use rules (thin horizontal/vertical lines) to structure the page.\n\nContent and order (top to bottom, all above the fold):\n1. A top navigation bar: the wordmark «MERIDIAN» on the left; nav links Product, Customers, Pricing, Docs; and a red 'Start free' button on the right.\n2. A hero: an eyebrow label, an oversized headline of at most 6 words, a one-sentence subheadline, and two calls to action (a solid red primary, a bordered secondary).\n3. A full-width thin horizontal rule.\n4. A row of four numbered feature columns (01–04), each with a short bold title and a one-line description.\n5. A thin 'Trusted by' row of 5–6 plausible company wordmarks rendered as plain text.\n\nReturn ONLY a single complete HTML document.",
+  "generatedAt": "2026-06-30T19:04:43.095Z",
+  "models": [
+    {
+      "slug": "glm-5.2",
+      "label": "GLM 5.2",
+      "provider": "openrouter",
+      "modelId": "z-ai/glm-5.2",
+      "ok": true,
+      "htmlExtracted": true,
+      "elapsedMs": 42141,
+      "usage": {
+        "promptTokens": 427,
+        "completionTokens": 2740,
+        "totalTokens": 3167
+      },
+      "startedAt": "2026-06-30T18:59:27.840Z"
+    },
+    {
+      "slug": "glm-5.1",
+      "label": "GLM 5.1",
+      "provider": "openrouter",
+      "modelId": "z-ai/glm-5.1",
+      "ok": true,
+      "htmlExtracted": true,
+      "elapsedMs": 138246,
+      "usage": {
+        "promptTokens": 420,
+        "completionTokens": 4831,
+        "totalTokens": 5251
+      },
+      "startedAt": "2026-06-30T18:59:27.849Z"
+    },
+    {
+      "slug": "gpt-5.4-mini",
+      "label": "GPT-5.4 mini",
+      "provider": "openrouter",
+      "modelId": "openai/gpt-5.4-mini",
+      "ok": true,
+      "htmlExtracted": true,
+      "elapsedMs": 13163,
+      "usage": {
+        "promptTokens": 423,
+        "completionTokens": 2026,
+        "totalTokens": 2449
+      },
+      "startedAt": "2026-06-30T18:59:27.850Z"
+    },
+    {
+      "slug": "claude-haiku-4.5",
+      "label": "Claude Haiku 4.5",
+      "provider": "openrouter",
+      "modelId": "anthropic/claude-haiku-4.5",
+      "ok": true,
+      "htmlExtracted": true,
+      "elapsedMs": 22425,
+      "usage": {
+        "promptTokens": 468,
+        "completionTokens": 2904,
+        "totalTokens": 3372
+      },
+      "startedAt": "2026-06-30T18:59:27.851Z"
+    },
+    {
+      "slug": "qwen3.7-plus",
+      "label": "Qwen3.7 Plus",
+      "provider": "openrouter",
+      "modelId": "qwen/qwen3.7-plus",
+      "ok": true,
+      "htmlExtracted": true,
+      "elapsedMs": 61863,
+      "usage": {
+        "promptTokens": 450,
+        "completionTokens": 3354,
+        "totalTokens": 3804
+      },
+      "startedAt": "2026-06-30T18:59:27.852Z"
+    },
+    {
+      "slug": "gemini-3.1-flash-lite",
+      "label": "Gemini 3.1 Flash-Lite",
+      "provider": "openrouter",
+      "modelId": "google/gemini-3.1-flash-lite",
+      "ok": true,
+      "htmlExtracted": true,
+      "elapsedMs": 5461,
+      "usage": {
+        "promptTokens": 444,
+        "completionTokens": 1439,
+        "totalTokens": 1883
+      },
+      "startedAt": "2026-06-30T18:59:27.853Z"
+    },
+    {
+      "slug": "deepseek-v4-pro",
+      "label": "DeepSeek V4 Pro",
+      "provider": "openrouter",
+      "modelId": "deepseek/deepseek-v4-pro",
+      "ok": true,
+      "htmlExtracted": true,
+      "elapsedMs": 178731,
+      "usage": {
+        "promptTokens": 425,
+        "completionTokens": 14465,
+        "totalTokens": 14890
+      },
+      "startedAt": "2026-06-30T18:59:27.854Z"
+    },
+    {
+      "slug": "mimo-v2.5",
+      "label": "MiMo v2.5",
+      "provider": "openrouter",
+      "modelId": "xiaomi/mimo-v2.5",
+      "ok": false,
+      "error": "This operation was aborted",
+      "htmlExtracted": false,
+      "elapsedMs": 300008,
+      "startedAt": "2026-06-30T18:59:27.854Z"
+    },
+    {
+      "slug": "minimax-m3",
+      "label": "MiniMax M3",
+      "provider": "openrouter",
+      "modelId": "minimax/minimax-m3",
+      "ok": true,
+      "htmlExtracted": true,
+      "elapsedMs": 81721,
+      "usage": {
+        "promptTokens": 584,
+        "completionTokens": 10000,
+        "totalTokens": 10584
+      },
+      "startedAt": "2026-06-30T18:59:27.855Z"
+    }
+  ]
+}

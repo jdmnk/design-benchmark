@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Serene Sunset Landscape</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+        }
+        svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <svg viewBox="0 0 1280 800" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <!-- Sky gradient: deep blue to indigo at top, through magenta/pink, to warm orange/gold near horizon -->
+            <linearGradient id="skyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" style="stop-color:#0a1551;stop-opacity:1" />
+                <stop offset="25%" style="stop-color:#2d1b69;stop-opacity:1" />
+                <stop offset="45%" style="stop-color:#6b2d7d;stop-opacity:1" />
+                <stop offset="65%" style="stop-color:#c85a54;stop-opacity:1" />
+                <stop offset="85%" style="stop-color:#f39237;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#ffa500;stop-opacity:1" />
+            </linearGradient>
+
+            <!-- Sun glow radial gradient -->
+            <radialGradient id="sunGlow" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" style="stop-color:#ffeb99;stop-opacity:0.9" />
+                <stop offset="30%" style="stop-color:#ffd966;stop-opacity:0.7" />
+                <stop offset="70%" style="stop-color:#ff9500;stop-opacity:0.3" />
+                <stop offset="100%" style="stop-color:#ff6b00;stop-opacity:0" />
+            </radialGradient>
+
+            <!-- River reflection gradient -->
+            <linearGradient id="riverGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" style="stop-color:#1a3a52;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#0d1f2d;stop-opacity:1" />
+            </linearGradient>
+
+            <!-- Reflection shimmer -->
+            <linearGradient id="shimmer" x1="50%" y1="0%" x2="50%" y2="100%">
+                <stop offset="0%" style="stop-color:#ffeb99;stop-opacity:0" />
+                <stop offset="30%" style="stop-color:#ffd966;stop-opacity:0.6" />
+                <stop offset="70%" style="stop-color:#ffd966;stop-opacity:0.6" />
+                <stop offset="100%" style="stop-color:#ffeb99;stop-opacity:0" />
+            </linearGradient>
+
+            <!-- Mountain silhouette gradients for depth -->
+            <linearGradient id="mountainBack" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" style="stop-color:#3d2e5f;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#2a1f42;stop-opacity:1" />
+            </linearGradient>
+
+            <linearGradient id="mountainMid" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" style="stop-color:#2a1f42;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#1a1428;stop-opacity:1" />
+            </linearGradient>
+
+            <linearGradient id="mountainFront" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" style="stop-color:#1a1428;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#0d0a18;stop-opacity:1" />
+            </linearGradient>
+
+            <!-- Cloud gradient -->
+            <linearGradient id="cloudGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" style="stop-color:#ffc9a3;stop-opacity:0.7" />
+                <stop offset="50%" style="stop-color:#ffb380;stop-opacity:0.5" />
+                <stop offset="100%" style="stop-color:#ff9966;stop-opacity:0.3" />
+            </linearGradient>
+        </defs>
+
+        <!-- Sky background -->
+        <rect width="1280" height="440" fill="url(#skyGradient)" />
+
+        <!-- Back mountain range (furthest, darkest) -->
+        <path d="M 0 380 Q 150 320 320 340 T 640 300 T 960 330 T 1280 340 L 1280 440 L 0 440 Z" 
+              fill="url(#mountainBack)" />
+
+        <!-- Middle mountain range -->
+        <path d="M 0 380 Q 200 280 400 300 T 800 250 T 1280 320 L 1280 440 L 0 440 Z" 
+              fill="url(#mountainMid)" />
+
+        <!-- Front mountain range with tallest peak centered -->
+        <path d="M 0 380 Q 150 320 320 310 Q 450 280 640 200 Q 750 260 900 280 Q 1050 300 1280 340 L 1280 440 L 0 440 Z" 
+              fill="url(#mountainFront)" />
+
+        <!-- Sun glow (large soft halo) -->
+        <circle cx="640" cy="280" r="120" fill="url(#sunGlow)" opacity="0.8" />
+
+        <!-- Sun core -->
+        <circle cx="640" cy="280" r="70" fill="#ffeb99" opacity="0.95" />
+        <circle cx="640" cy="280" r="65" fill="#ffd966" opacity="0.9" />
+
+        <!-- Soft clouds in upper sky -->
+        <g opacity="0.6">
+            <!-- Cloud 1 (left) -->
+            <ellipse cx="200" cy="120" rx="80" ry="40" fill="url(#cloudGradient)" />
+            <ellipse cx="150" cy="130" rx="50" ry="30" fill="url(#cloudGradient)" />
+            <ellipse cx="250" cy="130" rx="60" ry="35" fill="url(#cloudGradient)" />
+            
+            <!-- Cloud 2 (right) -->
+            <ellipse cx="1050" cy="150" rx="90" ry="45" fill="url(#cloudGradient)" />
+            <ellipse cx="980" cy="165" rx="60" ry="35" fill="url(#cloudGradient)" />
+            <ellipse cx="1120" cy="165" rx="70" ry="40" fill="url(#cloudGradient)" />
+            
+            <!-- Cloud 3 (center-left) -->
+            <ellipse cx="400" cy="180" rx="75" ry="38" fill="url(#cloudGradient)" />
+            <ellipse cx="350" cy="195" rx="50" ry="28" fill="url(#cloudGradient)" />
+            <ellipse cx="450" cy="195" rx="55" ry="32" fill="url(#cloudGradient)" />
+        </g>
+
+        <!-- River in foreground -->
+        <path d="M 640 440 Q 600 500 560 600 Q 540 700 520 800 L 760 800 Q 780 700 800 600 Q 840 500 640 440 Z" 
+              fill="url(#riverGradient)" />
+
+        <!-- River reflection shimmer (vertical light streak down center) -->
+        <path d="M 640 440 Q 645 500 650 600 Q 655 700 660 800 L 620 800 Q 625 700 630 600 Q 635 500 640 440 Z" 
+              fill="url(#shimmer)" />
+
+        <!-- Animated shimmer effect -->
+        <defs>
+            <style>
+                @keyframes shimmerPulse {
+                    0%, 100% { opacity: 0.4; }
+                    50% { opacity: 0.8; }
+                }
+                @keyframes cloudDrift {
+                    0%, 100% { transform: translateX(0px); }
+                    50% { transform: translateX(20px); }
+                }
+                .shimmer-anim {
+                    animation: shimmerPulse 4s ease-in-out infinite;
+                }
+                .cloud-anim {
+                    animation: cloudDrift 8s ease-in-out infinite;
+                }
+            </style>
+        </defs>
+
+        <!-- Enhanced shimmer animation group -->
+        <g class="shimmer-anim">
+            <ellipse cx="640" cy="550" rx="8" ry="60" fill="#ffeb99" opacity="0.5" />
+        </g>
+
+        <!-- Animated clouds -->
+        <g class="cloud-anim" opacity="0.5">
+            <ellipse cx="200" cy="120" rx="80" ry="40" fill="url(#cloudGradient)" />
+            <ellipse cx="150" cy="130" rx="50" ry="30" fill="url(#cloudGradient)" />
+            <ellipse cx="250" cy="130" rx="60" ry="35" fill="url(#cloudGradient)" />
+        </g>
+    </svg>
+</body>
+</html>
