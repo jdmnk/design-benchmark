@@ -1,4 +1,4 @@
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { chromium, type Browser } from "playwright";
 import sharp from "sharp";
@@ -103,6 +103,47 @@ export async function render(
           waitUntil: "networkidle",
           timeout: 30000,
         });
+
+        if (r.video) {
+          // Clip capture: advance the virtual clock one frame at a time and
+          // screenshot each frame. Deterministic and smooth regardless of how
+          // slowly the scene renders in software WebGL.
+          const v = r.video;
+          const dt = 1000 / v.fps;
+          const total = Math.max(1, Math.round((v.durationMs / 1000) * v.fps));
+          const preFrames = Math.round((v.preRollMs ?? 0) / dt);
+          if (preFrames > 0) {
+            await page.evaluate(
+              ([n, d]) => (window as any).__designBenchStep?.(n, d),
+              [preFrames, dt] as const,
+            );
+          }
+          mkdirSync(paths.framesDir(model.slug), { recursive: true });
+          for (let i = 0; i < total; i++) {
+            if (i > 0) {
+              await page.evaluate(
+                ([n, d]) => (window as any).__designBenchStep?.(n, d),
+                [1, dt] as const,
+              );
+            }
+            await page.screenshot({
+              path: paths.frame(model.slug, i),
+              timeout: r.screenshotTimeoutMs ?? 60000,
+            });
+          }
+          // The middle frame doubles as the still screenshot, so the image
+          // grid, blank detection, and the web poster all keep working.
+          copyFileSync(
+            paths.frame(model.slug, Math.floor(total / 2)),
+            paths.screenshot(model.slug),
+          );
+
+          const blank = await isBlankScreenshot(paths.screenshot(model.slug));
+          persistRenderInfo(resultPath, { rendered: !blank, blank, error: blank ? pageError : undefined });
+          outcomes.push({ slug: model.slug, label: model.label, ok: true, blank, screenshotPath: paths.screenshot(model.slug) });
+          console.log(`  • ${model.slug.padEnd(20)} captured ${total} frames${blank ? " (blank)" : ""}`);
+          continue; // finally still closes the context
+        }
 
         if (r.freezeClock) {
           // Drive a fixed number of frames at a fixed 60fps dt — fully

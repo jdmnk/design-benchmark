@@ -11,6 +11,14 @@ export function runPaths(runName: string) {
     screenshot: (slug: string) => join(root, "models", slug, "screenshot.png"),
     raw: (slug: string) => join(root, "models", slug, "raw.txt"),
     result: (slug: string) => join(root, "models", slug, "result.json"),
+    framesDir: (slug: string) => join(root, "models", slug, "frames"),
+    frame: (slug: string, i: number) =>
+      join(root, "models", slug, "frames", `f${String(i).padStart(5, "0")}.png`),
+    clip: (slug: string) => join(root, "models", slug, "clip.mp4"),
+    gridFramesDir: join(root, "grid-frames"),
+    gridFrame: (i: number) =>
+      join(root, "grid-frames", `f${String(i).padStart(5, "0")}.png`),
+    gridVideo: join(root, "grid.mp4"),
     grid: join(root, "grid.png"),
     report: join(root, "report.md"),
     summary: join(root, "summary.json"),

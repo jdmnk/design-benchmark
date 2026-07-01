@@ -42,7 +42,7 @@ ${cfg.description ?? ""}
 ## Grid
 
 ![grid](./grid.png)
-
+${cfg.render.video ? "\n▶ **Animated:** [grid.mp4](./grid.mp4) — per-model clips in `models/<slug>/clip.mp4`.\n" : ""}
 ## Results
 
 | Model | ID | Provider | Status | Time | Tokens | Note |

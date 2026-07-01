@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gargantua Black Hole</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background: #000;
+    }
+    canvas {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@r160/build/three.module.js"
+      }
+    }
+  </script>
+  <script type="module">
+    import * as THREE from 'three';
+
+    // ============ Scene Setup ============
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x000000);
+    
+    const camera = new THREE.PerspectiveCamera(
+      75,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      1000
+    );
+    
+    const renderer = new THREE.WebGLRenderer({ antialias: true, precision: 'highp' });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setClearColor(0x000000, 1);
+    document.body.appendChild(renderer.domElement);
+
+    // Position camera ~6 degrees above disk plane
+    const cameraDistance = 18;
+    const cameraAngle = THREE.MathUtils.degToRad(6);
+    camera.position.set(0, cameraDistance * Math.sin(cameraAngle), cameraDistance * Math.cos(cameraAngle));
+    camera.lookAt(0, 0, 0);
+
+    try {
+      // ============ Event Horizon (Black Sphere) ============
+      const horizonGeometry = new THREE.SphereGeometry(3, 64, 64);
+      const horizonMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
+      const blackHole = new THREE.Mesh(horizonGeometry, horizonMaterial);
+      scene.add(blackHole);
+
+      // ============ Accretion Disk with Structure ============
+      const diskGroup = new THREE.Group();
+
+      // Helper function to create disk with azimuthal structure
+      const createStructuredDisk = (innerR, outerR, brightness) => {
+        const geometry = new THREE.BufferGeometry();
+        const positions = [];
+        const colors = [];
+        const indices = [];
+
+        const angleSegments = 256;
+        const radialSegments = 12;
+
+        // Generate vertices with turbulent structure
+        for (let i = 0; i <= angleSegments; i++) {
+          const phi = (i / angleSegments) * Math.PI * 2;
+          const cosPhi = Math.cos(phi);
+          const sinPhi = Math.sin(phi);
+
+          for (let j = 0; j < radialSegments; j++) {
+            const t = j / (radialSegments - 1);
+            const r = innerR + t * (outerR - innerR);
+
+            // Subtle vertical variation for disk thickness
+            const vertVar = (Math.sin(phi * 5) * 0.08 + Math.cos(phi * 3) * 0.05) * (1 - t * t) * 0.3;
+
+            positions.push(r * cosPhi, vertVar, r * sinPhi);
+
+            // Color: white-yellow inner → amber → orange outer, with turbulent modulation
+            let color = new THREE.Color();
+            const turb = Math.sin(phi * 7 + i * 0.1) * 0.2 + 0.8;
+            
+            if (t < 0.2) {
+              // Hot white-yellow core
+              const c1 = new THREE.Color(0xfff3d0);
+              const c2 = new THREE.Color(0xffeb99);
+              color.lerpColors(c1, c2, t / 0.2);
+            } else if (t < 0.6) {
+              // Warm amber
+              const c1 = new THREE.Color(0xffeb99);
+              const c2 = new THREE.Color(0xffae3b);
+              color.lerpColors(c1, c2, (t - 0.2) / 0.4);
+            } else {
+              // Orange red outer
+              const c1 = new THREE.Color(0xffae3b);
+              const c2 = new THREE.Color(0xc8551a);
+              color.lerpColors(c1, c2, (t - 0.6) / 0.4);
+            }
+
+            // Apply turbulence and brightness
+            color.multiplyScalar(turb * brightness * (1 - t * 0.3));
+            colors.push(color.r, color.g, color.b);
+          }
+        }
+
+        // Generate indices
+        for (let i = 0; i < angleSegments; i++) {
+          for (let j = 0; j < radialSegments - 1; j++) {
+            const a = i * radialSegments + j;
+            const b = a + 1;
+            const c = ((i + 1) % (angleSegments + 1)) * radialSegments + j;
+            const d = c + 1;
+
+            indices.push(a, b, c);
+            indices.push(b, d, c);
+          }
+        }
+
+        geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(positions), 3));
+        geometry.setAttribute('color', new THREE.BufferAttribute(new Float32Array(colors), 3));
+        geometry.setIndex(new THREE.BufferAttribute(new Uint32Array(indices), 1));
+
+        const material = new THREE.MeshBasicMaterial({
+          vertexColors: true,
+          transparent: true,
+          side: THREE.DoubleSide
+        });
+
+        return new THREE.Mesh(geometry, material);
+      };
+
+      // Main disk
+      const diskMain = createStructuredDisk(3.2, 8.8, 1.0);
+      diskGroup.add(diskMain);
+
+      // Brighter side (relativistic beaming)
+      const diskBeam = createStructuredDisk(3.2, 8.8, 0.5);
+      diskBeam.rotation.z = Math.PI;
+      diskGroup.add(diskBeam);
+
+      scene.add(diskGroup);
+
+      // ============ Gravitational Lensing Arcs ============
+      // Upper lensed arc (bending over the top)
+      const createLenseArc = (yCenter, isUpper) => {
+        const geometry = new THREE.BufferGeometry();
+        const positions = [];
+        const colors = [];
+        const indices = [];
+
+        const angleSegments = 128;
+        const depthSegments = 6;
+
+        for (let i = 0; i <= angleSegments; i++) {
+          const angle = (i / angleSegments) * Math.PI * 2;
+          const cosA = Math.cos(angle);
+          const sinA = Math.sin(angle);
+
+          for (let d = 0; d < depthSegments; d++) {
+            const t = d / (depthSegments - 1);
+            
+            // Arc radius varies to create lensing effect
+            const arcR = 3.8 + t * (9.2 - 3.8);
+            
+            // Lensed position: arc bends over/under the sphere
+            const bendAmount = isUpper ? 0.5 : -0.5;
+            const y = yCenter + Math.sin(t * Math.PI) * bendAmount * (1 - Math.abs(Math.cos(angle)) * 0.3);
+            
+            positions.push(arcR * cosA, y, arcR * sinA);
+
+            // Bright yellow-white coloring for lensed arc
+            const intensity = (1 - t * 0.5) * 0.8;
+            colors.push(intensity, intensity * 0.95, intensity * 0.7);
+          }
+        }
+
+        for (let i = 0; i < angleSegments; i++) {
+          for (let d = 0; d < depthSegments - 1; d++) {
+            const a = i * depthSegments + d;
+            const b = a + 1;
+            const c = (i + 1) * depthSegments + d;
+            const d_idx = c + 1;
+
+            indices.push(a, b, c);
+            indices.push(b, d_idx, c);
+          }
+        }
+
+        geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(positions), 3));
+        geometry.setAttribute('color', new THREE.BufferAttribute(new Float32Array(colors), 3));
+        geometry.setIndex(new THREE.BufferAttribute(new Uint32Array(indices), 1));
+
+        const material = new THREE.MeshBasicMaterial({
+          vertexColors: true,
+          transparent: true,
+          side: THREE.DoubleSide,
+          blending: THREE.AdditiveBlending,
+          depthWrite: false
+        });
+
+        return new THREE.Mesh(geometry, material);
+      };
+
+      const topLenseArc = createLenseArc(3.2, true);
+      const bottomLenseArc = createLenseArc(-3.2, false);
+      scene.add(topLenseArc);
+      scene.add(bottomLenseArc);
+
+      // ============ Photon Ring ============
+      const photonRingGeometry = new THREE.BufferGeometry();
+      const photonPositions = [];
+      const photonSegments = 512;
+      for (let i = 0; i <= photonSegments; i++) {
+        const angle = (i / photonSegments) * Math.PI * 2;
+        const x = Math.cos(angle) * 3.05;
+        const z = Math.sin(angle) * 3.05;
+        photonPositions.push(x, 0, z);
+      }
+      photonRingGeometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(photonPositions), 3));
+      const photonMaterial = new THREE.LineBasicMaterial({
+        color: 0xffffdd,
+        linewidth: 3,
+        blending: THREE.AdditiveBlending
+      });
+      const photonRing = new THREE.Line(photonRingGeometry, photonMaterial);
+      scene.add(photonRing);
+
+      // ============ Starfield ============
+      const starsGeometry = new THREE.BufferGeometry();
+      const starPositions = [];
+      const starColors = [];
+      const starCount = 300;
+
+      for (let i = 0; i < starCount; i++) {
+        const theta = Math.random() * Math.PI * 2;
+        const phi = Math.acos(Math.random() * 2 - 1);
+        const r = 80 + Math.random() * 40;
+
+        const x = r * Math.sin(phi) * Math.cos(theta);
+        const y = r * Math.sin(phi) * Math.sin(theta);
+        const z = r * Math.cos(phi);
+
+        starPositions.push(x, y, z);
+
+        const luminance = Math.random() * 0.6 + 0.2;
+        starColors.push(luminance, luminance, luminance * 1.1);
+      }
+
+      starsGeometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(starPositions), 3));
+      starsGeometry.setAttribute('color', new THREE.BufferAttribute(new Float32Array(starColors), 3));
+      const starMaterial = new THREE.PointsMaterial({
+        size: 0.3,
+        vertexColors: true,
+        transparent: true
+      });
+      const stars = new THREE.Points(starsGeometry, starMaterial);
+      scene.add(stars);
+
+      // ============ Animation Loop ============
+      function animate(now) {
+        const elapsed = now / 1000; // seconds since start
+
+        // Disk rotation: 30-35 degrees per second
+        diskGroup.rotation.y = THREE.MathUtils.degToRad(elapsed * 32);
+
+        // Shimmering effect
+        const shimmer = Math.sin(elapsed * 3) * 0.15 + 0.85;
+        diskMain.material.opacity = shimmer;
+
+        // Beaming highlight drift
+        diskBeam.material.opacity = Math.sin(elapsed * 1.5) * 0.2 + 0.35;
+
+        // Arcs slight flicker
+        const arcFlicker = Math.sin(elapsed * 2.5) * 0.1 + 0.7;
+        topLenseArc.material.opacity = arcFlicker;
+        bottomLenseArc.material.opacity = arcFlicker;
+
+        renderer.render(scene, camera);
+        requestAnimationFrame(animate);
+      }
+
+      requestAnimationFrame(animate);
+
+    } catch (error) {
+      console.error('Scene error:', error);
+    }
+
+    // Handle window resize
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
+</body>
+</html>

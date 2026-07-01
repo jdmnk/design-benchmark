@@ -17,7 +17,20 @@
         "deviceScaleFactor": { "type": "number" },
         "fullPage": { "type": "boolean" },
         "maxFullPageHeight": { "type": "integer" },
-        "waitMs": { "type": "integer" }
+        "waitMs": { "type": "integer" },
+        "screenshotTimeoutMs": { "type": "integer" },
+        "seed": { "type": "integer" },
+        "freezeClock": { "type": "boolean" },
+        "video": {
+          "type": "object",
+          "description": "Capture an animated clip instead of a single frame (requires freezeClock). Frames are captured by stepping the virtual clock, then encoded to per-model clip.mp4 files and one composed grid.mp4.",
+          "required": ["durationMs", "fps"],
+          "properties": {
+            "durationMs": { "type": "integer", "description": "Clip length." },
+            "fps": { "type": "integer", "description": "Frame rate of the clip and the virtual-clock step." },
+            "preRollMs": { "type": "integer", "description": "Virtual time advanced before recording starts." }
+          }
+        }
       }
     },
     "grid": {

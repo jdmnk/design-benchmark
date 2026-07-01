@@ -5,10 +5,11 @@ import { loadConfig, selectModels } from "./config.js";
 import { generate } from "./generate.js";
 import { render } from "./render.js";
 import { buildGrid } from "./grid.js";
+import { buildVideos } from "./video.js";
 import { writeReport } from "./report.js";
 import { ensureDir, runPaths } from "./paths.js";
 
-type Stage = "all" | "generate" | "render" | "grid" | "report";
+type Stage = "all" | "generate" | "render" | "grid" | "video" | "report";
 
 interface Args {
   config: string;
@@ -46,13 +47,15 @@ Usage:
 
 Options:
   -c, --config <path>   Config file (default: config/benchmark.config.json)
-  -s, --stage <stage>   all | generate | render | grid | report (default: all)
+  -s, --stage <stage>   all | generate | render | grid | video | report (default: all)
   -m, --model <slug>    Only run these models (comma-separated, repeatable)
       --dry-run         Skip API calls; emit placeholder HTML to test the pipeline
   -h, --help            Show this help
 
-Stages run in order: generate → render → grid → report.
-Running a later stage alone reuses artifacts already on disk.`);
+Stages run in order: generate → render → grid → video → report.
+(video only runs for configs with render.video.) Running a later stage alone
+reuses artifacts already on disk — note the video stage needs the render
+stage's frame captures, which are deleted after a successful encode.`);
 }
 
 async function main() {
@@ -86,6 +89,11 @@ async function main() {
     console.log("\n③ Grid — composing side-by-side PNG");
     const gridPath = await buildGrid(cfg, models);
     console.log(`  → ${gridPath}`);
+  }
+
+  if (cfg.render.video && run("video")) {
+    console.log("\n③b Video — encoding per-model clips + grid.mp4");
+    await buildVideos(cfg, models);
   }
 
   if (run("report")) {

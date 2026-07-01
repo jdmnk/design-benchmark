@@ -19,15 +19,38 @@ export async function buildGrid(
   models: ModelEntry[],
 ): Promise<string> {
   const paths = runPaths(cfg.name);
+  return composeGridFrame(
+    cfg,
+    models,
+    (slug) => {
+      const shot = paths.screenshot(slug);
+      return existsSync(shot) ? shot : null;
+    },
+    paths.grid,
+  );
+}
+
+/**
+ * Compose one grid image where each model's cell comes from `imageOf(slug)`
+ * (null → "no output" placeholder). buildGrid uses it with the still
+ * screenshots; the video stage calls it once per frame index.
+ */
+export async function composeGridFrame(
+  cfg: BenchmarkConfig,
+  models: ModelEntry[],
+  imageOf: (slug: string) => string | null,
+  outPath: string,
+): Promise<string> {
+  const paths = runPaths(cfg.name);
   const g = cfg.grid;
   const placeholderHeight = Math.round(g.cellWidth * 0.66);
 
   const cells: Cell[] = [];
   for (const model of models) {
-    const shot = paths.screenshot(model.slug);
+    const image = imageOf(model.slug);
     const stats = statsLine(loadResult(paths.result(model.slug)));
-    const cell = existsSync(shot)
-      ? await makeImageCell(shot, model.label, stats, g)
+    const cell = image
+      ? await makeImageCell(image, model.label, stats, g)
       : await makePlaceholderCell(model.label, stats, g, placeholderHeight);
     cells.push(cell);
   }
@@ -74,8 +97,8 @@ export async function buildGrid(
     },
   });
 
-  await canvas.composite(composites).png().toFile(paths.grid);
-  return paths.grid;
+  await canvas.composite(composites).png().toFile(outPath);
+  return outPath;
 }
 
 async function makeImageCell(

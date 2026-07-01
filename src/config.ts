@@ -41,6 +41,14 @@ export function loadConfig(path: string): BenchmarkConfig {
     seen.add(m.slug);
   }
 
+  // Video capture steps the virtual clock frame-by-frame; without freezeClock
+  // there is no virtual clock to step and the clip would be nondeterministic.
+  if (cfg.render?.video && !cfg.render?.freezeClock) {
+    throw new Error(
+      'render.video requires render.freezeClock: true (frames are captured by stepping the virtual clock; rAF-driven content only)',
+    );
+  }
+
   // Fill defaults so the rest of the pipeline can assume fields exist.
   return withDefaults(cfg as BenchmarkConfig);
 }

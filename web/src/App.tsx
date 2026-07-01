@@ -20,8 +20,14 @@ interface Benchmark {
   description: string;
   prompt: string;
   systemPrompt: string;
-  render: { viewport: string; fullPage: boolean; waitMs: number; deterministic: boolean };
-  grid: { image: string; columns: number };
+  render: {
+    viewport: string;
+    fullPage: boolean;
+    waitMs: number;
+    deterministic: boolean;
+    video?: { durationMs: number; fps: number } | null;
+  };
+  grid: { image: string; video?: string | null; columns: number };
   models: Model[];
   rendered: number;
   total: number;
@@ -101,15 +107,39 @@ function BenchmarkCard({ b }: { b: Benchmark }) {
       </div>
       <p className="desc">{b.description}</p>
 
-      <a className="grid-link" href={b.grid.image} target="_blank" rel="noreferrer" title="Open full-size">
-        <img src={b.grid.image} alt={`${b.title} grid`} loading="lazy" />
-      </a>
+      {b.grid.video ? (
+        <a className="grid-link" href={b.grid.video} target="_blank" rel="noreferrer" title="Open full-size video">
+          <video
+            src={b.grid.video}
+            poster={b.grid.image}
+            autoPlay
+            loop
+            muted
+            playsInline
+            onLoadedData={(e) => {
+              // Some browsers block even muted autoplay; nudge it and fall
+              // back silently to the poster if refused.
+              e.currentTarget.play().catch(() => {});
+            }}
+          />
+        </a>
+      ) : (
+        <a className="grid-link" href={b.grid.image} target="_blank" rel="noreferrer" title="Open full-size">
+          <img src={b.grid.image} alt={`${b.title} grid`} loading="lazy" />
+        </a>
+      )}
 
       <div className="meta-row">
         <span>{b.render.viewport}</span>
         <span>{b.render.fullPage ? "full page" : "fixed crop"}</span>
-        <span>settle {b.render.waitMs}ms</span>
-        {b.render.deterministic && <span className="tag">deterministic frame</span>}
+        {b.render.video ? (
+          <span>{(b.render.video.durationMs / 1000).toFixed(0)}s clip · {b.render.video.fps} fps</span>
+        ) : (
+          <span>settle {b.render.waitMs}ms</span>
+        )}
+        {b.render.deterministic && (
+          <span className="tag">{b.render.video ? "deterministic clip" : "deterministic frame"}</span>
+        )}
       </div>
 
       <details>

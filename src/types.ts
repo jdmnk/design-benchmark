@@ -51,6 +51,23 @@ export interface RenderConfig {
    */
   seed?: number;
   freezeClock?: boolean;
+  /**
+   * Capture an animated clip instead of a single frame. Requires freezeClock:
+   * the virtual clock is stepped one frame at a time (dt = 1000/fps) and each
+   * frame is screenshotted, so the clip is deterministic and smooth no matter
+   * how slowly the scene renders in headless software WebGL. waitMs is ignored
+   * in this mode — preRollMs is the settle time before recording starts.
+   */
+  video?: VideoConfig;
+}
+
+export interface VideoConfig {
+  /** Length of the captured clip. */
+  durationMs: number;
+  /** Frames per second of the clip (also the virtual-clock step rate). */
+  fps: number;
+  /** Virtual time advanced before recording starts (intro/fade-in settle). */
+  preRollMs?: number;
 }
 
 export interface GridConfig {

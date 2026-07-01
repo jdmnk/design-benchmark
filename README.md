@@ -54,7 +54,9 @@ config ──▶ ① generate ──▶ ② render ──▶ ③ grid ──▶ 
    Chromium at a fixed viewport.
 3. **grid** — Scale every screenshot to a fixed cell width, label it (model name + time +
    tokens), and composite into one grid image, N columns wide.
-4. **report** — Write `report.md` (status table + embedded grid) and `summary.json`.
+4. **video** *(animated benchmarks only)* — encode the captured frames into per-model
+   `clip.mp4` files and one composed `grid.mp4` (same layout as the image grid).
+5. **report** — Write `report.md` (status table + embedded grid) and `summary.json`.
 
 ### The config is the run
 
@@ -129,6 +131,30 @@ Animated renders are made reproducible (`render.freezeClock` + `render.seed`):
 Result: re-running a model's scene produces the **same frame** — verified pixel-identical
 for both Canvas2D and WebGL. (Leave `freezeClock` off for CSS/SMIL-animated pages, which
 run on compositor time rather than rAF; those settle with a real `waitMs` wait instead.)
+
+## Animated benchmarks (video grids)
+
+Some briefs are about *motion*, so the harness can capture a clip instead of a still.
+Add `render.video` (requires `freezeClock`):
+
+```jsonc
+"render": {
+  "freezeClock": true, "seed": 7,
+  "video": { "durationMs": 5000, "fps": 24, "preRollMs": 2000 }
+}
+```
+
+Frames are captured **offline**: the virtual clock is stepped exactly `1000/fps` ms at a
+time and each frame is screenshotted, so the clip is smooth and deterministic no matter
+how slowly the scene renders in headless software WebGL (a scene running at 2 fps in real
+time still yields a perfect 24 fps clip). The frames are then encoded (bundled static
+ffmpeg — no system install) into per-model `clip.mp4` files and one **`grid.mp4`**: every
+frame of the grid video is composed with the exact same layout, labels and placeholders as
+`grid.png`, which doubles as the poster/mid-frame still. Raw frames are deleted after
+encoding. See [`config/examples/black-hole-spin.config.json`](config/examples/black-hole-spin.config.json)
+— the spinning-Gargantua benchmark — for a full example; its prompt additionally requires
+framerate-independent motion (driven by the rAF timestamp) and visible azimuthal disk
+structure so the rotation actually reads on camera.
 
 ## Resilience
 

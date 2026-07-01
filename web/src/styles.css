@@ -84,14 +84,16 @@ main {
 .desc { color: var(--muted); margin: 6px 0 16px; font-size: 14.5px; }
 
 .grid-link { display: block; }
-.grid-link img {
+.grid-link img,
+.grid-link video {
   width: 100%;
   border-radius: 10px;
   border: 1px solid var(--border);
   display: block;
   background: #000;
 }
-.grid-link:hover img { border-color: #3a4150; }
+.grid-link:hover img,
+.grid-link:hover video { border-color: #3a4150; }
 
 .meta-row {
   display: flex;

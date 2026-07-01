@@ -14,6 +14,7 @@ const ROOT = resolve(dirname(new URL(import.meta.url).pathname), "..");
 const BENCHES = [
   { configPath: "config/benchmark.config.json" },
   { configPath: "config/examples/black-hole.config.json" },
+  { configPath: "config/examples/black-hole-spin.config.json" },
   { configPath: "config/examples/sunset-svg.config.json" },
 ];
 
@@ -45,8 +46,11 @@ const benchmarks = BENCHES.map(({ configPath }) => {
   const exDir = join("examples", id);
   const summary = read(join(exDir, "summary.json"));
 
-  // grid image
+  // grid image (+ grid video for animated benchmarks)
   copyFileSync(join(ROOT, exDir, "grid.png"), join(gridsDir, `${id}.png`));
+  const gridVideoSrc = join(ROOT, exDir, "grid.mp4");
+  const hasVideo = existsSync(gridVideoSrc);
+  if (hasVideo) copyFileSync(gridVideoSrc, join(gridsDir, `${id}.mp4`));
 
   // model output pages (so the app can link "open" to the real render)
   const pagesSrc = join(ROOT, exDir, "pages");
@@ -84,8 +88,15 @@ const benchmarks = BENCHES.map(({ configPath }) => {
       fullPage: cfg.render?.fullPage ?? false,
       waitMs: cfg.render?.waitMs ?? 0,
       deterministic: Boolean(cfg.render?.freezeClock),
+      video: cfg.render?.video
+        ? { durationMs: cfg.render.video.durationMs, fps: cfg.render.video.fps }
+        : null,
     },
-    grid: { image: `grids/${id}.png`, columns: cfg.grid?.columns ?? 3 },
+    grid: {
+      image: `grids/${id}.png`,
+      video: hasVideo ? `grids/${id}.mp4` : null,
+      columns: cfg.grid?.columns ?? 3,
+    },
     models,
     rendered: models.filter((m) => m.status === "rendered" || m.status === "truncated").length,
     total: models.length,

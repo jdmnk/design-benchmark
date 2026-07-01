@@ -44,6 +44,18 @@ answering (visible in the per-model table). Config:
 
 ![black-hole](black-hole/grid.png)
 
+## black-hole-spin — the animated one 🎬
+
+The same Gargantua composition, but judged in motion: a **5-second clip** (24 fps) is
+captured per model on the deterministic virtual clock — frame-stepped, so even scenes that
+crawl in software WebGL yield a smooth clip — and composed into one **[grid video](black-hole-spin/grid.mp4)**
+with the same layout as the image grids. The still below is the clip's middle frame; the
+prompt demands framerate-independent rotation (~25–40°/s) with visible disk structure so
+the motion actually reads. Per-model clips are in [`black-hole-spin/clips/`](black-hole-spin/clips).
+Config: [`config/examples/black-hole-spin.config.json`](../config/examples/black-hole-spin.config.json).
+
+[![black-hole-spin](black-hole-spin/grid.png)](black-hole-spin/grid.mp4)
+
 ## sunset-svg — a single inline-SVG scene
 
 Sun setting behind a layered mountain range, with clouds and a reflecting river — exact
