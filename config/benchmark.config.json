@@ -1,19 +1,15 @@
 {
   "$schema": "./schema.json",
-  "name": "saas-swiss",
-  "description": "Swiss / International Typographic Style SaaS landing page. Detailed, prescriptive brief so model outputs are directly comparable. Dense toward the top; captured as a fixed top-crop.",
-
-  "systemPrompt": "You are an elite product and web designer who specializes in the Swiss / International Typographic Style. Output a SINGLE self-contained HTML document with all CSS embedded. No external assets, no images, no icon fonts, and no JavaScript. Follow the brief precisely — this is a controlled comparison, not a place to improvise layout or content.",
-
-  "prompt": "Design the top of the landing page for a fictional SaaS product called «MERIDIAN», a real-time data-analytics platform. Render it in a strict Swiss / International Typographic Style and pack the content densely so it all fits within the first screen (roughly the top 800px).\n\nStyle rules (follow exactly):\n- Typeface: Helvetica / Arial / Inter only. Build on a visible 12-column grid with consistent gutters; everything flush-left.\n- Palette: off-white background #F4F4F1, near-black text #111111, and ONE accent color, signal red #E2231A. No gradients, no drop shadows, no rounded corners, no emoji, no photos.\n- Typography: a very large, tight headline; clear hierarchy; small uppercase labels with letter-spacing for section/eyebrow text. Use rules (thin horizontal/vertical lines) to structure the page.\n\nContent and order (top to bottom, all above the fold):\n1. A top navigation bar: the wordmark «MERIDIAN» on the left; nav links Product, Customers, Pricing, Docs; and a red 'Start free' button on the right.\n2. A hero: an eyebrow label, an oversized headline of at most 6 words, a one-sentence subheadline, and two calls to action (a solid red primary, a bordered secondary).\n3. A full-width thin horizontal rule.\n4. A row of four numbered feature columns (01–04), each with a short bold title and a one-line description.\n5. A thin 'Trusted by' row of 5–6 plausible company wordmarks rendered as plain text.\n\nReturn ONLY a single complete HTML document.",
-
+  "name": "festival-landing",
+  "description": "Landing page for a fictional electronic-music festival. The content is fixed so outputs are comparable; the art direction is deliberately wide open — this brief exists to expose each model's design sensibility, not its ability to follow a template.",
+  "systemPrompt": "You are a celebrated art director known for wild, unforgettable festival websites. Output a SINGLE self-contained HTML document with all CSS embedded (JS optional but not needed). No external images or assets — any visuals must be built from CSS/SVG you write yourself. RELIABILITY RULES: set an explicit background on <body> as the very first style rule so the page never renders blank; ensure the document is complete with every tag closed; if you are running long, simplify the design rather than let it be cut off mid-file. Web fonts from fonts.googleapis.com are allowed via <link>.",
+  "prompt": "Design the landing page for «EMBERWAVE» — a fictional 3-day electronic music festival held in a desert canyon, June 18–20 2027. This is a DESIGN benchmark: make it look like a real festival site people would screenshot and share. Bold, expressive, atmospheric — pick a strong visual concept (psychedelic, brutalist rave, retro-futurist, cosmic desert — your call) and commit to it fully. Generic corporate layouts will score poorly.\n\nRequired content, all visible within the top ~800px (dense toward the top; the page is captured as a fixed-height crop):\n1. The festival name «EMBERWAVE» as a dominant typographic statement — treat the wordmark itself as art.\n2. Date and place: June 18–20, 2027 · Ash Canyon, Nevada.\n3. A 'Get tickets' call-to-action that fits the art direction.\n4. A headliner lineup of exactly these six fictional acts, with clear visual hierarchy (headliners bigger): NOVA CULT, Velvet Static, MOONBURN, Dax Riviera, Cinder & Ash, The Glass Dunes.\n5. A small marquee/ticker or badge announcing 'Phase 2 lineup — March 2027'.\n\nUse expressive typography (Google Fonts allowed), layered CSS/SVG shapes, gradients, texture, and (optionally) subtle CSS animation. No stock-photo look — build the atmosphere from code. Return ONLY a single complete HTML document.",
   "render": {
     "viewportWidth": 1280,
     "viewportHeight": 800,
     "fullPage": false,
-    "waitMs": 1200
+    "waitMs": 1800
   },
-
   "grid": {
     "columns": 3,
     "cellWidth": 620,
@@ -24,14 +20,13 @@
     "labelFontSize": 20,
     "labelOverlayBg": "rgba(10,12,16,0.66)"
   },
-
   "generation": {
-    "temperature": 0.6,
-    "maxTokens": 10000,
+    "temperature": 0.9,
+    "maxTokens": 20000,
     "concurrency": 9,
-    "timeoutMs": 300000,
-    "retries": 0
+    "timeoutMs": 420000,
+    "retries": 1,
+    "reasoningEffort": "low"
   },
-
   "models": "models/standard-9.json"
 }

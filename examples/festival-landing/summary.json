@@ -1,0 +1,190 @@
+{
+  "name": "festival-landing",
+  "prompt": "Design the landing page for «EMBERWAVE» — a fictional 3-day electronic music festival held in a desert canyon, June 18–20 2027. This is a DESIGN benchmark: make it look like a real festival site people would screenshot and share. Bold, expressive, atmospheric — pick a strong visual concept (psychedelic, brutalist rave, retro-futurist, cosmic desert — your call) and commit to it fully. Generic corporate layouts will score poorly.\n\nRequired content, all visible within the top ~800px (dense toward the top; the page is captured as a fixed-height crop):\n1. The festival name «EMBERWAVE» as a dominant typographic statement — treat the wordmark itself as art.\n2. Date and place: June 18–20, 2027 · Ash Canyon, Nevada.\n3. A 'Get tickets' call-to-action that fits the art direction.\n4. A headliner lineup of exactly these six fictional acts, with clear visual hierarchy (headliners bigger): NOVA CULT, Velvet Static, MOONBURN, Dax Riviera, Cinder & Ash, The Glass Dunes.\n5. A small marquee/ticker or badge announcing 'Phase 2 lineup — March 2027'.\n\nUse expressive typography (Google Fonts allowed), layered CSS/SVG shapes, gradients, texture, and (optionally) subtle CSS animation. No stock-photo look — build the atmosphere from code. Return ONLY a single complete HTML document.",
+  "generatedAt": "2026-07-01T21:00:11.420Z",
+  "models": [
+    {
+      "slug": "glm-5.2",
+      "label": "GLM 5.2",
+      "provider": "openrouter",
+      "modelId": "z-ai/glm-5.2",
+      "ok": true,
+      "htmlExtracted": true,
+      "finishReason": "stop",
+      "truncated": false,
+      "elapsedMs": 342767,
+      "usage": {
+        "promptTokens": 438,
+        "completionTokens": 13641,
+        "totalTokens": 14079
+      },
+      "startedAt": "2026-07-01T20:26:55.701Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
+    },
+    {
+      "slug": "glm-5.1",
+      "label": "GLM 5.1",
+      "provider": "openrouter",
+      "modelId": "z-ai/glm-5.1",
+      "ok": false,
+      "error": "This operation was aborted",
+      "htmlExtracted": false,
+      "elapsedMs": 840006,
+      "startedAt": "2026-07-01T20:26:55.711Z",
+      "render": {
+        "rendered": false,
+        "error": "no output.html (generation produced no HTML)"
+      }
+    },
+    {
+      "slug": "gpt-5.4-mini",
+      "label": "GPT-5.4 mini",
+      "provider": "openrouter",
+      "modelId": "openai/gpt-5.4-mini",
+      "ok": true,
+      "htmlExtracted": true,
+      "finishReason": "stop",
+      "truncated": false,
+      "elapsedMs": 18544,
+      "usage": {
+        "promptTokens": 431,
+        "completionTokens": 3411,
+        "totalTokens": 3842
+      },
+      "startedAt": "2026-07-01T19:53:14.937Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
+    },
+    {
+      "slug": "claude-haiku-4.5",
+      "label": "Claude Haiku 4.5",
+      "provider": "openrouter",
+      "modelId": "anthropic/claude-haiku-4.5",
+      "ok": true,
+      "htmlExtracted": true,
+      "finishReason": "stop",
+      "truncated": false,
+      "elapsedMs": 32143,
+      "usage": {
+        "promptTokens": 507,
+        "completionTokens": 5678,
+        "totalTokens": 6185
+      },
+      "startedAt": "2026-07-01T19:53:14.938Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
+    },
+    {
+      "slug": "qwen3.7-plus",
+      "label": "Qwen3.7 Plus",
+      "provider": "openrouter",
+      "modelId": "qwen/qwen3.7-plus",
+      "ok": true,
+      "htmlExtracted": true,
+      "finishReason": "stop",
+      "truncated": false,
+      "elapsedMs": 123275,
+      "usage": {
+        "promptTokens": 457,
+        "completionTokens": 6627,
+        "totalTokens": 7084
+      },
+      "startedAt": "2026-07-01T19:53:14.939Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
+    },
+    {
+      "slug": "gemini-3.1-flash-lite",
+      "label": "Gemini 3.1 Flash-Lite",
+      "provider": "openrouter",
+      "modelId": "google/gemini-3.1-flash-lite",
+      "ok": true,
+      "htmlExtracted": true,
+      "finishReason": "stop",
+      "truncated": false,
+      "elapsedMs": 6906,
+      "usage": {
+        "promptTokens": 444,
+        "completionTokens": 2035,
+        "totalTokens": 2479
+      },
+      "startedAt": "2026-07-01T19:53:14.939Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
+    },
+    {
+      "slug": "deepseek-v4-pro",
+      "label": "DeepSeek V4 Pro",
+      "provider": "openrouter",
+      "modelId": "deepseek/deepseek-v4-pro",
+      "ok": true,
+      "htmlExtracted": true,
+      "finishReason": "stop",
+      "truncated": false,
+      "elapsedMs": 208083,
+      "usage": {
+        "promptTokens": 437,
+        "completionTokens": 13963,
+        "totalTokens": 14400
+      },
+      "startedAt": "2026-07-01T19:53:14.940Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
+    },
+    {
+      "slug": "mimo-v2.5",
+      "label": "MiMo v2.5",
+      "provider": "openrouter",
+      "modelId": "xiaomi/mimo-v2.5",
+      "ok": true,
+      "htmlExtracted": true,
+      "finishReason": "stop",
+      "truncated": false,
+      "elapsedMs": 126825,
+      "usage": {
+        "promptTokens": 448,
+        "completionTokens": 9034,
+        "totalTokens": 9482
+      },
+      "startedAt": "2026-07-01T19:53:14.941Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
+    },
+    {
+      "slug": "minimax-m3",
+      "label": "MiniMax M3",
+      "provider": "openrouter",
+      "modelId": "minimax/minimax-m3",
+      "ok": true,
+      "htmlExtracted": true,
+      "finishReason": "stop",
+      "truncated": false,
+      "elapsedMs": 328439,
+      "usage": {
+        "promptTokens": 591,
+        "completionTokens": 16241,
+        "totalTokens": 16832
+      },
+      "startedAt": "2026-07-01T19:53:14.942Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
+    }
+  ]
+}

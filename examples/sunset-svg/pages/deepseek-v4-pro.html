@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Serene Sunset Landscape</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #0b0b2a;
+        }
+        svg {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+        }
+    </style>
+</head>
+<body>
+    <svg viewBox="0 0 1280 800" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <!-- Sky Gradient: Deep Indigo -> Magenta/Pink -> Orange/Gold -->
+            <linearGradient id="skyGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#0b0b2a" />
+                <stop offset="30%" stop-color="#3d1c5c" />
+                <stop offset="60%" stop-color="#a53a5e" />
+                <stop offset="85%" stop-color="#e67a51" />
+                <stop offset="100%" stop-color="#f2c14e" />
+            </linearGradient>
+
+            <!-- Horizon Glow -->
+            <radialGradient id="horizonGlow" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#f2c14e" stop-opacity="0.6" />
+                <stop offset="50%" stop-color="#e67a51" stop-opacity="0.2" />
+                <stop offset="100%" stop-color="#e67a51" stop-opacity="0" />
+            </radialGradient>
+
+            <!-- Sun Glow -->
+            <radialGradient id="sunGlow" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#ffffff" stop-opacity="1" />
+                <stop offset="15%" stop-color="#fffbea" stop-opacity="1" />
+                <stop offset="40%" stop-color="#f2c14e" stop-opacity="0.8" />
+                <stop offset="70%" stop-color="#e67a51" stop-opacity="0.3" />
+                <stop offset="100%" stop-color="#e67a51" stop-opacity="0" />
+            </radialGradient>
+
+            <!-- Cloud Gradient -->
+            <linearGradient id="cloudGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#e67a51" stop-opacity="0.7" />
+                <stop offset="50%" stop-color="#f2c14e" stop-opacity="0.4" />
+                <stop offset="100%" stop-color="#f2c14e" stop-opacity="0.1" />
+            </linearGradient>
+
+            <!-- River Reflection Gradient -->
+            <linearGradient id="reflectionGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#f2c14e" stop-opacity="0.9" />
+                <stop offset="30%" stop-color="#e67a51" stop-opacity="0.6" />
+                <stop offset="70%" stop-color="#3d1c5c" stop-opacity="0.2" />
+                <stop offset="100%" stop-color="#0d081a" stop-opacity="0" />
+            </linearGradient>
+        </defs>
+
+        <!-- Sky Background -->
+        <rect x="0" y="0" width="1280" height="440" fill="url(#skyGradient)" />
+
+        <!-- Horizon Glow -->
+        <ellipse cx="640" cy="440" rx="600" ry="50" fill="url(#horizonGlow)" />
+
+        <!-- Sun Glow and Core -->
+        <circle cx="640" cy="400" r="180" fill="url(#sunGlow)" />
+        <circle cx="640" cy="400" r="50" fill="#fffbea" />
+
+        <!-- Drifting Clouds -->
+        <g>
+            <!-- Cloud 1 -->
+            <path d="M 100,150 Q 150,120 200,140 Q 250,110 300,150 Q 350,130 400,160 L 100,160 Z" fill="url(#cloudGradient)">
+                <animateTransform attributeName="transform" type="translate" values="0,0; 30,0; 0,0" dur="40s" repeatCount="indefinite" />
+            </path>
+            <!-- Cloud 2 -->
+            <path d="M 800,180 Q 850,150 900,170 Q 950,140 1000,180 Q 1050,160 1100,190 L 800,190 Z" fill="url(#cloudGradient)">
+                <animateTransform attributeName="transform" type="translate" values="0,0; -20,0; 0,0" dur="35s" repeatCount="indefinite" />
+            </path>
+            <!-- Cloud 3 -->
+            <path d="M 500,90 Q 550,70 600,80 Q 650,60 700,90 Q 750,80 800,100 L 500,100 Z" fill="url(#cloudGradient)">
+                <animateTransform attributeName="transform" type="translate" values="0,0; 15,0; 0,0" dur="50s" repeatCount="indefinite" />
+            </path>
+            <!-- Cloud 4 -->
+            <path d="M -50,220 Q 50,190 100,210 Q 150,180 200,220 L -50,220 Z" fill="url(#cloudGradient)">
+                <animateTransform attributeName="transform" type="translate" values="0,0; 25,0; 0,0" dur="45s" repeatCount="indefinite" />
+            </path>
+            <!-- Cloud 5 -->
+            <path d="M 1050,240 Q 1100,220 1150,230 Q 1200,210 1250,240 L 1050,240 Z" fill="url(#cloudGradient)">
+                <animateTransform attributeName="transform" type="translate" values="0,0; -15,0; 0,0" dur="30s" repeatCount="indefinite" />
+            </path>
+        </g>
+
+        <!-- Layered Mountain Silhouettes -->
+        <!-- Back Mountain (Distant, lightest dark) -->
+        <path d="M 0,450 L 200,320 L 500,400 L 640,460 L 800,390 L 1100,300 L 1280,450 L 1280,800 L 0,800 Z" fill="#2b1b4d" />
+        
+        <!-- Mid Mountain (Darker) -->
+        <path d="M 0,480 L 300,380 L 640,480 L 1000,360 L 1280,480 L 1280,800 L 0,800 Z" fill="#1c1236" />
+        
+        <!-- Front Mountain (Darkest, closest to viewer) -->
+        <path d="M 0,520 L 400,440 L 640,500 L 900,430 L 1280,520 L 1280,800 L 0,800 Z" fill="#0d081a" />
+
+        <!-- River and Reflection -->
+        <!-- River Base -->
+        <path d="M 580,560 L 700,560 L 1100,800 L 180,800 Z" fill="#0d081a" />
+        
+        <!-- Sun Reflection on River -->
+        <path d="M 610,560 L 670,560 L 950,800 L 330,800 Z" fill="url(#reflectionGradient)" />
+
+        <!-- Shimmering Reflection Lines -->
+        <g stroke="#fffbea" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.6">
+            <!-- Shimmer 1 -->
+            <path d="M 630,580 L 650,580 M 610,620 L 670,620 M 580,660 L 700,660 M 540,700 L 740,700 M 480,740 L 800,740 M 400,780 L 880,780" stroke-dasharray="10 20">
+                <animate attributeName="stroke-dashoffset" from="30" to="0" dur="1.5s" repeatCount="indefinite" />
+            </path>
+            <!-- Shimmer 2 (Offset for complexity) -->
+            <path d="M 625,590 L 655,590 M 605,630 L 675,630 M 575,670 L 705,670 M 535,710 L 745,710 M 475,750 L 805,750 M 395,790 L 885,790" stroke-dasharray="15 25" opacity="0.4">
+                <animate attributeName="stroke-dashoffset" from="40" to="0" dur="2s" repeatCount="indefinite" />
+            </path>
+            <!-- Shimmer 3 (Further offset) -->
+            <path d="M 635,600 L 645,600 M 615,640 L 665,640 M 585,680 L 695,680 M 545,720 L 735,720 M 485,760 L 795,760 M 405,795 L 875,795" stroke-dasharray="8 16" opacity="0.8">
+                <animate attributeName="stroke-dashoffset" from="24" to="0" dur="1s" repeatCount="indefinite" />
+            </path>
+        </g>
+    </svg>
+</body>
+</html>

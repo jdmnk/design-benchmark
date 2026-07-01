@@ -2,210 +2,398 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <title>Gargantua Black Hole</title>
   <style>
-    html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #000; }
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: #020204;
+    }
     canvas { display: block; width: 100%; height: 100%; }
   </style>
-  <script type="importmap">
-  {
-    "imports": {
-      "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-      "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
-    }
-  }
-  </script>
 </head>
 <body>
+<script type="importmap">
+{
+  "imports": {
+    "three": "three"
+  }
+}
+</script>
+
 <script type="module">
 import * as THREE from 'three';
 
-const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x020203);
-scene.fog = new THREE.FogExp2(0x020203, 0.03);
+let scene, camera, renderer, clock;
+let diskGroup, haloGroup, ringGroup;
+let blackHole, photonRing, starPoints;
 
-const camera = new THREE.PerspectiveCamera(42, innerWidth / innerHeight, 0.1, 100);
-camera.position.set(0, 1.0, 9.0);
-camera.lookAt(0, 0, 0);
+init();
+animate();
 
-const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
-renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-renderer.setSize(innerWidth, innerHeight);
-renderer.outputColorSpace = THREE.SRGBColorSpace;
-document.body.appendChild(renderer.domElement);
+function init() {
+  try {
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x020204);
+    scene.fog = new THREE.FogExp2(0x020204, 0.025);
 
-const group = new THREE.Group();
-scene.add(group);
+    camera = new THREE.PerspectiveCamera(28, window.innerWidth / window.innerHeight, 0.1, 100);
+    camera.position.set(0, 0.36, 6.4); // ~5-8 degrees above disk plane
+    camera.lookAt(0, 0, 0);
 
-const holeRadius = 1.0;
-const bhGeom = new THREE.SphereGeometry(holeRadius, 96, 96);
-const bhMat = new THREE.MeshBasicMaterial({ color: 0x000000 });
-const blackHole = new THREE.Mesh(bhGeom, bhMat);
-group.add(blackHole);
+    renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0x020204, 1);
+    document.body.appendChild(renderer.domElement);
 
-// Bright photon ring
-const ringGeom = new THREE.TorusGeometry(holeRadius * 1.02, 0.06, 24, 256);
-const ringMat = new THREE.MeshBasicMaterial({
-  color: 0xfff2cf,
-  transparent: true,
-  opacity: 0.95
-});
-const photonRing = new THREE.Mesh(ringGeom, ringMat);
-photonRing.rotation.x = Math.PI / 2;
-group.add(photonRing);
+    clock = new THREE.Clock();
 
-// Main accretion disk
-const diskGeom = new THREE.CylinderGeometry(1.28, 2.9, 0.06, 256, 1, true);
-const diskMat = new THREE.ShaderMaterial({
-  transparent: true,
-  depthWrite: false,
-  uniforms: {
-    time: { value: 0 }
-  },
-  vertexShader: `
-    varying vec2 vUv;
-    varying vec3 vWorldPos;
-    varying vec3 vNormal;
-    void main() {
-      vUv = uv;
-      vNormal = normalize(normalMatrix * normal);
-      vec4 wp = modelMatrix * vec4(position, 1.0);
-      vWorldPos = wp.xyz;
-      gl_Position = projectionMatrix * viewMatrix * wp;
-    }
-  `,
-  fragmentShader: `
-    precision highp float;
-    varying vec2 vUv;
-    varying vec3 vWorldPos;
-    varying vec3 vNormal;
-    uniform float time;
+    // Lights
+    scene.add(new THREE.AmbientLight(0xffffff, 0.35));
+    const key = new THREE.DirectionalLight(0xfff0d8, 1.2);
+    key.position.set(-2, 1, 4);
+    scene.add(key);
 
-    vec3 palette(float t) {
-      vec3 c1 = vec3(1.0, 0.952, 0.816); // #fff3d0
-      vec3 c2 = vec3(1.0, 0.682, 0.231); // #ffae3b
-      vec3 c3 = vec3(0.784, 0.345, 0.102); // #c8551a
-      if (t < 0.5) return mix(c1, c2, t / 0.5);
-      return mix(c2, c3, (t - 0.5) / 0.5);
-    }
+    // Background stars
+    starPoints = makeStarField();
+    scene.add(starPoints);
 
-    void main() {
-      vec2 p = vUv * 2.0 - 1.0;
-      float r = length(p);
-      float ang = atan(p.y, p.x);
-      float inner = smoothstep(0.18, 0.48, r);
-      float outer = 1.0 - smoothstep(0.72, 1.0, r);
+    // Center black hole
+    const bhGeo = new THREE.SphereGeometry(0.78, 48, 32); // ~28% of viewport height visually
+    const bhMat = new THREE.MeshBasicMaterial({ color: 0x000000 });
+    blackHole = new THREE.Mesh(bhGeo, bhMat);
+    scene.add(blackHole);
 
-      float radial = smoothstep(0.0, 0.18, r) * (1.0 - smoothstep(0.9, 1.1, r));
-      float t = clamp((r - 0.08) / 0.92, 0.0, 1.0);
-      vec3 col = palette(t);
+    // Photon ring: thin, bright, hugging the edge
+    const photonTex = makeRingTexture(512, 64, [
+      { r: 255, g: 248, b: 220, a: 1.0, p: 0.00 },
+      { r: 255, g: 225, b: 160, a: 0.95, p: 0.35 },
+      { r: 255, g: 170, b:  60, a: 0.85, p: 0.62 },
+      { r: 184, g:  85, b:  26, a: 0.0,  p: 1.00 }
+    ]);
+    const photonGeo = new THREE.TorusGeometry(0.82, 0.035, 18, 220);
+    const photonMat = new THREE.MeshBasicMaterial({
+      map: photonTex,
+      transparent: true,
+      opacity: 1,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+      side: THREE.DoubleSide
+    });
+    photonRing = new THREE.Mesh(photonGeo, photonMat);
+    photonRing.rotation.x = Math.PI / 2;
+    scene.add(photonRing);
 
-      // Bright inner edge and fading outward
-      float core = exp(-pow((r - 0.18) / 0.11, 2.0)) * 2.2;
-      float glow = exp(-pow((r - 0.38) / 0.22, 2.0)) * 0.9;
-      float edge = exp(-pow((r - 0.08) / 0.05, 2.0)) * 1.5;
+    // Accretion disk group
+    diskGroup = new THREE.Group();
+    scene.add(diskGroup);
 
-      // Relativistic beaming: one side brighter
-      float beam = 0.58 + 0.72 * (0.5 + 0.5 * cos(ang - 0.55));
-      beam = mix(0.72, 1.55, beam);
+    const diskTex = makeDiskTexture(1024, 512);
+    const diskGeo = new THREE.CylinderGeometry(0.95, 0.95, 0.085, 192, 1, true);
+    const diskMat = new THREE.MeshStandardMaterial({
+      map: diskTex,
+      color: 0xffffff,
+      emissive: new THREE.Color(0x3a1606),
+      emissiveIntensity: 0.9,
+      roughness: 0.55,
+      metalness: 0.0,
+      transparent: true,
+      opacity: 0.95,
+      side: THREE.DoubleSide,
+      depthWrite: false
+    });
+    const disk = new THREE.Mesh(diskGeo, diskMat);
+    diskGroup.add(disk);
 
-      // Subtle streaking
-      float streak = 0.92 + 0.08 * sin(40.0 * r - time * 0.7 + ang * 10.0);
+    // Thin bright inner rim to suggest intense inner edge
+    const innerRimGeo = new THREE.TorusGeometry(0.82, 0.03, 16, 220);
+    const innerRimMat = new THREE.MeshBasicMaterial({
+      map: photonTex,
+      color: 0xffffff,
+      transparent: true,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false
+    });
+    const innerRim = new THREE.Mesh(innerRimGeo, innerRimMat);
+    innerRim.rotation.x = Math.PI / 2;
+    innerRim.scale.set(1.02, 1.02, 1.02);
+    diskGroup.add(innerRim);
 
-      float alpha = (0.62 * inner + 0.85 * outer) * 0.95;
-      alpha *= 1.0 - smoothstep(0.96, 1.15, r);
-      alpha += edge * 0.55;
-      alpha += core * 0.35;
+    // Lensing arcs: far side bent above and below
+    haloGroup = new THREE.Group();
+    scene.add(haloGroup);
 
-      vec3 finalCol = col * (0.65 + 1.15 * beam) * streak;
-      finalCol += vec3(1.0, 0.9, 0.7) * (core * 0.8 + glow * 0.35 + edge * 0.9);
+    const arcTex = makeArcTexture(1024, 128);
+    const arcMat = new THREE.MeshBasicMaterial({
+      map: arcTex,
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0.95,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+      side: THREE.DoubleSide
+    });
 
-      // Slightly darker far side of the disk
-      float darken = 0.92 - 0.18 * sin(ang + 0.6);
-      finalCol *= darken;
+    const topArcGeo = new THREE.TorusGeometry(1.16, 0.08, 14, 180, Math.PI * 0.95);
+    const topArc = new THREE.Mesh(topArcGeo, arcMat.clone());
+    topArc.material.opacity = 0.8;
+    topArc.position.y = 0.52;
+    topArc.rotation.x = Math.PI / 2;
+    topArc.rotation.z = Math.PI * 0.03;
+    topArc.scale.set(1.08, 0.82, 1.0);
+    haloGroup.add(topArc);
 
-      gl_FragColor = vec4(finalCol, clamp(alpha, 0.0, 1.0));
-    }
-  `
-});
-const disk = new THREE.Mesh(diskGeom, diskMat);
-disk.rotation.x = Math.PI / 2;
-disk.scale.set(2.9, 1.0, 1.0);
-group.add(disk);
+    const botArcGeo = new THREE.TorusGeometry(1.16, 0.08, 14, 180, Math.PI * 0.95);
+    const botArc = new THREE.Mesh(botArcGeo, arcMat.clone());
+    botArc.material.opacity = 0.78;
+    botArc.position.y = -0.52;
+    botArc.rotation.x = Math.PI / 2;
+    botArc.rotation.z = Math.PI * 1.03;
+    botArc.scale.set(1.08, 0.82, 1.0);
+    haloGroup.add(botArc);
 
-// Lensing arcs above and below
-function makeArc(y, z, sx, sy, opacity, color=0xfff1c7) {
-  const g = new THREE.TorusGeometry(2.15, 0.05, 18, 200, Math.PI * 1.02);
-  const m = new THREE.MeshBasicMaterial({ color, transparent: true, opacity });
-  const arc = new THREE.Mesh(g, m);
-  arc.rotation.x = Math.PI / 2;
-  arc.position.set(0, y, z);
-  arc.scale.set(sx, sy, 1);
-  return arc;
+    // Extra side extensions so the disk reads as a long horizontal band
+    const sideBandGeo = new THREE.PlaneGeometry(4.8, 0.42, 1, 1);
+    const sideBandMat = new THREE.MeshBasicMaterial({
+      map: makeBandTexture(1024, 96),
+      transparent: true,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+      side: THREE.DoubleSide
+    });
+    const sideBand = new THREE.Mesh(sideBandGeo, sideBandMat);
+    sideBand.rotation.y = 0;
+    sideBand.rotation.x = 0.02;
+    sideBand.position.z = -0.18;
+    sideBand.position.y = -0.01;
+    scene.add(sideBand);
+
+    // Subtle second band for luminosity
+    const sideBand2 = new THREE.Mesh(sideBandGeo, sideBandMat.clone());
+    sideBand2.material.opacity = 0.65;
+    sideBand2.scale.set(1.06, 0.58, 1);
+    sideBand2.position.z = -0.25;
+    scene.add(sideBand2);
+
+    window.addEventListener('resize', onWindowResize);
+
+  } catch (err) {
+    console.error(err);
+  }
 }
-const arcTop = makeArc(1.05, -0.32, 1.3, 0.62, 0.92, 0xfff3d0);
-const arcBot = makeArc(-1.05, -0.32, 1.3, 0.62, 0.92, 0xfff3d0);
-arcTop.rotation.z = -0.18;
-arcBot.rotation.z = 0.18;
-group.add(arcTop, arcBot);
-
-// Secondary warped glow bands
-function makeGlowBand(y, scaleY, opacity) {
-  const g = new THREE.TorusGeometry(2.55, 0.12, 12, 180, Math.PI * 1.02);
-  const m = new THREE.MeshBasicMaterial({ color: 0xff9e2d, transparent: true, opacity, blending: THREE.AdditiveBlending });
-  const band = new THREE.Mesh(g, m);
-  band.rotation.x = Math.PI / 2;
-  band.position.y = y;
-  band.scale.set(1.65, scaleY, 1);
-  return band;
-}
-const glowTop = makeGlowBand(1.35, 0.36, 0.35);
-const glowBot = makeGlowBand(-1.35, 0.36, 0.35);
-group.add(glowTop, glowBot);
-
-// Sparse starfield
-const starCount = 900;
-const starPos = new Float32Array(starCount * 3);
-for (let i = 0; i < starCount; i++) {
-  const r = 30 + Math.random() * 80;
-  const theta = Math.random() * Math.PI * 2;
-  const phi = Math.acos(THREE.MathUtils.randFloatSpread(2));
-  starPos[i*3+0] = r * Math.sin(phi) * Math.cos(theta);
-  starPos[i*3+1] = r * Math.cos(phi);
-  starPos[i*3+2] = r * Math.sin(phi) * Math.sin(theta);
-}
-const starGeom = new THREE.BufferGeometry();
-starGeom.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
-const starMat = new THREE.PointsMaterial({ color: 0xbfc7d4, size: 0.06, sizeAttenuation: true, transparent: true, opacity: 0.55 });
-const stars = new THREE.Points(starGeom, starMat);
-scene.add(stars);
-
-// Soft back haze
-const hazeGeom = new THREE.SphereGeometry(20, 32, 32);
-const hazeMat = new THREE.MeshBasicMaterial({ color: 0x050508, transparent: true, opacity: 0.18, side: THREE.BackSide });
-const haze = new THREE.Mesh(hazeGeom, hazeMat);
-scene.add(haze);
-
-function onResize() {
-  camera.aspect = innerWidth / innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(innerWidth, innerHeight);
-}
-addEventListener('resize', onResize);
-
-const clock = new THREE.Clock();
 
 function animate() {
-  const t = clock.getElapsedTime();
-  diskMat.uniforms.time.value = t;
-  group.rotation.y = t * 0.09;
-  stars.rotation.y = t * 0.01;
-  stars.rotation.x = Math.sin(t * 0.03) * 0.03;
-  renderer.render(scene, camera);
   requestAnimationFrame(animate);
+  const t = clock.getElapsedTime();
+
+  if (diskGroup) {
+    diskGroup.rotation.y = t * 0.12;
+    haloGroup.rotation.y = t * 0.12;
+    photonRing.rotation.z = Math.PI / 2;
+    photonRing.rotation.y = t * 0.10;
+    starPoints.rotation.y = t * 0.005;
+  }
+
+  // slight breathing for visual realism
+  if (photonRing) photonRing.scale.setScalar(1.0 + Math.sin(t * 0.7) * 0.004);
+
+  renderer.render(scene, camera);
 }
-animate();
+
+function onWindowResize() {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+}
+
+function makeStarField() {
+  const count = 700;
+  const positions = new Float32Array(count * 3);
+  const colors = new Float32Array(count * 3);
+
+  const c = new THREE.Color();
+  for (let i = 0; i < count; i++) {
+    const r = 35 * Math.pow(Math.random(), 0.35);
+    const theta = Math.random() * Math.PI * 2;
+    const phi = Math.acos(THREE.MathUtils.randFloatSpread(2) * 0.9);
+
+    const x = r * Math.sin(phi) * Math.cos(theta);
+    const y = r * Math.cos(phi);
+    const z = r * Math.sin(phi) * Math.sin(theta);
+
+    positions[i * 3 + 0] = x;
+    positions[i * 3 + 1] = y;
+    positions[i * 3 + 2] = z;
+
+    const brightness = Math.random() ** 2 * 0.9 + 0.1;
+    c.setHSL(0.12 + Math.random() * 0.1, 0.25, brightness);
+    colors[i * 3 + 0] = c.r;
+    colors[i * 3 + 1] = c.g;
+    colors[i * 3 + 2] = c.b;
+  }
+
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+  const mat = new THREE.PointsMaterial({
+    size: 0.045,
+    vertexColors: true,
+    transparent: true,
+    opacity: 0.8,
+    depthWrite: false
+  });
+
+  return new THREE.Points(geo, mat);
+}
+
+function makeDiskTexture(w, h) {
+  const canvas = document.createElement('canvas');
+  canvas.width = w;
+  canvas.height = h;
+  const ctx = canvas.getContext('2d');
+
+  const grad = ctx.createLinearGradient(0, 0, w, 0);
+  grad.addColorStop(0.00, '#c8551a');
+  grad.addColorStop(0.18, '#ffae3b');
+  grad.addColorStop(0.38, '#fff3d0');
+  grad.addColorStop(0.50, '#ffffff');
+  grad.addColorStop(0.62, '#fff0c0');
+  grad.addColorStop(0.82, '#ffae3b');
+  grad.addColorStop(1.00, '#c8551a');
+
+  // base radial-ish glow across height
+  const rg = ctx.createRadialGradient(w * 0.5, h * 0.5, 2, w * 0.5, h * 0.5, w * 0.55);
+  rg.addColorStop(0.00, 'rgba(255,255,255,1.0)');
+  rg.addColorStop(0.20, 'rgba(255,243,208,0.95)');
+  rg.addColorStop(0.50, 'rgba(255,174,59,0.75)');
+  rg.addColorStop(1.00, 'rgba(200,85,26,0.0)');
+
+  ctx.fillStyle = '#000';
+  ctx.fillRect(0, 0, w, h);
+  ctx.globalCompositeOperation = 'screen';
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, h * 0.14, w, h * 0.72);
+  ctx.fillStyle = rg;
+  ctx.fillRect(0, 0, w, h);
+
+  // brighter beaming side
+  const beam = ctx.createLinearGradient(0, 0, w, 0);
+  beam.addColorStop(0.0, 'rgba(255,255,255,0.32)');
+  beam.addColorStop(0.35, 'rgba(255,236,200,0.15)');
+  beam.addColorStop(0.55, 'rgba(255,174,59,0.02)');
+  beam.addColorStop(1.0, 'rgba(255,174,59,0.0)');
+  ctx.fillStyle = beam;
+  ctx.fillRect(0, h * 0.14, w, h * 0.72);
+
+  // faint turbulence streaks
+  ctx.globalCompositeOperation = 'lighter';
+  for (let i = 0; i < 36; i++) {
+    const y = h * (0.18 + Math.random() * 0.64);
+    const a = 0.03 + Math.random() * 0.05;
+    ctx.fillStyle = `rgba(255,255,255,${a})`;
+    ctx.fillRect(0, y, w, 1 + Math.random() * 2);
+  }
+
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.wrapS = tex.wrapT = THREE.ClampToEdgeWrapping;
+  tex.needsUpdate = true;
+  return tex;
+}
+
+function makeRingTexture(w, h, stops) {
+  const canvas = document.createElement('canvas');
+  canvas.width = w;
+  canvas.height = h;
+  const ctx = canvas.getContext('2d');
+  const img = ctx.createImageData(w, h);
+  for (let y = 0; y < h; y++) {
+    const v = Math.abs((y / (h - 1)) - 0.5) * 2; // center bright
+    for (let x = 0; x < w; x++) {
+      const u = x / (w - 1);
+      let col = interpStops(stops, v);
+      const sparkle = 0.8 + 0.2 * Math.sin(u * Math.PI * 18);
+      const idx = (y * w + x) * 4;
+      img.data[idx + 0] = col.r * sparkle;
+      img.data[idx + 1] = col.g * sparkle;
+      img.data[idx + 2] = col.b * sparkle;
+      img.data[idx + 3] = Math.round(255 * col.a * (1.0 - Math.min(1, v * 1.25)));
+    }
+  }
+  ctx.putImageData(img, 0, 0);
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  return tex;
+}
+
+function makeArcTexture(w, h) {
+  const canvas = document.createElement('canvas');
+  canvas.width = w;
+  canvas.height = h;
+  const ctx = canvas.getContext('2d');
+  const g = ctx.createLinearGradient(0, 0, w, 0);
+  g.addColorStop(0, 'rgba(255,255,255,0)');
+  g.addColorStop(0.15, 'rgba(255,243,208,0.35)');
+  g.addColorStop(0.35, 'rgba(255,174,59,0.85)');
+  g.addColorStop(0.55, 'rgba(255,255,255,0.95)');
+  g.addColorStop(0.70, 'rgba(255,174,59,0.85)');
+  g.addColorStop(0.88, 'rgba(200,85,26,0.35)');
+  g.addColorStop(1, 'rgba(255,255,255,0)');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, w, h);
+  ctx.globalCompositeOperation = 'lighter';
+  const rg = ctx.createRadialGradient(w * 0.5, h * 0.5, 2, w * 0.5, h * 0.5, w * 0.52);
+  rg.addColorStop(0, 'rgba(255,255,255,0.85)');
+  rg.addColorStop(0.5, 'rgba(255,210,120,0.55)');
+  rg.addColorStop(1, 'rgba(200,85,26,0)');
+  ctx.fillStyle = rg;
+  ctx.fillRect(0, 0, w, h);
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  return tex;
+}
+
+function makeBandTexture(w, h) {
+  const canvas = document.createElement('canvas');
+  canvas.width = w;
+  canvas.height = h;
+  const ctx = canvas.getContext('2d');
+  const g = ctx.createLinearGradient(0, 0, w, 0);
+  g.addColorStop(0.00, 'rgba(255,255,255,0.0)');
+  g.addColorStop(0.10, 'rgba(255,243,208,0.10)');
+  g.addColorStop(0.30, 'rgba(255,174,59,0.55)');
+  g.addColorStop(0.50, 'rgba(255,245,225,0.95)');
+  g.addColorStop(0.70, 'rgba(255,174,59,0.50)');
+  g.addColorStop(0.90, 'rgba(200,85,26,0.10)');
+  g.addColorStop(1.00, 'rgba(255,255,255,0.0)');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, w, h);
+
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  return tex;
+}
+
+function interpStops(stops, t) {
+  let a = stops[0], b = stops[stops.length - 1];
+  for (let i = 0; i < stops.length - 1; i++) {
+    if (t >= stops[i].p && t <= stops[i + 1].p) {
+      a = stops[i]; b = stops[i + 1]; break;
+    }
+  }
+  const s = (t - a.p) / Math.max(1e-6, (b.p - a.p));
+  return {
+    r: Math.round(a.r + (b.r - a.r) * s),
+    g: Math.round(a.g + (b.g - a.g) * s),
+    b: Math.round(a.b + (b.b - a.b) * s),
+    a: a.a + (b.a - a.a) * s
+  };
+}
 </script>
 </body>
 </html>

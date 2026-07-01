@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sunset Landscape</title>
+<style>
+  * { margin: 0; padding: 0; }
+  body { background: #000; overflow: hidden; }
+  svg { display: block; width: 100vw; height: 100vh; }
+</style>
+</head>
+<body>
+<svg viewBox="0 0 1280 800" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+  <defs>
+    <!-- Sky gradient: indigo -> magenta -> orange/gold -->
+    <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0a0e2e"/>
+      <stop offset="18%" stop-color="#1a1855"/>
+      <stop offset="38%" stop-color="#6b2560"/>
+      <stop offset="55%" stop-color="#c0356b"/>
+      <stop offset="72%" stop-color="#e87a4a"/>
+      <stop offset="88%" stop-color="#f4a73a"/>
+      <stop offset="100%" stop-color="#f7c048"/>
+    </linearGradient>
+
+    <!-- Sun glow radial -->
+    <radialGradient id="sunGlow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#fff8e0" stop-opacity="1"/>
+      <stop offset="25%" stop-color="#ffe070" stop-opacity="0.9"/>
+      <stop offset="50%" stop-color="#ffb840" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#ff7020" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Sun core -->
+    <radialGradient id="sunCore" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="40%" stop-color="#fff5d0"/>
+      <stop offset="100%" stop-color="#ffd050"/>
+    </radialGradient>
+
+    <!-- Cloud warm tint -->
+    <linearGradient id="cloudGrad" x1="0" y1="0" x2="1" y2="0.3">
+      <stop offset="0%" stop-color="#d05070" stop-opacity="0.5"/>
+      <stop offset="50%" stop-color="#e88060" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#f0a050" stop-opacity="0.35"/>
+    </linearGradient>
+    <linearGradient id="cloudGrad2" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#c04070" stop-opacity="0.4"/>
+      <stop offset="50%" stop-color="#e07060" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#e89850" stop-opacity="0.25"/>
+    </linearGradient>
+    <linearGradient id="cloudGrad3" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#a03060" stop-opacity="0.35"/>
+      <stop offset="50%" stop-color="#d06060" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#d88848" stop-opacity="0.2"/>
+    </linearGradient>
+
+    <!-- Mountain silhouettes -->
+    <linearGradient id="mtnBack" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3a2040"/>
+      <stop offset="100%" stop-color="#2a1830"/>
+    </linearGradient>
+    <linearGradient id="mtnMid" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2a1530"/>
+      <stop offset="100%" stop-color="#1e1025"/>
+    </linearGradient>
+    <linearGradient id="mtnFront" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1a0c20"/>
+      <stop offset="100%" stop-color="#120818"/>
+    </linearGradient>
+
+    <!-- River gradient -->
+    <linearGradient id="riverGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2a1535"/>
+      <stop offset="30%" stop-color="#1e102a"/>
+      <stop offset="100%" stop-color="#14091e"/>
+    </linearGradient>
+
+    <!-- River shimmer -->
+    <linearGradient id="riverShimmer" x1="0.5" y1="0" x2="0.5" y2="1">
+      <stop offset="0%" stop-color="#f4a73a" stop-opacity="0.6"/>
+      <stop offset="30%" stop-color="#e89040" stop-opacity="0.35"/>
+      <stop offset="60%" stop-color="#c06030" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#803020" stop-opacity="0.05"/>
+    </linearGradient>
+
+    <!-- Horizon glow -->
+    <linearGradient id="horizonGlow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f4a73a" stop-opacity="0"/>
+      <stop offset="60%" stop-color="#f4a73a" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#f4a73a" stop-opacity="0.0"/>
+    </linearGradient>
+
+    <!-- Sun ray shimmer filter -->
+    <filter id="softBlur">
+      <feGaussianBlur stdDeviation="3"/>
+    </filter>
+    <filter id="cloudBlur">
+      <feGaussianBlur stdDeviation="6"/>
+    </filter>
+    <filter id="sunBlur">
+      <feGaussianBlur stdDeviation="12"/>
+    </filter>
+    <filter id="sunBlurBig">
+      <feGaussianBlur stdDeviation="28"/>
+    </filter>
+
+    <!-- Water shimmer clip -->
+    <clipPath id="riverClip">
+      <polygon points="540,530 740,530 860,800 420,800"/>
+    </clipPath>
+
+    <!-- Cloud animation keyframes via SMIL -->
+  </defs>
+
+  <!-- ===== SKY (first element - fills everything) ===== -->
+  <rect x="0" y="0" width="1280" height="800" fill="url(#skyGrad)"/>
+
+  <!-- ===== STARS (subtle tiny dots in upper sky) ===== -->
+  <g opacity="0.3">
+    <circle cx="120" cy="45" r="1" fill="#fff"/>
+    <circle cx="300" cy="30" r="0.8" fill="#fff"/>
+    <circle cx="450" cy="65" r="1.2" fill="#ddd"/>
+    <circle cx="680" cy="20" r="0.7" fill="#fff"/>
+    <circle cx="850" cy="55" r="1" fill="#eee"/>
+    <circle cx="1000" cy="35" r="0.8" fill="#fff"/>
+    <circle cx="1150" cy="60" r="1.1" fill="#ddd"/>
+    <circle cx="200" cy="90" r="0.6" fill="#fff"/>
+    <circle cx="950" cy="80" r="0.9" fill="#eee"/>
+    <circle cx="1050" cy="15" r="0.7" fill="#fff"/>
+    <circle cx="550" cy="10" r="0.8" fill="#ddd"/>
+    <circle cx="70" cy="75" r="0.9" fill="#fff"/>
+  </g>
+
+  <!-- ===== HORIZON GLOW BAND ===== -->
+  <rect x="0" y="340" width="1280" height="120" fill="url(#horizonGlow)"/>
+
+  <!-- ===== SUN (big diffuse glow behind everything) ===== -->
+  <circle cx="640" cy="410" r="140" fill="url(#sunGlow)" filter="url(#sunBlurBig)" opacity="0.8">
+    <animate attributeName="opacity" values="0.8;0.9;0.8" dur="6s" repeatCount="indefinite"/>
+  </circle>
+
+  <!-- Sun medium glow -->
+  <circle cx="640" cy="410" r="70" fill="url(#sunGlow)" filter="url(#sunBlur)" opacity="0.7">
+    <animate attributeName="opacity" values="0.7;0.85;0.7" dur="5s" repeatCount="indefinite"/>
+  </circle>
+
+  <!-- Sun bright core -->
+  <circle cx="640" cy="410" r="35" fill="url(#sunCore)" opacity="0.95"/>
+
+  <!-- ===== CLOUDS ===== -->
+  <g filter="url(#cloudBlur)">
+    <!-- Cloud 1 - upper left area -->
+    <ellipse cx="280" cy="180" rx="140" ry="18" fill="url(#cloudGrad)">
+      <animate attributeName="cx" values="280;300;280" dur="30s" repeatCount="indefinite"/>
+    </ellipse>
+    <ellipse cx="320" cy="175" rx="100" ry="14" fill="url(#cloudGrad2)">
+      <animate attributeName="cx" values="320;340;320" dur="30s" repeatCount="indefinite"/>
+    </ellipse>
+
+    <!-- Cloud 2 - upper right -->
+    <ellipse cx="920" cy="160" rx="130" ry="16" fill="url(#cloudGrad)">
+      <animate attributeName="cx" values="920;905;920" dur="35s" repeatCount="indefinite"/>
+    </ellipse>
+    <ellipse cx="960" cy="155" rx="90" ry="12" fill="url(#cloudGrad3)">
+      <animate attributeName="cx" values="960;945;960" dur="35s" repeatCount="indefinite"/>
+    </ellipse>
+
+    <!-- Cloud 3 - middle, thinner -->
+    <ellipse cx="580" cy="230" rx="160" ry="12" fill="url(#cloudGrad2)">
+      <animate attributeName="cx" values="580;600;580" dur="28s" repeatCount="indefinite"/>
+    </ellipse>
+
+    <!-- Cloud 4 - lower, warm -->
+    <ellipse cx="750" cy="300" rx="120" ry="10" fill="url(#cloudGrad)">
+      <animate attributeName="cx" values="750;770;750" dur="25s" repeatCount="indefinite"/>
+    </ellipse>
+    <ellipse cx="700" cy="305" rx="80" ry="8" fill="url(#cloudGrad3)">
+      <animate attributeName="cx" values="700;718;700" dur="25s" repeatCount="indefinite"/>
+    </ellipse>
+
+    <!-- Cloud 5 - left side lower -->
+    <ellipse cx="160" cy="280" rx="110" ry="9" fill="url(#cloudGrad2)">
+      <animate attributeName="cx" values="160;178;160" dur="32s" repeatCount="indefinite"/>
+    </ellipse>
+  </g>
+
+  <!-- ===== MOUNTAIN BACK RANGE (lightest silhouette) ===== -->
+  <polygon points="0,460 40,435 100,420 170,395 250,380 320,370 400,385 450,375 520,355 580,345 640,320 680,335 740,350 800,365 860,355 920,370 980,385 1050,375 1100,395 1170,410 1230,425 1280,440 1280,530 0,530"
+    fill="url(#mtnBack)" opacity="0.7"/>
+
+  <!-- ===== MOUNTAIN MID RANGE ===== -->
+  <polygon points="0,480 30,465 80,450 140,435 200,425 260,415 320,405 380,420 430,410 480,395 530,380 580,370 630,340 670,355 720,370 770,385 830,375 890,390 940,400 1000,415 1060,405 1110,420 1170,435 1230,450 1280,465 1280,530 0,530"
+    fill="url(#mtnMid)" opacity="0.85"/>
+
+  <!-- ===== MOUNTAIN FRONT RANGE (darkest, tallest peak near center) ===== -->
+  <polygon points="0,510 30,495 70,480 120,470 170,460 220,450 270,445 320,435 370,425 420,418 460,408 500,398 540,385 570,375 600,360 630,342 660,355 690,370 720,382 750,395 790,405 830,415 870,425 910,435 960,445 1020,452 1080,458 1130,465 1190,475 1230,485 1260,495 1280,505 1280,530 0,530"
+    fill="url(#mtnFront)"/>
+
+  <!-- Mountain highlight glow near sun -->
+  <polygon points="600,360 630,342 660,355 690,370 720,382 750,395 720,382 690,370 660,355"
+    fill="#f4a73a" opacity="0.12" filter="url(#softBlur)"/>
+
+  <!-- ===== GROUND / LAND below mountains ===== -->
+  <rect x="0" y="525" width="1280" height="275" fill="#120818" opacity="0.6"/>
+
+  <!-- ===== RIVER ===== -->
+  <!-- River body: trapezoid widening toward bottom -->
+  <polygon points="540,530 740,530 860,800 420,800" fill="url(#riverGrad)"/>
+
+  <!-- River shimmer (center reflection) -->
+  <g clip-path="url(#riverClip)">
+    <rect x="580" y="530" width="120" height="270" fill="url(#riverShimmer)" opacity="0.7">
+      <animate attributeName="opacity" values="0.7;0.5;0.7" dur="4s" repeatCount="indefinite"/>
+    </rect>
+
+    <!-- Shimmer ripple lines -->
+    <line x1="620" y1="560" x2="660" y2="560" stroke="#ffa840" stroke-width="1.5" opacity="0.4">
+      <animate attributeName="opacity" values="0.4;0.15;0.4" dur="3s" repeatCount="indefinite"/>
+    </line>
+    <line x1="610" y1="590" x2="670" y2="590" stroke="#f09030" stroke-width="1.2" opacity="0.35">
+      <animate attributeName="opacity" values="0.35;0.1;0.35" dur="3.5s" repeatCount="indefinite"/>
+    </line>
+    <line x1="600" y1="620" x2="680" y2="620" stroke="#e08030" stroke-width="1.5" opacity="0.3">
+      <animate attributeName="opacity" values="0.3;0.1;0.3" dur="2.8s" repeatCount="indefinite"/>
+    </line>
+    <line x1="590" y1="655" x2="690" y2="655" stroke="#d07030" stroke-width="1.2" opacity="0.25">
+      <animate attributeName="opacity" values="0.25;0.08;0.25" dur="3.2s" repeatCount="indefinite"/>
+    </line>
+    <line x1="570" y1="690" x2="710" y2="690" stroke="#c06028" stroke-width="1" opacity="0.2">
+      <animate attributeName="opacity" values="0.2;0.05;0.2" dur="2.5s" repeatCount="indefinite"/>
+    </line>
+    <line x1="555" y1="725" x2="725" y2="725" stroke="#b05020" stroke-width="1" opacity="0.15">
+      <animate attributeName="opacity" values="0.15;0.04;0.15" dur="3.8s" repeatCount="indefinite"/>
+    </line>
+    <line x1="540" y1="760" x2="740" y2="760" stroke="#a04018" stroke-width="0.8" opacity="0.12">
+      <animate attributeName="opacity" values="0.12;0.03;0.12" dur="3s" repeatCount="indefinite"/>
+    </line>
+
+    <!-- Additional vertical shimmer streak -->
+    <rect x="615" y="530" width="5" height="270" fill="#ffc850" opacity="0.2" filter="url(#softBlur)">
+      <animate attributeName="opacity" values="0.2;0.08;0.2" dur="5s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="655" y="530" width="5" height="270" fill="#ffc850" opacity="0.2" filter="url(#softBlur)">
+      <animate attributeName="opacity" values="0.08;0.2;0.08" dur="5s" repeatCount="indefinite"/>
+    </rect>
+  </g>
+
+  <!-- River edges: subtle banks -->
+  <polygon points="540,530 540,530 420,800 440,800" fill="#180c22" opacity="0.5"/>
+  <polygon points="740,530 740,530 840,800 860,800" fill="#180c22" opacity="0.5"/>
+
+  <!-- ===== FOREGROUND BANKS (land on either side of river) ===== -->
+  <!-- Left bank -->
+  <polygon points="0,530 540,530 420,800 0,800" fill="#100815"/>
+  <!-- Right bank -->
+  <polygon points="1280,530 740,530 860,800 1280,800" fill="#100815"/>
+
+  <!-- ===== RIVER BANK VEGETATION HINTS (dark silhouettes) ===== -->
+  <!-- Left bank grasses -->
+  <line x1="200" y1="700" x2="195" y2="660" stroke="#0a0510" stroke-width="2" opacity="0.6"/>
+  <line x1="210" y1="705" x2="208" y2="650" stroke="#0a0510" stroke-width="1.5" opacity="0.5"/>
+  <line x1="300" y1="680" x2="295" y2="640" stroke="#0a0510" stroke-width="2" opacity="0.6"/>
+  <line x1="310" y1="685" x2="312" y2="635" stroke="#0a0510" stroke-width="1.5" opacity="0.5"/>
+  <line x1="150" y1="730" x2="142" y2="690" stroke="#0a0510" stroke-width="1.5" opacity="0.45"/>
+  <line x1="160" y1="735" x2="157" y2="685" stroke="#0a0510" stroke-width="2" opacity="0.5"/>
+  <line x1="380" y1="660" x2="374" y2="620" stroke="#0a0510" stroke-width="1.5" opacity="0.5"/>
+  <line x1="395" y1="665" x2="390" y2="625" stroke="#0a0510" stroke-width="2" opacity="0.5"/>
+
+  <!-- Right bank grasses -->
+  <line x1="950" y1="690" x2="945" y2="650" stroke="#0a0510" stroke-width="2" opacity="0.6"/>
+  <line x1="960" y1="695" x2="958" y2="645" stroke="#0a0510" stroke-width="1.5" opacity="0.5"/>
+  <line x1="1050" y1="710" x2="1042" y2="670" stroke="#0a0510" stroke-width="2" opacity="0.6"/>
+  <line x1="1060" y1="715" x2="1058" y2="668" stroke="#0a0510" stroke-width="1.5" opacity="0.5"/>
+  <line x1="1100" y1="740" x2="1093" y2="700" stroke="#0a0510" stroke-width="1.5" opacity="0.5"/>
+  <line x1="900" y1="675" x2="895" y2="635" stroke="#0a0510" stroke-width="2" opacity="0.55"/>
+  <line x1="1120" y1="750" x2="1115" y2="715" stroke="#0a0510" stroke-width="1.5" opacity="0.4"/>
+
+  <!-- Small trees/bushes on left bank -->
+  <ellipse cx="250" cy="665" rx="15" ry="12" fill="#0a0510" opacity="0.5"/>
+  <ellipse cx="170" cy="685" rx="12" ry="10" fill="#0a0510" opacity="0.45"/>
+  <ellipse cx="350" cy="655" rx="14" ry="10" fill="#0a0510" opacity="0.45"/>
+
+  <!-- Small trees/bushes on right bank -->
+  <ellipse cx="1000" cy="675" rx="15" ry="12" fill="#0a0510" opacity="0.5"/>
+  <ellipse cx="1100" cy="695" rx="12" ry="10" fill="#0a0510" opacity="0.45"/>
+  <ellipse cx="880" cy="670" rx="14" ry="10" fill="#0a0510" opacity="0.45"/>
+
+  <!-- ===== SUBTLE SKY OVERLAY for depth ===== -->
+  <!-- Top vignette -->
+  <rect x="0" y="0" width="1280" height="800" fill="url(#skyGrad)" opacity="0" />
+
+</svg>
+</body>
+</html>

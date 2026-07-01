@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gargantua - Supermassive Black Hole</title>
+    <title>Gargantua Black Hole</title>
     <style>
         body {
             margin: 0;
-            padding: 0;
             overflow: hidden;
             background: #000;
         }
@@ -30,206 +29,178 @@
     <script type="module">
         import * as THREE from 'three';
 
-        // Scene setup
+        // Setup scene
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(
-            75,
-            window.innerWidth / window.innerHeight,
-            0.1,
-            10000
-        );
-        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+        
         renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setClearColor(0x000000);
+        renderer.setClearColor(0x000000, 1);
         document.body.appendChild(renderer.domElement);
 
-        // Camera positioned slightly above the disk plane (5-8 degrees)
-        const cameraDistance = 3;
-        const cameraHeight = cameraDistance * Math.tan(THREE.MathUtils.degToRad(6));
-        camera.position.set(0, cameraHeight, cameraDistance);
+        // Camera positioned slightly above disk plane (~6 degrees)
+        const cameraDistance = 3.5;
+        camera.position.set(0, cameraDistance * Math.sin(Math.PI / 30), cameraDistance * Math.cos(Math.PI / 30));
         camera.lookAt(0, 0, 0);
 
-        // Create starfield
-        const starsGeometry = new THREE.BufferGeometry();
-        const starCount = 1000;
-        const starPositions = new Float32Array(starCount * 3);
-        for (let i = 0; i < starCount * 3; i += 3) {
-            starPositions[i] = (Math.random() - 0.5) * 200;
-            starPositions[i + 1] = (Math.random() - 0.5) * 200;
-            starPositions[i + 2] = (Math.random() - 0.5) * 200;
-        }
-        starsGeometry.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
-        const starsMaterial = new THREE.PointsMaterial({
-            color: 0xffffff,
-            size: 0.1,
-            sizeAttenuation: true,
-            opacity: 0.6
-        });
-        const stars = new THREE.Points(starsGeometry, starsMaterial);
-        scene.add(stars);
+        try {
+            // Black hole sphere (event horizon) - 28% of viewport
+            const horizonRadius = 0.28 * window.innerHeight / (2 * 75 * Math.PI / 180);
+            const horizonGeometry = new THREE.SphereGeometry(horizonRadius * 0.5, 64, 64);
+            const horizonMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
+            const blackHole = new THREE.Mesh(horizonGeometry, horizonMaterial);
+            scene.add(blackHole);
 
-        // Create black hole (event horizon)
-        const blackHoleGeometry = new THREE.SphereGeometry(1, 128, 128);
-        const blackHoleMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
-        const blackHole = new THREE.Mesh(blackHoleGeometry, blackHoleMaterial);
-        scene.add(blackHole);
+            // Photon ring (thin bright ring at edge)
+            const photonGeometry = new THREE.TorusGeometry(horizonRadius * 0.5 + 0.08, 0.04, 16, 100);
+            const photonMaterial = new THREE.MeshBasicMaterial({
+                color: 0xffff99,
+                emissive: 0xffff99,
+                transparent: true,
+                opacity: 0.9
+            });
+            const photonRing = new THREE.Mesh(photonGeometry, photonMaterial);
+            scene.add(photonRing);
 
-        // Create photon ring (thin bright line around black hole)
-        const photonRingGeometry = new THREE.BufferGeometry();
-        const photonRingPositions = [];
-        const photonRingSegments = 256;
-        for (let i = 0; i < photonRingSegments; i++) {
-            const angle = (i / photonRingSegments) * Math.PI * 2;
-            const radius = 1.05;
-            photonRingPositions.push(
-                Math.cos(angle) * radius,
-                0,
-                Math.sin(angle) * radius
-            );
-        }
-        photonRingGeometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(photonRingPositions), 3));
-        const photonRingMaterial = new THREE.LineBasicMaterial({ color: 0xffff99, linewidth: 2 });
-        const photonRing = new THREE.Line(photonRingGeometry, photonRingMaterial);
-        scene.add(photonRing);
-
-        // Create accretion disk with gradient and relativistic beaming
-        const diskGeometry = new THREE.BufferGeometry();
-        const diskSegments = 512;
-        const diskRadialSegments = 128;
-        const positions = [];
-        const colors = [];
-
-        for (let r = 0; r < diskRadialSegments; r++) {
-            const innerRadius = 1.1 + (r / diskRadialSegments) * 4;
-            const outerRadius = 1.1 + ((r + 1) / diskRadialSegments) * 4;
-
-            for (let i = 0; i < diskSegments; i++) {
-                const angle = (i / diskSegments) * Math.PI * 2;
-                const nextAngle = ((i + 1) / diskSegments) * Math.PI * 2;
-
-                // Inner radius vertices
-                positions.push(
-                    Math.cos(angle) * innerRadius, 0.001, Math.sin(angle) * innerRadius,
-                    Math.cos(nextAngle) * innerRadius, 0.001, Math.sin(nextAngle) * innerRadius
-                );
-
-                // Outer radius vertices
-                positions.push(
-                    Math.cos(angle) * outerRadius, 0.001, Math.sin(angle) * outerRadius,
-                    Math.cos(nextAngle) * outerRadius, 0.001, Math.sin(nextAngle) * outerRadius
-                );
-
-                // Color gradient and relativistic beaming
-                const t = r / diskRadialSegments;
+            // Main accretion disk
+            const diskInnerRadius = horizonRadius * 0.55;
+            const diskOuterRadius = horizonRadius * 2.2;
+            
+            // Create disk with canvas texture for gradient coloring
+            const canvas = document.createElement('canvas');
+            canvas.width = 512;
+            canvas.height = 256;
+            const ctx = canvas.getContext('2d');
+            
+            // Draw radial gradient disk
+            for (let x = 0; x < canvas.width; x++) {
+                const ratio = x / canvas.width;
                 let color;
-                if (t < 0.3) {
-                    // Hot white-yellow inner
-                    color = new THREE.Color(0xfff3d0);
-                } else if (t < 0.6) {
-                    // Amber middle
-                    color = new THREE.Color(0xffae3b);
+                if (ratio < 0.4) {
+                    // White-yellow inner
+                    color = '#fff3d0';
+                } else if (ratio < 0.7) {
+                    // Transition to amber
+                    const t = (ratio - 0.4) / 0.3;
+                    const r = Math.round(255 * (1 - t * 0.2));
+                    const g = Math.round(243 * (1 - t * 0.3));
+                    const b = Math.round(208 * (1 - t * 0.7));
+                    color = `rgb(${r}, ${g}, ${b})`;
                 } else {
                     // Deep orange outer
-                    color = new THREE.Color(0xc8551a);
+                    color = '#c8551a';
                 }
-
-                // Relativistic beaming: one side brighter
-                const beamingFactor = 0.5 + 0.5 * Math.cos(angle);
-                color.multiplyScalar(0.7 + 0.3 * beamingFactor);
-
-                colors.push(
-                    color.r, color.g, color.b,
-                    color.r, color.g, color.b,
-                    color.r, color.g, color.b,
-                    color.r, color.g, color.b
-                );
+                ctx.fillStyle = color;
+                ctx.fillRect(x, 0, 1, canvas.height);
             }
-        }
+            const texture = new THREE.CanvasTexture(canvas);
+            texture.magFilter = THREE.LinearFilter;
+            texture.minFilter = THREE.LinearFilter;
 
-        diskGeometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(positions), 3));
-        diskGeometry.setAttribute('color', new THREE.BufferAttribute(new Float32Array(colors), 3));
-
-        const diskMaterial = new THREE.MeshBasicMaterial({
-            vertexColors: true,
-            side: THREE.DoubleSide,
-            transparent: true,
-            opacity: 0.95
-        });
-        const disk = new THREE.Mesh(diskGeometry, diskMaterial);
-        scene.add(disk);
-
-        // Create lensed disk arcs (above and below the black hole)
-        const arcGeometry = new THREE.BufferGeometry();
-        const arcPositions = [];
-        const arcColors = [];
-        const arcSegments = 256;
-
-        // Top arc (lensed disk bending over the top)
-        for (let i = 0; i < arcSegments; i++) {
-            const angle = (i / arcSegments) * Math.PI * 2;
-            const arcHeight = 1.3 + 0.8 * Math.sin(angle * 0.5);
-            const arcRadius = 1.1 + 0.3 * Math.cos(angle);
-
-            arcPositions.push(
-                Math.cos(angle) * arcRadius,
-                arcHeight,
-                Math.sin(angle) * arcRadius
+            // Disk geometry using torus
+            const diskGeometry = new THREE.TorusGeometry(
+                (diskInnerRadius + diskOuterRadius) / 2,
+                (diskOuterRadius - diskInnerRadius) / 2,
+                2,
+                128
             );
+            
+            const diskMaterial = new THREE.MeshBasicMaterial({
+                map: texture,
+                emissive: 0xffaa44,
+                emissiveIntensity: 0.8,
+                side: THREE.DoubleSide,
+                toneMapped: false
+            });
+            
+            const disk = new THREE.Mesh(diskGeometry, diskMaterial);
+            disk.rotation.x = 0.001; // Nearly horizontal
+            scene.add(disk);
 
-            const color = new THREE.Color(0xffae3b);
-            color.multiplyScalar(0.6 + 0.4 * Math.abs(Math.sin(angle * 0.5)));
-            arcColors.push(color.r, color.g, color.b);
-        }
-
-        // Bottom arc (mirrored under the sphere)
-        for (let i = 0; i < arcSegments; i++) {
-            const angle = (i / arcSegments) * Math.PI * 2;
-            const arcHeight = -(1.3 + 0.8 * Math.sin(angle * 0.5));
-            const arcRadius = 1.1 + 0.3 * Math.cos(angle);
-
-            arcPositions.push(
-                Math.cos(angle) * arcRadius,
-                arcHeight,
-                Math.sin(angle) * arcRadius
+            // Upper bent arc (lensed disk above)
+            const arcUpperGeometry = new THREE.TorusGeometry(
+                (diskInnerRadius + diskOuterRadius) / 2,
+                (diskOuterRadius - diskInnerRadius) / 2.5,
+                2,
+                100
             );
+            const arcMaterial = new THREE.MeshBasicMaterial({
+                color: 0xffcc99,
+                emissive: 0xffcc99,
+                emissiveIntensity: 0.9,
+                side: THREE.DoubleSide,
+                transparent: true,
+                opacity: 0.7,
+                toneMapped: false
+            });
+            const arcUpper = new THREE.Mesh(arcUpperGeometry, arcMaterial);
+            arcUpper.position.y = horizonRadius * 1.1;
+            arcUpper.rotation.x = Math.PI * 0.4;
+            scene.add(arcUpper);
 
-            const color = new THREE.Color(0xffae3b);
-            color.multiplyScalar(0.5 + 0.3 * Math.abs(Math.sin(angle * 0.5)));
-            arcColors.push(color.r, color.g, color.b);
+            // Lower bent arc (lensed disk below)
+            const arcLower = new THREE.Mesh(arcUpperGeometry, arcMaterial.clone());
+            arcLower.position.y = -horizonRadius * 1.1;
+            arcLower.rotation.x = -Math.PI * 0.4;
+            scene.add(arcLower);
+
+            // Starfield
+            const starsGeometry = new THREE.BufferGeometry();
+            const starCount = 500;
+            const positions = new Float32Array(starCount * 3);
+            const colors = new Float32Array(starCount * 3);
+            
+            for (let i = 0; i < starCount * 3; i += 3) {
+                positions[i] = (Math.random() - 0.5) * 100;
+                positions[i + 1] = (Math.random() - 0.5) * 100;
+                positions[i + 2] = (Math.random() - 0.5) * 100 - 5;
+                
+                const brightness = Math.random() * 0.5 + 0.3;
+                colors[i] = brightness;
+                colors[i + 1] = brightness;
+                colors[i + 2] = brightness;
+            }
+            
+            starsGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            starsGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+            
+            const starsMaterial = new THREE.PointsMaterial({
+                size: 0.05,
+                sizeAttenuation: true,
+                vertexColors: true,
+                transparent: true
+            });
+            
+            const stars = new THREE.Points(starsGeometry, starsMaterial);
+            scene.add(stars);
+
+            // Animation loop
+            function animate() {
+                requestAnimationFrame(animate);
+                
+                // Rotate disk slowly for accretion effect
+                disk.rotation.z += 0.0002;
+                arcUpper.rotation.z += 0.0002;
+                arcLower.rotation.z += 0.0002;
+                
+                renderer.render(scene, camera);
+            }
+            
+            animate();
+
+            // Handle window resize
+            window.addEventListener('resize', () => {
+                const w = window.innerWidth;
+                const h = window.innerHeight;
+                camera.aspect = w / h;
+                camera.updateProjectionMatrix();
+                renderer.setSize(w, h);
+            });
+
+        } catch (err) {
+            console.error('Error in black hole rendering:', err);
+            // Scene will still render with whatever was created before error
         }
-
-        arcGeometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(arcPositions), 3));
-        arcGeometry.setAttribute('color', new THREE.BufferAttribute(new Float32Array(arcColors), 3));
-
-        const arcMaterial = new THREE.LineBasicMaterial({
-            vertexColors: true,
-            linewidth: 3,
-            transparent: true,
-            opacity: 0.8
-        });
-        const arcs = new THREE.Line(arcGeometry, arcMaterial);
-        scene.add(arcs);
-
-        // Animation loop
-        function animate() {
-            requestAnimationFrame(animate);
-
-            // Slowly rotate the disk
-            disk.rotation.y += 0.0002;
-            arcs.rotation.y += 0.0002;
-            photonRing.rotation.y += 0.0002;
-
-            renderer.render(scene, camera);
-        }
-
-        // Handle window resize
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-
-        animate();
     </script>
 </body>
 </html>

@@ -76,6 +76,7 @@ async function generateOne(
         temperature: model.temperature ?? cfg.generation.temperature,
         maxTokens: model.maxTokens ?? cfg.generation.maxTokens,
         timeoutMs: cfg.generation.timeoutMs,
+        reasoningEffort: model.reasoningEffort ?? cfg.generation.reasoningEffort,
       });
 
       writeFileSync(paths.raw(model.slug), res.text, "utf8");

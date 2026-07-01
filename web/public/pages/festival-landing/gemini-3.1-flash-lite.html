@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EMBERWAVE | Desert Sonic Ritual</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;700&family=Syne:wght@400;800&family=Syne+Mono&display=swap" rel="stylesheet">
+    <style>
+        /* RELIABILITY RULE: Background first */
+        body { 
+            background: #0f0b09; 
+            margin: 0; 
+            padding: 0; 
+            overflow-x: hidden;
+            font-family: 'Space Grotesk', sans-serif;
+            color: #ffead0;
+        }
+
+        /* ATMOSPHERIC CONTEXT: Brutalist Psychedelic Desert */
+        :root {
+            --fire: #ff4500;
+            --sand: #f4a460;
+            --night: #0f0b09;
+            --text-glow: 0 0 10px rgba(255, 69, 0, 0.5);
+        }
+
+        #app {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            background: radial-gradient(circle at 50% 0%, #2a1b15 0%, #0f0b09 70%);
+            padding: 40px 20px;
+        }
+
+        /* SVG BACKGROUND ELEMENTS */
+        .canyon-floor {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 300px;
+            background: linear-gradient(180deg, transparent, #1a0f0a);
+            z-index: 0;
+            clip-path: polygon(0 40%, 15% 30%, 30% 50%, 50% 20%, 70% 45%, 85% 25%, 100% 60%, 100% 100%, 0 100%);
+        }
+
+        /* TYPOGRAPHIC STATEMENT */
+        h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(4rem, 15vw, 12rem);
+            font-weight: 800;
+            letter-spacing: -0.05em;
+            margin: 0;
+            line-height: 0.8;
+            text-transform: uppercase;
+            position: relative;
+            z-index: 2;
+            color: #ffead0;
+            background: linear-gradient(to bottom, #ffead0 40%, #ff4500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 20px rgba(255, 69, 0, 0.3));
+        }
+
+        .meta-info {
+            font-family: 'Syne Mono', monospace;
+            font-size: clamp(0.9rem, 2vw, 1.2rem);
+            margin: 20px 0;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: #d18d4d;
+        }
+
+        /* PHASE BADGE */
+        .phase-badge {
+            border: 1px solid #ff4500;
+            padding: 5px 15px;
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            color: #ff4500;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* LINEUP LAYOUT */
+        .lineup {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+            text-align: center;
+            margin: 50px 0;
+            z-index: 2;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .liner-name {
+            font-family: 'Syne', sans-serif;
+            font-weight: 800;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: #ffead0;
+            transition: color 0.3s;
+        }
+
+        .headliner { font-size: 2.5rem; }
+        .subliner { font-size: 1.5rem; }
+
+        .lineup a:hover { color: #ff4500; }
+
+        /* CTA BUTTON */
+        .cta-btn {
+            background: transparent;
+            border: 2px solid #ffead0;
+            color: #ffead0;
+            padding: 15px 40px;
+            font-family: 'Syne', sans-serif;
+            font-size: 1.2rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            margin-top: 20px;
+            transition: all 0.3s;
+            z-index: 2;
+            text-decoration: none;
+        }
+
+        .cta-btn:hover {
+            background: #ff4500;
+            border-color: #ff4500;
+            color: white;
+            box-shadow: 0 0 30px #ff4500;
+        }
+
+        /* DECORATIVE ELEMENTS */
+        .noise {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            opacity: 0.1;
+            z-index: 10;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+    </style>
+</head>
+<body>
+    <div class="noise"></div>
+    <div id="app">
+        <div class="phase-badge">Phase 2 lineup — March 2027</div>
+        
+        <h1>EMBERWAVE</h1>
+        
+        <div class="meta-info">
+            JUNE 18–20, 2027 · ASH CANYON, NEVADA
+        </div>
+
+        <div class="lineup">
+            <span class="liner-name headliner">NOVA CULT</span>
+            <span class="liner-name headliner">VELVET STATIC</span>
+            <span class="liner-name headliner">MOONBURN</span>
+            <span class="liner-name subliner">DAX RIVIERA</span>
+            <span class="liner-name subliner">CINDER & ASH</span>
+            <span class="liner-name subliner">THE GLASS DUNES</span>
+        </div>
+
+        <a href="#" class="cta-btn">Get Tickets</a>
+        
+        <div class="canyon-floor"></div>
+    </div>
+</body>
+</html>

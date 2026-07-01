@@ -10,7 +10,8 @@ particle systems, hand-coded SVG art, pure-CSS scenes**, anything that renders.
 
 ![example grid](docs/example-grid.png)
 
-> One brief (a Swiss-style SaaS landing page), nine models, rendered side by side. See
+> One brief (a landing page for a fictional desert music festival), nine models, rendered
+> side by side. See
 > **[`examples/`](examples/)** for this plus an Interstellar-style black hole (three.js)
 > and a hand-coded SVG sunset — including the actual HTML each model produced. There's
 > also a **[showcase web app](web/)** (React/Vite, deployable to Vercel) that presents the
@@ -149,6 +150,18 @@ and timeouts. We apply the high-leverage fixes from
   guide's #1 fix for false blanks); frozen renders step frames deterministically.
 - **Failure signals captured.** `pageerror` / `crash` listeners record *why* a page blanked,
   surfaced in the report and web app.
+- **Reasoning-effort cap.** Hybrid-reasoning models default to spending thousands of tokens
+  "thinking" and regularly burn the *entire* `max_tokens` budget before emitting any code —
+  returning an empty completion. `generation.reasoningEffort: "low"` (sent as OpenRouter's
+  normalized `reasoning.effort`) caps that spend; it took one run from 5/9 to 9/9 rendered.
+- **Transient provider errors are retried.** A `finish_reason: "error"` (upstream cut the
+  stream mid-generation) throws instead of yielding a partial document, so the retry loop
+  (`generation.retries`) gets a clean second attempt. Model-side failures still fail honestly.
+- **Uniform reliability guidance in the prompts.** Every brief tells models to paint a
+  background first (a partial failure shows a scene, not a blank), keep documents complete
+  ("simplify rather than truncate"), and — for WebGL — avoid postprocessing passes that run
+  at seconds-per-frame in headless software rendering. Same guidance for every model, so
+  the comparison stays fair.
 - **Container-safe Chromium** (`--disable-dev-shm-usage`) and an explicit screenshot timeout.
 
 What we deliberately *don't* do (out of scope for a small, local, judgment-first bench):

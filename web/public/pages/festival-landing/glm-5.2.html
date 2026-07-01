@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EMBERWAVE · Ash Canyon, NV · June 18–20, 2027</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo+Black&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* reliable base — page is never blank */
+html,body{background:#0a0506}
+
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:'Space Mono',monospace;
+  color:#f4e9d8;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* ============ STAGE ============ */
+.stage{
+  position:relative;
+  width:100%;
+  height:800px;
+  overflow:hidden;
+  background:
+    radial-gradient(120% 85% at 50% 105%, #ff6a1a 0%, #d63a0d 16%, #7a1a08 36%, #2a0a08 62%, #120507 100%);
+}
+
+/* sun behind the canyon */
+.sun{
+  position:absolute;
+  left:50%; bottom:150px;
+  width:680px; height:680px;
+  transform:translateX(-50%);
+  border-radius:50%;
+  background: radial-gradient(circle, #ffe89a 0%, #ffac3a 22%, #ff5a1a 42%, rgba(255,74,26,0) 68%);
+  mix-blend-mode:screen;
+  opacity:.95;
+  pointer-events:none;
+  z-index:1;
+}
+.sun::after{
+  content:"";
+  position:absolute; inset:32%;
+  border-radius:50%;
+  background: radial-gradient(circle, #fff6d6 0%, #ffd86a 55%, rgba(255,216,106,0) 100%);
+  filter:blur(1px);
+}
+
+/* heat haze */
+.haze{
+  position:absolute; left:0; right:0; bottom:130px; height:90px;
+  background: linear-gradient(180deg, rgba(255,138,42,0) 0%, rgba(255,138,42,.22) 50%, rgba(255,138,42,0) 100%);
+  pointer-events:none; z-index:2;
+}
+
+/* canyon silhouette */
+.canyon{
+  position:absolute;
+  left:0; right:0; bottom:0;
+  width:100%; height:240px;
+  display:block; z-index:3;
+}
+
+/* embers */
+.embers{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:4}
+.ember{
+  position:absolute;
+  bottom:-12px;
+  width:3px;height:3px;border-radius:50%;
+  background:#ffd86a;
+  box-shadow:0 0 6px #ff8a2a, 0 0 14px #ff4a1a;
+  animation: rise linear infinite;
+}
+@keyframes rise{
+  0%{transform:translate(0,0) scale(1); opacity:0}
+  10%{opacity:1}
+  100%{transform:translate(var(--dx,20px), -820px) scale(.3); opacity:0}
+}
+
+/* grain */
+.grain{
+  position:absolute; inset:0; pointer-events:none; z-index:6;
+  opacity:.10; mix-blend-mode:overlay;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(255,255,255,.08) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(90deg, rgba(0,0,0,.07) 0 1px, transparent 1px 3px);
+}
+
+/* ============ TOP BAR ============ */
+.topbar{
+  position:absolute; top:0; left:0; right:0;
+  display:flex; justify-content:space-between; align-items:center;
+  padding:16px 28px;
+  font-size:11px; letter-spacing:.22em; text-transform:uppercase;
+  z-index:30;
+}
+.topbar .mark{display:flex;align-items:center;gap:11px;font-weight:700;color:#f4e9d8}
+.topbar .mark .dot{width:10px;height:10px;background:#ff4a1a;border-radius:50%;box-shadow:0 0 12px #ff7a18; animation:pulse 2.4s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.35);box-shadow:0 0 18px #ffd86a}}
+.topbar .mark .slash{color:#ff2d6f}
+.topbar nav{display:flex;gap:26px}
+.topbar nav a{color:#f4e9d8;text-decoration:none;opacity:.82;transition:color .2s, opacity .2s}
+.topbar nav a:hover{color:#ffd86a;opacity:1}
+.topbar .right{display:flex;gap:18px;align-items:center;color:#ffd86a;font-weight:700}
+.topbar .right .pill{border:1px solid rgba(255,216,106,.4); padding:5px 10px}
+
+/* ============ HERO ============ */
+.hero{
+  position:absolute;
+  top:54px; left:0; right:0;
+  text-align:center;
+  z-index:10;
+  padding:0 20px;
+}
+.wordmark{
+  position:relative;
+  font-family:'Archivo Black',sans-serif;
+  font-size:15.4vw;
+  line-height:.78;
+  letter-spacing:-0.05em;
+  text-transform:uppercase;
+  display:inline-block;
+  color:transparent;
+  background: linear-gradient(180deg, #fff6dc 0%, #ffd86a 28%, #ff7a18 60%, #b5260c 100%);
+  -webkit-background-clip:text; background-clip:text;
+  -webkit-text-fill-color:transparent;
+  isolation:isolate;
+  filter: drop-shadow(0 0 38px rgba(255,122,24,.35));
+}
+.wordmark::before, .wordmark::after{
+  content:attr(data-text);
+  position:absolute; top:0; left:0; width:100%;
+  font-family:inherit; font-size:inherit; line-height:inherit; letter-spacing:inherit;
+  -webkit-text-fill-color:initial;
+  pointer-events:none;
+}
+.wordmark::before{
+  color:#ff2d6f;
+  transform:translate(-7px,3px);
+  z-index:-1;
+  mix-blend-mode:screen;
+  opacity:.9;
+}
+.wordmark::after{
+  color:#22d3ee;
+  transform:translate(7px,-3px);
+  z-index:-1;
+  mix-blend-mode:screen;
+  opacity:.8;
+}
+
+.meta{
+  margin-top:18px;
+  display:flex; justify-content:center; align-items:center; gap:16px;
+  font-size:13px; letter-spacing:.28em; text-transform:uppercase;
+  color:#f4e9d8;
+}
+.meta .bar{color:#ff7a18;font-weight:700}
+.meta strong{color:#ffd86a;font-weight:700}
+
+.cta-row{
+  margin-top:22px;
+  display:flex; justify-content:center; align-items:center; gap:18px;
+  flex-wrap:wrap;
+}
+.cta{
+  display:inline-flex; align-items:center; gap:12px;
+  padding:15px 32px;
+  font-family:'Archivo Black',sans-serif;
+  font-size:15px; letter-spacing:.2em; text-transform:uppercase;
+  color:#120507;
+  background: linear-gradient(180deg, #ffd86a 0%, #ff7a18 100%);
+  border:none;
+  text-decoration:none;
+  position:relative;
+  box-shadow: 0 0 0 2px #120507, 0 0 0 4px #ff7a18, 0 12px 32px rgba(255,74,26,.5);
+  clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+  transition: transform .15s ease, filter .2s ease;
+}
+.cta:hover{transform:translateY(-2px) scale(1.02); filter:brightness(1.08)}
+.cta .arrow{font-size:18px; transform:translateY(-1px)}
+
+.cta-ghost{
+  display:inline-flex; align-items:center; gap:10px;
+  padding:14px 22px;
+  font-family:'Space Mono',monospace;
+  font-size:11px; letter-spacing:.24em; text-transform:uppercase;
+  color:#f4e9d8;
+  text-decoration:none;
+  border:1px solid rgba(244,233,216,.35);
+  background:rgba(18,5,7,.35);
+  backdrop-filter:blur(2px);
+  transition: border-color .2s, color .2s;
+}
+.cta-ghost:hover{border-color:#ffd86a; color:#ffd86a}
+
+/* phase sticker */
+.phase{
+  position:absolute;
+  top:96px; left:30px;
+  z-index:14;
+  background:#120507;
+  border:1px solid #ff2d6f;
+  color:#ffd86a;
+  padding:9px 13px 9px 22px;
+  font-size:10px; letter-spacing:.24em; text-transform:uppercase;
+  transform:rotate(-5deg);
+  box-shadow:0 0 22px rgba(255,45,111,.4);
+  font-weight:700;
+}
+.phase::before{
+  content:""; position:absolute; left:8px; top:50%; transform:translateY(-50%);
+  width:7px; height:7px; background:#ff2d6f; border-radius:50%;
+  box-shadow:0 0 8px #ff2d6f;
+  animation:pulse 1.8s ease-in-out infinite;
+}
+
+/* ============ LINEUP ============ */
+.lineup{
+  position:absolute;
+  left:0; right:0; bottom:46px;
+  padding:0 32px;
+  z-index:15;
+  text-align:center;
+}
+.lineup .label{
+  display:inline-flex; align-items:center; gap:14px;
+  font-size:10px; letter-spacing:.4em; text-transform:uppercase;
+  color:#ff7a18;
+  margin-bottom:16px;
+  font-weight:700;
+}
+.lineup .label::before, .lineup .label::after{
+  content:""; width:60px; height:1px; background:linear-gradient(90deg, transparent, #ff7a18, transparent);
+}
+.lineup .label .star{color:#ff2d6f}
+
+.headliners{
+  font-family:'Archivo Black',sans-serif;
+  font-size:3.5rem;
+  line-height:.95;
+  letter-spacing:-0.02em;
+  text-transform:uppercase;
+  color:#f4e9d8;
+  display:flex; justify-content:center; align-items:baseline; gap:28px;
+  flex-wrap:wrap;
+  text-shadow: 0 0 28px rgba(255,122,24,.45);
+}
+.headliners .act{position:relative; cursor:default; transition:color .2s, text-shadow .2s}
+.headliners .act:hover{color:#ffd86a; text-shadow:0 0 36px rgba(255,216,106,.7)}
+.headliners .act::after{
+  content:""; position:absolute; left:0; right:0; bottom:-6px; height:2px;
+  background:linear-gradient(90deg, transparent, #ff2d6f, transparent);
+  transform:scaleX(0); transition:transform .25s;
+}
+.headliners .act:hover::after{transform:scaleX(1)}
+.headliners .sep{
+  color:#ff2d6f; font-size:1.5rem; transform:translateY(-8px);
+  font-family:'Space Mono',monospace;
+}
+
+.subs{
+  margin-top:18px;
+  font-family:'Space Mono',monospace;
+  font-size:.92rem; letter-spacing:.2em; text-transform:uppercase;
+  color:#c9a98a;
+  display:flex; justify-content:center; align-items:center; gap:16px; flex-wrap:wrap;
+}
+.subs .dot{color:#ff7a18}
+.subs .act{cursor:default; transition:color .2s}
+.subs .act:hover{color:#ffd86a}
+
+/* ============ TICKER ============ */
+.ticker{
+  position:absolute;
+  left:0; right:0; bottom:0;
+  height:40px;
+  background:#120507;
+  border-top:1px solid #ff4a1a;
+  overflow:hidden;
+  display:flex; align-items:center;
+  z-index:30;
+}
+.ticker .track{
+  display:flex; gap:42px;
+  white-space:nowrap;
+  font-size:12px; letter-spacing:.3em; text-transform:uppercase;
+  color:#ffd86a;
+  animation: scroll 26s linear infinite;
+  padding-left:100%;
+  font-weight:700;
+}
+.ticker .track span{display:inline-flex; align-items:center; gap:16px}
+.ticker .star{color:#ff2d6f}
+.ticker .hot{color:#ff7a18}
+@keyframes scroll{
+  0%{transform:translateX(0)}
+  100%{transform:translateX(-50%)}
+}
+
+/* responsive safety */
+@media (max-width:720px){
+  .headliners{font-size:2.1rem; gap:14px}
+  .headliners .sep{font-size:1.1rem}
+  .subs{font-size:.72rem; letter-spacing:.14em; gap:10px}
+  .meta{font-size:10px; letter-spacing:.2em; gap:10px}
+  .phase{top:78px; left:14px; font-size:9px}
+  .topbar nav{display:none}
+  .cta{padding:13px 22px; font-size:13px}
+}
+</style>
+</head>
+<body>
+
+<div class="stage">
+
+  <!-- atmosphere -->
+  <div class="sun" aria-hidden="true"></div>
+  <div class="haze" aria-hidden="true"></div>
+
+  <!-- canyon silhouette -->
+  <svg class="canyon" viewBox="0 0 1440 240" preserveAspectRatio="none" aria-hidden="true">
+    <!-- far mesas -->
+    <path d="M0,120 L90,95 L180,110 L280,80 L380,105 L470,85 L560,110 L660,75 L760,100 L860,80 L960,105 L1060,82 L1160,108 L1260,88 L1360,110 L1440,95 L1440,240 L0,240 Z" fill="#7a1a08" opacity=".85"/>
+    <!-- mid layer -->
+    <path d="M0,150 L70,135 L160,160 L260,130 L360,158 L460,138 L560,162 L660,135 L760,160 L860,138 L960,160 L1060,140 L1160,162 L1260,142 L1360,160 L1440,148 L1440,240 L0,240 Z" fill="#4a1006"/>
+    <!-- near layer -->
+    <path d="M0,185 L120,178 L240,195 L360,175 L480,198 L600,178 L720,200 L840,178 L960,198 L1080,180 L1200,200 L1320,182 L1440,196 L1440,240 L0,240 Z" fill="#2a0808"/>
+    <!-- canyon crack glow -->
+    <path d="M0,185 L120,178 L240,195 L360,175 L480,198 L600,178 L720,200 L840,178 L960,198 L1080,180 L1200,200 L1320,182 L1440,196 L1440,200 L1320,186 L1200,204 L1080,184 L960,202 L840,182 L720,204 L600,182 L480,202 L360,179 L240,199 L120,182 L0,189 Z" fill="#ff5a1a" opacity=".5"/>
+  </svg>
+
+  <!-- embers -->
+  <div class="embers" aria-hidden="true">
+    <span class="ember" style="left:6%;--dx:18px;animation-duration:7s;animation-delay:0s"></span>
+    <span class="ember" style="left:12%;--dx:-14px;animation-duration:9s;animation-delay:1.5s"></span>
+    <span class="ember" style="left:19%;--dx:24px;animation-duration:6.5s;animation-delay:.6s"></span>
+    <span class="ember" style="left:27%;--dx:-20px;animation-duration:8s;animation-delay:2.2s"></span>
+    <span class="ember" style="left:34%;--dx:16px;animation-duration:7.5s;animation-delay:.3s"></span>
+    <span class="ember" style="left:42%;--dx:-22px;animation-duration:9.5s;animation-delay:3s"></span>
+    <span class="ember" style="left:49%;--dx:20px;animation-duration:6.8s;animation-delay:1.1s"></span>
+    <span class="ember" style="left:57%;--dx:-16px;animation-duration:8.4s;animation-delay:2.6s"></span>
+    <span class="ember" style="left:64%;--dx:26px;animation-duration:7.2s;animation-delay:.8s"></span>
+    <span class="ember" style="left:71%;--dx:-18px;animation-duration:9.2s;animation-delay:3.4s"></span>
+    <span class="ember" style="left:78%;--dx:14px;animation-duration:7.8s;animation-delay:1.8s"></span>
+    <span class="ember" style="left:85%;--dx:-24px;animation-duration:8.8s;animation-delay:.4s"></span>
+    <span class="ember" style="left:91%;--dx:18px;animation-duration:7.4s;animation-delay:2.8s"></span>
+    <span class="ember" style="left:96%;--dx:-12px;animation-duration:9s;animation-delay:1.4s"></span>
+  </div>
+
+  <div class="grain" aria-hidden="true"></div>
+
+  <!-- top bar -->
+  <header class="topbar">
+    <div class="mark">
+      <span class="dot"></span>
+      <span>Emberwave</span>
+      <span class="slash">//</span>
+      <span style="opacity:.7">Ash Canyon Bureau</span>
+    </div>
+    <nav>
+      <a href="#lineup">Lineup</a>
+      <a href="#info">Info</a>
+      <a href="#travel">Travel</a>
+      <a href="#tickets">Tickets</a>
+    </nav>
+    <div class="right">
+      <span class="pill">Jun 18–20 · 2027</span>
+    </div>
+  </header>
+
+  <!-- phase 2 sticker -->
+  <div class="phase">Phase 2 Lineup — March 2027</div>
+
+  <!-- hero -->
+  <section class="hero">
+    <h1 class="wordmark" data-text="EMBERWAVE">EMBERWAVE</h1>
+
+    <div class="meta">
+      <strong>June 18–20, 2027</strong>
+      <span class="bar">/</span>
+      <span>Ash Canyon, Nevada</span>
+      <span class="bar">/</span>
+      <span>3 Days · 1 Canyon · 0 Sleep</span>
+    </div>
+
+    <div class="cta-row">
+      <a href="#tickets" class="cta">
+        <span>Get Tickets</span>
+        <span class="arrow">↗</span>
+      </a>
+      <a href="#lineup" class="cta-ghost">
+        <span>View Full Lineup</span>
+        <span>→</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- lineup -->
+  <section class="lineup" id="lineup">
+    <div class="label">
+      <span class="star">✦</span>
+      <span>Headliners · Ash Canyon 2027</span>
+      <span class="star">✦</span>
+    </div>
+
+    <div class="headliners">
+      <span class="act">NOVA CULT</span>
+      <span class="sep">✶</span>
+      <span class="act">MOONBURN</span>
+    </div>
+
+    <div class="subs">
+      <span class="act">Velvet Static</span>
+      <span class="dot">•</span>
+      <span class="act">Dax Riviera</span>
+      <span class="dot">•</span>
+      <span class="act">Cinder &amp; Ash</span>
+      <span class="dot">•</span>
+      <span class="act">The Glass Dunes</span>
+    </div>
+  </section>
+
+  <!-- ticker -->
+  <div class="ticker" aria-label="Phase 2 lineup announcement">
+    <div class="track">
+      <span><span class="star">✦</span> Phase 2 Lineup — March 2027</span>
+      <span class="hot">Early Bird Tickets Live Now</span>
+      <span><span class="star">✦</span> 3 Days · 1 Canyon · 0 Sleep</span>
+      <span class="hot">Ash Canyon, Nevada — June 18–20, 2027</span>
+      <span><span class="star">✦</span> Phase 2 Lineup — March 2027</span>
+      <span class="hot">Early Bird Tickets Live Now</span>
+      <span><span class="star">✦</span> 3 Days · 1 Canyon · 0 Sleep</span>
+      <span class="hot">Ash Canyon, Nevada — June 18–20, 2027</span>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

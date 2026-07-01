@@ -14,23 +14,25 @@ open them in a browser). Each grid cell carries a thin top-bar label: model name
 output tokens. Reproduce any with:
 
 ```bash
-npm run bench                                                  # saas-swiss (default)
+npm run bench                                                  # festival-landing (default)
 npm run bench -- --config config/examples/black-hole.config.json
 npm run bench -- --config config/examples/sunset-svg.config.json
 ```
 
-The prompts are deliberately **detailed and prescriptive** so the comparison is about
-execution, not interpretation.
+The 3D and SVG prompts are **detailed and prescriptive** so the comparison is about
+execution; the website prompt fixes the *content* but deliberately leaves the *art
+direction* open, so design sensibilities diverge as far as possible.
 
 ---
 
-## saas-swiss — Swiss / International Typographic Style landing page
+## festival-landing — an expressive website brief
 
-A precise brief (MERIDIAN, a data-analytics SaaS) in strict Swiss style — Helvetica grid,
-one signal-red accent, numbered feature columns — packed densely toward the top and
-captured as a fixed crop. Config: [`config/benchmark.config.json`](../config/benchmark.config.json).
+The landing page for «EMBERWAVE», a fictional desert electronic-music festival. Same
+required content for every model (wordmark, date/place, CTA, a fixed six-act lineup,
+a phase-2 badge — all above the fold), but the visual concept is each model's own call.
+Config: [`config/benchmark.config.json`](../config/benchmark.config.json).
 
-![saas-swiss](saas-swiss/grid.png)
+![festival-landing](festival-landing/grid.png)
 
 ## black-hole — Interstellar "Gargantua" in three.js / WebGL
 
@@ -57,7 +59,11 @@ Config: [`config/examples/sunset-svg.config.json`](../config/examples/sunset-svg
 - A model that errors, times out, or returns no HTML renders as a graceful "no output"
   placeholder (still labelled with its time) — the grid always builds. The `summary.json`
   and the web app record the exact reason.
-- The black-hole and sunset briefs are intentionally hard; the same few reasoning-heavy
-  models (GLM 5.1, MiMo v2.5, MiniMax M3, DeepSeek V4 Pro) repeatedly time out or return
-  empty completions on them, while GPT-5.4 mini, Claude Haiku 4.5, Qwen3.7 Plus, Gemini
-  3.1 Flash-Lite and GLM 5.2 are the consistent finishers.
+- Generation caps reasoning effort (`reasoningEffort: "low"`) so hybrid-reasoning models
+  don't burn the whole token budget "thinking" and return empty output — this took the
+  sunset run from 5/9 to 9/9 and let MiMo v2.5 and MiniMax M3 complete the festival page.
+- Remaining failures are genuinely provider/model-side and are reported honestly: GLM 5.1
+  is currently extremely slow via OpenRouter (misses even a 2×420s budget on some briefs),
+  and on the hard black-hole brief MiMo v2.5 / MiniMax M3 still exhaust their budget
+  reasoning. GPT-5.4 mini, Claude Haiku 4.5, Qwen3.7 Plus, Gemini 3.1 Flash-Lite and
+  GLM 5.2 finish everything.

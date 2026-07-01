@@ -31,6 +31,13 @@ export function makeOpenAICompatibleProvider(opts: {
             messages: req.messages,
             temperature: req.temperature,
             max_tokens: req.maxTokens,
+            // Cap reasoning spend so hybrid-reasoning models don't burn the
+            // whole budget "thinking" and return empty content. OpenRouter
+            // normalizes this across families and ignores it for models
+            // without reasoning support.
+            ...(req.reasoningEffort
+              ? { reasoning: { effort: req.reasoningEffort } }
+              : {}),
           }),
         });
 
@@ -43,6 +50,14 @@ export function makeOpenAICompatibleProvider(opts: {
         const choice = data?.choices?.[0];
         const text: string = choice?.message?.content ?? "";
         const finishReason: string | undefined = choice?.finish_reason ?? undefined;
+        // finish_reason "error" = the upstream provider cut the stream mid-
+        // generation; whatever text arrived is a partial document. Throw so the
+        // retry loop treats it as the transient failure it is.
+        if (finishReason === "error") {
+          throw new Error(
+            `Provider stream error mid-generation (finish_reason=error, ${text.length} chars received)`,
+          );
+        }
         if (!text) {
           // Reasoning models sometimes spend the whole budget on `reasoning` and
           // return empty content with finish_reason "length" — surface that.

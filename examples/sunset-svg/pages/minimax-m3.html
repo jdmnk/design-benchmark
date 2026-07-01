@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>html,body{margin:0;padding:0;height:100%;background:#160b3d;overflow:hidden;}</style>
+</head>
+<body>
+<svg viewBox="0 0 1280 800" preserveAspectRatio="xMidYMid slice" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#160b3d"/>
+    <stop offset="18%" stop-color="#261650"/>
+    <stop offset="38%" stop-color="#552158"/>
+    <stop offset="58%" stop-color="#a02854"/>
+    <stop offset="78%" stop-color="#dd603a"/>
+    <stop offset="100%" stop-color="#f4b860"/>
+  </linearGradient>
+
+  <radialGradient id="sunGlow" cx="0.5" cy="0.5" r="0.5">
+    <stop offset="0%" stop-color="#fff4d0" stop-opacity="0.85"/>
+    <stop offset="25%" stop-color="#ffd980" stop-opacity="0.55"/>
+    <stop offset="55%" stop-color="#ff9a4d" stop-opacity="0.22"/>
+    <stop offset="100%" stop-color="#ff7a3d" stop-opacity="0"/>
+  </radialGradient>
+
+  <linearGradient id="river" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#3a2540"/>
+    <stop offset="50%" stop-color="#1f1530"/>
+    <stop offset="100%" stop-color="#080510"/>
+  </linearGradient>
+
+  <linearGradient id="riverRef" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#ffe9a8" stop-opacity="0.85"/>
+    <stop offset="40%" stop-color="#ffc878" stop-opacity="0.4"/>
+    <stop offset="100%" stop-color="#ff9a4d" stop-opacity="0"/>
+  </linearGradient>
+
+  <linearGradient id="mtnBack" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#6b3a5e"/>
+    <stop offset="100%" stop-color="#3d2540"/>
+  </linearGradient>
+
+  <linearGradient id="mtnMid" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#3d2540"/>
+    <stop offset="100%" stop-color="#1a0e26"/>
+  </linearGradient>
+
+  <linearGradient id="mtnFront" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#180f22"/>
+    <stop offset="100%" stop-color="#060410"/>
+  </linearGradient>
+</defs>
+
+<!-- Sky -->
+<rect width="1280" height="800" fill="url(#sky)"/>
+
+<!-- Sun glow halo -->
+<circle cx="640" cy="400" r="240" fill="url(#sunGlow)"/>
+<circle cx="640" cy="400" r="160" fill="url(#sunGlow)" opacity="0.7"/>
+
+<!-- Sun core -->
+<circle cx="640" cy="400" r="52" fill="#fff4d0" opacity="0.95"/>
+<circle cx="640" cy="400" r="42" fill="#fff8e0"/>
+
+<!-- Clouds (with subtle drift) -->
+<g>
+  <g>
+    <ellipse cx="160" cy="130" rx="170" ry="10" fill="#c87a60" opacity="0.55"/>
+    <ellipse cx="320" cy="170" rx="220" ry="8" fill="#b86850" opacity="0.5"/>
+    <ellipse cx="500" cy="105" rx="160" ry="7" fill="#8a4870" opacity="0.5"/>
+    <ellipse cx="80" cy="230" rx="130" ry="6" fill="#6a3868" opacity="0.5"/>
+    <animateTransform attributeName="transform" type="translate" from="0 0" to="60 0" dur="90s" repeatCount="indefinite"/>
+  </g>
+  <g>
+    <ellipse cx="780" cy="85" rx="200" ry="9" fill="#7a4070" opacity="0.55"/>
+    <ellipse cx="980" cy="155" rx="240" ry="10" fill="#c87858" opacity="0.55"/>
+    <ellipse cx="1140" cy="200" rx="170" ry="8" fill="#a86050" opacity="0.5"/>
+    <ellipse cx="1220" cy="115" rx="110" ry="6" fill="#805078" opacity="0.5"/>
+    <animateTransform attributeName="transform" type="translate" from="0 0" to="-50 0" dur="100s" repeatCount="indefinite"/>
+  </g>
+</g>
+
+<!-- Back mountain ridge (dips in center to frame the sun) -->
+<path d="M 0 470 L 60 415 L 140 440 L 230 385 L 320 415 L 410 380 L 500 410 L 540 445 L 740 445 L 780 410 L 870 380 L 960 410 L 1060 385 L 1160 415 L 1240 390 L 1280 410 L 1280 560 L 0 560 Z" fill="url(#mtnBack)"/>
+
+<!-- Middle mountain ridge (tallest peak at center, in front of sun) -->
+<path d="M 0 540 L 90 490 L 190 515 L 290 460 L 380 490 L 480 440 L 570 460 L 640 410 L 710 460 L 810 430 L 900 470 L 990 445 L 1090 485 L 1180 460 L 1280 490 L 1280 620 L 0 620 Z" fill="url(#mtnMid)"/>
+
+<!-- Front mountain ridge (darkest) -->
+<path d="M 0 600 L 110 555 L 220 580 L 330 535 L 450 565 L 560 530 L 660 555 L 760 525 L 870 555 L 980 530 L 1090 565 L 1200 540 L 1280 570 L 1280 660 L 0 660 Z" fill="url(#mtnFront)"/>
+
+<!-- River (widens toward viewer) -->
+<path d="M 600 620 L 460 800 L 820 800 L 680 620 Z" fill="url(#river)"/>
+
+<!-- River reflection band -->
+<path d="M 620 620 L 595 800 L 685 800 L 660 620 Z" fill="url(#riverRef)" opacity="0.85"/>
+
+<!-- Reflection shimmer highlights -->
+<g>
+  <ellipse cx="640" cy="650" rx="8" ry="1.5" fill="#fff4d0" opacity="0.6">
+    <animate attributeName="opacity" values="0.6;0.9;0.6" dur="3s" repeatCount="indefinite"/>
+  </ellipse>
+  <ellipse cx="640" cy="680" rx="10" ry="1.5" fill="#fff4d0" opacity="0.6">
+    <animate attributeName="opacity" values="0.5;0.8;0.5" dur="3.5s" repeatCount="indefinite"/>
+  </ellipse>
+  <ellipse cx="640" cy="710" rx="12" ry="1.5" fill="#fff4d0" opacity="0.55">
+    <animate attributeName="opacity" values="0.4;0.7;0.4" dur="4s" repeatCount="indefinite"/>
+  </ellipse>
+  <ellipse cx="640" cy="745" rx="14" ry="1.5" fill="#fff4d0" opacity="0.5">
+    <animate attributeName="opacity" values="0.3;0.6;0.3" dur="4.5s" repeatCount="indefinite"/>
+  </ellipse>
+  <ellipse cx="640" cy="780" rx="16" ry="1.5" fill="#fff4d0" opacity="0.45">
+    <animate attributeName="opacity" values="0.2;0.5;0.2" dur="5s" repeatCount="indefinite"/>
+  </ellipse>
+</g>
+
+<g opacity="0.5">
+  <ellipse cx="620" cy="660" rx="4" ry="1" fill="#ffd980"/>
+  <ellipse cx="660" cy="690" rx="5" ry="1" fill="#ffd980"/>
+  <ellipse cx="615" cy="725" rx="5" ry="1" fill="#ffd980"/>
+  <ellipse cx="665" cy="760" rx="6" ry="1" fill="#ffd980"/>
+</g>
+</svg>
+</body>
+</html>

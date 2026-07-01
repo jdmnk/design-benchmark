@@ -42,7 +42,8 @@
         "maxTokens": { "type": "integer" },
         "concurrency": { "type": "integer", "minimum": 1 },
         "timeoutMs": { "type": "integer" },
-        "retries": { "type": "integer", "minimum": 0 }
+        "retries": { "type": "integer", "minimum": 0 },
+        "reasoningEffort": { "type": "string", "enum": ["minimal", "low", "medium", "high"], "description": "Cap reasoning-token spend for hybrid-reasoning models so they don't burn the whole budget thinking and return empty content." }
       }
     },
     "models": {
@@ -62,6 +63,7 @@
               "id": { "type": "string" },
               "temperature": { "type": "number" },
               "maxTokens": { "type": "integer" },
+              "reasoningEffort": { "type": "string", "enum": ["minimal", "low", "medium", "high"] },
               "skipByDefault": { "type": "boolean" }
             }
           }

@@ -2,11 +2,8 @@
   "$schema": "../schema.json",
   "name": "sunset-svg",
   "description": "A single inline-SVG sunset scene: sun setting behind a mountain range, with clouds and a river. Prescriptive composition so outputs are directly comparable.",
-
-  "systemPrompt": "You are a master SVG illustrator who codes vector art by hand. Output a SINGLE self-contained HTML document containing one inline <svg> that fills the viewport: set viewBox=\"0 0 1280 800\", preserveAspectRatio=\"xMidYMid slice\", and width/height 100% with no page margins. Use only vector shapes, gradients, and (optionally) gentle CSS/SMIL animation — NO external images, NO libraries, NO text. Follow the composition exactly — this is a controlled comparison, do not improvise the layout.",
-
+  "systemPrompt": "You are a master SVG illustrator who codes vector art by hand. Output a SINGLE self-contained HTML document containing one inline <svg> that fills the viewport: set viewBox=\"0 0 1280 800\", preserveAspectRatio=\"xMidYMid slice\", and width/height 100% with no page margins. Use only vector shapes, gradients, and (optionally) gentle CSS/SMIL animation — NO external images, NO libraries, NO text.\n\nRELIABILITY RULES: paint the full-canvas sky gradient rect as the FIRST element so the page never renders blank; keep the drawing to a moderate element count (roughly 30–80 shapes — layered and well-chosen beats thousands of tiny ones); define every gradient you reference in <defs> and double-check the ids match; ensure the document is complete with every tag closed — if running long, simplify rather than truncate. Follow the composition exactly — this is a controlled comparison.",
   "prompt": "Illustrate a serene sunset landscape as a single inline SVG. Match this composition so results are comparable:\n\n- Sky fills the top ~55% of the scene: a smooth vertical sunset gradient, deep blue/indigo at the very top, through magenta/pink, to warm orange/gold near the horizon.\n- The sun is a soft glowing circle sitting LOW on the horizon, centered horizontally (about 50% width) and positioned just above and slightly behind the tallest mountain peak.\n- A layered mountain range as silhouettes across the middle of the scene: 2–3 overlapping ridgelines, each darker/closer toward the front, with the tallest peak near the center directly in front of the sun.\n- A few soft, elongated clouds in the upper sky, tinted warm by the sunset.\n- A river in the foreground (bottom ~20%) widening as it flows toward the viewer from the base of the mountains, reflecting the sun as a vertical shimmer of warm light down its center.\n\nSmooth gradients, clean layered vector shapes, a cohesive warm palette, clear depth. Optionally add subtle ambient motion (slowly drifting clouds or a shimmering reflection). It is JUST the scene — no text, no UI, no border. Return ONLY a single complete HTML document.",
-
   "render": {
     "viewportWidth": 1280,
     "viewportHeight": 800,
@@ -14,7 +11,6 @@
     "waitMs": 3000,
     "freezeClock": false
   },
-
   "grid": {
     "columns": 3,
     "cellWidth": 620,
@@ -25,14 +21,13 @@
     "labelFontSize": 20,
     "labelOverlayBg": "rgba(10,12,16,0.66)"
   },
-
   "generation": {
     "temperature": 0.7,
-    "maxTokens": 12000,
+    "maxTokens": 20000,
     "concurrency": 9,
-    "timeoutMs": 300000,
-    "retries": 0
+    "timeoutMs": 420000,
+    "retries": 1,
+    "reasoningEffort": "low"
   },
-
   "models": "../models/standard-9.json"
 }

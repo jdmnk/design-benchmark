@@ -1,49 +1,72 @@
 <!DOCTYPE html>
-<html style="margin:0; padding:0; height:100%; overflow:hidden; background:#000;">
-<body style="margin:0; padding:0; height:100%;">
-<svg viewBox="0 0 1280 800" preserveAspectRatio="xMidYMid slice" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <linearGradient id="skyGrad" x1="0" x2="0" y1="0" y2="1">
-      <stop offset="0%" stop-color="#1a1a4a"/>
-      <stop offset="40%" stop-color="#8b2d6a"/>
-      <stop offset="70%" stop-color="#ff7e5f"/>
-      <stop offset="100%" stop-color="#feb47b"/>
-    </linearGradient>
-    <radialGradient id="sunGlow">
-      <stop offset="0%" stop-color="#fff5e0"/>
-      <stop offset="20%" stop-color="#ffd56b"/>
-      <stop offset="100%" stop-color="#ff7e5f" stop-opacity="0"/>
-    </radialGradient>
-  </defs>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Serene Sunset</title>
+    <style>
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; }
+        svg { display: block; width: 100%; height: 100%; }
+    </style>
+</head>
+<body>
+    <svg viewBox="0 0 1280 800" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <!-- Sky Gradient -->
+            <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#1a1a4a"/>
+                <stop offset="40%" stop-color="#7a2a7a"/>
+                <stop offset="70%" stop-color="#ff7e5f"/>
+                <stop offset="100%" stop-color="#ffb347"/>
+            </linearGradient>
 
-  <!-- Sky -->
-  <rect width="1280" height="800" fill="url(#skyGrad)"/>
+            <!-- River Gradient -->
+            <linearGradient id="riverGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#3d2b1f"/>
+                <stop offset="100%" stop-color="#8b4513"/>
+            </linearGradient>
 
-  <!-- Clouds -->
-  <g fill="#ffc3a0" opacity="0.6">
-    <ellipse cx="300" cy="150" rx="120" ry="20" transform="rotate(-5 300 150)">
-      <animate attributeName="cx" values="300; 350; 300" dur="20s" repeatCount="indefinite"/>
-    </ellipse>
-    <ellipse cx="900" cy="220" rx="150" ry="25" transform="rotate(3 900 220)">
-      <animate attributeName="cx" values="900; 850; 900" dur="25s" repeatCount="indefinite"/>
-    </ellipse>
-  </g>
+            <!-- Sun Glow -->
+            <radialGradient id="sunGlow">
+                <stop offset="0%" stop-color="#fff9e3" stop-opacity="1"/>
+                <stop offset="30%" stop-color="#ffcc33" stop-opacity="0.8"/>
+                <stop offset="100%" stop-color="#ff6600" stop-opacity="0"/>
+            </radialGradient>
+            
+            <!-- Cloud Filter -->
+            <filter id="blurFilter">
+                <feGaussianBlur stdDeviation="4"/>
+            </filter>
+        </defs>
 
-  <!-- Sun -->
-  <circle cx="640" cy="450" r="60" fill="url(#sunGlow)"/>
+        <!-- Background Sky -->
+        <rect width="1280" height="800" fill="url(#skyGrad)"/>
 
-  <!-- Mountains -->
-  <path d="M0 600 L200 350 L450 500 L640 300 L800 450 L1100 380 L1280 600 Z" fill="#2d1b4e"/>
-  <path d="M0 700 L300 450 L640 550 L900 400 L1280 700 Z" fill="#1a0f2e"/>
+        <!-- Sun -->
+        <circle cx="640" cy="450" r="60" fill="url(#sunGlow)"/>
 
-  <!-- River -->
-  <path d="M400 650 L580 800 L700 800 L880 650 Z" fill="#2a1e4a"/>
-  
-  <!-- Shimmer -->
-  <path d="M620 650 L630 800 L650 800 L660 650 Z" fill="#ffcc80" opacity="0.4">
-    <animate attributeName="opacity" values="0.2; 0.6; 0.2" dur="3s" repeatCount="indefinite"/>
-  </path>
-  <path d="M635 650 L638 800 L642 800 L645 650 Z" fill="#fff" opacity="0.8"/>
-</svg>
+        <!-- Clouds -->
+        <g opacity="0.6">
+            <path d="M200 150 Q 300 130 400 150 T 600 150" fill="none" stroke="#ffccaa" stroke-width="8" stroke-linecap="round" filter="url(#blurFilter)">
+                <animate attributeName="d" dur="20s" repeatCount="indefinite" values="M200 150 Q 300 130 400 150 T 600 150; M250 150 Q 350 130 450 150 T 650 150; M200 150 Q 300 130 400 150 T 600 150"/>
+            </path>
+            <path d="M800 200 Q 900 180 1000 200 T 1200 200" fill="none" stroke="#ffccaa" stroke-width="6" stroke-linecap="round" filter="url(#blurFilter)">
+                <animate attributeName="d" dur="25s" repeatCount="indefinite" values="M800 200 Q 900 180 1000 200 T 1200 200; M750 200 Q 850 180 950 200 T 1150 200; M800 200 Q 900 180 1000 200 T 1200 200"/>
+            </path>
+        </g>
+
+        <!-- Mountains -->
+        <path d="M0 800 L0 500 L200 400 L450 550 L600 420 L750 550 L1000 450 L1280 550 L1280 800 Z" fill="#2d1b2e"/> <!-- Back range -->
+        <path d="M0 800 L0 550 L300 450 L500 600 L640 440 L780 600 L1100 500 L1280 600 L1280 800 Z" fill="#1a0f1a"/> <!-- Front range -->
+
+        <!-- River -->
+        <path d="M400 800 L550 550 L730 550 L880 800 Z" fill="url(#riverGrad)"/>
+        
+        <!-- River Shimmer -->
+        <rect x="620" y="550" width="40" height="250" fill="#ffcc33" opacity="0.3">
+            <animate attributeName="opacity" values="0.1;0.4;0.1" dur="3s" repeatCount="indefinite"/>
+        </rect>
+        <path d="M630 550 L650 550 L670 800 L610 800 Z" fill="#ffffff" opacity="0.15"/>
+
+    </svg>
 </body>
 </html>

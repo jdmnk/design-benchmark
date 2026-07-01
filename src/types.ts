@@ -14,9 +14,20 @@ export interface ModelEntry {
   /** Optional per-model overrides. */
   temperature?: number;
   maxTokens?: number;
+  reasoningEffort?: ReasoningEffort;
   /** Skip this model unless explicitly requested with --model. */
   skipByDefault?: boolean;
 }
+
+/**
+ * OpenRouter-normalized reasoning effort. Hybrid-reasoning models default to
+ * spending thousands of tokens "thinking" before emitting code — on a code-
+ * generation task that regularly burns the entire max_tokens budget and returns
+ * an EMPTY completion (we saw GLM 5.2 / MiniMax M3 do exactly this). Capping
+ * effort at "low" leaves the budget for actual output. Ignored by models
+ * without reasoning support.
+ */
+export type ReasoningEffort = "minimal" | "low" | "medium" | "high";
 
 export interface RenderConfig {
   viewportWidth: number;
@@ -71,6 +82,8 @@ export interface GenerationConfig {
   concurrency: number;
   timeoutMs: number;
   retries: number;
+  /** Cap on reasoning-token spend for hybrid-reasoning models (see ReasoningEffort). */
+  reasoningEffort?: ReasoningEffort;
 }
 
 export interface BenchmarkConfig {
@@ -137,6 +150,7 @@ export interface ChatRequest {
   temperature: number;
   maxTokens: number;
   timeoutMs: number;
+  reasoningEffort?: ReasoningEffort;
 }
 
 export interface ChatResponse {
