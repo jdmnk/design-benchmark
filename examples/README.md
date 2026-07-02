@@ -51,12 +51,12 @@ occasional model still fails outright (recorded per model in the summary). Confi
 The same Gargantua composition, but judged in motion: a **5-second clip** (24 fps) is
 captured per model on the deterministic virtual clock — frame-stepped, so even scenes that
 crawl in software WebGL yield a smooth clip — and composed into one **[grid video](black-hole-spin/grid.mp4)**
-with the same layout as the image grids. The still below is the clip's middle frame; the
+with the same layout as the image grids. The animation below IS the grid video (embedded as animated WebP — click through for the full-quality mp4); the
 prompt demands framerate-independent rotation (~25–40°/s) with visible disk structure so
 the motion actually reads. Per-model clips are in [`black-hole-spin/clips/`](black-hole-spin/clips).
 Config: [`config/examples/black-hole-spin.config.json`](../config/examples/black-hole-spin.config.json).
 
-[![black-hole-spin](black-hole-spin/grid.webp)](black-hole-spin/grid.mp4)
+[![black-hole-spin — animated grid](black-hole-spin/grid-anim.webp)](black-hole-spin/grid.mp4)
 
 ## fireworks — animated Canvas 2D 🎬
 
@@ -67,7 +67,7 @@ harness's seeded `Math.random` makes even the "random" show reproducible.
 **[Grid video](fireworks/grid.mp4)** · per-model clips in [`fireworks/clips/`](fireworks/clips).
 Config: [`config/examples/fireworks.config.json`](../config/examples/fireworks.config.json).
 
-[![fireworks](fireworks/grid.webp)](fireworks/grid.mp4)
+[![fireworks — animated grid](fireworks/grid-anim.webp)](fireworks/grid.mp4)
 
 ## sunset-svg — a single inline-SVG scene
 
