@@ -1,7 +1,7 @@
 {
   "name": "black-hole-spin",
   "prompt": "Render a realistic supermassive black hole — the 'Gargantua' look from the film Interstellar — as a full-screen three.js scene (100vw × 100vh, auto-starting, no user interaction). A 5-SECOND CLIP of the scene is captured, so the motion matters as much as the still composition.\n\nComposition (match exactly so results are comparable):\n- The black hole (event horizon) is a perfectly black sphere centered in the frame, its diameter about 28% of the viewport height.\n- A bright, thin accretion disk lies in a HORIZONTAL plane around the sphere and is viewed nearly edge-on: the camera sits only about 5–8 degrees above the disk plane, so the disk reads as a near-horizontal bright band cutting across the sphere's middle and extending well past it on both sides.\n- Gravitational lensing: the far side of the disk appears bent UP and OVER the top of the black sphere AND mirrored UNDER the bottom, forming the signature bright halo arcs above and below the horizon (not merely a flat ring). Approximate this with extra bright arcs wrapping over and under the sphere (partial ring/torus geometry works well).\n- A thin, bright photon ring hugs the very edge of the black sphere.\n- Disk coloring: hot white-yellow on the inner edge fading outward to amber then deep orange (#fff3d0 → #ffae3b → #c8551a). Make one side of the disk slightly brighter than the other (relativistic beaming).\n- Background: near-black space with a sparse, dim starfield.\n\nMotion (the point of this benchmark — must be clearly visible within the 5-second clip):\n- The accretion disk rotates around the black hole at roughly 25–40 degrees per second, so a recognizable feature travels a quarter to half a revolution during the clip. Give the disk visible azimuthal structure (brightness clumps, streaks, or turbulent bands) so the rotation reads clearly — a featureless ring would look static.\n- Add subtle shimmering/flicker in the disk and lensing arcs, and slow drift in the beaming highlight. The camera stays FIXED.\n\nKeep the black hole centered and the disk horizontal. Return ONLY a single complete HTML document.",
-  "generatedAt": "2026-07-01T22:20:50.037Z",
+  "generatedAt": "2026-07-02T09:40:21.193Z",
   "models": [
     {
       "slug": "glm-5.2",
@@ -12,31 +12,37 @@
       "htmlExtracted": true,
       "finishReason": "stop",
       "truncated": false,
-      "elapsedMs": 552925,
+      "elapsedMs": 554956,
       "usage": {
         "promptTokens": 779,
-        "completionTokens": 11828,
-        "totalTokens": 12607
+        "completionTokens": 11571,
+        "totalTokens": 12350
       },
-      "startedAt": "2026-07-01T21:47:00.439Z",
+      "startedAt": "2026-07-02T09:24:41.076Z",
       "render": {
         "rendered": true,
         "blank": false
       }
     },
     {
-      "slug": "glm-5.1",
-      "label": "GLM 5.1",
+      "slug": "grok-4.3",
+      "label": "Grok 4.3",
       "provider": "openrouter",
-      "modelId": "z-ai/glm-5.1",
-      "ok": false,
-      "error": "Unexpected end of JSON input",
-      "htmlExtracted": false,
-      "elapsedMs": 412789,
-      "startedAt": "2026-07-01T22:06:50.036Z",
+      "modelId": "x-ai/grok-4.3",
+      "ok": true,
+      "htmlExtracted": true,
+      "finishReason": "stop",
+      "truncated": false,
+      "elapsedMs": 22694,
+      "usage": {
+        "promptTokens": 885,
+        "completionTokens": 3135,
+        "totalTokens": 4020
+      },
+      "startedAt": "2026-07-02T08:37:30.069Z",
       "render": {
-        "rendered": false,
-        "error": "no output.html (generation produced no HTML)"
+        "rendered": true,
+        "blank": false
       }
     },
     {
@@ -48,16 +54,16 @@
       "htmlExtracted": true,
       "finishReason": "stop",
       "truncated": false,
-      "elapsedMs": 32403,
+      "elapsedMs": 42863,
       "usage": {
         "promptTokens": 780,
-        "completionTokens": 5211,
-        "totalTokens": 5991
+        "completionTokens": 4806,
+        "totalTokens": 5586
       },
-      "startedAt": "2026-07-01T22:06:50.043Z",
+      "startedAt": "2026-07-02T08:37:30.069Z",
       "render": {
-        "rendered": false,
-        "blank": true
+        "rendered": true,
+        "blank": false
       }
     },
     {
@@ -69,13 +75,13 @@
       "htmlExtracted": true,
       "finishReason": "stop",
       "truncated": false,
-      "elapsedMs": 34889,
+      "elapsedMs": 23042,
       "usage": {
         "promptTokens": 914,
-        "completionTokens": 6971,
-        "totalTokens": 7885
+        "completionTokens": 4029,
+        "totalTokens": 4943
       },
-      "startedAt": "2026-07-01T21:47:00.453Z",
+      "startedAt": "2026-07-02T08:37:30.070Z",
       "render": {
         "rendered": true,
         "blank": false
@@ -90,13 +96,13 @@
       "htmlExtracted": true,
       "finishReason": "stop",
       "truncated": false,
-      "elapsedMs": 525164,
+      "elapsedMs": 144715,
       "usage": {
         "promptTokens": 808,
-        "completionTokens": 5754,
-        "totalTokens": 6562
+        "completionTokens": 6092,
+        "totalTokens": 6900
       },
-      "startedAt": "2026-07-01T21:47:00.454Z",
+      "startedAt": "2026-07-02T08:37:30.071Z",
       "render": {
         "rendered": true,
         "blank": false
@@ -111,13 +117,13 @@
       "htmlExtracted": true,
       "finishReason": "stop",
       "truncated": false,
-      "elapsedMs": 5516,
+      "elapsedMs": 5182,
       "usage": {
-        "promptTokens": 799,
-        "completionTokens": 1843,
-        "totalTokens": 2642
+        "promptTokens": 797,
+        "completionTokens": 1711,
+        "totalTokens": 2508
       },
-      "startedAt": "2026-07-01T21:47:00.455Z",
+      "startedAt": "2026-07-02T08:37:30.072Z",
       "render": {
         "rendered": true,
         "blank": false
@@ -132,46 +138,58 @@
       "htmlExtracted": true,
       "finishReason": "stop",
       "truncated": false,
-      "elapsedMs": 336672,
+      "elapsedMs": 827149,
       "usage": {
         "promptTokens": 786,
-        "completionTokens": 24145,
-        "totalTokens": 24931
+        "completionTokens": 3690,
+        "totalTokens": 4476
       },
-      "startedAt": "2026-07-01T22:06:50.044Z",
+      "startedAt": "2026-07-02T09:24:41.085Z",
       "render": {
         "rendered": true,
         "blank": false
       }
     },
     {
-      "slug": "mimo-v2.5",
-      "label": "MiMo v2.5",
+      "slug": "kimi-k2.6",
+      "label": "Kimi K2.6",
       "provider": "openrouter",
-      "modelId": "xiaomi/mimo-v2.5",
-      "ok": false,
-      "error": "Empty completion (hit token limit before producing output). Raw: {\"id\":\"gen-1782944030-zp5CU8P4fU2Fc6h6Dw6D\",\"object\":\"chat.completion\",\"created\":1782944030,\"model\":\"xiaomi/mimo-v2.5-20260422\",\"provider\":\"Xiaomi\",\"system_fingerprint\":null,\"service_tier\":null,\"choices\":[{\"index\":0,\"logprobs\":null,\"finish_reason\":\"length\",\"native_finish_reason\":\"length\",\"message\":{",
-      "htmlExtracted": false,
-      "elapsedMs": 606695,
-      "startedAt": "2026-07-01T22:06:50.045Z",
+      "modelId": "moonshotai/kimi-k2.6",
+      "ok": true,
+      "htmlExtracted": true,
+      "finishReason": "stop",
+      "truncated": false,
+      "elapsedMs": 79427,
+      "usage": {
+        "promptTokens": 784,
+        "completionTokens": 4713,
+        "totalTokens": 5497
+      },
+      "startedAt": "2026-07-02T08:37:30.073Z",
       "render": {
-        "rendered": false,
-        "error": "no output.html (generation produced no HTML)"
+        "rendered": true,
+        "blank": false
       }
     },
     {
-      "slug": "minimax-m3",
-      "label": "MiniMax M3",
+      "slug": "mistral-small-4",
+      "label": "Mistral Small 4",
       "provider": "openrouter",
-      "modelId": "minimax/minimax-m3",
-      "ok": false,
-      "error": "Empty completion (hit token limit before producing output). Raw: {\"id\":\"gen-1782944030-8Lezf25kkcth2jjxdOj9\",\"object\":\"chat.completion\",\"created\":1782944030,\"model\":\"minimax/minimax-m3-20260531\",\"provider\":\"Together\",\"system_fingerprint\":null,\"service_tier\":null,\"choices\":[{\"index\":0,\"logprobs\":null,\"finish_reason\":\"length\",\"native_finish_reason\":\"length\",\"messag",
-      "htmlExtracted": false,
-      "elapsedMs": 730925,
-      "startedAt": "2026-07-01T22:06:50.046Z",
+      "modelId": "mistralai/mistral-small-2603",
+      "ok": true,
+      "htmlExtracted": true,
+      "finishReason": "stop",
+      "truncated": false,
+      "elapsedMs": 73751,
+      "usage": {
+        "promptTokens": 822,
+        "completionTokens": 13144,
+        "totalTokens": 13966
+      },
+      "startedAt": "2026-07-02T09:24:41.086Z",
       "render": {
-        "rendered": false,
-        "error": "no output.html (generation produced no HTML)"
+        "rendered": true,
+        "blank": false
       }
     }
   ]

@@ -19,7 +19,7 @@ export async function buildGrid(
   models: ModelEntry[],
 ): Promise<string> {
   const paths = runPaths(cfg.name);
-  return composeGridFrame(
+  const out = await composeGridFrame(
     cfg,
     models,
     (slug) => {
@@ -28,6 +28,10 @@ export async function buildGrid(
     },
     paths.grid,
   );
+  // Companion WebP at the same resolution — typically ~10× smaller than the
+  // PNG, for READMEs and the web app. The PNG stays as the lossless artifact.
+  await sharp(out).webp({ quality: 82, effort: 5 }).toFile(paths.gridWebp);
+  return out;
 }
 
 /**

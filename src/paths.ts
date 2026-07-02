@@ -20,6 +20,7 @@ export function runPaths(runName: string) {
       join(root, "grid-frames", `f${String(i).padStart(5, "0")}.png`),
     gridVideo: join(root, "grid.mp4"),
     grid: join(root, "grid.png"),
+    gridWebp: join(root, "grid.webp"),
     report: join(root, "report.md"),
     summary: join(root, "summary.json"),
   };

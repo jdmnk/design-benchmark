@@ -2,7 +2,7 @@
 
 Animated version of the black-hole benchmark: a 5-second clip of the spinning accretion disk is captured frame-by-frame on the deterministic virtual clock, then composed into one grid video (grid.mp4).
 
-**Models:** 9 · **Rendered:** 5/9
+**Models:** 9 · **Rendered:** 9/9
 
 ## Prompt
 
@@ -32,14 +32,14 @@ Animated version of the black-hole benchmark: a 5-second clip of the spinning ac
 
 | Model | ID | Provider | Status | Time | Tokens | Note |
 |-------|----|----------|--------|------|--------|------|
-| GLM 5.2 | `z-ai/glm-5.2` | openrouter | ✅ rendered | 552.9s | 12607 |  |
-| GLM 5.1 | `z-ai/glm-5.1` | openrouter | ❌ error | 412.8s | — | Unexpected end of JSON input |
-| GPT-5.4 mini | `openai/gpt-5.4-mini` | openrouter | ⬛ blank | 32.4s | 5991 |  |
-| Claude Haiku 4.5 | `anthropic/claude-haiku-4.5` | openrouter | ✅ rendered | 34.9s | 7885 |  |
-| Qwen3.7 Plus | `qwen/qwen3.7-plus` | openrouter | ✅ rendered | 525.2s | 6562 |  |
-| Gemini 3.1 Flash-Lite | `google/gemini-3.1-flash-lite` | openrouter | ✅ rendered | 5.5s | 2642 |  |
-| DeepSeek V4 Pro | `deepseek/deepseek-v4-pro` | openrouter | ✅ rendered | 336.7s | 24931 |  |
-| MiMo v2.5 | `xiaomi/mimo-v2.5` | openrouter | ❌ error | 606.7s | — | Empty completion (hit token limit before producing output). Raw: {"id":"gen-1782 |
-| MiniMax M3 | `minimax/minimax-m3` | openrouter | ❌ error | 730.9s | — | Empty completion (hit token limit before producing output). Raw: {"id":"gen-1782 |
+| GLM 5.2 | `z-ai/glm-5.2` | openrouter | ✅ rendered | 555.0s | 12350 |  |
+| Grok 4.3 | `x-ai/grok-4.3` | openrouter | ✅ rendered | 22.7s | 4020 |  |
+| GPT-5.4 mini | `openai/gpt-5.4-mini` | openrouter | ✅ rendered | 42.9s | 5586 |  |
+| Claude Haiku 4.5 | `anthropic/claude-haiku-4.5` | openrouter | ✅ rendered | 23.0s | 4943 |  |
+| Qwen3.7 Plus | `qwen/qwen3.7-plus` | openrouter | ✅ rendered | 144.7s | 6900 |  |
+| Gemini 3.1 Flash-Lite | `google/gemini-3.1-flash-lite` | openrouter | ✅ rendered | 5.2s | 2508 |  |
+| DeepSeek V4 Pro | `deepseek/deepseek-v4-pro` | openrouter | ✅ rendered | 827.1s | 4476 |  |
+| Kimi K2.6 | `moonshotai/kimi-k2.6` | openrouter | ✅ rendered | 79.4s | 5497 |  |
+| Mistral Small 4 | `mistralai/mistral-small-2603` | openrouter | ✅ rendered | 73.8s | 13966 |  |
 
 Per-model artifacts live in `models/<slug>/` (`raw.txt`, `output.html`, `screenshot.png`, `result.json`).

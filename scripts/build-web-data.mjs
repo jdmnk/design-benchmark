@@ -15,6 +15,7 @@ const BENCHES = [
   { configPath: "config/benchmark.config.json" },
   { configPath: "config/examples/black-hole.config.json" },
   { configPath: "config/examples/black-hole-spin.config.json" },
+  { configPath: "config/examples/fireworks.config.json" },
   { configPath: "config/examples/sunset-svg.config.json" },
 ];
 
@@ -36,6 +37,7 @@ function statusOf(name, m) {
 
 const gridsDir = join(ROOT, "web/public/grids");
 const pagesDir = join(ROOT, "web/public/pages");
+if (existsSync(gridsDir)) rmSync(gridsDir, { recursive: true });
 mkdirSync(gridsDir, { recursive: true });
 if (existsSync(pagesDir)) rmSync(pagesDir, { recursive: true });
 mkdirSync(pagesDir, { recursive: true });
@@ -46,8 +48,12 @@ const benchmarks = BENCHES.map(({ configPath }) => {
   const exDir = join("examples", id);
   const summary = read(join(exDir, "summary.json"));
 
-  // grid image (+ grid video for animated benchmarks)
-  copyFileSync(join(ROOT, exDir, "grid.png"), join(gridsDir, `${id}.png`));
+  // grid image (+ grid video for animated benchmarks). Prefer the WebP — it's
+  // ~10× smaller than the PNG at the same resolution; fall back for old runs.
+  const webpSrc = join(ROOT, exDir, "grid.webp");
+  const hasWebp = existsSync(webpSrc);
+  const imageFile = hasWebp ? `${id}.webp` : `${id}.png`;
+  copyFileSync(hasWebp ? webpSrc : join(ROOT, exDir, "grid.png"), join(gridsDir, imageFile));
   const gridVideoSrc = join(ROOT, exDir, "grid.mp4");
   const hasVideo = existsSync(gridVideoSrc);
   if (hasVideo) copyFileSync(gridVideoSrc, join(gridsDir, `${id}.mp4`));
@@ -93,7 +99,7 @@ const benchmarks = BENCHES.map(({ configPath }) => {
         : null,
     },
     grid: {
-      image: `grids/${id}.png`,
+      image: `grids/${imageFile}`,
       video: hasVideo ? `grids/${id}.mp4` : null,
       columns: cfg.grid?.columns ?? 3,
     },

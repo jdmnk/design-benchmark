@@ -2,482 +2,591 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>EMBERWAVE — June 18–20, 2027 · Ash Canyon, NV</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EMBERWAVE — June 18–20, 2027 · Ash Canyon, Nevada</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Fraunces:ital,wght@0,300;1,300&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Space+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    background: #0a0410;
-    color: #f3e9d2;
-    font-family: 'Space Grotesk', sans-serif;
-    min-height: 100vh;
-    overflow-x: hidden;
-    position: relative;
-  }
+body {
+  margin: 0;
+  padding: 0;
+  background: #0a0203;
+  min-height: 100vh;
+  overflow-x: hidden;
+  font-family: 'Space Grotesk', sans-serif;
+  color: #f0e0d0;
+  position: relative;
+}
 
-  /* === SKY / COSMIC BACKDROP === */
-  .scene {
-    position: relative;
-    width: 100%;
-    min-height: 100vh;
-    background:
-      radial-gradient(ellipse at 50% 62%, rgba(255,180,80,0.35) 0%, rgba(255,90,31,0.15) 12%, transparent 35%),
-      radial-gradient(ellipse at 20% 30%, rgba(120,40,160,0.4) 0%, transparent 50%),
-      radial-gradient(ellipse at 80% 25%, rgba(180,40,100,0.3) 0%, transparent 55%),
-      linear-gradient(180deg, #1a0a2e 0%, #2d0a1f 30%, #5a1a0a 55%, #8a2e0a 72%, #c44a12 85%, #e8a048 95%, #ffd98a 100%);
-    overflow: hidden;
-  }
+.canvas {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 30%, rgba(180, 40, 20, 0.4) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 50% at 20% 70%, rgba(120, 20, 60, 0.3) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 80% 60%, rgba(200, 80, 0, 0.25) 0%, transparent 60%),
+    linear-gradient(180deg, #0a0203 0%, #1a0805 40%, #0d0204 100%);
+}
 
-  /* Grain overlay */
-  .grain {
-    position: fixed; inset: 0;
-    pointer-events: none;
-    opacity: 0.18;
-    z-index: 50;
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.5 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
-    mix-blend-mode: overlay;
-  }
+/* Grain overlay */
+.grain {
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  pointer-events: none;
+  z-index: 100;
+  opacity: 0.08;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+}
 
-  /* Stars */
-  .stars {
-    position: absolute; inset: 0;
-    background-image:
-      radial-gradient(1px 1px at 10% 15%, #fff, transparent),
-      radial-gradient(1px 1px at 25% 8%, #fff, transparent),
-      radial-gradient(1.5px 1.5px at 40% 22%, #ffd9a0, transparent),
-      radial-gradient(1px 1px at 55% 5%, #fff, transparent),
-      radial-gradient(1px 1px at 70% 18%, #fff, transparent),
-      radial-gradient(1.5px 1.5px at 85% 12%, #ffd9a0, transparent),
-      radial-gradient(1px 1px at 92% 25%, #fff, transparent),
-      radial-gradient(1px 1px at 5% 32%, #fff, transparent),
-      radial-gradient(1px 1px at 15% 5%, #fff, transparent),
-      radial-gradient(1px 1px at 60% 14%, #fff, transparent),
-      radial-gradient(1px 1px at 78% 30%, #fff, transparent),
-      radial-gradient(1.2px 1.2px at 33% 3%, #fff, transparent),
-      radial-gradient(1px 1px at 48% 28%, #fff, transparent);
-    opacity: 0.9;
-  }
+/* SVG canyon shapes */
+.canyon-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
 
-  /* Sun orb */
-  .sun {
-    position: absolute;
-    left: 50%;
-    top: 48%;
-    transform: translate(-50%, -50%);
-    width: 320px; height: 320px;
-    border-radius: 50%;
-    background: radial-gradient(circle at 50% 50%, #fff2c2 0%, #ffd36a 25%, #ff8a2b 55%, #ff3c00 80%, transparent 100%);
-    filter: blur(0.5px);
-    box-shadow:
-      0 0 60px 20px rgba(255,140,60,0.5),
-      0 0 120px 40px rgba(255,90,31,0.3),
-      0 0 200px 80px rgba(255,60,0,0.15);
-    animation: pulse 6s ease-in-out infinite;
-  }
-  .sun::after {
-    content: "";
-    position: absolute; inset: -20px;
-    border-radius: 50%;
-    background: repeating-linear-gradient(0deg, transparent 0px, transparent 8px, rgba(10,4,16,0.35) 8px, rgba(10,4,16,0.35) 10px);
-    mix-blend-mode: multiply;
-    opacity: 0.5;
-  }
-  @keyframes pulse {
-    0%, 100% { transform: translate(-50%, -50%) scale(1); filter: blur(0.5px); }
-    50% { transform: translate(-50%, -50%) scale(1.03); filter: blur(1.2px); }
-  }
+/* Atmospheric glow */
+.glow-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  z-index: 2;
+  pointer-events: none;
+  animation: pulse 8s ease-in-out infinite;
+}
 
-  /* Canyon silhouettes */
-  .canyon {
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    width: 100%;
-    pointer-events: none;
-  }
+.glow-orb.orb1 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(220, 80, 20, 0.6), transparent 70%);
+  top: -100px;
+  left: 50%;
+  transform: translateX(-50%);
+}
 
-  /* === NAV === */
-  nav {
-    position: relative;
-    z-index: 20;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 22px 36px;
-    font-size: 11px;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-  }
-  nav .brand {
-    font-family: 'Space Grotesk', sans-serif;
-    font-weight: 700;
-    color: #ffd9a0;
-    display: flex; align-items: center; gap: 10px;
-  }
-  nav .brand .dot {
-    width: 8px; height: 8px; border-radius: 50%;
-    background: #ff5a1f;
-    box-shadow: 0 0 12px #ff5a1f;
-    animation: blink 2s infinite;
-  }
-  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
-  nav ul { list-style: none; display: flex; gap: 28px; }
-  nav ul a {
-    color: #f3e9d2;
-    text-decoration: none;
-    opacity: 0.85;
-    transition: opacity 0.2s, color 0.2s;
-  }
-  nav ul a:hover { opacity: 1; color: #ffb347; }
+.glow-orb.orb2 {
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(180, 30, 80, 0.4), transparent 70%);
+  top: 200px;
+  right: -50px;
+  animation-delay: -3s;
+}
 
-  /* === TITLE BLOCK === */
-  .hero {
-    position: relative;
-    z-index: 10;
-    text-align: center;
-    padding-top: 20px;
-  }
+.glow-orb.orb3 {
+  width: 250px;
+  height: 250px;
+  background: radial-gradient(circle, rgba(255, 120, 40, 0.3), transparent 70%);
+  bottom: 100px;
+  left: -50px;
+  animation-delay: -5s;
+}
 
-  .dateline {
-    font-family: 'Fraunces', serif;
-    font-style: italic;
-    font-weight: 300;
-    font-size: 14px;
-    letter-spacing: 0.3em;
-    color: #ffd9a0;
-    text-transform: uppercase;
-    margin-bottom: 14px;
-  }
-  .dateline .sep { color: #ff5a1f; margin: 0 8px; }
+@keyframes pulse {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
 
-  /* Wordmark */
-  .wordmark {
-    font-family: 'Archivo Black', sans-serif;
-    font-size: clamp(72px, 14vw, 200px);
-    line-height: 0.82;
-    letter-spacing: -0.04em;
-    color: #fff3d6;
-    position: relative;
-    display: inline-block;
-    text-shadow:
-      0 0 20px rgba(255,140,60,0.8),
-      0 0 60px rgba(255,60,0,0.6),
-      0 0 120px rgba(255,60,0,0.3),
-      2px 2px 0 #5a1a0a,
-      -2px -2px 0 #ffd36a;
-    animation: shimmer 4s ease-in-out infinite;
-  }
-  .wordmark::before, .wordmark::after {
-    content: "EMBERWAVE";
-    position: absolute; left: 0; top: 0;
-    width: 100%;
-    color: transparent;
-    -webkit-text-stroke: 1px rgba(255,200,120,0.4);
-  }
-  .wordmark::before {
-    transform: translate(-4px, -3px);
-    color: transparent;
-    -webkit-text-stroke: 1px rgba(255,100,40,0.5);
-  }
-  .wordmark::after {
-    transform: translate(4px, 3px);
-    -webkit-text-stroke: 1px rgba(180,40,100,0.4);
-  }
-  @keyframes shimmer {
-    0%,100% { text-shadow: 0 0 20px rgba(255,140,60,0.8), 0 0 60px rgba(255,60,0,0.6), 2px 2px 0 #5a1a0a, -2px -2px 0 #ffd36a; }
-    50% { text-shadow: 0 0 30px rgba(255,180,80,1), 0 0 80px rgba(255,60,0,0.8), 2px 2px 0 #5a1a0a, -2px -2px 0 #ffe08a; }
-  }
+.glow-orb.orb1 {
+  animation: pulse1 8s ease-in-out infinite;
+}
 
-  .subtitle {
-    margin-top: 18px;
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 12px;
-    letter-spacing: 0.4em;
-    text-transform: uppercase;
-    color: #ffd9a0;
-    opacity: 0.9;
-  }
-  .subtitle span { color: #ff5a1f; }
+@keyframes pulse1 {
+  0%, 100% { opacity: 0.6; transform: translateX(-50%) scale(1); }
+  50% { opacity: 1; transform: translateX(-50%) scale(1.1); }
+}
 
-  /* === TICKER === */
-  .ticker-wrap {
-    margin: 44px auto 0;
-    width: min(560px, 90%);
-    position: relative;
-    z-index: 15;
-  }
-  .ticker {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 14px;
-    padding: 10px 18px;
-    border: 1px solid rgba(255,180,80,0.4);
-    background: rgba(10,4,16,0.45);
-    backdrop-filter: blur(6px);
-    border-radius: 999px;
-    font-size: 11px;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    color: #ffd9a0;
-    overflow: hidden;
-    position: relative;
-  }
-  .ticker .pulse {
-    width: 8px; height: 8px; border-radius: 50%;
-    background: #ff2e7e;
-    box-shadow: 0 0 10px #ff2e7e;
-    animation: blink 1.4s infinite;
-  }
-  .ticker .marquee {
-    overflow: hidden;
-    white-space: nowrap;
-    max-width: 280px;
-    mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
-  }
-  .ticker .marquee span {
-    display: inline-block;
-    padding-left: 100%;
-    animation: slide 18s linear infinite;
-  }
-  @keyframes slide {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-100%); }
-  }
+/* Content container */
+.content {
+  position: relative;
+  z-index: 10;
+  padding: 40px 40px 60px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
 
-  /* === LINEUP === */
-  .lineup {
-    position: relative;
-    z-index: 15;
-    text-align: center;
-    padding: 60px 20px 120px;
-  }
-  .lineup .label {
-    font-size: 10px;
-    letter-spacing: 0.5em;
-    color: #ff5a1f;
-    text-transform: uppercase;
-    margin-bottom: 18px;
-  }
-  .headliners {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0;
-    font-family: 'Archivo Black', sans-serif;
-    font-size: clamp(40px, 7vw, 88px);
-    line-height: 1;
-    color: #fff3d6;
-    letter-spacing: -0.03em;
-  }
-  .headliners .act {
-    padding: 0 24px;
-    text-shadow: 0 0 14px rgba(255,140,60,0.6), 1px 1px 0 #5a1a0a;
-    transition: color 0.3s;
-    cursor: default;
-  }
-  .headliners .act:hover { color: #ff5a1f; }
-  .headliners .act .amp {
-    color: #ff5a1f;
-    font-family: 'Fraunces', serif;
-    font-style: italic;
-    font-weight: 300;
-    padding: 0 4px;
-  }
+/* Top bar */
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  opacity: 0.7;
+}
 
-  .divider {
-    display: flex; align-items: center; justify-content: center;
-    gap: 14px;
-    margin: 18px 0;
-    color: #ff5a1f;
-    font-size: 12px;
-    letter-spacing: 0.3em;
-  }
-  .divider .rule {
-    width: 60px; height: 1px;
-    background: linear-gradient(90deg, transparent, #ff5a1f, transparent);
-  }
+.top-bar .coord {
+  font-family: 'Space Grotesk', monospace;
+  font-weight: 300;
+}
 
-  .support {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 6px 0;
-    font-family: 'Archivo Black', sans-serif;
-    font-size: clamp(22px, 3.6vw, 40px);
-    color: #ffd9a0;
-    letter-spacing: -0.01em;
-  }
-  .support .act {
-    padding: 0 18px;
-    position: relative;
-  }
-  .support .act:not(:last-child)::after {
-    content: "◆";
-    position: absolute;
-    right: -6px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 8px;
-    color: #ff2e7e;
-  }
+/* Marquee / ticker */
+.marquee-wrap {
+  position: relative;
+  z-index: 10;
+  margin: 0 40px 20px;
+  padding: 8px 0;
+  border-top: 1px solid rgba(220, 120, 60, 0.3);
+  border-bottom: 1px solid rgba(220, 120, 60, 0.3);
+  overflow: hidden;
+}
 
-  /* === CTA === */
-  .cta {
-    margin-top: 48px;
-    display: inline-block;
-    position: relative;
-    padding: 18px 44px;
-    background: linear-gradient(135deg, #ff5a1f 0%, #ff2e7e 100%);
-    color: #0a0410;
-    font-family: 'Archivo Black', sans-serif;
-    font-size: 14px;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    text-decoration: none;
-    border-radius: 2px;
-    box-shadow:
-      0 0 0 2px #0a0410,
-      0 0 0 3px #ffd9a0,
-      0 10px 40px rgba(255,60,0,0.5);
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-  .cta:hover {
-    transform: translate(-2px, -2px);
-    box-shadow:
-      0 0 0 2px #0a0410,
-      0 0 0 3px #ffd9a0,
-      8px 12px 40px rgba(255,60,0,0.7),
-      -4px -4px 0 rgba(255,220,140,0.3);
-  }
-  .cta::before {
-    content: "→ ";
-    opacity: 0.7;
-  }
+.marquee-track {
+  display: flex;
+  animation: scroll 20s linear infinite;
+  white-space: nowrap;
+}
 
-  .ticket-meta {
-    margin-top: 14px;
-    font-size: 10px;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: #ffd9a0;
-    opacity: 0.6;
-  }
+.marquee-track span {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  color: rgba(255, 160, 80, 0.8);
+  padding: 0 40px;
+  flex-shrink: 0;
+}
 
-  /* Floating dust */
-  .dust {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    z-index: 5;
-  }
-  .dust i {
-    position: absolute;
-    width: 2px; height: 2px;
-    background: #ffd9a0;
-    border-radius: 50%;
-    opacity: 0.6;
-    animation: float 12s linear infinite;
-  }
-  @keyframes float {
-    0% { transform: translateY(0) translateX(0); opacity: 0; }
-    10% { opacity: 0.8; }
-    90% { opacity: 0.6; }
-    100% { transform: translateY(-600px) translateX(40px); opacity: 0; }
-  }
+.marquee-track span::before {
+  content: '◆';
+  margin-right: 40px;
+  color: rgba(220, 80, 40, 0.6);
+}
+
+@keyframes scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* WORDMARK */
+.wordmark-section {
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.wordmark {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  line-height: 0.82;
+  letter-spacing: -0.03em;
+  position: relative;
+}
+
+.wordmark .line1 {
+  display: block;
+  font-size: clamp(80px, 14vw, 180px);
+  background: linear-gradient(180deg, #ff6b2b 0%, #e83a1a 40%, #a8153a 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  position: relative;
+}
+
+.wordmark .line1::after {
+  content: 'EMBER';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  font-size: inherit;
+  font-weight: inherit;
+  letter-spacing: inherit;
+  background: linear-gradient(180deg, rgba(255,107,43,0.3), transparent);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  z-index: -1;
+}
+
+.wordmark .line2 {
+  display: block;
+  font-size: clamp(80px, 14vw, 180px);
+  background: linear-gradient(180deg, #ff9040 0%, #ff5520 50%, #c21830 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-left: 5%;
+  position: relative;
+}
+
+.wordmark .line2::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 5%;
+  width: 85%;
+  height: 2px;
+  background: linear-gradient(90deg, #ff6b2b, transparent);
+  opacity: 0.5;
+}
+
+/* Decorative line through wordmark */
+.wordmark-strike {
+  position: absolute;
+  top: 55%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,140,60,0.4) 20%, rgba(255,140,60,0.4) 80%, transparent 100%);
+  z-index: 5;
+  pointer-events: none;
+}
+
+/* Subtitle / info */
+.info-block {
+  display: flex;
+  align-items: baseline;
+  gap: 24px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+}
+
+.info-block .date {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  color: #ffb870;
+  letter-spacing: 1px;
+}
+
+.info-block .separator {
+  color: rgba(255, 107, 43, 0.5);
+  font-size: 18px;
+}
+
+.info-block .location {
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 5px;
+  font-weight: 300;
+  color: rgba(240, 220, 200, 0.8);
+}
+
+/* CTA Button */
+.cta-section {
+  margin-bottom: 40px;
+}
+
+.cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 40px;
+  background: linear-gradient(135deg, #ff5520, #d41a3a);
+  color: #fff;
+  text-decoration: none;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  border: none;
+  position: relative;
+  overflow: hidden;
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 30px rgba(220, 50, 30, 0.4), inset 0 1px 0 rgba(255,255,255,0.1);
+}
+
+.cta-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 40px rgba(220, 50, 30, 0.6), inset 0 1px 0 rgba(255,255,255,0.15);
+}
+
+.cta-btn .arrow {
+  font-size: 20px;
+  transition: transform 0.2s ease;
+}
+
+.cta-btn:hover .arrow {
+  transform: translateX(4px);
+}
+
+.cta-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% { left: -100%; }
+  50% { left: 100%; }
+  100% { left: 100%; }
+}
+
+/* Lineup */
+.lineup-section {
+  border-top: 1px solid rgba(220, 120, 60, 0.2);
+  padding-top: 24px;
+}
+
+.lineup-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 5px;
+  color: rgba(255, 160, 80, 0.6);
+  margin-bottom: 16px;
+}
+
+.lineup-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 40px;
+  margin-bottom: 12px;
+}
+
+.lineup-headliners {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 30px;
+  margin-bottom: 14px;
+}
+
+.act {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  color: #f0e0d0;
+  line-height: 1.1;
+  position: relative;
+}
+
+.act.headliner {
+  font-size: clamp(28px, 4vw, 42px);
+  letter-spacing: -0.02em;
+}
+
+.act.headliner:nth-child(1) {
+  color: #ffb060;
+}
+
+.act.headliner:nth-child(2) {
+  color: #ff7840;
+}
+
+.act.support {
+  font-size: clamp(18px, 2.5vw, 26px);
+  font-weight: 700;
+  letter-spacing: 0;
+  color: rgba(240, 220, 200, 0.75);
+}
+
+.act.support::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: rgba(255, 107, 43, 0.15);
+}
+
+/* Bottom info */
+.bottom-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(220, 120, 60, 0.15);
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(240, 220, 200, 0.4);
+}
+
+/* Decorative elements */
+.deco-circle {
+  position: absolute;
+  border: 1px solid rgba(255, 107, 43, 0.15);
+  border-radius: 50%;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.deco-circle.d1 {
+  width: 300px;
+  height: 300px;
+  top: -80px;
+  right: -80px;
+}
+
+.deco-circle.d2 {
+  width: 200px;
+  height: 200px;
+  bottom: 50px;
+  right: 50px;
+  border-color: rgba(180, 40, 80, 0.12);
+}
+
+.deco-circle.d3 {
+  width: 150px;
+  height: 150px;
+  top: 300px;
+  left: -40px;
+  border-color: rgba(255, 160, 80, 0.1);
+}
+
+/* SVG wave decoration */
+.wave-deco {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0.3;
+}
+
+/* Scan line effect */
+.scanlines {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 99;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.03) 2px,
+    rgba(0,0,0,0.03) 4px
+  );
+}
+
+/* Responsive tweaks */
+@media (max-width: 700px) {
+  .content { padding: 24px 20px 40px; }
+  .marquee-wrap { margin: 0 20px 16px; }
+  .wordmark .line2 { margin-left: 0; }
+  .info-block { gap: 12px; }
+  .lineup-headliners { gap: 4px 20px; }
+}
 </style>
 </head>
 <body>
-<div class="grain"></div>
+<div class="canvas">
+  <!-- Atmospheric elements -->
+  <div class="glow-orb orb1"></div>
+  <div class="glow-orb orb2"></div>
+  <div class="glow-orb orb3"></div>
+  <div class="deco-circle d1"></div>
+  <div class="deco-circle d2"></div>
+  <div class="deco-circle d3"></div>
+  <div class="scanlines"></div>
+  <div class="grain"></div>
 
-<div class="scene">
-  <div class="stars"></div>
-
-  <!-- Sun -->
-  <div class="sun"></div>
-
-  <!-- Floating dust -->
-  <div class="dust">
-    <i style="left:10%; bottom:30%; animation-delay:0s;"></i>
-    <i style="left:25%; bottom:20%; animation-delay:-3s;"></i>
-    <i style="left:40%; bottom:25%; animation-delay:-6s;"></i>
-    <i style="left:55%; bottom:35%; animation-delay:-2s;"></i>
-    <i style="left:68%; bottom:22%; animation-delay:-8s;"></i>
-    <i style="left:82%; bottom:28%; animation-delay:-4s;"></i>
-    <i style="left:15%; bottom:40%; animation-delay:-10s;"></i>
-    <i style="left:75%; bottom:45%; animation-delay:-5s;"></i>
-  </div>
-
-  <!-- Nav -->
-  <nav>
-    <div class="brand"><span class="dot"></span> EMBERWAVE / MMXXVII</div>
-    <ul>
-      <li><a href="#">Lineup</a></li>
-      <li><a href="#">Experience</a></li>
-      <li><a href="#">Travel</a></li>
-      <li><a href="#">FAQ</a></li>
-    </ul>
-  </nav>
-
-  <!-- Hero -->
-  <section class="hero">
-    <div class="dateline">June 18<span class="sep">/</span>20<span class="sep">/</span>22 · 2027<span class="sep">—</span>Ash Canyon, Nevada</div>
-    <div class="wordmark">EMBERWAVE</div>
-    <div class="subtitle">Three Nights of <span>◆</span> Sacred Frequencies <span>◆</span> Desert Rites</div>
-  </section>
-
-  <!-- Ticker -->
-  <div class="ticker-wrap">
-    <div class="ticker">
-      <span class="pulse"></span>
-      <span>PHASE 02</span>
-      <div class="marquee"><span>Phase 2 lineup — March 2027 · More artists dropping soon · Sign up for early access · Phase 2 lineup — March 2027 · </span></div>
-    </div>
-  </div>
-
-  <!-- Canyon SVG -->
-  <svg class="canyon" viewBox="0 0 1440 260" preserveAspectRatio="none" style="height: 220px;">
+  <!-- SVG Background shapes — canyon walls and dunes -->
+  <svg class="canyon-bg" viewBox="0 0 1400 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
     <defs>
-      <linearGradient id="g1" x1="0" x2="0" y1="0" y2="1">
-        <stop offset="0" stop-color="#3a0d1a" stop-opacity="0.9"/>
-        <stop offset="1" stop-color="#0a0410"/>
+      <linearGradient id="canyonL" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#1a0505" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="#1a0505" stop-opacity="0"/>
       </linearGradient>
-      <linearGradient id="g2" x1="0" x2="0" y1="0" y2="1">
-        <stop offset="0" stop-color="#1a0608" stop-opacity="0.95"/>
-        <stop offset="1" stop-color="#0a0410"/>
+      <linearGradient id="canyonR" x1="1" y1="0" x2="0" y2="0">
+        <stop offset="0%" stop-color="#120308" stop-opacity="0.8"/>
+        <stop offset="100%" stop-color="#120308" stop-opacity="0"/>
+      </linearGradient>
+      <linearGradient id="waveG" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#ff5520" stop-opacity="0.15"/>
+        <stop offset="100%" stop-color="#ff5520" stop-opacity="0"/>
       </linearGradient>
     </defs>
-    <!-- Far ridge -->
-    <polygon fill="url(#g1)" points="0,120 80,90 160,105 240,75 340,95 420,70 520,100 620,80 720,110 820,85 920,100 1020,75 1120,95 1220,80 1320,100 1440,85 1440,260 0,260"/>
-    <!-- Mid ridge -->
-    <polygon fill="url(#g1)" opacity="0.85" points="0,160 100,140 200,160 300,130 400,150 480,125 600,155 700,135 820,160 920,130 1040,155 1160,140 1280,160 1440,140 1440,260 0,260"/>
-    <!-- Near ridge -->
-    <polygon fill="url(#g2)" points="0,210 60,190 140,205 220,180 320,200 400,175 500,195 580,170 680,200 780,180 880,205 980,175 1080,195 1180,170 1280,200 1380,185 1440,205 1440,260 0,260"/>
+    <!-- Left canyon wall -->
+    <path d="M0,0 L0,900 L120,900 L80,700 Q60,500 100,350 Q130,200 60,100 L40,0 Z" fill="url(#canyonL)"/>
+    <!-- Right canyon wall -->
+    <path d="M1400,0 L1400,900 L1300,900 L1330,650 Q1360,450 1310,300 Q1280,150 1350,50 L1370,0 Z" fill="url(#canyonR)"/>
+    <!-- Desert floor waves -->
+    <path d="M0,780 Q200,750 400,770 Q600,790 800,760 Q1000,730 1200,755 Q1350,770 1400,760 L1400,900 L0,900 Z" fill="url(#waveG)"/>
+    <path d="M0,820 Q300,800 500,815 Q700,830 900,810 Q1100,790 1400,805 L1400,900 L0,900 Z" fill="rgba(160,40,20,0.06)"/>
+    <!-- Horizontal sound-wave lines -->
+    <line x1="100" y1="400" x2="1300" y2="400" stroke="rgba(255,107,43,0.04)" stroke-width="1"/>
+    <line x1="150" y1="420" x2="1250" y2="420" stroke="rgba(255,107,43,0.03)" stroke-width="1"/>
+    <line x1="200" y1="440" x2="1200" y2="440" stroke="rgba(255,107,43,0.025)" stroke-width="1"/>
   </svg>
 
-  <!-- Lineup -->
-  <section class="lineup">
-    <div class="label">◆ The Headliners ◆</div>
-    <div class="headliners">
-      <span class="act">NOVA CULT</span>
-      <span class="act">MOONBURN</span>
-      <span class="act">THE GLASS DUNES</span>
+  <!-- Marquee -->
+  <div class="marquee-wrap">
+    <div class="marquee-track">
+      <span>Phase 2 lineup — March 2027</span>
+      <span>Phase 2 lineup — March 2027</span>
+      <span>Phase 2 lineup — March 2027</span>
+      <span>Phase 2 lineup — March 2027</span>
+      <span>Phase 2 lineup — March 2027</span>
+      <span>Phase 2 lineup — March 2027</span>
+      <span>Phase 2 lineup — March 2027</span>
+      <span>Phase 2 lineup — March 2027</span>
+    </div>
+  </div>
+
+  <!-- Main content -->
+  <div class="content">
+    <div class="top-bar">
+      <span class="coord">36.847°N · 115.912°W</span>
+      <span>EST. MMXXVII</span>
+      <span class="coord">ASH CANYON</span>
     </div>
 
-    <div class="divider"><span class="rule"></span> ALSO PLAYING <span class="rule"></span></div>
-
-    <div class="support">
-      <span class="act">Velvet Static</span>
-      <span class="act">Dax Riviera</span>
-      <span class="act">Cinder <em style="font-family:'Fraunces',serif;font-style:italic;font-weight:300">&</em> Ash</span>
+    <!-- Wordmark -->
+    <div class="wordmark-section">
+      <div class="wordmark">
+        <span class="line1">EMBER</span>
+        <span class="line2">WAVE</span>
+      </div>
+      <div class="wordmark-strike"></div>
     </div>
 
-    <div style="margin-top:48px;">
-      <a href="#" class="cta">Get Tickets</a>
-      <div class="ticket-meta">Early Bird · From $249 · Limited Capacity</div>
+    <!-- Info -->
+    <div class="info-block">
+      <span class="date">June 18–20, 2027</span>
+      <span class="separator">✦</span>
+      <span class="location">Ash Canyon, Nevada</span>
     </div>
-  </section>
+
+    <!-- CTA -->
+    <div class="cta-section">
+      <a href="#" class="cta-btn">
+        Get tickets
+        <span class="arrow">→</span>
+      </a>
+    </div>
+
+    <!-- Lineup -->
+    <div class="lineup-section">
+      <div class="lineup-label">Headliners &amp; Featured Acts</div>
+      <div class="lineup-headliners">
+        <span class="act headliner">NOVA CULT</span>
+        <span class="act headliner">MOONBURN</span>
+      </div>
+      <div class="lineup-grid">
+        <span class="act support">Velvet Static</span>
+        <span class="act support">Dax Riviera</span>
+        <span class="act support">Cinder &amp; Ash</span>
+        <span class="act support">The Glass Dunes</span>
+      </div>
+    </div>
+
+    <div class="bottom-bar">
+      <span>3 Days · 3 Stages · 1 Canyon</span>
+      <span>emberwave.xyz</span>
+    </div>
+  </div>
 </div>
 </body>
 </html>

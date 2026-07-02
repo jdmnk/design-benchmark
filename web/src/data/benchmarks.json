@@ -14,7 +14,7 @@
         "video": null
       },
       "grid": {
-        "image": "grids/festival-landing.png",
+        "image": "grids/festival-landing.webp",
         "video": null,
         "columns": 3
       },
@@ -24,30 +24,30 @@
           "modelId": "z-ai/glm-5.2",
           "provider": "openrouter",
           "status": "rendered",
-          "elapsedMs": 342767,
-          "outputTokens": 13641,
+          "elapsedMs": 160320,
+          "outputTokens": 13293,
           "truncated": false,
           "error": null,
           "page": "pages/festival-landing/glm-5.2.html"
         },
         {
-          "label": "GLM 5.1",
-          "modelId": "z-ai/glm-5.1",
+          "label": "Grok 4.3",
+          "modelId": "x-ai/grok-4.3",
           "provider": "openrouter",
-          "status": "error",
-          "elapsedMs": 840006,
-          "outputTokens": null,
+          "status": "rendered",
+          "elapsedMs": 20993,
+          "outputTokens": 3129,
           "truncated": false,
-          "error": "Timed out before completing.",
-          "page": null
+          "error": null,
+          "page": "pages/festival-landing/grok-4.3.html"
         },
         {
           "label": "GPT-5.4 mini",
           "modelId": "openai/gpt-5.4-mini",
           "provider": "openrouter",
           "status": "rendered",
-          "elapsedMs": 18544,
-          "outputTokens": 3411,
+          "elapsedMs": 36598,
+          "outputTokens": 3922,
           "truncated": false,
           "error": null,
           "page": "pages/festival-landing/gpt-5.4-mini.html"
@@ -57,8 +57,8 @@
           "modelId": "anthropic/claude-haiku-4.5",
           "provider": "openrouter",
           "status": "rendered",
-          "elapsedMs": 32143,
-          "outputTokens": 5678,
+          "elapsedMs": 30796,
+          "outputTokens": 5697,
           "truncated": false,
           "error": null,
           "page": "pages/festival-landing/claude-haiku-4.5.html"
@@ -68,8 +68,8 @@
           "modelId": "qwen/qwen3.7-plus",
           "provider": "openrouter",
           "status": "rendered",
-          "elapsedMs": 123275,
-          "outputTokens": 6627,
+          "elapsedMs": 138963,
+          "outputTokens": 6671,
           "truncated": false,
           "error": null,
           "page": "pages/festival-landing/qwen3.7-plus.html"
@@ -79,8 +79,8 @@
           "modelId": "google/gemini-3.1-flash-lite",
           "provider": "openrouter",
           "status": "rendered",
-          "elapsedMs": 6906,
-          "outputTokens": 2035,
+          "elapsedMs": 5683,
+          "outputTokens": 1917,
           "truncated": false,
           "error": null,
           "page": "pages/festival-landing/gemini-3.1-flash-lite.html"
@@ -90,36 +90,36 @@
           "modelId": "deepseek/deepseek-v4-pro",
           "provider": "openrouter",
           "status": "rendered",
-          "elapsedMs": 208083,
-          "outputTokens": 13963,
+          "elapsedMs": 373873,
+          "outputTokens": 18720,
           "truncated": false,
           "error": null,
           "page": "pages/festival-landing/deepseek-v4-pro.html"
         },
         {
-          "label": "MiMo v2.5",
-          "modelId": "xiaomi/mimo-v2.5",
+          "label": "Kimi K2.6",
+          "modelId": "moonshotai/kimi-k2.6",
           "provider": "openrouter",
           "status": "rendered",
-          "elapsedMs": 126825,
-          "outputTokens": 9034,
+          "elapsedMs": 228079,
+          "outputTokens": 8471,
           "truncated": false,
           "error": null,
-          "page": "pages/festival-landing/mimo-v2.5.html"
+          "page": "pages/festival-landing/kimi-k2.6.html"
         },
         {
-          "label": "MiniMax M3",
-          "modelId": "minimax/minimax-m3",
+          "label": "Mistral Small 4",
+          "modelId": "mistralai/mistral-small-2603",
           "provider": "openrouter",
           "status": "rendered",
-          "elapsedMs": 328439,
-          "outputTokens": 16241,
+          "elapsedMs": 75140,
+          "outputTokens": 15240,
           "truncated": false,
           "error": null,
-          "page": "pages/festival-landing/minimax-m3.html"
+          "page": "pages/festival-landing/mistral-small-4.html"
         }
       ],
-      "rendered": 8,
+      "rendered": 9,
       "total": 9
     },
     {
@@ -136,7 +136,7 @@
         "video": null
       },
       "grid": {
-        "image": "grids/black-hole.png",
+        "image": "grids/black-hole.webp",
         "video": null,
         "columns": 3
       },
@@ -146,30 +146,30 @@
           "modelId": "z-ai/glm-5.2",
           "provider": "openrouter",
           "status": "rendered",
-          "elapsedMs": 210899,
-          "outputTokens": 13210,
+          "elapsedMs": 186718,
+          "outputTokens": 9291,
           "truncated": false,
           "error": null,
           "page": "pages/black-hole/glm-5.2.html"
         },
         {
-          "label": "GLM 5.1",
-          "modelId": "z-ai/glm-5.1",
+          "label": "Grok 4.3",
+          "modelId": "x-ai/grok-4.3",
           "provider": "openrouter",
-          "status": "error",
-          "elapsedMs": 467437,
-          "outputTokens": null,
+          "status": "rendered",
+          "elapsedMs": 31282,
+          "outputTokens": 3319,
           "truncated": false,
-          "error": "Unexpected end of JSON input",
-          "page": null
+          "error": null,
+          "page": "pages/black-hole/grok-4.3.html"
         },
         {
           "label": "GPT-5.4 mini",
           "modelId": "openai/gpt-5.4-mini",
           "provider": "openrouter",
           "status": "rendered",
-          "elapsedMs": 26273,
-          "outputTokens": 4326,
+          "elapsedMs": 39280,
+          "outputTokens": 3954,
           "truncated": false,
           "error": null,
           "page": "pages/black-hole/gpt-5.4-mini.html"
@@ -179,8 +179,8 @@
           "modelId": "anthropic/claude-haiku-4.5",
           "provider": "openrouter",
           "status": "rendered",
-          "elapsedMs": 16729,
-          "outputTokens": 2983,
+          "elapsedMs": 35014,
+          "outputTokens": 7035,
           "truncated": false,
           "error": null,
           "page": "pages/black-hole/claude-haiku-4.5.html"
@@ -190,8 +190,8 @@
           "modelId": "qwen/qwen3.7-plus",
           "provider": "openrouter",
           "status": "rendered",
-          "elapsedMs": 268871,
-          "outputTokens": 14825,
+          "elapsedMs": 94085,
+          "outputTokens": 5109,
           "truncated": false,
           "error": null,
           "page": "pages/black-hole/qwen3.7-plus.html"
@@ -201,8 +201,8 @@
           "modelId": "google/gemini-3.1-flash-lite",
           "provider": "openrouter",
           "status": "rendered",
-          "elapsedMs": 6293,
-          "outputTokens": 1787,
+          "elapsedMs": 5219,
+          "outputTokens": 1595,
           "truncated": false,
           "error": null,
           "page": "pages/black-hole/gemini-3.1-flash-lite.html"
@@ -212,36 +212,36 @@
           "modelId": "deepseek/deepseek-v4-pro",
           "provider": "openrouter",
           "status": "rendered",
-          "elapsedMs": 825132,
-          "outputTokens": 21651,
+          "elapsedMs": 406062,
+          "outputTokens": 21473,
           "truncated": false,
           "error": null,
           "page": "pages/black-hole/deepseek-v4-pro.html"
         },
         {
-          "label": "MiMo v2.5",
-          "modelId": "xiaomi/mimo-v2.5",
+          "label": "Kimi K2.6",
+          "modelId": "moonshotai/kimi-k2.6",
           "provider": "openrouter",
-          "status": "error",
-          "elapsedMs": 591651,
-          "outputTokens": null,
+          "status": "rendered",
+          "elapsedMs": 74831,
+          "outputTokens": 3713,
           "truncated": false,
-          "error": "Provider stream error mid-generation (finish_reason=error, 0 chars received)",
-          "page": null
+          "error": null,
+          "page": "pages/black-hole/kimi-k2.6.html"
         },
         {
-          "label": "MiniMax M3",
-          "modelId": "minimax/minimax-m3",
+          "label": "Mistral Small 4",
+          "modelId": "mistralai/mistral-small-2603",
           "provider": "openrouter",
-          "status": "error",
-          "elapsedMs": 653259,
-          "outputTokens": null,
+          "status": "blank",
+          "elapsedMs": 105999,
+          "outputTokens": 7415,
           "truncated": false,
-          "error": "Empty completion — model returned no content (often a reasoning model that ran out of tokens before answering).",
-          "page": null
+          "error": "JS error: Unexpected token '*'",
+          "page": "pages/black-hole/mistral-small-4.html"
         }
       ],
-      "rendered": 6,
+      "rendered": 8,
       "total": 9
     },
     {
@@ -261,7 +261,7 @@
         }
       },
       "grid": {
-        "image": "grids/black-hole-spin.png",
+        "image": "grids/black-hole-spin.webp",
         "video": "grids/black-hole-spin.mp4",
         "columns": 3
       },
@@ -271,30 +271,30 @@
           "modelId": "z-ai/glm-5.2",
           "provider": "openrouter",
           "status": "rendered",
-          "elapsedMs": 552925,
-          "outputTokens": 11828,
+          "elapsedMs": 554956,
+          "outputTokens": 11571,
           "truncated": false,
           "error": null,
           "page": "pages/black-hole-spin/glm-5.2.html"
         },
         {
-          "label": "GLM 5.1",
-          "modelId": "z-ai/glm-5.1",
+          "label": "Grok 4.3",
+          "modelId": "x-ai/grok-4.3",
           "provider": "openrouter",
-          "status": "error",
-          "elapsedMs": 412789,
-          "outputTokens": null,
+          "status": "rendered",
+          "elapsedMs": 22694,
+          "outputTokens": 3135,
           "truncated": false,
-          "error": "Unexpected end of JSON input",
-          "page": null
+          "error": null,
+          "page": "pages/black-hole-spin/grok-4.3.html"
         },
         {
           "label": "GPT-5.4 mini",
           "modelId": "openai/gpt-5.4-mini",
           "provider": "openrouter",
-          "status": "blank",
-          "elapsedMs": 32403,
-          "outputTokens": 5211,
+          "status": "rendered",
+          "elapsedMs": 42863,
+          "outputTokens": 4806,
           "truncated": false,
           "error": null,
           "page": "pages/black-hole-spin/gpt-5.4-mini.html"
@@ -304,8 +304,8 @@
           "modelId": "anthropic/claude-haiku-4.5",
           "provider": "openrouter",
           "status": "rendered",
-          "elapsedMs": 34889,
-          "outputTokens": 6971,
+          "elapsedMs": 23042,
+          "outputTokens": 4029,
           "truncated": false,
           "error": null,
           "page": "pages/black-hole-spin/claude-haiku-4.5.html"
@@ -315,8 +315,8 @@
           "modelId": "qwen/qwen3.7-plus",
           "provider": "openrouter",
           "status": "rendered",
-          "elapsedMs": 525164,
-          "outputTokens": 5754,
+          "elapsedMs": 144715,
+          "outputTokens": 6092,
           "truncated": false,
           "error": null,
           "page": "pages/black-hole-spin/qwen3.7-plus.html"
@@ -326,8 +326,8 @@
           "modelId": "google/gemini-3.1-flash-lite",
           "provider": "openrouter",
           "status": "rendered",
-          "elapsedMs": 5516,
-          "outputTokens": 1843,
+          "elapsedMs": 5182,
+          "outputTokens": 1711,
           "truncated": false,
           "error": null,
           "page": "pages/black-hole-spin/gemini-3.1-flash-lite.html"
@@ -337,36 +337,161 @@
           "modelId": "deepseek/deepseek-v4-pro",
           "provider": "openrouter",
           "status": "rendered",
-          "elapsedMs": 336672,
-          "outputTokens": 24145,
+          "elapsedMs": 827149,
+          "outputTokens": 3690,
           "truncated": false,
           "error": null,
           "page": "pages/black-hole-spin/deepseek-v4-pro.html"
         },
         {
-          "label": "MiMo v2.5",
-          "modelId": "xiaomi/mimo-v2.5",
+          "label": "Kimi K2.6",
+          "modelId": "moonshotai/kimi-k2.6",
           "provider": "openrouter",
-          "status": "error",
-          "elapsedMs": 606695,
-          "outputTokens": null,
+          "status": "rendered",
+          "elapsedMs": 79427,
+          "outputTokens": 4713,
           "truncated": false,
-          "error": "Empty completion — model returned no content (often a reasoning model that ran out of tokens before answering).",
-          "page": null
+          "error": null,
+          "page": "pages/black-hole-spin/kimi-k2.6.html"
         },
         {
-          "label": "MiniMax M3",
-          "modelId": "minimax/minimax-m3",
+          "label": "Mistral Small 4",
+          "modelId": "mistralai/mistral-small-2603",
           "provider": "openrouter",
-          "status": "error",
-          "elapsedMs": 730925,
-          "outputTokens": null,
+          "status": "rendered",
+          "elapsedMs": 73751,
+          "outputTokens": 13144,
           "truncated": false,
-          "error": "Empty completion — model returned no content (often a reasoning model that ran out of tokens before answering).",
-          "page": null
+          "error": null,
+          "page": "pages/black-hole-spin/mistral-small-4.html"
         }
       ],
-      "rendered": 5,
+      "rendered": 9,
+      "total": 9
+    },
+    {
+      "id": "fireworks",
+      "title": "Fireworks",
+      "description": "Animated Canvas-2D benchmark: a continuous fireworks finale over a city skyline. A 5-second clip is captured frame-by-frame on the deterministic virtual clock and composed into one grid video.",
+      "prompt": "Create a continuous FIREWORKS FINALE over a city skyline as a full-screen Canvas 2D animation. A 5-second clip is captured, so the show must be in full swing at ALL times — no idle sky, ever.\n\nComposition (match so results are comparable):\n- Night sky filling the frame: a deep dark blue-to-black vertical gradient with a few faint stars.\n- A dark city skyline silhouette across the bottom ~18% of the frame — varied building heights, a few tiny lit windows.\n- Fireworks burst in the upper two-thirds of the sky.\n\nThe show (the point of this benchmark — judged on motion):\n- A dense, celebratory rhythm: at any moment 3–6 bursts should be visible in different phases (rocket ascending with a bright trail → explosion → expanding glowing sparks that fall with gravity and fade). Start the show ALREADY IN PROGRESS at t=0 — seed several bursts mid-flight on load.\n- Varied burst types (spherical peony, ring, willow with drooping trails) and varied colors — gold, red, cyan, violet, green — with additive glow.\n- Sparks leave fading trails; brief bloom flash at each detonation; subtle reflected glow on the skyline rooftops when a large burst goes off.\n\nUse Math.random() freely for variety (it is seeded by the harness — the show will be reproducible). Return ONLY a single complete HTML document.",
+      "systemPrompt": "You are a generative/creative coder. Output a SINGLE self-contained HTML document using plain Canvas 2D and requestAnimationFrame — no external libraries, no images. The canvas fills the entire viewport (100vw × 100vh), starts automatically, and needs no user interaction.\n\nRELIABILITY RULES (a 5-second clip is captured frame-by-frame):\n- Drive ALL motion and spawn timing from the requestAnimationFrame timestamp (or performance.now()), NOT per-frame increments or setInterval/setTimeout, so the show is framerate-independent.\n- PERFORMANCE: at most ~2500 live particles, no huge synchronous setup loops, smooth 60fps.\n- Paint the night-sky background as the very first draw so the page never renders blank; fade trails with a translucent dark rect each frame rather than clearing.\n- Wrap risky setup in try/catch. Ensure the document is complete with every tag closed; if running long, simplify rather than truncate.",
+      "render": {
+        "viewport": "1280×800",
+        "fullPage": false,
+        "waitMs": 3000,
+        "deterministic": true,
+        "video": {
+          "durationMs": 5000,
+          "fps": 24
+        }
+      },
+      "grid": {
+        "image": "grids/fireworks.webp",
+        "video": "grids/fireworks.mp4",
+        "columns": 3
+      },
+      "models": [
+        {
+          "label": "GLM 5.2",
+          "modelId": "z-ai/glm-5.2",
+          "provider": "openrouter",
+          "status": "rendered",
+          "elapsedMs": 583659,
+          "outputTokens": 10631,
+          "truncated": false,
+          "error": null,
+          "page": "pages/fireworks/glm-5.2.html"
+        },
+        {
+          "label": "Grok 4.3",
+          "modelId": "x-ai/grok-4.3",
+          "provider": "openrouter",
+          "status": "rendered",
+          "elapsedMs": 19428,
+          "outputTokens": 3131,
+          "truncated": false,
+          "error": null,
+          "page": "pages/fireworks/grok-4.3.html"
+        },
+        {
+          "label": "GPT-5.4 mini",
+          "modelId": "openai/gpt-5.4-mini",
+          "provider": "openrouter",
+          "status": "rendered",
+          "elapsedMs": 26874,
+          "outputTokens": 4069,
+          "truncated": false,
+          "error": null,
+          "page": "pages/fireworks/gpt-5.4-mini.html"
+        },
+        {
+          "label": "Claude Haiku 4.5",
+          "modelId": "anthropic/claude-haiku-4.5",
+          "provider": "openrouter",
+          "status": "rendered",
+          "elapsedMs": 28671,
+          "outputTokens": 4910,
+          "truncated": false,
+          "error": null,
+          "page": "pages/fireworks/claude-haiku-4.5.html"
+        },
+        {
+          "label": "Qwen3.7 Plus",
+          "modelId": "qwen/qwen3.7-plus",
+          "provider": "openrouter",
+          "status": "rendered",
+          "elapsedMs": 98666,
+          "outputTokens": 5344,
+          "truncated": false,
+          "error": null,
+          "page": "pages/fireworks/qwen3.7-plus.html"
+        },
+        {
+          "label": "Gemini 3.1 Flash-Lite",
+          "modelId": "google/gemini-3.1-flash-lite",
+          "provider": "openrouter",
+          "status": "rendered",
+          "elapsedMs": 5975,
+          "outputTokens": 1845,
+          "truncated": false,
+          "error": null,
+          "page": "pages/fireworks/gemini-3.1-flash-lite.html"
+        },
+        {
+          "label": "DeepSeek V4 Pro",
+          "modelId": "deepseek/deepseek-v4-pro",
+          "provider": "openrouter",
+          "status": "rendered",
+          "elapsedMs": 755658,
+          "outputTokens": 4927,
+          "truncated": false,
+          "error": null,
+          "page": "pages/fireworks/deepseek-v4-pro.html"
+        },
+        {
+          "label": "Kimi K2.6",
+          "modelId": "moonshotai/kimi-k2.6",
+          "provider": "openrouter",
+          "status": "rendered",
+          "elapsedMs": 15784,
+          "outputTokens": 5446,
+          "truncated": false,
+          "error": null,
+          "page": "pages/fireworks/kimi-k2.6.html"
+        },
+        {
+          "label": "Mistral Small 4",
+          "modelId": "mistralai/mistral-small-2603",
+          "provider": "openrouter",
+          "status": "rendered",
+          "elapsedMs": 53933,
+          "outputTokens": 10153,
+          "truncated": false,
+          "error": null,
+          "page": "pages/fireworks/mistral-small-4.html"
+        }
+      ],
+      "rendered": 9,
       "total": 9
     },
     {
@@ -383,7 +508,7 @@
         "video": null
       },
       "grid": {
-        "image": "grids/sunset-svg.png",
+        "image": "grids/sunset-svg.webp",
         "video": null,
         "columns": 3
       },
@@ -393,30 +518,30 @@
           "modelId": "z-ai/glm-5.2",
           "provider": "openrouter",
           "status": "rendered",
-          "elapsedMs": 161886,
-          "outputTokens": 8726,
+          "elapsedMs": 68458,
+          "outputTokens": 4724,
           "truncated": false,
           "error": null,
           "page": "pages/sunset-svg/glm-5.2.html"
         },
         {
-          "label": "GLM 5.1",
-          "modelId": "z-ai/glm-5.1",
+          "label": "Grok 4.3",
+          "modelId": "x-ai/grok-4.3",
           "provider": "openrouter",
           "status": "rendered",
-          "elapsedMs": 229650,
-          "outputTokens": 13596,
+          "elapsedMs": 15052,
+          "outputTokens": 1993,
           "truncated": false,
           "error": null,
-          "page": "pages/sunset-svg/glm-5.1.html"
+          "page": "pages/sunset-svg/grok-4.3.html"
         },
         {
           "label": "GPT-5.4 mini",
           "modelId": "openai/gpt-5.4-mini",
           "provider": "openrouter",
           "status": "rendered",
-          "elapsedMs": 20021,
-          "outputTokens": 2715,
+          "elapsedMs": 21105,
+          "outputTokens": 3296,
           "truncated": false,
           "error": null,
           "page": "pages/sunset-svg/gpt-5.4-mini.html"
@@ -426,8 +551,8 @@
           "modelId": "anthropic/claude-haiku-4.5",
           "provider": "openrouter",
           "status": "rendered",
-          "elapsedMs": 16758,
-          "outputTokens": 2675,
+          "elapsedMs": 30972,
+          "outputTokens": 5251,
           "truncated": false,
           "error": null,
           "page": "pages/sunset-svg/claude-haiku-4.5.html"
@@ -437,8 +562,8 @@
           "modelId": "qwen/qwen3.7-plus",
           "provider": "openrouter",
           "status": "rendered",
-          "elapsedMs": 61422,
-          "outputTokens": 3277,
+          "elapsedMs": 84912,
+          "outputTokens": 4587,
           "truncated": false,
           "error": null,
           "page": "pages/sunset-svg/qwen3.7-plus.html"
@@ -448,8 +573,8 @@
           "modelId": "google/gemini-3.1-flash-lite",
           "provider": "openrouter",
           "status": "rendered",
-          "elapsedMs": 5578,
-          "outputTokens": 1542,
+          "elapsedMs": 5170,
+          "outputTokens": 1564,
           "truncated": false,
           "error": null,
           "page": "pages/sunset-svg/gemini-3.1-flash-lite.html"
@@ -459,33 +584,33 @@
           "modelId": "deepseek/deepseek-v4-pro",
           "provider": "openrouter",
           "status": "rendered",
-          "elapsedMs": 181207,
-          "outputTokens": 8579,
+          "elapsedMs": 396408,
+          "outputTokens": 2722,
           "truncated": false,
           "error": null,
           "page": "pages/sunset-svg/deepseek-v4-pro.html"
         },
         {
-          "label": "MiMo v2.5",
-          "modelId": "xiaomi/mimo-v2.5",
+          "label": "Kimi K2.6",
+          "modelId": "moonshotai/kimi-k2.6",
           "provider": "openrouter",
           "status": "rendered",
-          "elapsedMs": 169851,
-          "outputTokens": 6673,
+          "elapsedMs": 21407,
+          "outputTokens": 3601,
           "truncated": false,
           "error": null,
-          "page": "pages/sunset-svg/mimo-v2.5.html"
+          "page": "pages/sunset-svg/kimi-k2.6.html"
         },
         {
-          "label": "MiniMax M3",
-          "modelId": "minimax/minimax-m3",
+          "label": "Mistral Small 4",
+          "modelId": "mistralai/mistral-small-2603",
           "provider": "openrouter",
           "status": "rendered",
-          "elapsedMs": 113725,
-          "outputTokens": 12212,
+          "elapsedMs": 32785,
+          "outputTokens": 6593,
           "truncated": false,
           "error": null,
-          "page": "pages/sunset-svg/minimax-m3.html"
+          "page": "pages/sunset-svg/mistral-small-4.html"
         }
       ],
       "rendered": 9,

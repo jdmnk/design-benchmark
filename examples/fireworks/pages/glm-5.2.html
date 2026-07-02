@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Fireworks Finale</title>
+<style>
+  html,body{margin:0;padding:0;height:100%;background:#000;overflow:hidden;}
+  canvas{display:block;width:100vw;height:100vh;}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<script>
+(function(){
+  "use strict";
+  const canvas = document.getElementById('c');
+  const ctx = canvas.getContext('2d');
+  let W = 0, H = 0;
+
+  // ---- Palettes ----
+  const palettes = {
+    gold:   ['#ffd76b','#ffb347','#ffe9a8','#fff1c2'],
+    red:    ['#ff5a4d','#ff8a6a','#ffd0c0','#ff7060'],
+    cyan:   ['#7ff7ff','#4dd8ff','#c8faff','#aef0ff'],
+    violet: ['#c98bff','#9a6bff','#e8d0ff','#b89aff'],
+    green:  ['#7dff9a','#4dff7a','#c8ffd0','#9affb0'],
+    mixed:  ['#ff6bdb','#ffd76b','#7ff7ff','#c98bff']
+  };
+  const palNames = Object.keys(palettes);
+  const burstTypes = ['peony','peony','peony','ring','willow','willow'];
+
+  const GRAV = 0.045;
+
+  // ---- State ----
+  let stars = [];
+  let skyline = [];
+  let skylineBaseY = 0;
+  let rockets = [];
+  let sparks = [];
+  let flashes = [];
+  let refl = [];
+  const MAX_SPARKS = 2500;
+
+  // ---- Helpers ----
+  function hexA(hex, a){
+    const r = parseInt(hex.slice(1,3),16);
+    const g = parseInt(hex.slice(3,5),16);
+    const b = parseInt(hex.slice(5,7),16);
+    return 'rgba('+r+','+g+','+b+','+a+')';
+  }
+  function pick(arr){ return arr[(Math.random()*arr.length)|0]; }
+  function rand(a,b){ return a + Math.random()*(b-a); }
+
+  // ---- Build scene ----
+  function buildStars(){
+    stars = [];
+    const n = Math.min(220, Math.floor(W*H/9000));
+    for(let i=0;i<n;i++){
+      stars.push({
+        x: Math.random()*W,
+        y: Math.random()*H*0.75,
+        r: Math.random()*1.3 + 0.25,
+        tw: Math.random()*Math.PI*2,
+        sp: rand(0.0015, 0.004)
+      });
+    }
+  }
+  function buildSkyline(){
+    skylineBaseY = H*0.82;
+    skyline = [];
+    let x = -10;
+    while(x < W+10){
+      const w = rand(28, 95);
+      const h = rand(30, H*0.16);
+      const b = {x:x, w:w, h:h, windows:[]};
+      const cols = Math.max(1, Math.floor(w/11));
+      const rows = Math.max(1, Math.floor(h/13));
+      for(let c=0;c<cols;c++){
+        for(let r=0;r<rows;r++){
+          if(Math.random() < 0.16){
+            b.windows.push({
+              x: x + 4 + c*11,
+              y: skylineBaseY - h + 6 + r*13,
+              on: Math.random() < 0.72,
+              flick: Math.random()*Math.PI*2
+            });
+          }
+        }
+      }
+      skyline.push(b);
+      x += w;
+    }
+    buildStars();
+  }
+  function resize(){
+    W = canvas.width = innerWidth;
+    H = canvas.height = innerHeight;
+    try{ buildSkyline(); }catch(e){}
+  }
+  addEventListener('resize', resize);
+  resize();
+
+  // ---- Fireworks ----
+  function launchRocket(t){
+    const x = W*rand(0.08, 0.92);
+    const y = H + 10;
+    const targetY = H*rand(0.10, 0.42);
+    const vy = -rand(8.5, 11.5);
+    const vx = rand(-0.7, 0.7);
+    const pal = pick(palNames);
+    const type = pick(burstTypes);
+    rockets.push({x:x,y:y,vx:vx,vy:vy,targetY:targetY,pal:pal,type:type});
+  }
+
+  function explode(x, y, pal, type){
+    // bloom flash
+    flashes.push({x:x, y:y, life:0.55, age:0, pal:pal});
+    // skyline reflection
+    refl.push({x:x, y:y, life:1.3, age:0, pal:pal});
+    const startIdx = sparks.length;
+    let count;
+    if(type === 'willow') count = 75;
+    else if(type === 'ring') count = 64;
+    else count = 95;
+    if(sparks.length + count > MAX_SPARKS) count = Math.max(0, MAX_SPARKS - sparks.length);
+    for(let i=0;i<count;i++){
+      let vx, vy, life, size;
+      if(type === 'peony'){
+        const a = Math.random()*Math.PI*2;
+        const s = rand(1.2, 5.2);
+        vx = Math.cos(a)*s;
+        vy = Math.sin(a)*s;
+        life = rand(58, 100);
+        size = rand(1.5, 2.6);
+      } else if(type === 'ring'){
+        const a = (i/count)*Math.PI*2 + rand(-0.03, 0.03);
+        const s = rand(4.0, 4.7);
+        vx = Math.cos(a)*s;
+        vy = Math.sin(a)*s;
+        life = rand(68, 95);
+        size = rand(1.7, 2.1);
+      } else { // willow
+        const a = Math.random()*Math.PI*2;
+        const s = rand(1.3, 3.2);
+        vx = Math.cos(a)*s;
+        vy = Math.sin(a)*s - 1.6;
+        life = rand(95, 150);
+        size = rand(1.3, 2.0);
+      }
+      sparks.push({
+        x:x, y:y, px:x, py:y,
+        vx:vx, vy:vy,
+        life:life, maxLife:life,
+        color: pick(palettes[pal]),
+        size:size, type:type
+      });
+    }
+    return startIdx;
+  }
+
+  function ageSpark(s, n){
+    for(let k=0;k<n;k++){
+      s.vy += GRAV;
+      if(s.type === 'willow') s.vy += GRAV*0.45;
+      s.vx *= 0.985;
+      s.vy *= 0.99;
+      s.x += s.vx;
+      s.y += s.vy;
+      s.life -= 1;
+    }
+    s.px = s.x; s.py = s.y;
+  }
+
+  function seedShow(){
+    // explosions already mid-flight at t=0
+    for(let i=0;i<4;i++){
+      const x = W*rand(0.15, 0.85);
+      const y = H*rand(0.14, 0.38);
+      const pal = pick(palNames);
+      const type = pick(burstTypes);
+      const idx = explode(x, y, pal, type);
+      const ageF = (15 + Math.random()*45) | 0;
+      for(let j=idx;j<sparks.length;j++){
+        ageSpark(sparks[j], ageF);
+      }
+    }
+    // rockets already ascending
+    for(let i=0;i<3;i++){
+      launchRocket(0);
+      const r = rockets[rockets.length-1];
+      const adv = rand(20, 90);
+      r.y += r.vy * adv;
+      r.x += r.vx * adv;
+    }
+    // prune dead seeded sparks
+    sparks = sparks.filter(s => s.life > 0 && s.y < skylineBaseY + 4);
+  }
+
+  // ---- Drawing ----
+  function drawFade(){
+    const g = ctx.createLinearGradient(0,0,0,H);
+    g.addColorStop(0, 'rgba(10,16,48,0.22)');
+    g.addColorStop(0.55, 'rgba(5,8,24,0.22)');
+    g.addColorStop(1, 'rgba(1,2,10,0.22)');
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.fillStyle = g;
+    ctx.fillRect(0,0,W,H);
+  }
+
+  function drawStars(t){
+    ctx.globalCompositeOperation = 'lighter';
+    for(let i=0;i<stars.length;i++){
+      const s = stars[i];
+      const tw = 0.5 + 0.5*Math.sin(t*s.sp + s.tw);
+      ctx.fillStyle = 'rgba(200,220,255,'+(0.25+0.45*tw)+')';
+      ctx.fillRect(s.x, s.y, s.r, s.r);
+    }
+  }
+
+  function drawSkyline(t){
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.fillStyle = '#04050d';
+    ctx.beginPath();
+    ctx.moveTo(0, H);
+    ctx.lineTo(0, skylineBaseY);
+    for(let i=0;i<skyline.length;i++){
+      const b = skyline[i];
+      ctx.lineTo(b.x, skylineBaseY);
+      ctx.lineTo(b.x, skylineBaseY - b.h);
+      ctx.lineTo(b.x + b.w, skylineBaseY - b.h);
+      ctx.lineTo(b.x + b.w, skylineBaseY);
+    }
+    ctx.lineTo(W, skylineBaseY);
+    ctx.lineTo(W, H);
+    ctx.closePath();
+    ctx.fill();
+    // lit windows
+    ctx.globalCompositeOperation = 'lighter';
+    for(let i=0;i<skyline.length;i++){
+      const b = skyline[i];
+      for(let j=0;j<b.windows.length;j++){
+        const w = b.windows[j];
+        if(!w.on) continue;
+        const fl = 0.6 + 0.4*Math.sin(t*0.004 + w.flick);
+        ctx.fillStyle = 'rgba(255,205,110,'+(0.55*fl)+')';
+        ctx.fillRect(w.x, w.y, 3.2, 5);
+      }
+    }
+  }
+
+  function drawReflections(dt){
+    ctx.globalCompositeOperation = 'lighter';
+    for(let i=refl.length-1;i>=0;i--){
+      const r = refl[i];
+      r.age += dt/60;
+      if(r.age >= r.life){ refl.splice(i,1); continue; }
+      const p = r.age / r.life;
+      const a = (1-p)*(1-p) * 0.4;
+      const col = palettes[r.pal][0];
+      const rad = 240;
+      const g = ctx.createRadialGradient(r.x, skylineBaseY, 0, r.x, skylineBaseY, rad);
+      g.addColorStop(0, hexA(col, a));
+      g.addColorStop(0.4, hexA(col, a*0.4));
+      g.addColorStop(1, hexA(col, 0));
+      ctx.fillStyle = g;
+      ctx.fillRect(r.x - rad, skylineBaseY - 90, rad*2, 130);
+    }
+  }
+
+  function drawFlashes(dt){
+    ctx.globalCompositeOperation = 'lighter';
+    for(let i=flashes.length-1;i>=0;i--){
+      const f = flashes[i];
+      f.age += dt/60;
+      if(f.age >= f.life){ flashes.splice(i,1); continue; }
+      const p = f.age / f.life;
+      const a = (1-p)*(1-p);
+      const rad = 50 + p*140;
+      const col = palettes[f.pal][0];
+      const g = ctx.createRadialGradient(f.x, f.y, 0, f.x, f.y, rad);
+      g.addColorStop(0, hexA('#ffffff', a*0.95));
+      g.addColorStop(0.25, hexA(col, a*0.7));
+      g.addColorStop(1, hexA(col, 0));
+      ctx.fillStyle = g;
+      ctx.fillRect(f.x - rad, f.y - rad, rad*2, rad*2);
+    }
+  }
+
+  function drawRockets(dt){
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.lineCap = 'round';
+    for(let i=rockets.length-1;i>=0;i--){
+      const r = rockets[i];
+      r.x += r.vx * dt;
+      r.y += r.vy * dt;
+      r.vy += GRAV * 0.22 * dt;
+      // bright trail
+      ctx.strokeStyle = 'rgba(255,225,160,0.85)';
+      ctx.lineWidth = 2.2;
+      ctx.beginPath();
+      ctx.moveTo(r.x - r.vx*3, r.y - r.vy*3);
+      ctx.lineTo(r.x, r.y);
+      ctx.stroke();
+      // hot head
+      ctx.fillStyle = '#fffbe6';
+      ctx.beginPath();
+      ctx.arc(r.x, r.y, 2.4, 0, Math.PI*2);
+      ctx.fill();
+      // emit trailing sparks
+      if(sparks.length < MAX_SPARKS && Math.random() < 0.6){
+        sparks.push({
+          x:r.x, y:r.y, px:r.x, py:r.y,
+          vx: rand(-0.8, 0.8),
+          vy: rand(0.3, 1.4),
+          life: rand(12, 22), maxLife: 22,
+          color: '#ffcc77', size: 1.1, type:'trail'
+        });
+      }
+      if(r.y <= r.targetY || r.vy >= -0.4){
+        explode(r.x, r.y, r.pal, r.type);
+        rockets.splice(i,1);
+      }
+    }
+  }
+
+  function drawSparks(dt){
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.lineCap = 'round';
+    for(let i=sparks.length-1;i>=0;i--){
+      const s = sparks[i];
+      s.px = s.x; s.py = s.y;
+      s.vy += GRAV * dt;
+      if(s.type === 'willow') s.vy += GRAV * 0.45 * dt;
+      s.vx *= Math.pow(0.985, dt);
+      s.vy *= Math.pow(0.99, dt);
+      s.x += s.vx * dt;
+      s.y += s.vy * dt;
+      s.life -= dt;
+      if(s.life <= 0 || s.y > skylineBaseY + 2){
+        sparks.splice(i,1); continue;
+      }
+      const a = Math.max(0, s.life / s.maxLife);
+      const aa = a*a;
+      // streak
+      ctx.strokeStyle = hexA(s.color, aa*0.85);
+      ctx.lineWidth = s.size;
+      ctx.beginPath();
+      ctx.moveTo(s.px, s.py);
+      ctx.lineTo(s.x, s.y);
+      ctx.stroke();
+      // glowing head
+      ctx.fillStyle = hexA(s.color, aa);
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.size*0.85, 0, Math.PI*2);
+      ctx.fill();
+    }
+  }
+
+  // ---- Main loop ----
+  let startTime = 0;
+  let lastTime = 0;
+  let nextLaunch = 0;
+  let firstFrame = true;
+  let seeded = false;
+
+  function frame(now){
+    if(!startTime){ startTime = now; lastTime = now; }
+    const t = now - startTime;
+    let dt = (now - lastTime) / 16.6667;
+    if(dt > 3) dt = 3;
+    if(dt < 0) dt = 0;
+    lastTime = now;
+
+    if(!seeded){
+      try{ seedShow(); }catch(e){}
+      seeded = true;
+      nextLaunch = t + 60;
+    }
+
+    // initial full sky paint
+    if(firstFrame){
+      const g = ctx.createLinearGradient(0,0,0,H);
+      g.addColorStop(0, '#0b1238');
+      g.addColorStop(0.55, '#050920');
+      g.addColorStop(1, '#01020a');
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.fillStyle = g;
+      ctx.fillRect(0,0,W,H);
+      firstFrame = false;
+    } else {
+      drawFade();
+    }
+
+    // schedule launches — dense rhythm
+    while(t >= nextLaunch){
+      launchRocket(t);
+      if(Math.random() < 0.55){
+        launchRocket(t + 30);
+      }
+      if(Math.random() < 0.18){
+        launchRocket(t + 70);
+      }
+      nextLaunch = t + rand(110, 240);
+    }
+
+    drawStars(t);
+    drawSkyline(t);
+    drawReflections(dt);
+    drawRockets(dt);
+    drawSparks(dt);
+    drawFlashes(dt);
+
+    requestAnimationFrame(frame);
+  }
+
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

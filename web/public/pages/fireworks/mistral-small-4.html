@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Fireworks Finale</title>
+  <style>
+    body { margin: 0; overflow: hidden; background: #000; }
+    canvas { display: block; }
+  </style>
+</head>
+<body>
+<canvas id="c"></canvas>
+
+<script>
+/* FIREWORKS FINALE - Single HTML Canvas 2D Animation */
+(() => {
+  const canvas = document.getElementById('c');
+  const ctx = canvas.getContext('2d');
+
+  // ---------------- CONFIG ----------------
+  const COLORS = ['#ff0000','#00ffff','#ff00ff','#00ff00','#ffff00'];
+  const BURST_COUNTS = [160, 180, 200]; // peony, ring, willow
+  const MAX_PARTICLES = 2500;
+  const BASE_CITY_HEIGHT = 0.18; // bottom 18% for skyline
+  const BURST_DENSITY = 0.6; // particles per pixel
+
+  // ---------------- STATE ----------------
+  let particles = [];
+  let bursts = [];
+  let rockets = [];
+  let buildings = [];
+  let lastRocketSpawn = 0;
+  let lastTime = 0;
+  let frameCount = 0;
+
+  // ---------------- HELPERS ----------------
+  function resize() {
+    canvas.width = innerWidth;
+    canvas.height = innerHeight;
+  }
+
+  function randomRange(min, max) {
+    return min + Math.random() * (max - min);
+  }
+
+  function randomInt(min, max) {
+    return min + Math.floor(Math.random() * (max - min + 1));
+  }
+
+  // ---------------- CITY ----------------
+  function initCity() {
+    buildings = [];
+    const baseY = canvas.height * (1 - BASE_CITY_HEIGHT);
+    const count = randomInt(25, 45);
+    const totalWidth = canvas.width;
+    const spacing = totalWidth / count;
+    let x = 0;
+
+    for (let i = 0; i < count; i++) {
+      const width = spacing * 0.7 + randomRange(spacing * 0.3, spacing * 0.5);
+      const height = 8 + randomRange(0, baseY * 0.8);
+      const hasLights = randomRange(0, 1) > 0.7;
+      buildings.push({
+        x, y: baseY - height, width, height,
+        lit: hasLights, glow: 0
+      });
+      x += width;
+    }
+  }
+
+  function drawCity() {
+    const baseY = canvas.height * (1 - BASE_CITY_HEIGHT);
+
+    buildings.forEach(b => {
+      // Main building silhouette
+      const alpha = b.glow > 0 ? 0.8 : 0.9;
+      ctx.fillStyle = `rgba(15, 15, 25, ${alpha})`;
+      ctx.fillRect(b.x, b.y, b.width, b.height);
+
+      // Lit windows (subtle)
+      if (b.lit) {
+        ctx.fillStyle = 'rgba(255, 235, 180, 0.25)';
+        const winCols = Math.max(1, Math.floor(b.width / 10));
+        const winRows = Math.max(1, Math.floor(b.height / 8));
+        for (let r = 0; r < winRows; r++) {
+          for (let c = 0; c < winCols; c++) {
+            const wx = b.x + 5 + c * 10;
+            const wy = b.y + 5 + r * 8;
+            if (wx + 3 <= b.x + b.width && wy + 3 <= b.y + b.height) {
+              ctx.fillRect(wx, wy, 2, 2);
+            }
+          }
+        }
+      }
+
+      // Rooftop reflection glow
+      if (b.glow > 0) {
+        const glowHeight = 6 + b.glow * 25;
+        const gradient = ctx.createLinearGradient(b.x, b.y, b.x, b.y - glowHeight);
+        gradient.addColorStop(0, `rgba(255, 245, 220, ${b.glow * 0.7})`);
+        gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        ctx.fillStyle = gradient;
+        ctx.fillRect(b.x, b.y - glowHeight, b.width, glowHeight);
+      }
+
+      // Subtle top edge highlight
+      ctx.fillStyle = 'rgba(30, 30, 50, 0.2)';
+      ctx.fillRect(b.x, b.y - 1.5, b.width, 1.5);
+    });
+  }
+
+  function updateReflections(burstX, burstY) {
+    const maxRadius = 140;
+    const strength = 0.28;
+    const threshold = 160;
+
+    buildings.forEach(b => {
+      const dx = burstX - (b.x + b.width * 0.5);
+      const dy = burstY - b.y;
+      const distSq = dx * dx + dy * dy;
+
+      if (distSq < threshold * threshold) {
+        const dist = Math.sqrt(distSq);
+        const alpha = strength * (1 - dist / maxRadius);
+        b.glow = Math.max(b.glow, alpha);
+      }
+    });
+
+    // Fade glows over time
+    buildings.forEach(b => {
+      b.glow *= 0.94;
+    });
+  }
+
+  // ---------------- PARTICLES & EFFECTS ----------------
+  class Particle {
+    constructor(x, y, vx, vy, color, size, lifespan) {
+      this.x = x;
+      this.y = y;
+      this.vx = vx;
+      this.vy = vy;
+      this.color = color;
+      this.maxSize = size;
+      this.size = size;
+      this.lifespan = lifespan;
+      this.age = 0;
+      this.type = 'normal';
+    }
+
+    update(dt) {
+      this.age += dt;
+      this.x += this.vx * dt;
+      this.y += this.vy * dt;
+      this.vy += 0.0002 * dt; // gravity
+
+      if (this.type === 'willow') {
+        this.vy += 0.00015 * dt; // enhanced droop
+      }
+
+      const t = Math.min(1, this.age / this.lifespan);
+      this.size = this.maxSize * (1 - t * 0.7); // shrink over time
+    }
+
+    draw(ctx) {
+      if (this.age >= this.lifespan) return;
+
+      const alpha = (1 - this.age / this.lifespan) * 0.75;
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = this.color;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalAlpha = 1;
+    }
+  }
+
+  class Burst {
+    constructor(x, y, baseCount, color, burstType) {
+      this.x = x;
+      this.y = y;
+      this.particles = [];
+      this.time = 0;
+      this.type = Math.floor(burstType * 3) % 3; // 0: peony, 1: ring, 2: willow
+      this.color = color;
+      this.glowIntensity = 1;
+      this.maxAge = this.type === 2 ? 2800 : 2200;
+
+      const count = baseCount * randomRange(0.85, 1.15);
+      const baseSpeed = this.type === 2 ? 0.18 : 0.38;
+      const spread = this.type === 1 ? Math.PI * 2 : Math.PI * (this.type === 2 ? 1.2 : 1.0);
+
+      for (let i = 0; i < count; i++) {
+        const angle = randomRange(0, spread);
+        const speed = baseSpeed + randomRange(0, baseSpeed * 0.45);
+        const vx = Math.cos(angle) * speed;
+        const vy = Math.sin(angle) * speed;
+        const size = this.type === 2 ? 1.8 + randomRange(0, 1.6) : 2 + randomRange(0, 3);
+        const lifespan = this.type === 2 ? 1400 + randomRange(0, 1600) : 900 + randomRange(0, 1400);
+
+        const p = new Particle(x, y, vx, vy, color, size, lifespan);
+        if (this.type === 2) p.type = 'willow';
+        this.particles.push(p);
+      }
+    }
+
+    update(dt) {
+      this.time += dt;
+      this.particles.forEach(p => p.update(dt));
+      this.particles = this.particles.filter(p => p.age < p.lifespan);
+
+      this.glowIntensity = Math.max(0, 1 - this.time / 400);
+      return this.time >= this.maxAge;
+    }
+
+    draw(ctx) {
+      // Draw particles
+      this.particles.forEach(p => p.draw(ctx));
+
+      // Draw explosion bloom
+      if (this.glowIntensity > 0) {
+        const radius = 25 + this.glowIntensity * 70;
+        const gradient = ctx.createRadialGradient(this.x, this.y, 4, this.x, this.y, radius);
+        gradient.addColorStop(0, `${this.color}80`);
+        gradient.addColorStop(1, `${this.color}00`);
+        ctx.globalAlpha = this.glowIntensity * 0.65;
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, radius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.globalAlpha = 1;
+      }
+    }
+  }
+
+  class Rocket {
+    constructor() {
+      this.x = randomRange(canvas.width * 0.2, canvas.width * 0.8);
+      this.y = canvas.height * 0.96;
+      this.targetY = canvas.height * 0.1 + randomRange(0, canvas.height * 0.6);
+      this.vy = (this.targetY - this.y) / randomRange(1100, 2200);
+      this.vx = (randomRange(0, 1) - 0.5) * 0.1;
+      this.color = COLORS[randomInt(0, COLORS.length - 1)];
+      this.trail = [];
+      this.age = 0;
+      this.explodeTime = randomRange(1200, 2000);
+      this.ascentTime = this.explodeTime * 0.68;
+    }
+
+    update(dt) {
+      this.age += dt;
+      this.x += this.vx * dt;
+      this.y += this.vy * dt;
+
+      // Dense trail during ascent
+      if (this.age < this.ascentTime) {
+        const emitCount = Math.floor(dt * 0.06);
+        for (let i = 0; i < emitCount; i++) {
+          const trailX = this.x + (randomRange(0, 1) - 0.5) * 5;
+          const trailY = this.y + (randomRange(0, 1) - 0.5) * 5;
+          const vx = (randomRange(0, 1) - 0.5) * 0.08;
+          const vy = -0.14 - randomRange(0, 0.08);
+          const size = 1.6 + randomRange(0, 1.8);
+          const lifespan = 350 + randomRange(0, 500);
+          this.trail.push(new Particle(trailX, trailY, vx, vy, this.color, size, lifespan));
+        }
+      }
+
+      // Remove expired trail
+      this.trail = this.trail.filter(p => p.age < p.lifespan);
+
+      // Explode when time comes
+      if (this.age >= this.explodeTime) {
+        bursts.push(new Burst(this.x, this.y, 180, this.color, randomRange(0, 1)));
+        return true;
+      }
+      return false;
+    }
+
+    draw(ctx) {
+      // Draw trail
+      this.trail.forEach(p => p.draw(ctx));
+
+      // Rocket body
+      ctx.fillStyle = this.color;
+      ctx.beginPath();
+      ctx.ellipse(this.x, this.y, 3.5, 2.4, Math.PI/4, 0, Math.PI*2);
+      ctx.fill();
+
+      // Exhaust flame
+      if (this.age < this.ascentTime && this.age % 18 < 12) {
+        ctx.fillStyle = `rgba(255, 255, 255, ${0.75 - (this.age / this.ascentTime) * 0.4})`;
+        ctx.beginPath();
+        ctx.ellipse(this.x, this.y + 2.8, 2.2, 1.4, 0, 0, Math.PI*2);
+        ctx.fill();
+      }
+    }
+  }
+
+  // ---------------- MAIN LOOP ----------------
+  function loop(time) {
+    const dt = time - lastTime;
+    lastTime = time;
+    frameCount++;
+
+    // Fade entire canvas
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Background: night sky gradient + stars
+    const skyGradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    skyGradient.addColorStop(0, '#03031a');
+    skyGradient.addColorStop(1, '#000000');
+    ctx.fillStyle = skyGradient;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Faint stars
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.012)';
+    const starCount = Math.floor(canvas.width * canvas.height * 0.00012);
+    for (let i = 0; i < starCount; i++) {
+      ctx.beginPath();
+      ctx.arc(
+        randomRange(0, canvas.width),
+        randomRange(0, canvas.height * 0.65),
+        randomRange(0.5, 1.4),
+        0, Math.PI * 2
+      );
+      ctx.fill();
+    }
+
+    // ---------------- UPDATE STATE ----------------
+    // Spawn new rockets
+    if (time - lastRocketSpawn > randomRange(400, 900) && rockets.length < 8) {
+      rockets.push(new Rocket());
+      lastRocketSpawn = time;
+    }
+
+    // Update rockets
+    for (let i = rockets.length - 1; i >= 0; i--) {
+      if (rockets[i].update(dt)) {
+        rockets.splice(i, 1);
+      }
+    }
+
+    // Update bursts and track for reflections
+    for (let i = bursts.length - 1; i >= 0; i--) {
+      const remove = bursts[i].update(dt);
+      if (remove) {
+        bursts.splice(i, 1);
+      } else {
+        updateReflections(bursts[i].x, bursts[i].y);
+      }
+    }
+
+    // ---------------- DRAW SCENE ----------------
+    // Draw city first (bottom layer)
+    drawCity();
+
+    // Draw fireworks (top layers)
+    rockets.forEach(r => r.draw(ctx));
+    bursts.forEach(b => b.draw(ctx));
+
+    // Safety cap on particle count
+    if (particles.length > MAX_PARTICLES) {
+      particles.length = MAX_PARTICLES;
+    }
+
+    requestAnimationFrame(loop);
+  }
+
+  // ---------------- INIT & RUN ----------------
+  try {
+    resize();
+    initCity();
+
+    // Seed initial rockets and bursts to ensure show is running at t=0
+    for (let i = 0; i < 10; i++) {
+      rockets.push(new Rocket());
+    }
+    for (let i = 0; i < 6; i++) {
+      bursts.push(new Burst(
+        randomRange(0, canvas.width),
+        randomRange(canvas.height * 0.2, canvas.height * 0.7),
+        170, COLORS[randomInt(0, COLORS.length - 1)], randomRange(0, 1)
+      ));
+    }
+
+    lastRocketSpawn = performance.now();
+    requestAnimationFrame(loop);
+
+    // Handle resize
+    window.addEventListener('resize', () => {
+      resize();
+      initCity();
+    });
+  } catch (e) {
+    console.error('Initialization error:', e);
+  }
+})();
+</script>
+</body>
+</html>

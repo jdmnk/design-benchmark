@@ -2,142 +2,180 @@
 <html>
 <head>
 <meta charset="utf-8">
-<style>html,body{margin:0;padding:0;width:100%;height:100%;background:#000;overflow:hidden}</style>
+<style>html,body{margin:0;padding:0;overflow:hidden;background:#000}</style>
 </head>
 <body>
-<svg viewBox="0 0 1280 800" preserveAspectRatio="xMidYMid slice" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 800" preserveAspectRatio="xMidYMid slice" width="100%" height="100%">
   <defs>
+    <!-- Sky gradient -->
     <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#1a1550"/>
-      <stop offset="25%" stop-color="#4a2a6b"/>
-      <stop offset="50%" stop-color="#c24a7a"/>
-      <stop offset="75%" stop-color="#f28a5a"/>
-      <stop offset="100%" stop-color="#ffd27f"/>
+      <stop offset="0%" stop-color="#0b0a2e"/>
+      <stop offset="18%" stop-color="#1a1050"/>
+      <stop offset="35%" stop-color="#4a1942"/>
+      <stop offset="50%" stop-color="#8b2252"/>
+      <stop offset="65%" stop-color="#c74b3a"/>
+      <stop offset="78%" stop-color="#e8832a"/>
+      <stop offset="88%" stop-color="#f2a83e"/>
+      <stop offset="100%" stop-color="#f7c948"/>
     </linearGradient>
+
+    <!-- Sun glow gradient -->
     <radialGradient id="sunGlow" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#fff5c2" stop-opacity="1"/>
-      <stop offset="30%" stop-color="#ffd98a" stop-opacity="0.85"/>
-      <stop offset="60%" stop-color="#ff9a5a" stop-opacity="0.35"/>
-      <stop offset="100%" stop-color="#ff7a5a" stop-opacity="0"/>
+      <stop offset="0%" stop-color="#fff5c0" stop-opacity="0.9"/>
+      <stop offset="25%" stop-color="#ffd56b" stop-opacity="0.5"/>
+      <stop offset="55%" stop-color="#e8832a" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#c74b3a" stop-opacity="0"/>
     </radialGradient>
+
+    <!-- Sun core gradient -->
     <radialGradient id="sunCore" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#ffffff"/>
-      <stop offset="55%" stop-color="#fff0b8"/>
-      <stop offset="100%" stop-color="#ffb86a"/>
+      <stop offset="0%" stop-color="#fffbe6"/>
+      <stop offset="40%" stop-color="#ffe484"/>
+      <stop offset="75%" stop-color="#f7b733"/>
+      <stop offset="100%" stop-color="#e8832a" stop-opacity="0.6"/>
     </radialGradient>
-    <linearGradient id="mountBack" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#6a3a6a"/>
-      <stop offset="100%" stop-color="#3a1f4a"/>
+
+    <!-- Mountain gradients -->
+    <linearGradient id="mtnBack" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3d1a42"/>
+      <stop offset="100%" stop-color="#2a1230"/>
     </linearGradient>
-    <linearGradient id="mountMid" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#3a1a4a"/>
-      <stop offset="100%" stop-color="#1a0a2a"/>
+    <linearGradient id="mtnMid" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#251035"/>
+      <stop offset="100%" stop-color="#180b22"/>
     </linearGradient>
-    <linearGradient id="mountFront" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#1a0a28"/>
-      <stop offset="100%" stop-color="#05020a"/>
+    <linearGradient id="mtnFront" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#150a1e"/>
+      <stop offset="100%" stop-color="#0a0510"/>
     </linearGradient>
-    <linearGradient id="river" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#ffb070"/>
-      <stop offset="40%" stop-color="#d96a8a"/>
-      <stop offset="100%" stop-color="#2a1a3a"/>
-    </linearGradient>
-    <linearGradient id="shimmer" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#fff5c2" stop-opacity="0.9"/>
-      <stop offset="50%" stop-color="#ffd98a" stop-opacity="0.7"/>
-      <stop offset="100%" stop-color="#ff9a5a" stop-opacity="0.2"/>
-    </linearGradient>
-    <linearGradient id="cloudWarm" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#ffd0a8" stop-opacity="0.85"/>
-      <stop offset="100%" stop-color="#e06a7a" stop-opacity="0.45"/>
-    </linearGradient>
+
+    <!-- Ground/foreground gradient -->
     <linearGradient id="ground" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#1a0a28"/>
-      <stop offset="100%" stop-color="#05020a"/>
+      <stop offset="0%" stop-color="#1a0e14"/>
+      <stop offset="100%" stop-color="#0d070a"/>
+    </linearGradient>
+
+    <!-- River gradient -->
+    <linearGradient id="river" x1="0.5" y1="0" x2="0.5" y2="1">
+      <stop offset="0%" stop-color="#c77030"/>
+      <stop offset="20%" stop-color="#a05535"/>
+      <stop offset="50%" stop-color="#5a2a30"/>
+      <stop offset="80%" stop-color="#2a1525"/>
+      <stop offset="100%" stop-color="#1a0e18"/>
+    </linearGradient>
+
+    <!-- River reflection shimmer -->
+    <linearGradient id="shimmer" x1="0.5" y1="0" x2="0.5" y2="1">
+      <stop offset="0%" stop-color="#fff5c0" stop-opacity="0.7"/>
+      <stop offset="15%" stop-color="#ffd56b" stop-opacity="0.5"/>
+      <stop offset="40%" stop-color="#e8a040" stop-opacity="0.35"/>
+      <stop offset="70%" stop-color="#c77030" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#8b4020" stop-opacity="0.05"/>
+    </linearGradient>
+
+    <!-- Cloud gradient -->
+    <linearGradient id="cloudWarm" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#e8832a" stop-opacity="0"/>
+      <stop offset="30%" stop-color="#d4704a" stop-opacity="0.35"/>
+      <stop offset="50%" stop-color="#c7605a" stop-opacity="0.45"/>
+      <stop offset="70%" stop-color="#d4704a" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#e8832a" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="cloudPink" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#c74b6a" stop-opacity="0"/>
+      <stop offset="25%" stop-color="#b84060" stop-opacity="0.3"/>
+      <stop offset="50%" stop-color="#a83858" stop-opacity="0.4"/>
+      <stop offset="75%" stop-color="#b84060" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#c74b6a" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Haze near horizon -->
+    <linearGradient id="haze" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f2a83e" stop-opacity="0"/>
+      <stop offset="60%" stop-color="#f2a83e" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#f7c948" stop-opacity="0.3"/>
     </linearGradient>
   </defs>
 
-  <!-- Sky -->
+  <!-- SKY -->
   <rect x="0" y="0" width="1280" height="800" fill="url(#sky)"/>
 
-  <!-- Horizon haze band -->
-  <rect x="0" y="400" width="1280" height="80" fill="#ffd27f" opacity="0.25"/>
+  <!-- Horizon haze -->
+  <rect x="0" y="300" width="1280" height="180" fill="url(#haze)"/>
 
-  <!-- Clouds -->
-  <g opacity="0.9">
-    <ellipse cx="220" cy="160" rx="180" ry="14" fill="url(#cloudWarm)">
-      <animate attributeName="cx" values="220;260;220" dur="40s" repeatCount="indefinite"/>
-    </ellipse>
-    <ellipse cx="300" cy="180" rx="120" ry="9" fill="#ffb088" opacity="0.6">
-      <animate attributeName="cx" values="300;340;300" dur="40s" repeatCount="indefinite"/>
-    </ellipse>
-    <ellipse cx="900" cy="130" rx="220" ry="16" fill="url(#cloudWarm)">
-      <animate attributeName="cx" values="900;860;900" dur="55s" repeatCount="indefinite"/>
-    </ellipse>
-    <ellipse cx="1050" cy="220" rx="160" ry="11" fill="#ffb088" opacity="0.55">
-      <animate attributeName="cx" values="1050;1010;1050" dur="55s" repeatCount="indefinite"/>
-    </ellipse>
-    <ellipse cx="640" cy="100" rx="260" ry="12" fill="#f28a7a" opacity="0.35">
-      <animate attributeName="cx" values="640;680;640" dur="70s" repeatCount="indefinite"/>
-    </ellipse>
-    <ellipse cx="150" cy="280" rx="140" ry="8" fill="#e06a7a" opacity="0.5">
-      <animate attributeName="cx" values="150;180;150" dur="45s" repeatCount="indefinite"/>
-    </ellipse>
-    <ellipse cx="1150" cy="300" rx="150" ry="9" fill="#e06a7a" opacity="0.45">
-      <animate attributeName="cx" values="1150;1120;1150" dur="50s" repeatCount="indefinite"/>
-    </ellipse>
-  </g>
+  <!-- Sun outer glow -->
+  <circle cx="640" cy="390" r="160" fill="url(#sunGlow)"/>
 
-  <!-- Sun glow (behind mountains) -->
-  <circle cx="640" cy="430" r="260" fill="url(#sunGlow)"/>
-  <circle cx="640" cy="430" r="140" fill="url(#sunGlow)"/>
   <!-- Sun core -->
-  <circle cx="640" cy="430" r="62" fill="url(#sunCore)"/>
+  <circle cx="640" cy="390" r="52" fill="url(#sunCore)"/>
 
-  <!-- Back mountain range -->
-  <path d="M0,470 L120,420 L220,445 L340,380 L460,430 L580,395 L720,420 L860,370 L980,425 L1100,400 L1200,440 L1280,420 L1280,500 L0,500 Z" fill="url(#mountBack)"/>
+  <!-- CLOUDS -->
+  <!-- Cloud 1 - upper left -->
+  <ellipse cx="280" cy="120" rx="180" ry="14" fill="url(#cloudPink)">
+    <animateTransform attributeName="transform" type="translate" values="0,0;30,0;0,0" dur="60s" repeatCount="indefinite"/>
+  </ellipse>
+  <!-- Cloud 2 - upper right -->
+  <ellipse cx="950" cy="90" rx="150" ry="11" fill="url(#cloudPink)">
+    <animateTransform attributeName="transform" type="translate" values="0,0;-25,0;0,0" dur="75s" repeatCount="indefinite"/>
+  </ellipse>
+  <!-- Cloud 3 - mid left warm -->
+  <ellipse cx="180" cy="210" rx="200" ry="16" fill="url(#cloudWarm)">
+    <animateTransform attributeName="transform" type="translate" values="0,0;20,0;0,0" dur="50s" repeatCount="indefinite"/>
+  </ellipse>
+  <!-- Cloud 4 - mid right warm -->
+  <ellipse cx="1050" cy="190" rx="160" ry="13" fill="url(#cloudWarm)">
+    <animateTransform attributeName="transform" type="translate" values="0,0;-20,0;0,0" dur="55s" repeatCount="indefinite"/>
+  </ellipse>
+  <!-- Cloud 5 - wispy center -->
+  <ellipse cx="640" cy="160" rx="120" ry="8" fill="url(#cloudPink)">
+    <animateTransform attributeName="transform" type="translate" values="0,0;15,0;0,0" dur="70s" repeatCount="indefinite"/>
+  </ellipse>
+  <!-- Cloud 6 - small accent -->
+  <ellipse cx="480" cy="250" rx="100" ry="10" fill="url(#cloudWarm)">
+    <animateTransform attributeName="transform" type="translate" values="0,0;18,0;0,0" dur="65s" repeatCount="indefinite"/>
+  </ellipse>
 
-  <!-- Mid mountain range with tallest central peak -->
-  <path d="M0,500 L100,470 L200,485 L320,440 L440,470 L560,420 L640,380 L720,420 L840,455 L960,430 L1080,470 L1200,450 L1280,475 L1280,540 L0,540 Z" fill="url(#mountMid)"/>
+  <!-- BACK MOUNTAIN RANGE (furthest, lightest) -->
+  <path d="M0,480 L80,440 L180,460 L280,410 L380,430 L480,390 L560,420 L620,385 L660,400 L720,380 L780,410 L860,395 L940,430 L1020,405 L1100,440 L1180,420 L1280,450 L1280,520 L0,520 Z" fill="url(#mtnBack)"/>
 
-  <!-- Front mountain range -->
-  <path d="M0,540 L140,510 L260,530 L380,500 L500,525 L620,495 L740,520 L860,505 L1000,530 L1140,510 L1280,535 L1280,580 L0,580 Z" fill="url(#mountFront)"/>
+  <!-- MIDDLE MOUNTAIN RANGE -->
+  <path d="M0,500 L100,470 L200,485 L320,450 L420,465 L520,430 L590,445 L640,395 L690,435 L760,425 L840,455 L940,440 L1040,470 L1140,450 L1280,480 L1280,550 L0,550 Z" fill="url(#mtnMid)"/>
 
-  <!-- Ground/foreground base -->
-  <rect x="0" y="560" width="1280" height="240" fill="url(#ground)"/>
+  <!-- FRONT MOUNTAIN RANGE (closest, darkest) -->
+  <path d="M0,530 L60,520 L160,505 L240,515 L340,490 L440,510 L520,480 L580,500 L640,470 L700,495 L780,485 L860,510 L960,495 L1060,515 L1160,500 L1280,520 L1280,580 L0,580 Z" fill="url(#mtnFront)"/>
 
-  <!-- River (widening toward viewer) -->
-  <path d="M560,560 L720,560 L820,800 L460,800 Z" fill="url(#river)"/>
+  <!-- GROUND / FOREGROUND LAND -->
+  <path d="M0,560 L0,800 L1280,800 L1280,560 L1100,555 L960,565 L800,558 L640,555 L480,560 L320,555 L160,562 Z" fill="url(#ground)"/>
 
-  <!-- River shimmer reflection -->
-  <path d="M625,560 L655,560 L720,800 L560,800 Z" fill="url(#shimmer)" opacity="0.8">
-    <animate attributeName="opacity" values="0.55;0.9;0.55" dur="4s" repeatCount="indefinite"/>
+  <!-- RIVER - widening from mountain base toward viewer -->
+  <path d="M590,555 Q600,580 580,610 Q555,650 520,690 Q470,740 400,800 L880,800 Q810,740 760,690 Q725,650 700,610 Q680,580 690,555 Z" fill="url(#river)"/>
+
+  <!-- River sun reflection shimmer -->
+  <path d="M625,555 Q630,580 620,615 Q608,655 590,700 Q565,745 540,800 L740,800 Q715,745 690,700 Q672,655 660,615 Q650,580 655,555 Z" fill="url(#shimmer)">
+    <animate attributeName="opacity" values="0.6;0.9;0.5;0.85;0.6" dur="4s" repeatCount="indefinite"/>
   </path>
-  <path d="M635,560 L645,560 L680,800 L600,800 Z" fill="#fff5c2" opacity="0.5">
-    <animate attributeName="opacity" values="0.3;0.7;0.3" dur="2.5s" repeatCount="indefinite"/>
-  </path>
 
-  <!-- River shimmer streaks -->
-  <g opacity="0.6">
-    <rect x="620" y="600" width="40" height="2" fill="#fff5c2">
-      <animate attributeName="opacity" values="0.2;0.9;0.2" dur="3s" repeatCount="indefinite"/>
-    </rect>
-    <rect x="600" y="650" width="80" height="3" fill="#ffd98a">
-      <animate attributeName="opacity" values="0.3;0.8;0.3" dur="3.5s" repeatCount="indefinite"/>
-    </rect>
-    <rect x="580" y="710" width="120" height="3" fill="#fff5c2">
-      <animate attributeName="opacity" values="0.2;0.85;0.2" dur="4s" repeatCount="indefinite"/>
-    </rect>
-    <rect x="560" y="760" width="160" height="4" fill="#ffd98a">
-      <animate attributeName="opacity" values="0.3;0.9;0.3" dur="2.8s" repeatCount="indefinite"/>
-    </rect>
-  </g>
+  <!-- Subtle reflection ripples on river -->
+  <line x1="610" y1="600" x2="670" y2="600" stroke="#ffd56b" stroke-opacity="0.2" stroke-width="1.5">
+    <animate attributeName="stroke-opacity" values="0.1;0.3;0.1" dur="3s" repeatCount="indefinite"/>
+  </line>
+  <line x1="590" y1="650" x2="690" y2="650" stroke="#e8a040" stroke-opacity="0.15" stroke-width="1.5">
+    <animate attributeName="stroke-opacity" values="0.15;0.25;0.15" dur="3.5s" repeatCount="indefinite"/>
+  </line>
+  <line x1="560" y1="710" x2="720" y2="710" stroke="#c77030" stroke-opacity="0.12" stroke-width="2">
+    <animate attributeName="stroke-opacity" values="0.08;0.2;0.08" dur="4s" repeatCount="indefinite"/>
+  </line>
+  <line x1="520" y1="760" x2="760" y2="760" stroke="#a05535" stroke-opacity="0.1" stroke-width="2">
+    <animate attributeName="stroke-opacity" values="0.05;0.15;0.05" dur="4.5s" repeatCount="indefinite"/>
+  </line>
 
-  <!-- Subtle sun pulse -->
-  <circle cx="640" cy="430" r="62" fill="url(#sunCore)" opacity="0.4">
-    <animate attributeName="r" values="62;68;62" dur="5s" repeatCount="indefinite"/>
-    <animate attributeName="opacity" values="0.4;0.15;0.4" dur="5s" repeatCount="indefinite"/>
-  </circle>
+  <!-- Riverbank edges - subtle dark lines -->
+  <path d="M590,555 Q600,580 580,610 Q555,650 520,690 Q470,740 400,800" fill="none" stroke="#0a0510" stroke-width="2" stroke-opacity="0.4"/>
+  <path d="M690,555 Q680,580 700,610 Q725,650 760,690 Q810,740 880,800" fill="none" stroke="#0a0510" stroke-width="2" stroke-opacity="0.4"/>
+
+  <!-- Foreground dark silhouette edges for depth -->
+  <path d="M0,620 Q100,610 200,625 Q300,615 400,630 L400,800 L0,800 Z" fill="#0a0510" opacity="0.5"/>
+  <path d="M1280,620 Q1180,610 1080,625 Q980,615 880,630 L880,800 L1280,800 Z" fill="#0a0510" opacity="0.5"/>
 </svg>
 </body>
 </html>

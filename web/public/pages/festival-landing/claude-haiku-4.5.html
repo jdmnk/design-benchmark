@@ -3,10 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EMBERWAVE — Electronic Music Festival 2027</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&family=Orbitron:wght@400;700;900&family=Bebas+Neue&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>EMBERWAVE — Desert Electronic Music Festival 2027</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&family=Righteous&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -15,14 +13,14 @@
         }
 
         body {
-            background: linear-gradient(135deg, #0a0a1a 0%, #1a0a2e 25%, #2d0a3a 50%, #1a0a2e 75%, #0a0a1a 100%);
-            color: #fff;
-            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0815 0%, #1a0a2e 25%, #16213e 50%, #0f3460 75%, #0a0815 100%);
+            color: #f5f5f5;
+            font-family: 'Space Mono', monospace;
             overflow-x: hidden;
-            position: relative;
             min-height: 100vh;
         }
 
+        /* Animated background texture layer */
         body::before {
             content: '';
             position: fixed;
@@ -31,431 +29,411 @@
             width: 100%;
             height: 100%;
             background: 
-                radial-gradient(ellipse 800px 800px at 50% -200px, rgba(255, 100, 50, 0.15) 0%, transparent 60%),
-                radial-gradient(ellipse 600px 300px at 80% 100%, rgba(255, 50, 150, 0.08) 0%, transparent 50%);
+                radial-gradient(circle at 20% 30%, rgba(255, 100, 0, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(0, 255, 200, 0.05) 0%, transparent 50%);
             pointer-events: none;
             z-index: 0;
+            animation: pulse-glow 8s ease-in-out infinite;
         }
 
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        /* Main container */
         .container {
             position: relative;
             z-index: 1;
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 2rem 1.5rem;
         }
 
-        /* ===== HEADER AREA ===== */
-        header {
+        /* Hero section */
+        .hero {
             position: relative;
-            padding-top: 40px;
-            padding-bottom: 20px;
+            z-index: 2;
+            min-height: 900px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             text-align: center;
         }
 
-        /* EMBERWAVE Title */
-        h1 {
+        /* Decorative cosmic particles SVG */
+        .cosmic-bg {
+            position: absolute;
+            top: -200px;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.4;
+        }
+
+        /* EMBERWAVE title */
+        .emberwave-title {
             font-family: 'Orbitron', sans-serif;
-            font-size: clamp(3.5rem, 12vw, 8rem);
+            font-size: 18vw;
             font-weight: 900;
-            letter-spacing: 0.15em;
-            margin: 20px 0 0 0;
-            position: relative;
+            letter-spacing: -0.05em;
             line-height: 1;
-            
-            background: linear-gradient(90deg, 
-                #ff6b35 0%, 
-                #ff3a7f 35%, 
-                #00d4ff 65%, 
-                #ffaa00 100%);
+            margin: 0;
+            background: linear-gradient(
+                90deg,
+                #ff6b35 0%,
+                #ff4444 25%,
+                #ff00ff 50%,
+                #00ffff 75%,
+                #ff6b35 100%
+            );
+            background-size: 200% 200%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            
+            filter: drop-shadow(0 0 30px rgba(255, 107, 53, 0.6));
+            animation: gradient-shift 6s ease infinite, float-text 4s ease-in-out infinite;
             text-shadow: 
-                0 0 60px rgba(255, 107, 53, 0.5),
-                0 0 40px rgba(255, 58, 127, 0.3),
-                0 0 30px rgba(0, 212, 255, 0.2);
-            
-            animation: glow-pulse 4s ease-in-out infinite;
+                0 0 20px rgba(255, 107, 53, 0.3),
+                0 0 40px rgba(0, 255, 255, 0.2);
+        }
+
+        @keyframes gradient-shift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes float-text {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* Subtitle — date and location */
+        .event-meta {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.1rem;
+            letter-spacing: 2px;
+            margin-top: 1.5rem;
+            color: #00ffcc;
+            text-transform: uppercase;
+            animation: glow-pulse 3s ease-in-out infinite;
         }
 
         @keyframes glow-pulse {
-            0%, 100% { 
-                text-shadow: 
-                    0 0 60px rgba(255, 107, 53, 0.5),
-                    0 0 40px rgba(255, 58, 127, 0.3),
-                    0 0 30px rgba(0, 212, 255, 0.2);
-            }
-            50% { 
-                text-shadow: 
-                    0 0 80px rgba(255, 107, 53, 0.8),
-                    0 0 50px rgba(255, 58, 127, 0.5),
-                    0 0 40px rgba(0, 212, 255, 0.4);
-            }
+            0%, 100% { text-shadow: 0 0 10px rgba(0, 255, 204, 0.5); }
+            50% { text-shadow: 0 0 30px rgba(0, 255, 204, 1); }
         }
 
-        /* Decorative line */
-        .divider {
-            width: 100px;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, #ff3a7f, #00d4ff, transparent);
-            margin: 16px auto;
-            box-shadow: 0 0 20px rgba(255, 58, 127, 0.6);
-        }
-
-        /* Date and Location */
-        .meta {
-            font-size: 0.95rem;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: #00d4ff;
-            margin: 20px 0 10px 0;
-            font-weight: 600;
-            font-family: 'Space Grotesk', sans-serif;
-            text-shadow: 0 0 10px rgba(0, 212, 255, 0.4);
-        }
-
-        .meta strong {
-            color: #ffaa00;
-        }
-
-        /* ===== VISUAL HERO ELEMENT ===== */
-        .hero-visual {
-            position: relative;
-            height: 180px;
-            margin: 30px 0;
+        /* Lineup section */
+        .lineup-section {
+            margin-top: 4rem;
             display: flex;
-            align-items: center;
+            flex-wrap: wrap;
             justify-content: center;
-            overflow: hidden;
-        }
-
-        .canyon {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: flex-end;
-            justify-content: center;
-        }
-
-        svg {
-            width: 100%;
-            height: 100%;
-            filter: drop-shadow(0 0 30px rgba(255, 107, 53, 0.4));
-        }
-
-        /* Glow orbs */
-        .orb {
-            position: absolute;
-            border-radius: 50%;
-            animation: float 6s ease-in-out infinite;
-        }
-
-        .orb-1 {
-            width: 120px;
-            height: 120px;
-            left: 10%;
-            top: 20px;
-            background: radial-gradient(circle, rgba(255, 107, 53, 0.4) 0%, transparent 70%);
-            box-shadow: 0 0 60px rgba(255, 107, 53, 0.6);
-            animation-delay: 0s;
-        }
-
-        .orb-2 {
-            width: 90px;
-            height: 90px;
-            right: 15%;
-            top: 40px;
-            background: radial-gradient(circle, rgba(255, 58, 127, 0.3) 0%, transparent 70%);
-            box-shadow: 0 0 50px rgba(255, 58, 127, 0.5);
-            animation-delay: 1s;
-        }
-
-        .orb-3 {
-            width: 80px;
-            height: 80px;
-            left: 50%;
-            transform: translateX(-50%);
-            top: 60px;
-            background: radial-gradient(circle, rgba(0, 212, 255, 0.3) 0%, transparent 70%);
-            box-shadow: 0 0 40px rgba(0, 212, 255, 0.4);
-            animation-delay: 2s;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-30px); }
-        }
-
-        /* ===== CTA BUTTON ===== */
-        .cta-section {
-            text-align: center;
-            margin: 30px 0 40px 0;
-        }
-
-        .btn-tickets {
-            display: inline-block;
-            padding: 16px 50px;
-            font-size: 1.1rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.12em;
-            font-family: 'Space Grotesk', sans-serif;
-            background: linear-gradient(135deg, #ff3a7f, #ff6b35);
-            color: #fff;
-            border: 2px solid #ff3a7f;
-            border-radius: 2px;
-            cursor: pointer;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 0 30px rgba(255, 58, 127, 0.5), inset 0 0 20px rgba(255, 255, 255, 0.1);
-        }
-
-        .btn-tickets::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            animation: shimmer 3s infinite;
-        }
-
-        @keyframes shimmer {
-            0% { left: -100%; }
-            100% { left: 100%; }
-        }
-
-        .btn-tickets:hover {
-            box-shadow: 0 0 50px rgba(255, 58, 127, 0.8), inset 0 0 30px rgba(255, 255, 255, 0.2);
-            transform: scale(1.05);
-        }
-
-        /* ===== LINEUP SECTION ===== */
-        .lineup-container {
-            margin-top: 50px;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 107, 53, 0.3);
-            border-radius: 4px;
-            padding: 40px 30px;
-            backdrop-filter: blur(10px);
-        }
-
-        .lineup-title {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 0.15em;
-            color: #00d4ff;
-            margin-bottom: 24px;
-            text-align: center;
-            text-shadow: 0 0 10px rgba(0, 212, 255, 0.4);
-        }
-
-        .lineup {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 20px;
-            margin-bottom: 24px;
+            gap: 1.5rem;
+            align-items: baseline;
         }
 
         .artist {
-            text-align: center;
-            padding: 16px 12px;
-            border-radius: 2px;
+            font-family: 'Righteous', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
             transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
         }
 
-        .artist::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(255, 107, 53, 0.1), rgba(255, 58, 127, 0.1));
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .artist:hover::before {
-            opacity: 1;
-        }
-
-        .artist-name {
-            position: relative;
-            z-index: 1;
+        /* Headliner class */
+        .artist.headliner {
+            font-size: 2.2rem;
             font-weight: 700;
-            font-family: 'Space Grotesk', sans-serif;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
+            color: #ff00ff;
+            text-shadow: 
+                0 0 20px rgba(255, 0, 255, 0.8),
+                0 0 40px rgba(255, 107, 53, 0.5);
+            animation: pulse-text 2s ease-in-out infinite;
+            margin: 0 1rem;
         }
 
-        /* Headliner styling */
-        .artist.headliner .artist-name {
-            font-size: 1.3rem;
-            background: linear-gradient(90deg, #ffaa00, #ff6b35);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-shadow: 0 0 30px rgba(255, 170, 0, 0.5);
-        }
-
-        /* Secondary artists */
-        .artist:not(.headliner) .artist-name {
-            font-size: 0.95rem;
-            color: #00d4ff;
-        }
-
-        .artist:not(.headliner):hover .artist-name {
-            color: #ff3a7f;
-            text-shadow: 0 0 20px rgba(255, 58, 127, 0.6);
-        }
-
-        /* ===== PHASE 2 BADGE ===== */
-        .phase-badge {
-            display: inline-block;
-            padding: 8px 16px;
-            background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(255, 58, 127, 0.2));
-            border: 1px solid #00d4ff;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: #00d4ff;
-            font-weight: 600;
-            font-family: 'Space Grotesk', sans-serif;
-            text-align: center;
-            box-shadow: 0 0 15px rgba(0, 212, 255, 0.3), inset 0 0 10px rgba(0, 212, 255, 0.1);
-            animation: pulse-badge 2s ease-in-out infinite;
-        }
-
-        @keyframes pulse-badge {
+        @keyframes pulse-text {
             0%, 100% { 
-                box-shadow: 0 0 15px rgba(0, 212, 255, 0.3), inset 0 0 10px rgba(0, 212, 255, 0.1);
+                text-shadow: 
+                    0 0 20px rgba(255, 0, 255, 0.8),
+                    0 0 40px rgba(255, 107, 53, 0.5);
             }
             50% { 
-                box-shadow: 0 0 25px rgba(0, 212, 255, 0.6), inset 0 0 15px rgba(0, 212, 255, 0.2);
+                text-shadow: 
+                    0 0 30px rgba(255, 0, 255, 1),
+                    0 0 60px rgba(0, 255, 255, 0.8);
             }
         }
 
-        /* ===== RESPONSIVE ===== */
+        /* Supporting artists */
+        .artist.supporting {
+            font-size: 1.1rem;
+            color: #aaaaff;
+            text-shadow: 0 0 10px rgba(170, 170, 255, 0.5);
+        }
+
+        .artist.supporting::before {
+            content: '◊ ';
+            color: #ff6b35;
+            margin-right: 0.5rem;
+        }
+
+        .artist.supporting::after {
+            content: ' ◊';
+            color: #ff6b35;
+            margin-left: 0.5rem;
+        }
+
+        /* Phase 2 Badge/Ticker */
+        .phase2-badge {
+            margin-top: 3rem;
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            border: 2px solid #00ffcc;
+            background: rgba(0, 255, 204, 0.1);
+            color: #00ffcc;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border-radius: 4px;
+            position: relative;
+            animation: border-glow 2s ease-in-out infinite;
+            box-shadow: inset 0 0 10px rgba(0, 255, 204, 0.2);
+        }
+
+        @keyframes border-glow {
+            0%, 100% { 
+                border-color: #00ffcc;
+                box-shadow: inset 0 0 10px rgba(0, 255, 204, 0.2), 0 0 15px rgba(0, 255, 204, 0.3);
+            }
+            50% { 
+                border-color: #00ffff;
+                box-shadow: inset 0 0 15px rgba(0, 255, 255, 0.3), 0 0 25px rgba(0, 255, 255, 0.5);
+            }
+        }
+
+        /* CTA Button */
+        .cta-button {
+            margin-top: 2.5rem;
+            display: inline-block;
+            padding: 1rem 3rem;
+            background: linear-gradient(90deg, #ff6b35 0%, #ff00ff 50%, #ff6b35 100%);
+            background-size: 200% 200%;
+            color: #000;
+            font-family: 'Righteous', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            border-radius: 2px;
+            box-shadow: 0 0 30px rgba(255, 107, 53, 0.6), 0 0 60px rgba(255, 0, 255, 0.4);
+            transition: all 0.3s ease;
+            animation: button-glow 2s ease-in-out infinite;
+        }
+
+        @keyframes button-glow {
+            0%, 100% { 
+                box-shadow: 0 0 30px rgba(255, 107, 53, 0.6), 0 0 60px rgba(255, 0, 255, 0.4);
+            }
+            50% { 
+                box-shadow: 0 0 40px rgba(255, 107, 53, 1), 0 0 80px rgba(255, 0, 255, 0.8);
+            }
+        }
+
+        .cta-button:hover {
+            background-position: -200% center;
+            transform: scale(1.05);
+            box-shadow: 0 0 50px rgba(255, 107, 53, 1), 0 0 100px rgba(255, 0, 255, 1);
+        }
+
+        /* Geometric divider */
+        .divider {
+            margin: 2.5rem auto;
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #ff6b35, #00ffcc, transparent);
+            position: relative;
+        }
+
+        /* SVG Cosmic elements */
+        .cosmic-element {
+            position: absolute;
+            opacity: 0.3;
+            animation: float-z 6s ease-in-out infinite;
+        }
+
+        @keyframes float-z {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(180deg); }
+        }
+
+        /* Rock/canyon formations (CSS shapes) */
+        .canyon-rock {
+            position: absolute;
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.2), rgba(255, 0, 255, 0.1));
+            opacity: 0.15;
+            z-index: 0;
+        }
+
+        .rock-1 {
+            width: 250px;
+            height: 300px;
+            top: 10%;
+            left: -100px;
+            clip-path: polygon(20% 0%, 100% 0%, 90% 100%, 0% 100%);
+            animation: sway 8s ease-in-out infinite;
+        }
+
+        .rock-2 {
+            width: 300px;
+            height: 250px;
+            top: 50%;
+            right: -120px;
+            clip-path: polygon(0% 20%, 100% 0%, 100% 100%, 0% 80%);
+            animation: sway-reverse 10s ease-in-out infinite;
+        }
+
+        @keyframes sway {
+            0%, 100% { transform: translateX(0px); }
+            50% { transform: translateX(20px); }
+        }
+
+        @keyframes sway-reverse {
+            0%, 100% { transform: translateX(0px); }
+            50% { transform: translateX(-20px); }
+        }
+
+        /* Responsive */
         @media (max-width: 768px) {
-            h1 {
-                font-size: clamp(2.5rem, 10vw, 4rem);
+            .emberwave-title {
+                font-size: 12vw;
             }
 
-            .lineup {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 16px;
+            .event-meta {
+                font-size: 0.9rem;
             }
 
-            .lineup-container {
-                padding: 30px 20px;
+            .lineup-section {
+                flex-direction: column;
+                gap: 1rem;
             }
 
-            header {
-                padding-top: 30px;
-                padding-bottom: 15px;
+            .artist.headliner {
+                font-size: 1.8rem;
+                margin: 0.5rem 0;
+            }
+
+            .artist.supporting {
+                font-size: 0.9rem;
+            }
+
+            .cta-button {
+                padding: 0.8rem 2rem;
+                font-size: 1rem;
+            }
+
+            .hero {
+                min-height: 600px;
             }
         }
 
-        @media (max-width: 480px) {
-            h1 {
-                font-size: 2.2rem;
-            }
-
-            .meta {
-                font-size: 0.8rem;
-            }
-
-            .lineup {
-                grid-template-columns: 1fr;
-                gap: 12px;
-            }
-
-            .btn-tickets {
-                padding: 14px 35px;
-                font-size: 0.95rem;
-            }
-
-            .hero-visual {
-                height: 120px;
-                margin: 20px 0;
-            }
-
-            .lineup-container {
-                padding: 25px 16px;
-                margin-top: 30px;
-            }
+        /* Text rendering */
+        .lineup-section {
+            perspective: 1000px;
         }
     </style>
 </head>
 <body>
+    <!-- Decorative canyon rocks -->
+    <div class="canyon-rock rock-1"></div>
+    <div class="canyon-rock rock-2"></div>
+
+    <!-- SVG Cosmic Background -->
+    <svg class="cosmic-bg" viewBox="0 0 1400 800" preserveAspectRatio="xMidYMid slice">
+        <defs>
+            <filter id="glow">
+                <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                <feMerge>
+                    <feMergeNode in="coloredBlur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+            </filter>
+            <radialGradient id="cosmic" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" style="stop-color:#ff6b35;stop-opacity:0.3" />
+                <stop offset="100%" style="stop-color:#0a0815;stop-opacity:0" />
+            </radialGradient>
+        </defs>
+        <!-- Cosmic particles -->
+        <circle cx="100" cy="150" r="2" fill="#00ffff" opacity="0.6" filter="url(#glow)">
+            <animate attributeName="r" values="2;4;2" dur="3s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.6;1;0.6" dur="3s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="250" cy="100" r="1.5" fill="#ff00ff" opacity="0.5" filter="url(#glow)">
+            <animate attributeName="r" values="1.5;3.5;1.5" dur="4s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.5;0.8;0.5" dur="4s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="1200" cy="200" r="1.8" fill="#00ffcc" opacity="0.4" filter="url(#glow)">
+            <animate attributeName="r" values="1.8;3.8;1.8" dur="5s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.4;0.9;0.4" dur="5s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="350" cy="400" r="1.2" fill="#ff6b35" opacity="0.5" filter="url(#glow)">
+            <animate attributeName="r" values="1.2;2.8;1.2" dur="3.5s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="1100" cy="500" r="2.2" fill="#00ffff" opacity="0.4" filter="url(#glow)">
+            <animate attributeName="r" values="2.2;4.2;2.2" dur="4.5s" repeatCount="indefinite"/>
+        </circle>
+        <!-- Sound wave lines -->
+        <path d="M 700 0 Q 750 100, 700 200" stroke="#ff00ff" stroke-width="1" fill="none" opacity="0.2" stroke-dasharray="5,5">
+            <animate attributeName="stroke-dashoffset" values="0;10" dur="2s" repeatCount="indefinite"/>
+        </path>
+        <path d="M 500 0 Q 550 150, 500 300" stroke="#00ffcc" stroke-width="1" fill="none" opacity="0.15" stroke-dasharray="5,5">
+            <animate attributeName="stroke-dashoffset" values="0;-10" dur="2s" repeatCount="indefinite"/>
+        </path>
+    </svg>
+
+    <!-- Main Container -->
     <div class="container">
-        <header>
-            <h1>EMBERWAVE</h1>
+        <!-- Hero Section -->
+        <div class="hero">
+            <!-- EMBERWAVE Title -->
+            <h1 class="emberwave-title">EMBERWAVE</h1>
+
+            <!-- Event Meta (Date & Location) -->
+            <div class="event-meta">
+                June 18–20, 2027 · Ash Canyon, Nevada
+            </div>
+
             <div class="divider"></div>
-            <div class="meta">JUNE 18–20, 2027 · <strong>ASH CANYON, NEVADA</strong></div>
-        </header>
 
-        <div class="hero-visual">
-            <div class="orb orb-1"></div>
-            <div class="orb orb-2"></div>
-            <div class="orb orb-3"></div>
-            <div class="canyon">
-                <svg viewBox="0 0 400 200" preserveAspectRatio="xMidYMid slice">
-                    <!-- Desert canyon silhouette -->
-                    <defs>
-                        <linearGradient id="canyonGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%" style="stop-color:#ff3a7f;stop-opacity:0.1" />
-                            <stop offset="50%" style="stop-color:#ff6b35;stop-opacity:0.15" />
-                            <stop offset="100%" style="stop-color:#1a0a2e;stop-opacity:0.3" />
-                        </linearGradient>
-                    </defs>
-                    <polygon points="0,200 60,80 120,120 200,50 280,100 340,70 400,150 400,200" fill="url(#canyonGradient)" stroke="none"/>
-                    <polygon points="0,200 40,100 70,140 140,80 200,110 270,90 320,130 365,100 400,200" fill="rgba(255,107,53,0.08)" stroke="rgba(255,107,53,0.25)" stroke-width="1.5"/>
-                </svg>
+            <!-- Lineup Section -->
+            <div class="lineup-section">
+                <div class="artist headliner">NOVA CULT</div>
+                <div class="artist supporting">Velvet Static</div>
+                <div class="artist headliner">MOONBURN</div>
+                <div class="artist supporting">Dax Riviera</div>
+                <div class="artist headliner">Cinder & Ash</div>
+                <div class="artist supporting">The Glass Dunes</div>
             </div>
-        </div>
 
-        <div class="cta-section">
-            <button class="btn-tickets">Get Tickets</button>
-        </div>
+            <!-- Phase 2 Badge -->
+            <div class="phase2-badge">
+                ⚡ Phase 2 Lineup — March 2027
+            </div>
 
-        <div class="lineup-container">
-            <div class="lineup-title">Lineup</div>
-            <div class="lineup">
-                <div class="artist headliner">
-                    <div class="artist-name">NOVA CULT</div>
-                </div>
-                <div class="artist headliner">
-                    <div class="artist-name">Velvet Static</div>
-                </div>
-                <div class="artist headliner">
-                    <div class="artist-name">MOONBURN</div>
-                </div>
-                <div class="artist">
-                    <div class="artist-name">Dax Riviera</div>
-                </div>
-                <div class="artist">
-                    <div class="artist-name">Cinder & Ash</div>
-                </div>
-                <div class="artist">
-                    <div class="artist-name">The Glass Dunes</div>
-                </div>
-            </div>
-            <div style="text-align: center;">
-                <span class="phase-badge">Phase 2 Lineup — March 2027</span>
-            </div>
+            <!-- CTA Button -->
+            <button class="cta-button">Get Tickets</button>
         </div>
     </div>
+
 </body>
 </html>

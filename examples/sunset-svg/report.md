@@ -24,14 +24,14 @@ A single inline-SVG sunset scene: sun setting behind a mountain range, with clou
 
 | Model | ID | Provider | Status | Time | Tokens | Note |
 |-------|----|----------|--------|------|--------|------|
-| GLM 5.2 | `z-ai/glm-5.2` | openrouter | ✅ rendered | 161.9s | 9190 |  |
-| GLM 5.1 | `z-ai/glm-5.1` | openrouter | ✅ rendered | 229.7s | 14053 |  |
-| GPT-5.4 mini | `openai/gpt-5.4-mini` | openrouter | ✅ rendered | 20.0s | 3175 |  |
-| Claude Haiku 4.5 | `anthropic/claude-haiku-4.5` | openrouter | ✅ rendered | 16.8s | 3213 |  |
-| Qwen3.7 Plus | `qwen/qwen3.7-plus` | openrouter | ✅ rendered | 61.4s | 3761 |  |
-| Gemini 3.1 Flash-Lite | `google/gemini-3.1-flash-lite` | openrouter | ✅ rendered | 5.6s | 2006 |  |
-| DeepSeek V4 Pro | `deepseek/deepseek-v4-pro` | openrouter | ✅ rendered | 181.2s | 9040 |  |
-| MiMo v2.5 | `xiaomi/mimo-v2.5` | openrouter | ✅ rendered | 169.9s | 7146 |  |
-| MiniMax M3 | `minimax/minimax-m3` | openrouter | ✅ rendered | 113.7s | 12829 |  |
+| GLM 5.2 | `z-ai/glm-5.2` | openrouter | ✅ rendered | 68.5s | 5188 |  |
+| Grok 4.3 | `x-ai/grok-4.3` | openrouter | ✅ rendered | 15.1s | 2568 |  |
+| GPT-5.4 mini | `openai/gpt-5.4-mini` | openrouter | ✅ rendered | 21.1s | 3756 |  |
+| Claude Haiku 4.5 | `anthropic/claude-haiku-4.5` | openrouter | ✅ rendered | 31.0s | 5789 |  |
+| Qwen3.7 Plus | `qwen/qwen3.7-plus` | openrouter | ✅ rendered | 84.9s | 5071 |  |
+| Gemini 3.1 Flash-Lite | `google/gemini-3.1-flash-lite` | openrouter | ✅ rendered | 5.2s | 2028 |  |
+| DeepSeek V4 Pro | `deepseek/deepseek-v4-pro` | openrouter | ✅ rendered | 396.4s | 3183 |  |
+| Kimi K2.6 | `moonshotai/kimi-k2.6` | openrouter | ✅ rendered | 21.4s | 4061 |  |
+| Mistral Small 4 | `mistralai/mistral-small-2603` | openrouter | ✅ rendered | 32.8s | 7090 |  |
 
 Per-model artifacts live in `models/<slug>/` (`raw.txt`, `output.html`, `screenshot.png`, `result.json`).

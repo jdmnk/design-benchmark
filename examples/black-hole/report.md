@@ -2,7 +2,7 @@
 
 Realistic supermassive black hole ('Gargantua' from Interstellar) in three.js/WebGL. Prescriptive composition so outputs are directly comparable. Deterministic captured frame.
 
-**Models:** 9 · **Rendered:** 6/9
+**Models:** 9 · **Rendered:** 8/9
 
 ## Prompt
 
@@ -25,14 +25,14 @@ Realistic supermassive black hole ('Gargantua' from Interstellar) in three.js/We
 
 | Model | ID | Provider | Status | Time | Tokens | Note |
 |-------|----|----------|--------|------|--------|------|
-| GLM 5.2 | `z-ai/glm-5.2` | openrouter | ✅ rendered | 210.9s | 13821 |  |
-| GLM 5.1 | `z-ai/glm-5.1` | openrouter | ❌ error | 467.4s | — | Unexpected end of JSON input |
-| GPT-5.4 mini | `openai/gpt-5.4-mini` | openrouter | ✅ rendered | 26.3s | 4935 |  |
-| Claude Haiku 4.5 | `anthropic/claude-haiku-4.5` | openrouter | ✅ rendered | 16.7s | 3701 |  |
-| Qwen3.7 Plus | `qwen/qwen3.7-plus` | openrouter | ✅ rendered | 268.9s | 15458 |  |
-| Gemini 3.1 Flash-Lite | `google/gemini-3.1-flash-lite` | openrouter | ✅ rendered | 6.3s | 2409 |  |
-| DeepSeek V4 Pro | `deepseek/deepseek-v4-pro` | openrouter | ✅ rendered | 825.1s | 22265 |  |
-| MiMo v2.5 | `xiaomi/mimo-v2.5` | openrouter | ❌ error | 591.7s | — | Provider stream error mid-generation (finish_reason=error, 0 chars received) |
-| MiniMax M3 | `minimax/minimax-m3` | openrouter | ❌ error | 653.3s | — | Empty completion (hit token limit before producing output). Raw: {"id":"gen-1782 |
+| GLM 5.2 | `z-ai/glm-5.2` | openrouter | ✅ rendered | 186.7s | 9902 |  |
+| Grok 4.3 | `x-ai/grok-4.3` | openrouter | ✅ rendered | 31.3s | 4041 |  |
+| GPT-5.4 mini | `openai/gpt-5.4-mini` | openrouter | ✅ rendered | 39.3s | 4563 |  |
+| Claude Haiku 4.5 | `anthropic/claude-haiku-4.5` | openrouter | ✅ rendered | 35.0s | 7753 |  |
+| Qwen3.7 Plus | `qwen/qwen3.7-plus` | openrouter | ✅ rendered | 94.1s | 5742 |  |
+| Gemini 3.1 Flash-Lite | `google/gemini-3.1-flash-lite` | openrouter | ✅ rendered | 5.2s | 2217 |  |
+| DeepSeek V4 Pro | `deepseek/deepseek-v4-pro` | openrouter | ✅ rendered | 406.1s | 22087 |  |
+| Kimi K2.6 | `moonshotai/kimi-k2.6` | openrouter | ✅ rendered | 74.8s | 4326 |  |
+| Mistral Small 4 | `mistralai/mistral-small-2603` | openrouter | ⬛ blank | 106.0s | 8060 | JS error: Unexpected token '*' |
 
 Per-model artifacts live in `models/<slug>/` (`raw.txt`, `output.html`, `screenshot.png`, `result.json`).

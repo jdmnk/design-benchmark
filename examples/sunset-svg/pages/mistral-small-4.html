@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Serene Sunset Landscape</title>
+    <style>
+        body { margin: 0; overflow: hidden; }
+    </style>
+</head>
+<body>
+    <svg viewBox="0 0 1280 800" preserveAspectRatio="xMidYMid slice" width="100%" height="100%">
+        <defs>
+            <!-- Sky gradient: deep blue/indigo at top → magenta/pink → warm orange/gold at horizon -->
+            <linearGradient id="skyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#0a0e2a"/>
+                <stop offset="25%" stop-color="#1e153d"/>
+                <stop offset="45%" stop-color="#4a245a"/>
+                <stop offset="60%" stop-color="#8c3a3a"/>
+                <stop offset="75%" stop-color="#d15b22"/>
+                <stop offset="90%" stop-color="#f78a25"/>
+                <stop offset="100%" stop-color="#ffb347"/>
+            </linearGradient>
+
+            <!-- Sun glow gradient -->
+            <radialGradient id="sunGlow" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+                <stop offset="0%" stop-color="#fff9c4" stop-opacity="1"/>
+                <stop offset="65%" stop-color="#ffc107" stop-opacity="0.9"/>
+                <stop offset="100%" stop-color="#ff9800" stop-opacity="0"/>
+            </radialGradient>
+
+            <!-- Mountain shadow gradients (darker toward foreground) -->
+            <linearGradient id="mountainGradient1" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#1a103d"/>
+                <stop offset="100%" stop-color="#0a051a"/>
+            </linearGradient>
+            <linearGradient id="mountainGradient2" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#2a152d"/>
+                <stop offset="100%" stop-color="#12081a"/>
+            </linearGradient>
+            <linearGradient id="mountainGradient3" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#3a1d2d"/>
+                <stop offset="100%" stop-color="#1a0a1a"/>
+            </linearGradient>
+
+            <!-- River base -->
+            <linearGradient id="riverGradient" x1="50%" y1="0%" x2="50%" y2="100%">
+                <stop offset="0%" stop-color="#1a237e" stop-opacity="0.85"/>
+                <stop offset="50%" stop-color="#1565c0" stop-opacity="0.7"/>
+                <stop offset="100%" stop-color="#0d47a1" stop-opacity="0.85"/>
+            </linearGradient>
+
+            <!-- River reflection shimmer -->
+            <linearGradient id="riverReflection" x1="50%" y1="0%" x2="50%" y2="100%">
+                <stop offset="0%" stop-color="#ffeb3b" stop-opacity="0.7"/>
+                <stop offset="50%" stop-color="#ffc107" stop-opacity="0.5"/>
+                <stop offset="100%" stop-color="#ff9800" stop-opacity="0.3"/>
+            </linearGradient>
+
+            <!-- Cloud soft fill -->
+            <radialGradient id="cloudGradient" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/>
+                <stop offset="100%" stop-color="#ffffff" stop-opacity="0.2"/>
+            </radialGradient>
+        </defs>
+
+        <!-- SKY – must remain the very first element so the page never renders blank -->
+        <rect x="0" y="0" width="1280" height="800" fill="url(#skyGradient)"/>
+
+        <!-- SUN: low on horizon, centered, glowing -->
+        <circle cx="640" cy="430" r="80" fill="url(#sunGlow)" opacity="0.9">
+            <animate attributeName="r" values="80;85;80" dur="8s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.9;1;0.9" dur="8s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="640" cy="430" r="40" fill="#ffc107" opacity="0.8">
+            <animate attributeName="r" values="40;42;40" dur="5s" repeatCount="indefinite"/>
+        </circle>
+
+        <!-- MOUNTAINS: three layered ridgelines, tallest peak at center -->
+        <!-- Background range -->
+        <path d="M0,440 L150,350 L250,380 L350,340 L450,370 L550,320 L650,350 L750,310 L850,340 L950,300 L1050,330 L1280,440 Z" fill="url(#mountainGradient1)"/>
+        <!-- Middle range -->
+        <path d="M0,440 L200,370 L300,400 L400,360 L500,390 L600,350 L700,380 L800,340 L900,370 L1000,330 L1100,360 L1280,440 Z" fill="url(#mountainGradient2)"/>
+        <!-- Foreground range with tallest peak -->
+        <path d="M0,440 L250,390 L350,420 L450,380 L550,410 L640,260 L730,360 L830,330 L930,360 L1030,320 L1130,350 L1280,440 Z" fill="url(#mountainGradient3)"/>
+
+        <!-- CLOUDS: soft, warm-tinted, slowly drifting -->
+        <ellipse cx="200" cy="180" rx="80" ry="35" fill="url(#cloudGradient)" opacity="0.8">
+            <animate attributeName="cx" values="200;240;200" dur="22s" repeatCount="indefinite"/>
+        </ellipse>
+        <ellipse cx="900" cy="160" rx="65" ry="30" fill="url(#cloudGradient)" opacity="0.75">
+            <animate attributeName="cx" values="900;940;900" dur="26s" repeatCount="indefinite"/>
+        </ellipse>
+        <ellipse cx="1150" cy="200" rx="90" ry="40" fill="url(#cloudGradient)" opacity="0.7">
+            <animate attributeName="cx" values="1150;1190;1150" dur="32s" repeatCount="indefinite"/>
+        </ellipse>
+
+        <!-- RIVER: widens as it flows toward viewer, reflecting sun -->
+        <path d="M580,650 Q640,600 700,650 Q760,700 820,650 Q880,600 940,650 T1060,650 L1060,800 L580,800 Z" fill="url(#riverGradient)"/>
+
+        <!-- RIVER REFLECTION shimmer down center -->
+        <path d="M610,650 Q640,550 670,650 Q700,750 730,650 Q760,550 790,650 T850,650 L850,800 L610,800 Z" fill="url(#riverReflection)" opacity="0.7">
+            <animate attributeName="d" values="
+                M610,650 Q640,550 670,650 Q700,750 730,650 Q760,550 790,650 T850,650 L850,800 L610,800 Z;
+                M612,650 Q642,550 672,650 Q702,750 732,650 Q762,550 792,650 T852,650 L852,800 L612,800 Z;
+                M615,650 Q645,550 675,650 Q705,750 735,650 Q765,550 795,650 T855,650 L855,800 L615,800 Z;
+                M612,650 Q642,550 672,650 Q702,750 732,650 Q762,550 792,650 T852,650 L852,800 L612,800 Z;
+                M610,650 Q640,550 670,650 Q700,750 730,650 Q760,550 790,650 T850,650 L850,800 L610,800 Z"
+                dur="4s" repeatCount="indefinite"/>
+        </path>
+    </svg>
+</body>
+</html>

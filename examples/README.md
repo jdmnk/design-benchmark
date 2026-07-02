@@ -6,9 +6,9 @@ the prompts and per-model metadata — see [`web/`](../web).
 Every example uses the **same 9 models** (see
 [`config/models/standard-9.json`](../config/models/standard-9.json)):
 
-> GLM 5.2 · GLM 5.1 · GPT-5.4 mini · Claude Haiku 4.5 · Qwen3.7 Plus · Gemini 3.1 Flash-Lite · DeepSeek V4 Pro · MiMo v2.5 · MiniMax M3
+> GLM 5.2 · Grok 4.3 · GPT-5.4 mini · Claude Haiku 4.5 · Qwen3.7 Plus · Gemini 3.1 Flash-Lite · DeepSeek V4 Pro · Kimi K2.6 · Mistral Small 4
 
-Each folder has the `grid.png` (the deliverable), a `report.md`, a `summary.json`
+Each folder has the grid (lossless `grid.png` + a ~10× smaller `grid.webp`), a `report.md`, a `summary.json`
 (per-model time + tokens + status), and `pages/` (the actual HTML each model produced —
 open them in a browser). Each grid cell carries a thin top-bar label: model name · time ·
 output tokens. Reproduce any with:
@@ -16,6 +16,8 @@ output tokens. Reproduce any with:
 ```bash
 npm run bench                                                  # festival-landing (default)
 npm run bench -- --config config/examples/black-hole.config.json
+npm run bench -- --config config/examples/black-hole-spin.config.json   # animated
+npm run bench -- --config config/examples/fireworks.config.json         # animated
 npm run bench -- --config config/examples/sunset-svg.config.json
 ```
 
@@ -32,17 +34,17 @@ required content for every model (wordmark, date/place, CTA, a fixed six-act lin
 a phase-2 badge — all above the fold), but the visual concept is each model's own call.
 Config: [`config/benchmark.config.json`](../config/benchmark.config.json).
 
-![festival-landing](festival-landing/grid.png)
+![festival-landing](festival-landing/grid.webp)
 
 ## black-hole — Interstellar "Gargantua" in three.js / WebGL
 
 A hard, very prescriptive 3D brief: black event-horizon sphere, near-edge-on accretion
 disk, gravitational-lensing halo arcs, photon ring, specific colors and camera. It
-discriminates sharply — several slower/reasoning models time out or exhaust tokens before
-answering (visible in the per-model table). Config:
+discriminates sharply — quality ranges from photoreal-ish lensing to bare rings, and the
+occasional model still fails outright (recorded per model in the summary). Config:
 [`config/examples/black-hole.config.json`](../config/examples/black-hole.config.json).
 
-![black-hole](black-hole/grid.png)
+![black-hole](black-hole/grid.webp)
 
 ## black-hole-spin — the animated one 🎬
 
@@ -54,7 +56,18 @@ prompt demands framerate-independent rotation (~25–40°/s) with visible disk s
 the motion actually reads. Per-model clips are in [`black-hole-spin/clips/`](black-hole-spin/clips).
 Config: [`config/examples/black-hole-spin.config.json`](../config/examples/black-hole-spin.config.json).
 
-[![black-hole-spin](black-hole-spin/grid.png)](black-hole-spin/grid.mp4)
+[![black-hole-spin](black-hole-spin/grid.webp)](black-hole-spin/grid.mp4)
+
+## fireworks — animated Canvas 2D 🎬
+
+A continuous fireworks finale over a city skyline, judged in motion: 3–6 bursts visible at
+any moment, varied burst types and colors, gravity, trails and glow — pure Canvas 2D, no
+libraries. Captured as a 5-second, 24 fps deterministic clip like black-hole-spin; the
+harness's seeded `Math.random` makes even the "random" show reproducible.
+**[Grid video](fireworks/grid.mp4)** · per-model clips in [`fireworks/clips/`](fireworks/clips).
+Config: [`config/examples/fireworks.config.json`](../config/examples/fireworks.config.json).
+
+[![fireworks](fireworks/grid.webp)](fireworks/grid.mp4)
 
 ## sunset-svg — a single inline-SVG scene
 
@@ -62,7 +75,7 @@ Sun setting behind a layered mountain range, with clouds and a reflecting river 
 composition specified so outputs line up. Pure hand-coded vector art, no libraries.
 Config: [`config/examples/sunset-svg.config.json`](../config/examples/sunset-svg.config.json).
 
-![sunset-svg](sunset-svg/grid.png)
+![sunset-svg](sunset-svg/grid.webp)
 
 ---
 
@@ -72,10 +85,6 @@ Config: [`config/examples/sunset-svg.config.json`](../config/examples/sunset-svg
   placeholder (still labelled with its time) — the grid always builds. The `summary.json`
   and the web app record the exact reason.
 - Generation caps reasoning effort (`reasoningEffort: "low"`) so hybrid-reasoning models
-  don't burn the whole token budget "thinking" and return empty output — this took the
-  sunset run from 5/9 to 9/9 and let MiMo v2.5 and MiniMax M3 complete the festival page.
-- Remaining failures are genuinely provider/model-side and are reported honestly: GLM 5.1
-  is currently extremely slow via OpenRouter (misses even a 2×420s budget on some briefs),
-  and on the hard black-hole brief MiMo v2.5 / MiniMax M3 still exhaust their budget
-  reasoning. GPT-5.4 mini, Claude Haiku 4.5, Qwen3.7 Plus, Gemini 3.1 Flash-Lite and
-  GLM 5.2 finish everything.
+  don't burn the whole token budget "thinking" and return empty output, and transient
+  provider stream errors are retried once. Remaining failures are genuinely
+  provider/model-side and are reported honestly per model in each `summary.json`.

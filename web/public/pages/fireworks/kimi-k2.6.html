@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fireworks Finale</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: #000;
+      width: 100%;
+      height: 100%;
+    }
+    canvas {
+      display: block;
+      width: 100vw;
+      height: 100vh;
+    }
+  </style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<script>
+(function() {
+  'use strict';
+  try {
+    const canvas = document.getElementById('c');
+    const ctx = canvas.getContext('2d');
+
+    let W = 0, H = 0, skylineHeight = 0;
+    let DPR = Math.max(1, window.devicePixelRatio || 1);
+
+    function resize() {
+      W = window.innerWidth;
+      H = window.innerHeight;
+      DPR = Math.max(1, window.devicePixelRatio || 1);
+      canvas.width = Math.round(W * DPR);
+      canvas.height = Math.round(H * DPR);
+      canvas.style.width = W + 'px';
+      canvas.style.height = H + 'px';
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+      skylineHeight = Math.floor(H * 0.18);
+      buildSkyline();
+      buildStars();
+    }
+
+    // ----- Stars -----
+    const stars = [];
+    function buildStars() {
+      stars.length = 0;
+      const count = Math.floor((W * H) / 5000);
+      for (let i = 0; i < count; i++) {
+        stars.push({
+          x: Math.random() * W,
+          y: Math.random() * (H - skylineHeight),
+          r: Math.random() * 1.2 + 0.3,
+          a: Math.random() * 0.5 + 0.2
+        });
+      }
+    }
+
+    // ----- Skyline -----
+    const buildings = [];
+    const windows = [];
+    let roofPoints = []; // x positions of roof tops for glow reflection
+
+    function buildSkyline() {
+      buildings.length = 0;
+      windows.length = 0;
+      roofPoints = [];
+      let x = 0;
+      const baseY = H;
+      const topY = H - skylineHeight;
+      while (x < W) {
+        const bw = 20 + Math.random() * 80;
+        const bh = skylineHeight * (0.3 + Math.random() * 0.7);
+        const by = baseY - bh;
+        buildings.push({ x, y: by, w: bw, h: bh });
+
+        // windows
+        const cols = Math.max(1, Math.floor(bw / 14));
+        const rows = Math.max(1, Math.floor(bh / 18));
+        for (let r = 0; r < rows; r++) {
+          for (let c = 0; c < cols; c++) {
+            if (Math.random() < 0.35) {
+              const wx = x + 4 + c * 14 + Math.random() * 4;
+              const wy = by + 6 + r * 18 + Math.random() * 4;
+              const ww = 3 + Math.random() * 5;
+              const wh = 4 + Math.random() * 6;
+              const wa = 0.3 + Math.random() * 0.5;
+              windows.push({ x: wx, y: wy, w: ww, h: wh, a: wa });
+            }
+          }
+        }
+
+        // roof points for glow reflection
+        roofPoints.push({ x: x + bw * 0.5, y: by });
+
+        x += bw - (Math.random() < 0.3 ? 4 : 0);
+      }
+    }
+
+    // ----- Colors -----
+    const PALETTE = [
+      { r: 255, g: 220, b: 80 },   // gold
+      { r: 255, g: 60, b: 60 },    // red
+      { r: 60, g: 220, b: 255 },   // cyan
+      { r: 180, g: 80, b: 255 },   // violet
+      { r: 80, g: 255, b: 120 },   // green
+      { r: 255, g: 160, b: 40 },   // orange
+      { r: 255, g: 120, b: 200 },  // pink
+      { r: 200, g: 255, b: 240 },  // white-blue
+    ];
+
+    function pickColor() {
+      return PALETTE[(Math.random() * PALETTE.length) | 0];
+    }
+
+    // ----- Fireworks system -----
+    const rockets = [];
+    const particles = [];
+    const blooms = [];
+
+    // Pre-seed some explosions so t=0 is already busy
+    function seedInitialBursts() {
+      const count = 8 + Math.floor(Math.random() * 6);
+      for (let i = 0; i < count; i++) {
+        spawnBurst(
+          W * 0.15 + Math.random() * W * 0.7,
+          H * 0.08 + Math.random() * (H * 0.55),
+          pickColor(),
+          0.2 + Math.random() * 0.8
+        );
+      }
+    }
+
+    // Bloom flash at detonation
+    function addBloom(x, y, color) {
+      blooms.push({ x, y, r: 0, maxR: 40 + Math.random() * 60, a: 0.6 + Math.random() * 0.3, color, life: 1.0 });
+    }
+
+    // ----- Burst types -----
+    const BURST_PEONY = 0;
+    const BURST_RING = 1;
+    const BURST_WILLOW = 2;
+
+    function spawnBurst(x, y, color, progress) {
+      // progress 0..1 offsets particle age so some are ahead
+      const type = (Math.random() < 0.5) ? BURST_PEONY : ((Math.random() < 0.5) ? BURST_RING : BURST_WILLOW);
+      const count = (type === BURST_RING) ? 280 : ((type === BURST_WILLOW) ? 220 : 340);
+      addBloom(x, y, color);
+
+      for (let i = 0; i < count; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        let speed = 1.5 + Math.random() * 3.5;
+        if (type === BURST_RING) {
+          speed = 2.5 + Math.random() * 1.0;
+        } else if (type === BURST_WILLOW) {
+          speed = 1.0 + Math.random() * 2.0;
+        }
+
+        const vx = Math.cos(angle) * speed;
+        const vy = Math.sin(angle) * speed;
+
+        const p = {
+          x, y,
+          vx, vy,
+          color,
+          life: 1.0,
+          maxLife: 1.2 + Math.random() * 0.8,
+          size: 1.2 + Math.random() * 1.8,
+          type,
+          age: progress * (1.2 + Math.random() * 0.8),
+          trail: []
+        };
+
+        // pre-age for seeding
+        if (progress > 0) {
+          const steps = 6;
+          for (let s = 0; s < steps; s++) {
+            p.vy += 0.06; // gravity
+            p.vx *= 0.985;
+            p.vy *= 0.985;
+            p.x += p.vx;
+            p.y += p.vy;
+            p.age += 0.016;
+          }
+          p.life = Math.max(0, p.maxLife - p.age);
+        }
+
+        particles.push(p);
+      }
+    }
+
+    function spawnRocket() {
+      const targetX = W * 0.1 + Math.random() * W * 0.8;
+      const targetY = H * 0.08 + Math.random() * (H * 0.55);
+      const startX = W * 0.2 + Math.random() * W * 0.6;
+      const startY = H - skylineHeight + 10;
+
+      const dx = targetX - startX;
+      const dy = targetY - startY;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      const speed = 6 + Math.random() * 5;
+      const duration = dist / speed;
+      const color = pickColor();
+
+      rockets.push({
+        x: startX,
+        y: startY,
+        tx: targetX,
+        ty: targetY,
+        dx, dy,
+        dist,
+        speed,
+        duration,
+        elapsed: 0,
+        color,
+        trail: []
+      });
+    }
+
+    // ----- Timing -----
+    let lastTime = performance.now();
+    let spawnAccum = 0;
+    const SPAWN_INTERVAL = 0.35; // seconds between rocket spawns
+
+    // ----- Draw helpers -----
+    function drawStars() {
+      ctx.fillStyle = '#fff';
+      for (let i = 0; i < stars.length; i++) {
+        const s = stars[i];
+        ctx.globalAlpha = s.a;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+    }
+
+    function drawSkyline() {
+      // building silhouettes
+      ctx.fillStyle = '#0a0a12';
+      for (let i = 0; i < buildings.length; i++) {
+        const b = buildings[i];
+        ctx.fillRect(b.x, b.y, b.w, b.h);
+      }
+
+      // windows
+      for (let i = 0; i < windows.length; i++) {
+        const w = windows[i];
+        ctx.fillStyle = `rgba(255,230,120,${w.a})`;
+        ctx.fillRect(w.x, w.y, w.w, w.h);
+      }
+    }
+
+    function drawSkylineGlow() {
+      // Subtle reflected glow on rooftops from nearby bursts
+      // Compute glow per-roof based on nearby blooms/particles
+      const glows = new Float64Array(roofPoints.length);
+      const glowColors = [];
+      for (let i = 0; i < roofPoints.length; i++) {
+        glowColors.push({ r: 0, g: 0, b: 0, total: 0 });
+      }
+
+      // blooms contribute
+      for (let b = 0; b < blooms.length; b++) {
+        const bl = blooms[b];
+        const br = bl.r * 1.5;
+        for (let i = 0; i < roofPoints.length; i++) {
+          const rp = roofPoints[i];
+          const dx = rp.x - bl.x;
+          const dy = rp.y - bl.y;
+          const d2 = dx * dx + dy * dy;
+          const influence = Math.max(0, 1 - d2 / (br * br * 4 + 4000));
+          if (influence > 0) {
+            glows[i] += influence * bl.a * 0.5;
+            const gc = glowColors[i];
+            gc.r += bl.color.r * influence;
+            gc.g += bl.color.g * influence;
+            gc.b += bl.color.b * influence;
+            gc.total += influence;
+          }
+        }
+      }
+
+      // active particles near roof contribute
+      for (let p = 0; p < particles.length; p++) {
+        const pt = particles[p];
+        if (pt.y > H - skylineHeight * 1.5) continue;
+        for (let i = 0; i < roofPoints.length; i++) {
+          const rp = roofPoints[i];
+          const dx = rp.x - pt.x;
+          const dy = rp.y - pt.y;
+          const d2 = dx * dx + dy * dy;
+          if (d2 < 90000) {
+            const influence = Math.max(0, 1 - d2 / 90000) * (pt.life / pt.maxLife) * 0.15;
+            glows[i] += influence;
+            const gc = glowColors[i];
+            gc.r += pt.color.r * influence;
+            gc.g += pt.color.g * influence;
+            gc.b += pt.color.b * influence;
+            gc.total += influence;
+          }
+        }
+      }
+
+      for (let i = 0; i < roofPoints.length; i++) {
+        if (glows[i] > 0.02) {
+          const rp = roofPoints[i];
+          const gc = glowColors[i];
+          const r = gc.total > 0 ? gc.r / gc.total : 200;
+          const g = gc.total > 0 ? gc.g / gc.total : 200;
+          const b = gc.total > 0 ? gc.b / gc.total : 200;
+          const rad = 30 + glows[i] * 80;
+          const grd = ctx.createRadialGradient(rp.x, rp.y, 2, rp.x, rp.y, rad);
+          grd.addColorStop(0, `rgba(${r|0},${g|0},${b|0},${Math.min(0.4, glows[i])})`);
+          grd.addColorStop(1, `rgba(${r|0},${g|0},${b|0},0)`);
+          ctx.fillStyle = grd;
+          ctx.fillRect(rp.x - rad, rp.y - rad * 0.3, rad * 2, rad * 0.6);
+        }
+      }
+    }
+
+    // ----- Main loop -----
+    function update(now) {
+      const dt = Math.min(0.05, (now - lastTime) / 1000);
+      lastTime = now;
+
+      // Fade background
+      const grad = ctx.createLinearGradient(0, 0, 0, H);
+      grad.addColorStop(0, 'rgba(4,6,18,0.25)');
+      grad.addColorStop(1, 'rgba(2,3,10,0.25)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, W, H);
+
+      // Draw stars (they persist but get dimmed by fade)
+      drawStars();
+
+      // Spawn rockets
+      spawnAccum += dt;
+      // Keep 3-6 active bursts: spawn faster if we have few rockets
+      const targetRockets = 4 + Math.floor(Math.random() * 3);
+      while (spawnAccum > SPAWN_INTERVAL || rockets.length < targetRockets) {
+        spawnRocket();
+        spawnAccum -= SPAWN_INTERVAL * (0.5 + Math.random());
+      }
+
+      // Update and draw rockets
+      for (let i = rockets.length - 1; i >= 0; i--) {
+        const r = rockets[i];
+        r.elapsed += dt;
+
+        // trail
+        r.trail.push({ x: r.x, y: r.y });
+        if (r.trail.length > 20) r.trail.shift();
+
+        const t = Math.min(1, r.elapsed / r.duration);
+        r.x = r.x + (r.dx / r.dist) * r.speed * dt * 60;
+        r.y = r.y + (r.dy / r.dist) * r.speed * dt * 60;
+
+        // draw trail
+        ctx.lineWidth = 2;
+        ctx.lineCap = 'round';
+        for (let j = 0; j < r.trail.length - 1; j++) {
+          const a = j / r.trail.length;
+          ctx.strokeStyle = `rgba(${r.color.r},${r.color.g},${r.color.b},${a * 0.6})`;
+          ctx.beginPath();
+          ctx.moveTo(r.trail[j].x, r.trail[j].y);
+          ctx.lineTo(r.trail[j+1].x, r.trail[j+1].y);
+          ctx.stroke();
+        }
+
+        // head
+        ctx.fillStyle = `rgba(${r.color.r},${r.color.g},${r.color.b},1)`;
+        ctx.beginPath();
+        ctx.arc(r.x, r.y, 2, 0, Math.PI * 2);
+        ctx.fill();
+
+        if (t >= 1) {
+          // detonate
+          spawnBurst(r.x, r.y, r.color, 0);
+          rockets.splice(i, 1);
+        }
+      }
+
+      // Update and draw particles
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.age += dt;
+        p.life = Math.max(0, p.maxLife - p.age);
+
+        // physics
+        p.vy += 0.12 * dt * 60; // gravity
+        p.vx *= 0.985;
+        p.vy *= 0.985;
+
+        if (p.type === BURST_WILLOW) {
+          // drooping trails: extra gravity, some air resistance
+          p.vy += 0.08 * dt * 60;
+          p.vx *= 0.97;
+        }
+
+        p.x += p.vx * dt * 60;
+        p.y += p.vy * dt * 60;
+
+        // trail
+        p.trail.push({ x: p.x, y: p.y, life: p.life });
+        if (p.trail.length > (p.type === BURST_WILLOW ? 18 : 8)) p.trail.shift();
+
+        // draw trail
+        for (let j = 0; j < p.trail.length; j++) {
+          const pt = p.trail[j];
+          const ta = (j / p.trail.length) * (pt.life / p.maxLife) * 0.5;
+          ctx.fillStyle = `rgba(${p.color.r},${p.color.g},${p.color.b},${ta})`;
+          ctx.fillRect(pt.x - 0.8, pt.y - 0.8, 1.6, 1.6);
+        }
+
+        // draw particle
+        const alpha = Math.max(0, p.life / p.maxLife);
+        const size = p.size * (0.5 + 0.5 * alpha);
+
+        // additive glow
+        ctx.globalCompositeOperation = 'lighter';
+        ctx.fillStyle = `rgba(${p.color.r},${p.color.g},${p.color.b},${alpha * 0.9})`;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
+        ctx.fill();
+
+        // core
+        ctx.fillStyle = `rgba(255,255,255,${alpha * 0.4})`;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, size * 0.4, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.globalCompositeOperation = 'source-over';
+
+        if (p.life <= 0) {
+          particles.splice(i, 1);
+        }
+      }
+
+      // Update and draw blooms
+      for (let i = blooms.length - 1; i >= 0; i--) {
+        const b = blooms[i];
+        b.life -= dt * 1.5;
+        b.r += (b.maxR - b.r) * 0.15;
+        if (b.life <= 0) {
+          blooms.splice(i, 1);
+          continue;
+        }
+        ctx.globalCompositeOperation = 'lighter';
+        const grd = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.r);
+        const a = b.life * b.a;
+        grd.addColorStop(0, `rgba(${b.color.r},${b.color.g},${b.color.b},${a})`);
+        grd.addColorStop(0.4, `rgba(${b.color.r},${b.color.g},${b.color.b},${a * 0.3})`);
+        grd.addColorStop(1, `rgba(${b.color.r},${b.color.g},${b.color.b},0)`);
+        ctx.fillStyle = grd;
+        ctx.beginPath();
+        ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.globalCompositeOperation = 'source-over';
+      }
+
+      // Skyline glow then skyline
+      drawSkylineGlow();
+      drawSkyline();
+
+      // Safety cap on particles
+      if (particles.length > 2500) {
+        particles.splice(0, particles.length - 2500);
+      }
+
+      requestAnimationFrame(update);
+    }
+
+    // ----- Start -----
+    resize();
+    window.addEventListener('resize', resize);
+    seedInitialBursts();
+    requestAnimationFrame(update);
+
+  } catch (e) {
+    // silent fail-safe
+    console.error(e);
+  }
+})();
+</script>
+</body>
+</html>

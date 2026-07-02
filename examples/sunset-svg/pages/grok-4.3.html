@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Sunset Landscape</title>
+<style>
+  body { margin: 0; padding: 0; overflow: hidden; background: #000; }
+  svg { display: block; }
+</style>
+</head>
+<body>
+<svg width="100%" height="100%" viewBox="0 0 1280 800" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Sky gradient -->
+    <linearGradient id="skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0a1429"/>
+      <stop offset="25%" stop-color="#3d1a5e"/>
+      <stop offset="55%" stop-color="#9c2a6b"/>
+      <stop offset="75%" stop-color="#e85d04"/>
+      <stop offset="100%" stop-color="#ffba08"/>
+    </linearGradient>
+    
+    <!-- Sun soft glow -->
+    <radialGradient id="sunGlow" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+      <stop offset="0%" stop-color="#fff4d9" stop-opacity="0.9"/>
+      <stop offset="35%" stop-color="#ffdd88" stop-opacity="0.5"/>
+      <stop offset="70%" stop-color="#ffba08" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#ffba08" stop-opacity="0"/>
+    </radialGradient>
+    
+    <!-- River reflection shimmer -->
+    <linearGradient id="reflectGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fff4d9" stop-opacity="0.95"/>
+      <stop offset="50%" stop-color="#ffdd88" stop-opacity="0.75"/>
+      <stop offset="100%" stop-color="#ffba08" stop-opacity="0.55"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Sky (first element) -->
+  <rect x="0" y="0" width="1280" height="800" fill="url(#skyGrad)"/>
+  
+  <!-- Sun glow layers -->
+  <circle cx="640" cy="430" r="95" fill="url(#sunGlow)"/>
+  <circle cx="640" cy="430" r="68" fill="#ffdd88" opacity="0.35"/>
+  
+  <!-- Sun core -->
+  <circle cx="640" cy="430" r="42" fill="#fff4d9"/>
+  
+  <!-- Distant mountains (lightest) -->
+  <path d="M0 420 Q220 310 380 395 Q560 275 720 390 Q920 305 1080 380 Q1200 340 1280 410 L1280 520 L0 520 Z" fill="#2a2a4a"/>
+  
+  <!-- Mid mountains -->
+  <path d="M0 480 Q180 370 340 445 Q520 340 690 450 Q870 365 1050 455 Q1180 395 1280 470 L1280 570 L0 570 Z" fill="#1f223e"/>
+  
+  <!-- Foreground mountains (darkest) -->
+  <path d="M0 530 Q200 420 380 510 Q550 400 730 520 Q920 430 1100 505 Q1220 455 1280 530 L1280 620 L0 620 Z" fill="#15182e"/>
+  
+  <!-- Tallest central peak -->
+  <path d="M520 520 L640 355 L760 520 Z" fill="#15182e"/>
+  
+  <!-- Clouds -->
+  <ellipse cx="280" cy="185" rx="115" ry="32" fill="#f4b183" opacity="0.65"/>
+  <ellipse cx="310" cy="175" rx="75" ry="24" fill="#f9d4a8" opacity="0.4"/>
+  
+  <ellipse cx="920" cy="215" rx="130" ry="36" fill="#f4b183" opacity="0.55"/>
+  <ellipse cx="880" cy="205" rx="85" ry="26" fill="#f9d4a8" opacity="0.35"/>
+  
+  <ellipse cx="580" cy="145" rx="70" ry="22" fill="#f4b183" opacity="0.5"/>
+  
+  <!-- River -->
+  <path d="M520 620 Q580 680 640 800 L720 800 Q680 680 760 620 Z" fill="#0f1428"/>
+  
+  <!-- River banks / edges -->
+  <path d="M520 620 Q600 700 640 800" fill="none" stroke="#0a0d1f" stroke-width="18"/>
+  <path d="M760 620 Q680 700 640 800" fill="none" stroke="#0a0d1f" stroke-width="18"/>
+  
+  <!-- Sun reflection shimmer on river -->
+  <path d="M635 620 Q640 720 645 800" fill="none" stroke="url(#reflectGrad)" stroke-width="11" stroke-opacity="0.85">
+    <animate attributeName="stroke-opacity" values="0.85;0.55;0.85" dur="3.8s" repeatCount="indefinite"/>
+  </path>
+  <path d="M628 620 Q635 710 632 800" fill="none" stroke="#fff4d9" stroke-width="4" stroke-opacity="0.6">
+    <animate attributeName="stroke-opacity" values="0.6;0.35;0.6" dur="2.4s" repeatCount="indefinite"/>
+  </path>
+</svg>
+</body>
+</html>

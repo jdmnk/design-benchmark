@@ -10,7 +10,8 @@
     "fullPage": false,
     "waitMs": 4000,
     "freezeClock": true,
-    "seed": 7
+    "seed": 7,
+    "screenshotTimeoutMs": 120000
   },
   "grid": {
     "columns": 3,

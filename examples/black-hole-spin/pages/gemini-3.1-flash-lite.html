@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Gargantua Render</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gargantua Simulation</title>
     <style>
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; }
+        body { margin: 0; overflow: hidden; background-color: #000; }
         canvas { display: block; }
     </style>
     <script type="importmap">
@@ -22,137 +23,115 @@
     import * as THREE from 'three';
 
     try {
-        // Scene setup
+        // --- Setup ---
+        const width = window.innerWidth;
+        const height = window.innerHeight;
         const scene = new THREE.Scene();
         scene.background = new THREE.Color(0x000000);
-
-        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(0, 0.5, 10); // Slight angle above disk
+        
+        const camera = new THREE.PerspectiveCamera(30, width / height, 0.1, 1000);
+        camera.position.set(0, 0.8, 10); // Slight angle above horizontal
         camera.lookAt(0, 0, 0);
 
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
-        renderer.setSize(window.innerWidth, window.innerHeight);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(width, height);
         document.body.appendChild(renderer.domElement);
 
-        // Starfield
-        const starGeom = new THREE.BufferGeometry();
-        const starMat = new THREE.PointsMaterial({ color: 0x555555, size: 0.05, transparent: true, opacity: 0.8 });
-        const starPositions = [];
-        for(let i=0; i<1000; i++) {
-            starPositions.push((Math.random()-0.5)*100, (Math.random()-0.5)*100, (Math.random()-0.5)*100);
+        // --- Starfield ---
+        const starGeometry = new THREE.BufferGeometry();
+        const starCount = 1000;
+        const positions = new Float32Array(starCount * 3);
+        for (let i = 0; i < starCount * 3; i++) positions[i] = (Math.random() - 0.5) * 200;
+        starGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        const starMaterial = new THREE.PointsMaterial({ color: 0x444444, size: 0.1 });
+        scene.add(new THREE.Points(starGeometry, starMaterial));
+
+        // --- Accretion Disk Texture ---
+        // Create a canvas-based procedural texture for the disk
+        const canvas = document.createElement('canvas');
+        canvas.width = 512;
+        canvas.height = 512;
+        const ctx = canvas.getContext('2d');
+        const gradient = ctx.createRadialGradient(256, 256, 10, 256, 256, 250);
+        gradient.addColorStop(0, '#fff3d0');
+        gradient.addColorStop(0.2, '#ffae3b');
+        gradient.addColorStop(0.5, '#c8551a');
+        gradient.addColorStop(1, 'transparent');
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, 512, 512);
+        
+        // Add "clumps" for rotation visibility
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+        for(let i=0; i<10; i++) {
+            const angle = Math.random() * Math.PI * 2;
+            const r = 150 + Math.random() * 80;
+            ctx.beginPath();
+            ctx.arc(256 + Math.cos(angle)*r, 256 + Math.sin(angle)*r, 20, 0, Math.PI*2);
+            ctx.fill();
         }
-        starGeom.setAttribute('position', new THREE.Float32BufferAttribute(starPositions, 3));
-        scene.add(new THREE.Points(starGeom, starMat));
+        const texture = new THREE.CanvasTexture(canvas);
 
-        // Accretion Disk - using a custom shader approach for the "Gargantua" look
-        // We need a main disk + lensing arcs (top/bottom)
-        const diskGroup = new THREE.Group();
-        
-        // Custom Shader Material for the disk
-        const diskVertexShader = `
-            varying vec2 vUv;
-            varying float vDist;
-            void main() {
-                vUv = uv;
-                vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-                vDist = length(position);
-                gl_Position = projectionMatrix * mvPosition;
-            }
-        `;
+        // --- Geometry ---
+        // Accretion Disk (Flat ring)
+        const diskGeometry = new THREE.RingGeometry(1.2, 4, 64);
+        const diskMaterial = new THREE.MeshBasicMaterial({ 
+            map: texture, transparent: true, side: THREE.DoubleSide, blending: THREE.AdditiveBlending, depthWrite: false 
+        });
+        const disk = new THREE.Mesh(diskGeometry, diskMaterial);
+        disk.rotation.x = Math.PI / 2;
+        scene.add(disk);
 
-        const diskFragmentShader = `
-            uniform float time;
-            uniform float beaming; // Relativistic beaming factor
-            varying vec2 vUv;
-            varying float vDist;
-
-            void main() {
-                float radius = vDist;
-                float angle = atan(vUv.y - 0.5, vUv.x - 0.5);
-                
-                // Turbulence/Clumps
-                float noise = sin(angle * 10.0 + time * 0.5) * 0.5 + 0.5;
-                float flicker = sin(time * 5.0 + angle * 20.0) * 0.05 + 0.95;
-                
-                // Color gradient: inner (hot) to outer (cool)
-                vec3 color = mix(vec3(1.0, 0.95, 0.8), vec3(0.78, 0.33, 0.1), (radius - 1.0) / 2.0);
-                
-                // Beaming
-                float beam = 1.0 + sin(angle + time * 0.2) * 0.3 * beaming;
-                
-                float alpha = smoothstep(3.0, 1.0, radius) * smoothstep(0.8, 1.2, radius);
-                gl_FragColor = vec4(color * beam * flicker, alpha * 0.8);
-            }
-        `;
-
-        const createDiskPart = (inner, outer, rotationX) => {
-            const geom = new THREE.RingGeometry(inner, outer, 128);
-            const mat = new THREE.ShaderMaterial({
-                uniforms: {
-                    time: { value: 0 },
-                    beaming: { value: 0.5 }
-                },
-                vertexShader: diskVertexShader,
-                fragmentShader: diskFragmentShader,
-                side: THREE.DoubleSide,
-                transparent: true,
-                blending: THREE.AdditiveBlending,
-                depthWrite: false
-            });
-            const mesh = new THREE.Mesh(geom, mat);
-            mesh.rotation.x = rotationX;
-            return mesh;
-        };
-
-        // Main disk + lensing arcs
-        const disk = createDiskPart(1.2, 3.5, Math.PI / 2 + 0.1); 
-        const topArc = createDiskPart(1.2, 2.8, 0.1); // Lensing arc top
-        const botArc = createDiskPart(1.2, 2.8, -0.1); // Lensing arc bottom
-        
-        diskGroup.add(disk, topArc, botArc);
-        scene.add(diskGroup);
-
-        // The Black Hole Sphere
-        const sphere = new THREE.Mesh(
-            new THREE.SphereGeometry(1, 64, 64),
+        // Event Horizon (Black sphere)
+        const horizon = new THREE.Mesh(
+            new THREE.SphereGeometry(1, 32, 32),
             new THREE.MeshBasicMaterial({ color: 0x000000 })
         );
-        scene.add(sphere);
+        scene.add(horizon);
 
-        // Photon Ring
-        const ring = new THREE.Mesh(
-            new THREE.RingGeometry(1.02, 1.05, 128),
-            new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.DoubleSide })
+        // Photon Ring (Bright edge)
+        const photonRing = new THREE.Mesh(
+            new THREE.TorusGeometry(1.05, 0.02, 16, 100),
+            new THREE.MeshBasicMaterial({ color: 0xffffff })
         );
-        scene.add(ring);
+        scene.add(photonRing);
 
-        // Animation Loop
-        function animate(t) {
-            const time = t * 0.001;
-            
+        // Lensing Arcs (Torus segments wrapping over/under)
+        const createArc = (y) => {
+            const arc = new THREE.Mesh(
+                new THREE.TorusGeometry(1.5, 0.4, 16, 100, Math.PI),
+                new THREE.MeshBasicMaterial({ map: texture, transparent: true, blending: THREE.AdditiveBlending, side: THREE.DoubleSide, depthWrite: false })
+            );
+            arc.rotation.x = Math.PI / 2;
+            arc.position.y = y;
+            return arc;
+        };
+        const topArc = createArc(0.3);
+        const botArc = createArc(-0.3);
+        scene.add(topArc, botArc);
+
+        // --- Animation Loop ---
+        function animate(time) {
+            requestAnimationFrame(animate);
+            const t = time * 0.001; // Seconds
+
             // Rotate disk
-            diskGroup.rotation.z = time * 0.3; // ~17 deg/sec
+            disk.rotation.z = t * 0.3; // ~17 deg/sec
             
-            // Update shader uniforms
-            disk.material.uniforms.time.value = time;
-            topArc.material.uniforms.time.value = time;
-            botArc.material.uniforms.time.value = time;
+            // Subtle flicker
+            const flicker = 0.9 + Math.sin(t * 10) * 0.1;
+            diskMaterial.opacity = flicker;
+            
+            // Relativistic Beaming simulation (vary brightness of a side)
+            const brightness = 0.5 + Math.sin(t * 0.5) * 0.3;
+            diskMaterial.color.setRGB(1, 0.9 + brightness * 0.1, 0.8);
 
             renderer.render(scene, camera);
-            requestAnimationFrame(animate);
         }
 
-        // Handle resize
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-
         animate(0);
-    } catch(e) {
-        console.error(e);
-        document.body.innerHTML = "Error initializing scene.";
+
+    } catch (e) {
+        console.error("Rendering failed", e);
     }
 </script>
 </body>

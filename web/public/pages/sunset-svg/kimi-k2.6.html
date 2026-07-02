@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Serene Sunset Landscape</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #000;
+        }
+        svg {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <svg viewBox="0 0 1280 800" preserveAspectRatio="xMidYMid slice" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <!-- Sky Gradient -->
+            <linearGradient id="skyGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#0a0a2a" />     <!-- Deep Indigo -->
+                <stop offset="25%" stop-color="#2d1b4e" />    <!-- Dark Purple -->
+                <stop offset="50%" stop-color="#8a2b5e" />    <!-- Magenta -->
+                <stop offset="75%" stop-color="#d44d5c" />    <!-- Sunset Pink -->
+                <stop offset="90%" stop-color="#e88d45" />    <!-- Warm Orange -->
+                <stop offset="100%" stop-color="#f9c846" />   <!-- Golden Horizon -->
+            </linearGradient>
+
+            <!-- Sun Glow Gradient -->
+            <radialGradient id="sunGlow" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#fff5cc" stop-opacity="1" />
+                <stop offset="25%" stop-color="#ffcc66" stop-opacity="0.9" />
+                <stop offset="55%" stop-color="#ff9933" stop-opacity="0.4" />
+                <stop offset="100%" stop-color="#ff6633" stop-opacity="0" />
+            </radialGradient>
+
+            <!-- Sun Core Gradient -->
+            <radialGradient id="sunCore" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#ffffff" />
+                <stop offset="50%" stop-color="#fff0b3" />
+                <stop offset="100%" stop-color="#ffcc00" />
+            </radialGradient>
+
+            <!-- Cloud Gradient 1 -->
+            <linearGradient id="cloudGrad1" x1="0" y1="0" x2="1" y2="0.2">
+                <stop offset="0%" stop-color="#ff9966" stop-opacity="0.8" />
+                <stop offset="100%" stop-color="#cc3366" stop-opacity="0.6" />
+            </linearGradient>
+
+            <!-- Cloud Gradient 2 -->
+            <linearGradient id="cloudGrad2" x1="0" y1="0" x2="1" y2="0.2">
+                <stop offset="0%" stop-color="#ffcc99" stop-opacity="0.7" />
+                <stop offset="100%" stop-color="#993366" stop-opacity="0.5" />
+            </linearGradient>
+
+            <!-- River Gradient -->
+            <linearGradient id="riverGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#0f0b1e" />
+                <stop offset="40%" stop-color="#1c1233" />
+                <stop offset="100%" stop-color="#2d1b4e" />
+            </linearGradient>
+
+            <!-- Reflection Shimmer Gradient -->
+            <linearGradient id="shimmerGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#ffcc00" stop-opacity="0.9" />
+                <stop offset="60%" stop-color="#ff6633" stop-opacity="0.6" />
+                <stop offset="100%" stop-color="#ff6633" stop-opacity="0" />
+            </linearGradient>
+            
+            <!-- Mountain Layer Colors -->
+            <linearGradient id="mountBackGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#4a1a3d" />
+                <stop offset="100%" stop-color="#2b0f24" />
+            </linearGradient>
+            
+            <linearGradient id="mountMidGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#2d1b2f" />
+                <stop offset="100%" stop-color="#1a0f1c" />
+            </linearGradient>
+            
+            <linearGradient id="mountFrontGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#140a14" />
+                <stop offset="100%" stop-color="#0a050a" />
+            </linearGradient>
+
+            <!-- Clip Path for Reflection to keep it inside the river -->
+            <clipPath id="riverClip">
+                <path d="M 640 550 L 450 800 L 830 800 Z" />
+            </clipPath>
+        </defs>
+
+        <!-- 1. Sky Background -->
+        <rect width="1280" height="800" fill="url(#skyGradient)" />
+
+        <!-- 2. Sun (Positioned behind the central peak, just above horizon) -->
+        <!-- Horizon line is roughly y=550 where the mountains meet. Sun center at y=520 -->
+        <circle cx="640" cy="520" r="180" fill="url(#sunGlow)" />
+        <circle cx="640" cy="520" r="50" fill="url(#sunCore)" />
+
+        <!-- 3. Clouds (Upper Sky) -->
+        <g opacity="0.9">
+            <!-- Cloud 1 -->
+            <path d="M 150 250 Q 250 200 350 250 T 550 220 T 700 260 L 680 280 Q 550 250 400 280 T 150 250 Z" fill="url(#cloudGrad1)">
+                <animateTransform attributeName="transform" type="translate" from="-50 0" to="50 0" dur="60s" repeatCount="indefinite" values="-50 0; 50 0; -50 0" keyTimes="0; 0.5; 1" />
+            </path>
+            
+            <!-- Cloud 2 -->
+            <path d="M 800 180 Q 900 140 1000 180 T 1200 160 L 1180 190 Q 1000 200 900 190 T 800 180 Z" fill="url(#cloudGrad2)">
+                <animateTransform attributeName="transform" type="translate" from="50 0" to="-50 0" dur="80s" repeatCount="indefinite" values="50 0; -50 0; 50 0" keyTimes="0; 0.5; 1" />
+            </path>
+            
+            <!-- Cloud 3 (Higher, smaller) -->
+            <path d="M 400 120 Q 450 90 500 120 T 600 110 L 590 130 Q 500 140 450 130 T 400 120 Z" fill="#ffaa88" opacity="0.5">
+                <animateTransform attributeName="transform" type="translate" from="0 0" to="100 0" dur="90s" repeatCount="indefinite" />
+            </path>
+        </g>
+
+        <!-- 4. Mountains (Layered Silhouettes) -->
+        
+        <!-- Back Layer (Furthest) -->
+        <path d="M 0 550 
+                 L 0 420 
+                 Q 150 440 250 380 
+                 Q 350 320 450 380 
+                 Q 550 420 640 350 
+                 Q 730 420 830 380 
+                 Q 930 320 1030 380 
+                 Q 1130 440 1280 400 
+                 L 1280 550 Z" 
+              fill="url(#mountBackGrad)" />
+
+        <!-- Middle Layer -->
+        <path d="M 0 550 
+                 L 0 480 
+                 Q 100 450 200 490 
+                 Q 350 420 450 460 
+                 Q 550 400 640 430 
+                 Q 730 400 830 460 
+                 Q 950 420 1100 490 
+                 Q 1200 450 1280 500 
+                 L 1280 550 Z" 
+              fill="url(#mountMidGrad)" />
+
+        <!-- Front Layer (Closest, tallest peak centered at x=640) -->
+        <path d="M 0 550 
+                 L 0 520 
+                 Q 200 500 400 450 
+                 L 640 280 
+                 L 880 450 
+                 Q 1080 500 1280 520 
+                 L 1280 550 Z" 
+              fill="url(#mountFrontGrad)" />
+
+        <!-- 5. Foreground / River -->
+        <!-- The river base shape -->
+        <path d="M 640 550 L 400 800 L 880 800 Z" fill="url(#riverGrad)" />
+
+        <!-- River Reflection Shimmer -->
+        <g clip-path="url(#riverClip)">
+            <!-- Main vertical light column -->
+            <rect x="580" y="550" width="120" height="250" fill="url(#shimmerGrad)">
+                <animate attributeName="opacity" values="0.6; 0.9; 0.6" dur="4s" repeatCount="indefinite" />
+            </rect>
+
+            <!-- Horizontal Shimmer Lines (Ripples) -->
+            <g stroke="#ffcc00" stroke-linecap="round" opacity="0.6">
+                <line x1="610" y1="560" x2="670" y2="560" stroke-width="2">
+                    <animate attributeName="opacity" values="0; 1; 0" dur="3s" repeatCount="indefinite" />
+                </line>
+                <line x1="590" y1="580" x2="690" y2="580" stroke-width="3">
+                    <animate attributeName="opacity" values="0; 1; 0" dur="4s" repeatCount="indefinite" begin="1s" />
+                </line>
+                <line x1="570" y1="610" x2="710" y2="610" stroke-width="4">
+                    <animate attributeName="opacity" values="0; 1; 0" dur="5s" repeatCount="indefinite" begin="0.5s" />
+                </line>
+                <line x1="550" y1="640" x2="730" y2="640" stroke-width="5">
+                    <animate attributeName="opacity" values="0; 1; 0" dur="3.5s" repeatCount="indefinite" begin="1.5s" />
+                </line>
+                <line x1="520" y1="680" x2="760" y2="680" stroke-width="6">
+                    <animate attributeName="opacity" values="0; 1; 0" dur="4.5s" repeatCount="indefinite" begin="2s" />
+                </line>
+                <line x1="480" y1="720" x2="800" y2="720" stroke-width="7">
+                    <animate attributeName="opacity" values="0; 1; 0" dur="5.5s" repeatCount="indefinite" begin="0.2s" />
+                </line>
+                <line x1="440" y1="760" x2="840" y2="760" stroke-width="8">
+                    <animate attributeName="opacity" values="0; 1; 0" dur="4s" repeatCount="indefinite" begin="3s" />
+                </line>
+                 <line x1="400" y1="790" x2="880" y2="790" stroke-width="9">
+                    <animate attributeName="opacity" values="0; 1; 0" dur="6s" repeatCount="indefinite" begin="1.2s" />
+                </line>
+            </g>
+        </g>
+
+        <!-- Foreground dark land edges to frame the river -->
+        <path d="M 0 800 L 0 600 Q 200 580 400 800 Z" fill="#050205" />
+        <path d="M 1280 800 L 1280 600 Q 1080 580 880 800 Z" fill="#050205" />
+
+    </svg>
+</body>
+</html>

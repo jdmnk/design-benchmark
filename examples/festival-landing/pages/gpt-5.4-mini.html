@@ -3,275 +3,310 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EMBERWAVE — June 18–20, 2027</title>
+  <title>EMBERWAVE — June 18–20, 2027 · Ash Canyon, Nevada</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
-    body{background:#09060a;margin:0;color:#f7efe7;font-family:"Space Grotesk",system-ui,sans-serif;overflow-x:hidden}
-    :root{
-      --bg1:#09060a;
-      --sand:#d9a56d;
-      --ember:#ff6a2b;
-      --mag:#ff4fd8;
-      --teal:#53f2d5;
-      --ink:#130d14;
-      --panel:rgba(15,10,18,.56);
-      --line:rgba(255,255,255,.16);
-      --glow:0 0 30px rgba(255,106,43,.28),0 0 60px rgba(255,79,216,.14);
-    }
+    body{background:#06040a;color:#fff;margin:0;font-family:Inter,system-ui,sans-serif;overflow-x:hidden}
     *{box-sizing:border-box}
-    body::before{
-      content:"";
-      position:fixed; inset:0;
+    a{text-decoration:none;color:inherit}
+    .page{
+      position:relative; min-height:100vh; overflow:hidden;
       background:
-        radial-gradient(circle at 20% 18%, rgba(255,106,43,.26), transparent 22%),
-        radial-gradient(circle at 75% 12%, rgba(83,242,213,.16), transparent 18%),
-        radial-gradient(circle at 52% 78%, rgba(255,79,216,.16), transparent 24%),
-        linear-gradient(180deg, rgba(8,5,10,.1), rgba(8,5,10,.68) 65%, rgba(8,5,10,.9)),
-        linear-gradient(120deg, #120b12 0%, #1c1116 24%, #09060a 58%, #130b10 100%);
-      z-index:-3;
+        radial-gradient(1200px 700px at 20% 10%, rgba(255,120,28,.32), transparent 55%),
+        radial-gradient(900px 600px at 80% 20%, rgba(255,70,170,.18), transparent 52%),
+        radial-gradient(800px 500px at 50% 0%, rgba(80,255,230,.08), transparent 58%),
+        linear-gradient(180deg, #12070f 0%, #09050c 42%, #050309 100%);
+      color:#f6f0ea;
     }
-    body::after{
-      content:"";
-      position:fixed; inset:0;
-      pointer-events:none;
-      z-index:-2;
+    .noise{
+      position:absolute; inset:0; pointer-events:none; opacity:.16; mix-blend-mode:screen;
+      background-image:
+        linear-gradient(rgba(255,255,255,.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
+      background-size: 3px 3px, 4px 4px;
+      mask-image: radial-gradient(circle at center, black 55%, transparent 100%);
+    }
+    .glow{
+      position:absolute; inset:-20%; pointer-events:none;
       background:
-        radial-gradient(circle at 50% 0%, rgba(255,235,197,.14), transparent 32%),
-        repeating-linear-gradient(0deg, rgba(255,255,255,.03) 0 1px, transparent 1px 3px);
-      mix-blend-mode:screen;
-      opacity:.28;
+        radial-gradient(circle at 50% 30%, rgba(255,138,44,.18), transparent 18%),
+        radial-gradient(circle at 66% 35%, rgba(255,61,140,.12), transparent 16%),
+        radial-gradient(circle at 35% 40%, rgba(255,210,80,.12), transparent 14%);
+      filter: blur(18px);
+      animation: drift 12s ease-in-out infinite alternate;
     }
-    .grain{
-      position:fixed; inset:0; pointer-events:none; z-index:-1; opacity:.22;
-      background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.95' numOctaves='2' stitchTiles='stitch'/></filter><rect width='220' height='220' filter='url(%23n)' opacity='.85'/></svg>");
-      mix-blend-mode:overlay;
+    @keyframes drift{from{transform:translate3d(-1.5%,0,0) scale(1)}to{transform:translate3d(1.5%,-1%,0) scale(1.04)}}
+    .wrap{
+      position:relative; z-index:2; max-width:1380px; margin:0 auto; padding:20px 24px 28px;
     }
-    .page{min-height:100vh; padding:22px; position:relative; overflow:hidden}
     .topbar{
-      display:flex; justify-content:space-between; align-items:center; gap:12px;
-      margin-bottom:14px;
-      font-size:12px; letter-spacing:.22em; text-transform:uppercase; color:#f2d9c6;
+      display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:12px;
+      text-transform:uppercase; letter-spacing:.24em; font-size:11px; color:#f2c9aa;
     }
     .badge{
-      padding:10px 14px; border:1px solid rgba(255,255,255,.22); border-radius:999px;
-      background:rgba(255,255,255,.05); box-shadow:var(--glow);
+      display:inline-flex; align-items:center; gap:10px; padding:10px 14px 10px 12px;
+      border:1px solid rgba(255,255,255,.14);
+      border-radius:999px;
+      background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+      box-shadow:0 0 0 1px rgba(255,120,30,.08) inset, 0 10px 30px rgba(0,0,0,.18);
       backdrop-filter: blur(10px);
       white-space:nowrap;
     }
-    .ticker{
-      overflow:hidden; flex:1; margin-left:10px;
-      mask-image:linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
-      opacity:.95;
+    .badge:before{
+      content:""; width:8px; height:8px; border-radius:50%;
+      background:#ff7a22; box-shadow:0 0 12px #ff7a22, 0 0 24px rgba(255,122,34,.5);
     }
-    .ticker span{
-      display:inline-block; padding-left:100%;
-      animation:roll 14s linear infinite;
-      color:#ffd7ae;
-    }
-    @keyframes roll{to{transform:translateX(-100%)}}
     .hero{
+      display:grid; grid-template-columns: 1.35fr .95fr; gap:20px; align-items:end;
+      min-height:calc(100vh - 52px);
+      padding-bottom:10px;
+    }
+    .nameblock{
       position:relative;
-      display:grid;
-      grid-template-columns: 1.25fr .9fr;
-      gap:18px;
-      min-height: calc(100vh - 78px);
-      align-items:start;
+      padding:10px 0 0;
+      transform:translateY(-4px);
     }
     .wordmark{
-      position:relative;
-      padding:16px 18px 18px;
-      border:1px solid rgba(255,255,255,.14);
-      background:linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
-      backdrop-filter: blur(12px);
-      box-shadow:0 20px 80px rgba(0,0,0,.34);
-      overflow:hidden;
-      min-height: 530px;
-    }
-    .wordmark::before{
-      content:"";
-      position:absolute; inset:-40px -20px auto auto; width:360px; height:360px;
-      background:radial-gradient(circle, rgba(255,106,43,.34), transparent 60%);
-      filter:blur(8px);
-    }
-    .wordmark h1{
-      margin:0;
-      font-family:"Syne",system-ui,sans-serif;
-      font-size:clamp(74px, 16vw, 170px);
-      line-height:.82;
-      letter-spacing:-.06em;
+      font-family:"Archivo Black", Impact, sans-serif;
+      font-size:clamp(68px, 11vw, 154px);
+      line-height:.84;
+      letter-spacing:.02em;
       text-transform:uppercase;
-      transform:skewX(-7deg);
+      margin:0;
+      color:#fff3ea;
       text-shadow:
-        0 1px 0 rgba(255,255,255,.22),
-        0 0 20px rgba(255,106,43,.28),
-        0 0 60px rgba(255,79,216,.18);
+        0 0 18px rgba(255,141,48,.18),
+        0 0 48px rgba(255,90,160,.12),
+        0 8px 0 rgba(0,0,0,.2);
       position:relative;
-      z-index:2;
     }
-    .subgrid{
-      margin-top:12px;
-      display:grid;
-      grid-template-columns: 1.1fr .9fr;
-      gap:14px;
-      align-items:end;
+    .wordmark span{
+      display:inline-block;
+      background:linear-gradient(180deg, #fff7ef 0%, #ffd3af 28%, #ff8a27 56%, #ff4d7f 86%);
+      -webkit-background-clip:text; background-clip:text; color:transparent;
+      filter:drop-shadow(0 0 18px rgba(255,134,35,.16));
     }
-    .details{
-      padding:14px 0 0;
-      border-top:1px solid rgba(255,255,255,.16);
-      font-size:16px;
-      line-height:1.35;
-      color:#f6e4d4;
+    .subline{
+      margin-top:12px; display:flex; flex-wrap:wrap; align-items:center; gap:12px 18px;
+      font-size:14px; letter-spacing:.2em; text-transform:uppercase; color:#ffcfb5;
     }
-    .details strong{display:block;font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:#ffcfab;margin-bottom:8px}
+    .subline strong{color:#fff; font-weight:800}
+    .ctaRow{
+      display:flex; flex-wrap:wrap; align-items:center; gap:12px; margin-top:18px;
+    }
     .cta{
+      position:relative;
       display:inline-flex; align-items:center; justify-content:center; gap:10px;
-      text-decoration:none; color:#10090e; font-weight:800;
-      background:linear-gradient(135deg, #ffe5b9, #ff8d42 48%, #ff4fd8);
-      border:0; border-radius:999px; padding:16px 22px;
-      box-shadow:0 12px 35px rgba(255,106,43,.28), 0 0 0 1px rgba(255,255,255,.14) inset;
-      text-transform:uppercase; letter-spacing:.12em;
-      width:max-content;
-      margin-top:10px;
+      padding:16px 22px;
+      font-weight:900; letter-spacing:.18em; text-transform:uppercase;
+      border-radius:999px;
+      color:#13090c;
+      background:
+        linear-gradient(135deg, #fff7ea 0%, #ffd08a 30%, #ff8c31 62%, #ff4d9b 100%);
+      box-shadow:
+        0 10px 30px rgba(255,115,34,.28),
+        0 0 0 1px rgba(255,255,255,.16) inset,
+        0 0 40px rgba(255,102,31,.18);
+      overflow:hidden;
     }
-    .cta::after{content:"↗"; font-size:18px}
-    .lineup{
-      padding:16px 16px 14px;
+    .cta:after{
+      content:""; position:absolute; inset:-40% -20%;
+      background:linear-gradient(115deg, transparent 30%, rgba(255,255,255,.42) 50%, transparent 70%);
+      transform:translateX(-70%);
+      animation: sheen 4.8s linear infinite;
+    }
+    @keyframes sheen{to{transform:translateX(70%)}}
+    .meta{
+      font-size:clamp(14px, 1.35vw, 18px);
+      line-height:1.45;
+      color:#f6d8c8;
+      max-width:24ch;
+      text-wrap:balance;
+    }
+    .lineupCard{
+      position:relative;
+      align-self:stretch;
       border:1px solid rgba(255,255,255,.14);
-      background:linear-gradient(180deg, rgba(9,6,10,.76), rgba(29,17,28,.55));
-      backdrop-filter: blur(14px);
-      box-shadow:0 20px 80px rgba(0,0,0,.3);
-      min-height:530px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.03)),
+        linear-gradient(180deg, rgba(35,14,20,.82), rgba(11,7,12,.68));
+      border-radius:28px;
+      padding:18px 18px 16px;
+      box-shadow:0 20px 60px rgba(0,0,0,.34), 0 0 0 1px rgba(255,120,30,.05) inset;
+      backdrop-filter: blur(10px);
+      overflow:hidden;
     }
-    .lineup h2{
-      margin:0 0 12px;
-      font-size:12px; letter-spacing:.24em; text-transform:uppercase; color:#ffcfa8;
+    .lineupCard:before{
+      content:""; position:absolute; inset:auto -15% -30% -15%; height:55%;
+      background:
+        radial-gradient(closest-side at 25% 20%, rgba(255,136,34,.48), transparent 72%),
+        radial-gradient(closest-side at 60% 35%, rgba(255,74,151,.26), transparent 72%),
+        radial-gradient(closest-side at 85% 25%, rgba(253,203,85,.16), transparent 72%);
+      filter: blur(24px);
+      opacity:.9;
+    }
+    .lineupTitle{
+      position:relative; z-index:1;
+      display:flex; justify-content:space-between; align-items:end; gap:14px;
+      margin-bottom:12px; color:#ffd8bf;
+      text-transform:uppercase; letter-spacing:.24em; font-size:11px;
     }
     .acts{
-      display:grid;
-      gap:10px;
+      position:relative; z-index:1;
+      display:grid; grid-template-columns:1fr 1fr; gap:10px 12px;
     }
     .act{
-      border-top:1px solid rgba(255,255,255,.14);
-      padding-top:10px;
-    }
-    .act.big .name{font-size:clamp(22px, 3vw, 34px)}
-    .name{
-      font-family:"Syne",system-ui,sans-serif;
-      text-transform:uppercase;
+      padding:14px 14px 13px;
+      border-radius:20px;
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.025));
+      border:1px solid rgba(255,255,255,.10);
+      box-shadow:0 1px 0 rgba(255,255,255,.05) inset;
+      min-height:72px;
+      display:flex; align-items:end;
       letter-spacing:.02em;
-      line-height:1;
-      font-size:clamp(15px, 1.8vw, 22px);
-      display:flex; align-items:baseline; gap:10px;
+      text-wrap:balance;
     }
-    .name em{
-      font-style:normal; color:var(--teal); font-size:.38em; letter-spacing:.22em; text-transform:uppercase
-    }
-    .meta{
-      margin-top:5px;
-      color:#d9c7bc;
-      font-size:13px;
-      line-height:1.3;
-      opacity:.9;
-    }
-    .pillrow{
-      display:flex; flex-wrap:wrap; gap:8px; margin-top:14px
-    }
-    .pill{
-      padding:8px 10px; border:1px solid rgba(255,255,255,.14); border-radius:999px;
-      background:rgba(255,255,255,.04); color:#f7e5d3; font-size:12px; letter-spacing:.08em; text-transform:uppercase;
-    }
-    .sun{
-      position:absolute; inset:auto auto 8% -8%;
-      width:40vw; height:40vw; min-width:280px; min-height:280px; max-width:560px; max-height:560px;
-      border-radius:50%;
+    .act.big{
+      min-height:88px;
+      font-size:clamp(22px, 2.2vw, 31px);
+      font-weight:900;
+      line-height:.95;
+      color:#fff8f1;
       background:
-        radial-gradient(circle at 50% 50%, rgba(255,230,181,.9) 0 10%, rgba(255,146,67,.9) 20%, rgba(255,106,43,.45) 38%, transparent 70%);
-      filter:blur(6px);
-      opacity:.34;
-      z-index:0;
-      pointer-events:none;
+        linear-gradient(180deg, rgba(255,126,40,.18), rgba(255,255,255,.035));
+      border-color:rgba(255,168,95,.24);
+      text-shadow:0 0 14px rgba(255,134,42,.18);
     }
-    .dunes{
-      position:absolute; left:-10%; right:-10%; bottom:-4px; height:28vh; min-height:180px;
+    .act.small{
+      font-size:clamp(17px, 1.45vw, 22px);
+      font-weight:800;
+      color:#f9e7db;
+    }
+    .act:nth-child(1){grid-column:1 / -1}
+    .act:nth-child(2){grid-column:1 / 2}
+    .act:nth-child(3){grid-column:2 / 3}
+    .act:nth-child(4){grid-column:1 / 2}
+    .act:nth-child(5){grid-column:2 / 3}
+    .act:nth-child(6){grid-column:1 / -1}
+    .dateplate{
+      margin-top:18px; position:relative; z-index:1;
+      display:flex; justify-content:space-between; gap:12px; align-items:center;
+      padding:13px 16px;
+      border-radius:18px;
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.12);
+      color:#ffe7d8;
+      font-weight:600;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      font-size:12px;
+    }
+    .footerNote{
+      position:absolute; left:24px; bottom:16px; z-index:3;
+      font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:rgba(255,225,203,.72);
+    }
+    .desert{
+      position:absolute; left:-6%; right:-6%; bottom:-3%; height:34%;
       z-index:1; pointer-events:none;
       background:
-        radial-gradient(120% 100% at 20% 100%, rgba(255,210,170,.16) 0 28%, transparent 29%),
-        radial-gradient(120% 100% at 58% 100%, rgba(255,106,43,.22) 0 24%, transparent 25%),
-        radial-gradient(120% 100% at 86% 100%, rgba(83,242,213,.12) 0 18%, transparent 19%),
-        linear-gradient(180deg, transparent 0 40%, rgba(255,255,255,.06) 41% 42%, transparent 43%),
-        linear-gradient(175deg, transparent 0 28%, rgba(255,255,255,.05) 29% 30%, transparent 31%),
-        linear-gradient(185deg, transparent 0 48%, rgba(0,0,0,.42) 49% 100%);
-      clip-path: polygon(0 100%, 0 58%, 10% 50%, 22% 60%, 34% 44%, 50% 56%, 64% 42%, 79% 56%, 92% 47%, 100% 55%, 100% 100%);
-      opacity:.9;
+        radial-gradient(120% 90% at 50% 110%, rgba(255,120,35,.85) 0%, rgba(255,82,36,.36) 26%, rgba(97,24,43,.0) 61%),
+        linear-gradient(180deg, transparent 0%, rgba(0,0,0,.14) 100%);
+      clip-path: polygon(0 52%, 9% 45%, 17% 54%, 27% 43%, 38% 50%, 49% 39%, 63% 48%, 74% 35%, 86% 43%, 100% 31%, 100% 100%, 0 100%);
+      filter: saturate(1.2);
+      opacity:.95;
     }
-    @media (max-width: 920px){
+    .ridge{
+      position:absolute; left:0; right:0; bottom:9%;
+      height:30%;
+      background:
+        linear-gradient(180deg, rgba(255,190,120,.12), transparent 30%),
+        linear-gradient(180deg, rgba(0,0,0,.12), rgba(0,0,0,.28)),
+        linear-gradient(180deg, #2f1219, #12090d);
+      clip-path: polygon(0 72%, 8% 58%, 19% 66%, 30% 46%, 43% 58%, 55% 40%, 67% 54%, 78% 34%, 89% 50%, 100% 38%, 100% 100%, 0 100%);
+      opacity:.92;
+    }
+    .gridlines{
+      position:absolute; inset:0; z-index:0; pointer-events:none;
+      background-image:
+        linear-gradient(rgba(255,255,255,.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
+      background-size: 100% 100px, 120px 100%;
+      opacity:.08;
+      mask-image: linear-gradient(180deg, transparent 0%, black 18%, black 82%, transparent 100%);
+    }
+    @media (max-width: 980px){
       .hero{grid-template-columns:1fr; min-height:auto}
-      .wordmark,.lineup{min-height:auto}
-      .wordmark h1{font-size:clamp(68px, 21vw, 148px)}
-      .subgrid{grid-template-columns:1fr}
+      .lineupCard{order:2}
+      .meta{max-width:none}
+    }
+    @media (max-width: 620px){
+      .wrap{padding:16px 14px 22px}
+      .topbar{flex-direction:column; align-items:flex-start}
+      .acts{grid-template-columns:1fr}
+      .act:nth-child(n){grid-column:auto}
+      .wordmark{font-size:clamp(58px, 18vw, 110px)}
+      .subline{font-size:12px; letter-spacing:.16em}
+      .dateplate{font-size:11px}
+      .footerNote{left:14px}
     }
   </style>
 </head>
 <body>
-  <div class="grain"></div>
   <main class="page">
-    <div class="topbar">
-      <div class="badge">EMBERWAVE // desert canyon edition</div>
-      <div class="ticker"><span>Phase 2 lineup — March 2027 — Phase 2 lineup — March 2027 — Phase 2 lineup — March 2027 —</span></div>
-    </div>
+    <div class="gridlines"></div>
+    <div class="glow"></div>
+    <div class="noise"></div>
+    <div class="desert"></div>
+    <div class="ridge"></div>
 
-    <section class="hero">
-      <div class="wordmark">
-        <div class="sun"></div>
-        <h1>EMBER<br>WAVE</h1>
-        <div class="subgrid">
-          <div class="details">
-            <strong>June 18–20, 2027 · Ash Canyon, Nevada</strong>
-            Three nights carved into a heat-hazed canyon wall—psychedelic frequency, chrome dust, and afterdark echoes.
-            <div><a class="cta" href="#tickets">Get tickets</a></div>
-          </div>
-          <div class="pillrow" aria-label="Festival tags">
-            <span class="pill">3-day festival</span>
-            <span class="pill">Desert stages</span>
-            <span class="pill">Night set design</span>
-            <span class="pill">Immersive art</span>
-          </div>
-        </div>
-        <div class="dunes"></div>
+    <div class="wrap">
+      <div class="topbar">
+        <div class="badge">Phase 2 lineup — March 2027</div>
+        <div>Desert canyon transmission / 3 nights / limited capacity</div>
       </div>
 
-      <aside class="lineup">
-        <h2>Headliners</h2>
-        <div class="acts">
-          <div class="act big">
-            <div class="name">NOVA CULT <em>main</em></div>
-            <div class="meta">Solar rave doctrine · midnight peak</div>
+      <section class="hero" aria-label="EMBERWAVE festival landing page">
+        <div class="nameblock">
+          <h1 class="wordmark"><span>EMBERWAVE</span></h1>
+          <div class="subline">
+            <span><strong>June 18–20, 2027</strong></span>
+            <span>·</span>
+            <span><strong>Ash Canyon, Nevada</strong></span>
           </div>
-          <div class="act big">
-            <div class="name">Velvet Static <em>main</em></div>
-            <div class="meta">Analog bliss / corrosive bass</div>
-          </div>
-          <div class="act big">
-            <div class="name">MOONBURN <em>main</em></div>
-            <div class="meta">Crescent light and fireline synths</div>
-          </div>
-          <div class="act">
-            <div class="name">Dax Riviera</div>
-            <div class="meta">Mirage-house glide</div>
-          </div>
-          <div class="act">
-            <div class="name">Cinder & Ash</div>
-            <div class="meta">Dust-bloom industrial live set</div>
-          </div>
-          <div class="act">
-            <div class="name">The Glass Dunes</div>
-            <div class="meta">Prismatic desert frequency</div>
+          <div class="ctaRow">
+            <a class="cta" href="#" aria-label="Get tickets for Emberwave">
+              Get tickets
+            </a>
+            <div class="meta">
+              Neon ridgelines, live reactors, and three nights of electronic heat under the canyon sky.
+            </div>
           </div>
         </div>
-      </aside>
-    </section>
+
+        <aside class="lineupCard" aria-label="Headliner lineup">
+          <div class="lineupTitle">
+            <span>Headliner lineup</span>
+            <span>6 acts</span>
+          </div>
+          <div class="acts">
+            <div class="act big">NOVA CULT</div>
+            <div class="act small">Velvet Static</div>
+            <div class="act small">MOONBURN</div>
+            <div class="act small">Dax Riviera</div>
+            <div class="act small">Cinder &amp; Ash</div>
+            <div class="act big">The Glass Dunes</div>
+          </div>
+          <div class="dateplate">
+            <span>18–20 JUN</span>
+            <span>Ash Canyon / Nevada</span>
+          </div>
+        </aside>
+      </section>
+    </div>
+
+    <div class="footerNote">EMBERWAVE 2027 · canyon signal // tickets live now</div>
   </main>
 </body>
 </html>

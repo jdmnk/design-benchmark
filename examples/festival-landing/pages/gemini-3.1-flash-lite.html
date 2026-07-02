@@ -3,175 +3,165 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EMBERWAVE | Desert Sonic Ritual</title>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;700&family=Syne:wght@400;800&family=Syne+Mono&display=swap" rel="stylesheet">
+    <title>EMBERWAVE · Ash Canyon 2027</title>
+    <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@900&family=Space+Mono:ital,wght@0,400;1,700&display=swap" rel="stylesheet">
     <style>
-        /* RELIABILITY RULE: Background first */
-        body { 
-            background: #0f0b09; 
-            margin: 0; 
-            padding: 0; 
+        /* 1. RELIABILITY: Explicit background first */
+        body {
+            background-color: #0a0a09;
+            margin: 0;
+            padding: 0;
+            color: #ffdecc;
+            font-family: 'Space Mono', monospace;
             overflow-x: hidden;
-            font-family: 'Space Grotesk', sans-serif;
-            color: #ffead0;
-        }
-
-        /* ATMOSPHERIC CONTEXT: Brutalist Psychedelic Desert */
-        :root {
-            --fire: #ff4500;
-            --sand: #f4a460;
-            --night: #0f0b09;
-            --text-glow: 0 0 10px rgba(255, 69, 0, 0.5);
-        }
-
-        #app {
             min-height: 100vh;
+        }
+
+        /* Container for the desert canyon vibe */
+        .page-wrapper {
+            position: relative;
+            width: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
-            position: relative;
-            background: radial-gradient(circle at 50% 0%, #2a1b15 0%, #0f0b09 70%);
             padding: 40px 20px;
+            box-sizing: border-box;
+            background: linear-gradient(180deg, #1c0b05 0%, #4a2110 40%, #0a0a09 100%);
         }
 
-        /* SVG BACKGROUND ELEMENTS */
-        .canyon-floor {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            height: 300px;
-            background: linear-gradient(180deg, transparent, #1a0f0a);
-            z-index: 0;
-            clip-path: polygon(0 40%, 15% 30%, 30% 50%, 50% 20%, 70% 45%, 85% 25%, 100% 60%, 100% 100%, 0 100%);
-        }
-
-        /* TYPOGRAPHIC STATEMENT */
-        h1 {
-            font-family: 'Syne', sans-serif;
-            font-size: clamp(4rem, 15vw, 12rem);
-            font-weight: 800;
-            letter-spacing: -0.05em;
-            margin: 0;
-            line-height: 0.8;
-            text-transform: uppercase;
-            position: relative;
-            z-index: 2;
-            color: #ffead0;
-            background: linear-gradient(to bottom, #ffead0 40%, #ff4500);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 20px rgba(255, 69, 0, 0.3));
-        }
-
-        .meta-info {
-            font-family: 'Syne Mono', monospace;
-            font-size: clamp(0.9rem, 2vw, 1.2rem);
-            margin: 20px 0;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            color: #d18d4d;
-        }
-
-        /* PHASE BADGE */
-        .phase-badge {
-            border: 1px solid #ff4500;
-            padding: 5px 15px;
-            font-size: 0.7rem;
-            letter-spacing: 0.1em;
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            color: #ff4500;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        /* LINEUP LAYOUT */
-        .lineup {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 40px;
-            text-align: center;
-            margin: 50px 0;
-            z-index: 2;
-            max-width: 800px;
-            width: 100%;
-        }
-
-        .liner-name {
-            font-family: 'Syne', sans-serif;
-            font-weight: 800;
-            text-transform: uppercase;
-            text-decoration: none;
-            color: #ffead0;
-            transition: color 0.3s;
-        }
-
-        .headliner { font-size: 2.5rem; }
-        .subliner { font-size: 1.5rem; }
-
-        .lineup a:hover { color: #ff4500; }
-
-        /* CTA BUTTON */
-        .cta-btn {
-            background: transparent;
-            border: 2px solid #ffead0;
-            color: #ffead0;
-            padding: 15px 40px;
-            font-family: 'Syne', sans-serif;
-            font-size: 1.2rem;
-            cursor: pointer;
-            text-transform: uppercase;
-            margin-top: 20px;
-            transition: all 0.3s;
-            z-index: 2;
-            text-decoration: none;
-        }
-
-        .cta-btn:hover {
-            background: #ff4500;
-            border-color: #ff4500;
-            color: white;
-            box-shadow: 0 0 30px #ff4500;
-        }
-
-        /* DECORATIVE ELEMENTS */
-        .noise {
+        /* SVG Noise/Texture overlay */
+        .noise-layer {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none;
-            opacity: 0.1;
+            opacity: 0.15;
             z-index: 10;
-            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* Typography */
+        h1 {
+            font-family: 'Big Shoulders Display', sans-serif;
+            font-size: clamp(5rem, 15vw, 12rem);
+            margin: 0;
+            line-height: 0.85;
+            letter-spacing: -0.05em;
+            color: transparent;
+            -webkit-text-stroke: 2px #ff6633;
+            text-shadow: 0 0 20px rgba(255, 102, 51, 0.5);
+            text-transform: uppercase;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero-date {
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+            margin-top: 10px;
+            color: #ff9966;
+            border-bottom: 2px solid #ff9966;
+            padding-bottom: 5px;
+        }
+
+        /* Lineup Section */
+        .lineup-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin-top: 4rem;
+            text-align: center;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .headliner {
+            font-family: 'Big Shoulders Display', sans-serif;
+            font-size: 2.5rem;
+            line-height: 1;
+            color: #ffe6d9;
+            transition: color 0.3s;
+        }
+
+        .headliner.top { font-size: 4.5rem; grid-column: span 2; color: #fff; }
+        .headliner:hover { color: #ff6633; cursor: crosshair; }
+
+        /* The 'Get Tickets' Button */
+        .cta-btn {
+            background: transparent;
+            border: 2px solid #ff6633;
+            color: #ff6633;
+            padding: 15px 40px;
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            cursor: pointer;
+            margin-top: 4rem;
+            transition: all 0.3s;
+            font-weight: 700;
+        }
+        .cta-btn:hover {
+            background: #ff6633;
+            color: #000;
+            box-shadow: 0 0 30px #ff6633;
+        }
+
+        /* Badge/Ticker */
+        .phase-badge {
+            margin-top: 2rem;
+            background: #ff6633;
+            color: #000;
+            padding: 5px 15px;
+            font-size: 0.8rem;
+            letter-spacing: 0.1em;
+            font-weight: bold;
+            transform: rotate(-2deg);
+        }
+
+        /* Abstract Desert Canyon SVG Visuals */
+        .canyon-svg {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 300px;
+            z-index: 0;
+            opacity: 0.4;
         }
     </style>
 </head>
 <body>
-    <div class="noise"></div>
-    <div id="app">
-        <div class="phase-badge">Phase 2 lineup — March 2027</div>
+
+    <svg class="noise-layer">
+        <filter id="noise">
+            <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/>
+        </filter>
+        <rect width="100%" height="100%" filter="url(#noise)" opacity="0.4"/>
+    </svg>
+
+    <div class="page-wrapper">
+        <div class="phase-badge">PHASE 2 LINEUP DROPPING MARCH 2027</div>
         
         <h1>EMBERWAVE</h1>
         
-        <div class="meta-info">
-            JUNE 18–20, 2027 · ASH CANYON, NEVADA
+        <div class="hero-date">June 18–20, 2027 · Ash Canyon, Nevada</div>
+
+        <div class="lineup-grid">
+            <div class="headliner top">NOVA CULT</div>
+            <div class="headliner top">Velvet Static</div>
+            <div class="headliner">MOONBURN</div>
+            <div class="headliner">Dax Riviera</div>
+            <div class="headliner">Cinder & Ash</div>
+            <div class="headliner">The Glass Dunes</div>
         </div>
 
-        <div class="lineup">
-            <span class="liner-name headliner">NOVA CULT</span>
-            <span class="liner-name headliner">VELVET STATIC</span>
-            <span class="liner-name headliner">MOONBURN</span>
-            <span class="liner-name subliner">DAX RIVIERA</span>
-            <span class="liner-name subliner">CINDER & ASH</span>
-            <span class="liner-name subliner">THE GLASS DUNES</span>
-        </div>
+        <button class="cta-btn">Register for Presale</button>
 
-        <a href="#" class="cta-btn">Get Tickets</a>
-        
-        <div class="canyon-floor"></div>
+        <!-- Abstract Canyon SVG -->
+        <svg class="canyon-svg" viewBox="0 0 1000 300" preserveAspectRatio="none">
+            <path d="M0,300 L0,200 L150,120 L300,250 L450,80 L600,200 L800,100 L1000,300 Z" fill="#ff6633" />
+            <path d="M0,300 L100,180 L250,90 L400,220 L550,60 L750,150 L1000,300 Z" fill="#4a2110" />
+            <path d="M0,300 L1000,300 L1000,280 L500,200 L0,280 Z" fill="#0a0a09" />
+        </svg>
     </div>
+
 </body>
 </html>

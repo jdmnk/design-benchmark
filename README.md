@@ -8,14 +8,14 @@ did best.
 It's built for *visual* tasks — not just landing pages but **three.js 3D scenes, canvas
 particle systems, hand-coded SVG art, pure-CSS scenes**, anything that renders.
 
-![example grid](docs/example-grid.png)
+[![animated preview — grid videos of the animated benchmarks](docs/preview.webp)](docs/preview.mp4)
 
-> One brief (a landing page for a fictional desert music festival), nine models, rendered
-> side by side. See
-> **[`examples/`](examples/)** for this plus an Interstellar-style black hole (three.js)
-> and a hand-coded SVG sunset — including the actual HTML each model produced. There's
-> also a **[showcase web app](web/)** (React/Vite, deployable to Vercel) that presents the
-> runs with their prompts and per-model metadata.
+> The animated benchmarks in motion (click for the [higher-quality mp4](docs/preview.mp4);
+> regenerate with `node scripts/make-preview.mjs`). See **[`examples/`](examples/)** for
+> all runs — a festival landing page, an Interstellar-style black hole (still + spinning),
+> a fireworks finale, a hand-coded SVG sunset — including the actual HTML each model
+> produced. There's also a **[showcase web app](web/)** (React/Vite, deployable to Vercel)
+> that presents the runs with their prompts and per-model metadata.
 
 ---
 
@@ -40,11 +40,11 @@ and visual front-end benchmarks (generate code → render in a browser → scree
 
 ## How it works
 
-Four stages, run in order. Each writes artifacts to disk, so any later stage can be re-run
+Five stages, run in order. Each writes artifacts to disk, so any later stage can be re-run
 on its own.
 
 ```
-config ──▶ ① generate ──▶ ② render ──▶ ③ grid ──▶ ④ report
+config ──▶ ① generate ──▶ ② render ──▶ ③ grid ──▶ ③b video ──▶ ④ report
             (LLM API)      (Chromium)    (sharp)     (markdown)
 ```
 
@@ -93,9 +93,9 @@ caption strip above each cell, used with full-page website screenshots).
 
 `models` can be an inline array or a **path to a shared lineup file** so many configs use
 the same models — the examples all use
-[`config/models/standard-9.json`](config/models/standard-9.json): GLM 5.2, GLM 5.1,
+[`config/models/standard-9.json`](config/models/standard-9.json): GLM 5.2, Grok 4.3,
 GPT-5.4 mini, Claude Haiku 4.5, Qwen3.7 Plus, Gemini 3.1 Flash-Lite, DeepSeek V4 Pro,
-MiMo v2.5, MiniMax M3.
+Kimi K2.6, Mistral Small 4.
 
 ---
 
@@ -151,10 +151,13 @@ time still yields a perfect 24 fps clip). The frames are then encoded (bundled s
 ffmpeg — no system install) into per-model `clip.mp4` files and one **`grid.mp4`**: every
 frame of the grid video is composed with the exact same layout, labels and placeholders as
 `grid.png`, which doubles as the poster/mid-frame still. Raw frames are deleted after
-encoding. See [`config/examples/black-hole-spin.config.json`](config/examples/black-hole-spin.config.json)
-— the spinning-Gargantua benchmark — for a full example; its prompt additionally requires
-framerate-independent motion (driven by the rAF timestamp) and visible azimuthal disk
-structure so the rotation actually reads on camera.
+encoding. Two animated benchmarks ship as examples —
+[`black-hole-spin`](config/examples/black-hole-spin.config.json) (the spinning Gargantua)
+and [`fireworks`](config/examples/fireworks.config.json) (a Canvas-2D fireworks finale,
+where the seeded RNG makes even a "random" show reproducible). Both prompts require
+framerate-independent motion driven by the rAF timestamp, and visible structure so the
+motion actually reads on camera. Rebuild the README preview from the grid videos with
+`node scripts/make-preview.mjs`.
 
 ## Resilience
 
@@ -295,7 +298,10 @@ design-bench/
 │   ├── models/standard-9.json    # the shared 9-model lineup
 │   └── examples/*.config.json    # black-hole (3D), sunset-svg…
 ├── web/                          # showcase app (React/Vite/TS, deploy to Vercel)
-├── scripts/setup-browser-deps.sh # rootless Chromium deps installer
+├── scripts/
+│   ├── setup-browser-deps.sh     # rootless Chromium deps installer
+│   ├── build-web-data.mjs        # regenerate the web app's data from runs
+│   └── make-preview.mjs          # rebuild docs/preview.{mp4,gif} from grid videos
 ├── src/
 │   ├── run.ts                    # CLI / orchestrator
 │   ├── config.ts                 # load, validate, defaults, shared-lineup resolution

@@ -2,71 +2,75 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Serene Sunset</title>
+    <title>Serene Sunset Landscape</title>
     <style>
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; }
-        svg { display: block; width: 100%; height: 100%; }
+        svg { display: block; }
+        .cloud { animation: drift 60s linear infinite; }
+        @keyframes drift { from { transform: translateX(-200px); } to { transform: translateX(1480px); } }
     </style>
 </head>
 <body>
-    <svg viewBox="0 0 1280 800" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-            <!-- Sky Gradient -->
-            <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#1a1a4a"/>
-                <stop offset="40%" stop-color="#7a2a7a"/>
-                <stop offset="70%" stop-color="#ff7e5f"/>
-                <stop offset="100%" stop-color="#ffb347"/>
-            </linearGradient>
 
-            <!-- River Gradient -->
-            <linearGradient id="riverGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#3d2b1f"/>
-                <stop offset="100%" stop-color="#8b4513"/>
-            </linearGradient>
+<svg viewBox="0 0 1280 800" preserveAspectRatio="xMidYMid slice" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <!-- Sky Gradient -->
+        <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#1a1a40" />
+            <stop offset="30%" stop-color="#4b0082" />
+            <stop offset="60%" stop-color="#ff69b4" />
+            <stop offset="85%" stop-color="#ff8c00" />
+            <stop offset="100%" stop-color="#ffd700" />
+        </linearGradient>
 
-            <!-- Sun Glow -->
-            <radialGradient id="sunGlow">
-                <stop offset="0%" stop-color="#fff9e3" stop-opacity="1"/>
-                <stop offset="30%" stop-color="#ffcc33" stop-opacity="0.8"/>
-                <stop offset="100%" stop-color="#ff6600" stop-opacity="0"/>
-            </radialGradient>
-            
-            <!-- Cloud Filter -->
-            <filter id="blurFilter">
-                <feGaussianBlur stdDeviation="4"/>
-            </filter>
-        </defs>
+        <!-- Sun Glow -->
+        <radialGradient id="sunGlow">
+            <stop offset="0%" stop-color="#fff9e0" />
+            <stop offset="30%" stop-color="#ffcc00" />
+            <stop offset="100%" stop-color="#ff8c00" stop-opacity="0" />
+        </radialGradient>
 
-        <!-- Background Sky -->
-        <rect width="1280" height="800" fill="url(#skyGrad)"/>
+        <!-- River Reflection Gradient -->
+        <linearGradient id="riverGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#ff8c00" stop-opacity="0.6" />
+            <stop offset="100%" stop-color="#4b0082" stop-opacity="0.8" />
+        </linearGradient>
+    </defs>
 
-        <!-- Sun -->
-        <circle cx="640" cy="450" r="60" fill="url(#sunGlow)"/>
+    <!-- Background Sky -->
+    <rect width="1280" height="800" fill="url(#skyGrad)" />
 
-        <!-- Clouds -->
-        <g opacity="0.6">
-            <path d="M200 150 Q 300 130 400 150 T 600 150" fill="none" stroke="#ffccaa" stroke-width="8" stroke-linecap="round" filter="url(#blurFilter)">
-                <animate attributeName="d" dur="20s" repeatCount="indefinite" values="M200 150 Q 300 130 400 150 T 600 150; M250 150 Q 350 130 450 150 T 650 150; M200 150 Q 300 130 400 150 T 600 150"/>
-            </path>
-            <path d="M800 200 Q 900 180 1000 200 T 1200 200" fill="none" stroke="#ffccaa" stroke-width="6" stroke-linecap="round" filter="url(#blurFilter)">
-                <animate attributeName="d" dur="25s" repeatCount="indefinite" values="M800 200 Q 900 180 1000 200 T 1200 200; M750 200 Q 850 180 950 200 T 1150 200; M800 200 Q 900 180 1000 200 T 1200 200"/>
-            </path>
-        </g>
+    <!-- Distant Clouds -->
+    <g opacity="0.6">
+        <path class="cloud" d="M100 150q50-20 100 0t100 0 100 0t100 0" fill="none" stroke="#ffb6c1" stroke-width="15" stroke-linecap="round" stroke-dasharray="200 500"/>
+        <path class="cloud" d="M400 250q80-30 160 0t160 0" fill="none" stroke="#ffb6c1" stroke-width="10" stroke-linecap="round" stroke-dasharray="300 400"/>
+        <path class="cloud" d="M800 180q60-25 120 0t120 0" fill="none" stroke="#ffb6c1" stroke-width="12" stroke-linecap="round" stroke-dasharray="250 300"/>
+    </g>
 
-        <!-- Mountains -->
-        <path d="M0 800 L0 500 L200 400 L450 550 L600 420 L750 550 L1000 450 L1280 550 L1280 800 Z" fill="#2d1b2e"/> <!-- Back range -->
-        <path d="M0 800 L0 550 L300 450 L500 600 L640 440 L780 600 L1100 500 L1280 600 L1280 800 Z" fill="#1a0f1a"/> <!-- Front range -->
+    <!-- Sun -->
+    <circle cx="640" cy="440" r="60" fill="url(#sunGlow)" />
+    <circle cx="640" cy="440" r="30" fill="#fffdf0" />
 
-        <!-- River -->
-        <path d="M400 800 L550 550 L730 550 L880 800 Z" fill="url(#riverGrad)"/>
-        
-        <!-- River Shimmer -->
-        <rect x="620" y="550" width="40" height="250" fill="#ffcc33" opacity="0.3">
-            <animate attributeName="opacity" values="0.1;0.4;0.1" dur="3s" repeatCount="indefinite"/>
-        </rect>
-        <path d="M630 550 L650 550 L670 800 L610 800 Z" fill="#ffffff" opacity="0.15"/>
+    <!-- Mountain Layer 1 (Furthest) -->
+    <path d="M0 450 L200 300 L400 400 L600 250 L800 400 L1000 300 L1280 450 Z" fill="#2d1b4e" />
 
-    </svg>
+    <!-- Mountain Layer 2 (Middle) -->
+    <path d="M0 550 L300 350 L640 220 L950 380 L1280 550 Z" fill="#4a2c6d" />
+
+    <!-- Mountain Layer 3 (Closest) -->
+    <path d="M0 800 L200 450 L640 380 L1100 480 L1280 800 Z" fill="#1e1233" />
+
+    <!-- River -->
+    <path d="M480 600 L800 600 L1280 800 L0 800 Z" fill="#2e1a47" />
+    
+    <!-- River Reflection -->
+    <path d="M580 600 L700 600 L850 800 L430 800 Z" fill="url(#riverGrad)" />
+
+    <!-- Shimmer Lines -->
+    <line x1="640" y1="600" x2="640" y2="800" stroke="#ffcc00" stroke-width="2" stroke-opacity="0.3" stroke-dasharray="10 20" />
+    <line x1="620" y1="650" x2="660" y2="650" stroke="#ffcc00" stroke-width="1" stroke-opacity="0.2" />
+    <line x1="580" y1="720" x2="700" y2="720" stroke="#ffcc00" stroke-width="1" stroke-opacity="0.2" />
+</svg>
+
 </body>
 </html>

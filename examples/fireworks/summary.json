@@ -1,0 +1,196 @@
+{
+  "name": "fireworks",
+  "prompt": "Create a continuous FIREWORKS FINALE over a city skyline as a full-screen Canvas 2D animation. A 5-second clip is captured, so the show must be in full swing at ALL times — no idle sky, ever.\n\nComposition (match so results are comparable):\n- Night sky filling the frame: a deep dark blue-to-black vertical gradient with a few faint stars.\n- A dark city skyline silhouette across the bottom ~18% of the frame — varied building heights, a few tiny lit windows.\n- Fireworks burst in the upper two-thirds of the sky.\n\nThe show (the point of this benchmark — judged on motion):\n- A dense, celebratory rhythm: at any moment 3–6 bursts should be visible in different phases (rocket ascending with a bright trail → explosion → expanding glowing sparks that fall with gravity and fade). Start the show ALREADY IN PROGRESS at t=0 — seed several bursts mid-flight on load.\n- Varied burst types (spherical peony, ring, willow with drooping trails) and varied colors — gold, red, cyan, violet, green — with additive glow.\n- Sparks leave fading trails; brief bloom flash at each detonation; subtle reflected glow on the skyline rooftops when a large burst goes off.\n\nUse Math.random() freely for variety (it is seeded by the harness — the show will be reproducible). Return ONLY a single complete HTML document.",
+  "generatedAt": "2026-07-02T11:00:04.078Z",
+  "models": [
+    {
+      "slug": "glm-5.2",
+      "label": "GLM 5.2",
+      "provider": "openrouter",
+      "modelId": "z-ai/glm-5.2",
+      "ok": true,
+      "htmlExtracted": true,
+      "finishReason": "stop",
+      "truncated": false,
+      "elapsedMs": 583659,
+      "usage": {
+        "promptTokens": 490,
+        "completionTokens": 10631,
+        "totalTokens": 11121
+      },
+      "startedAt": "2026-07-02T09:24:09.005Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
+    },
+    {
+      "slug": "grok-4.3",
+      "label": "Grok 4.3",
+      "provider": "openrouter",
+      "modelId": "x-ai/grok-4.3",
+      "ok": true,
+      "htmlExtracted": true,
+      "finishReason": "stop",
+      "truncated": false,
+      "elapsedMs": 19428,
+      "usage": {
+        "promptTokens": 606,
+        "completionTokens": 3131,
+        "totalTokens": 3737
+      },
+      "startedAt": "2026-07-02T09:24:09.017Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
+    },
+    {
+      "slug": "gpt-5.4-mini",
+      "label": "GPT-5.4 mini",
+      "provider": "openrouter",
+      "modelId": "openai/gpt-5.4-mini",
+      "ok": true,
+      "htmlExtracted": true,
+      "finishReason": "stop",
+      "truncated": false,
+      "elapsedMs": 26874,
+      "usage": {
+        "promptTokens": 491,
+        "completionTokens": 4069,
+        "totalTokens": 4560
+      },
+      "startedAt": "2026-07-02T09:24:09.019Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
+    },
+    {
+      "slug": "claude-haiku-4.5",
+      "label": "Claude Haiku 4.5",
+      "provider": "openrouter",
+      "modelId": "anthropic/claude-haiku-4.5",
+      "ok": true,
+      "htmlExtracted": true,
+      "finishReason": "stop",
+      "truncated": false,
+      "elapsedMs": 28671,
+      "usage": {
+        "promptTokens": 589,
+        "completionTokens": 4910,
+        "totalTokens": 5499
+      },
+      "startedAt": "2026-07-02T09:24:09.021Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
+    },
+    {
+      "slug": "qwen3.7-plus",
+      "label": "Qwen3.7 Plus",
+      "provider": "openrouter",
+      "modelId": "qwen/qwen3.7-plus",
+      "ok": true,
+      "htmlExtracted": true,
+      "finishReason": "stop",
+      "truncated": false,
+      "elapsedMs": 98666,
+      "usage": {
+        "promptTokens": 514,
+        "completionTokens": 5344,
+        "totalTokens": 5858
+      },
+      "startedAt": "2026-07-02T09:24:09.022Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
+    },
+    {
+      "slug": "gemini-3.1-flash-lite",
+      "label": "Gemini 3.1 Flash-Lite",
+      "provider": "openrouter",
+      "modelId": "google/gemini-3.1-flash-lite",
+      "ok": true,
+      "htmlExtracted": true,
+      "finishReason": "stop",
+      "truncated": false,
+      "elapsedMs": 5975,
+      "usage": {
+        "promptTokens": 504,
+        "completionTokens": 1845,
+        "totalTokens": 2349
+      },
+      "startedAt": "2026-07-02T09:24:09.023Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
+    },
+    {
+      "slug": "deepseek-v4-pro",
+      "label": "DeepSeek V4 Pro",
+      "provider": "openrouter",
+      "modelId": "deepseek/deepseek-v4-pro",
+      "ok": true,
+      "htmlExtracted": true,
+      "finishReason": "stop",
+      "truncated": false,
+      "elapsedMs": 755658,
+      "usage": {
+        "promptTokens": 497,
+        "completionTokens": 4927,
+        "totalTokens": 5424
+      },
+      "startedAt": "2026-07-02T09:38:43.167Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
+    },
+    {
+      "slug": "kimi-k2.6",
+      "label": "Kimi K2.6",
+      "provider": "openrouter",
+      "modelId": "moonshotai/kimi-k2.6",
+      "ok": true,
+      "htmlExtracted": true,
+      "finishReason": "stop",
+      "truncated": false,
+      "elapsedMs": 15784,
+      "usage": {
+        "promptTokens": 492,
+        "completionTokens": 5446,
+        "totalTokens": 5938
+      },
+      "startedAt": "2026-07-02T09:24:09.025Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
+    },
+    {
+      "slug": "mistral-small-4",
+      "label": "Mistral Small 4",
+      "provider": "openrouter",
+      "modelId": "mistralai/mistral-small-2603",
+      "ok": true,
+      "htmlExtracted": true,
+      "finishReason": "stop",
+      "truncated": false,
+      "elapsedMs": 53933,
+      "usage": {
+        "promptTokens": 529,
+        "completionTokens": 10153,
+        "totalTokens": 10682
+      },
+      "startedAt": "2026-07-02T09:24:09.027Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
+    }
+  ]
+}
