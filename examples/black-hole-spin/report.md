@@ -2,9 +2,11 @@
 
 Animated version of the black-hole benchmark: a 5-second clip of the spinning accretion disk is captured frame-by-frame on the deterministic virtual clock, then composed into one grid video (grid.mp4).
 
-**Models:** 9 · **Rendered:** 9/9
+**Models:** 9 · **Rendered:** 6/9
 
 ## Prompt
+
+Raw copyable version: [prompt.txt](./prompt.txt) · [system-prompt.txt](./system-prompt.txt)
 
 > Render a realistic supermassive black hole — the 'Gargantua' look from the film Interstellar — as a full-screen three.js scene (100vw × 100vh, auto-starting, no user interaction). A 5-SECOND CLIP of the scene is captured, so the motion matters as much as the still composition.
 > 
@@ -32,14 +34,14 @@ Animated version of the black-hole benchmark: a 5-second clip of the spinning ac
 
 | Model | ID | Provider | Status | Time | Tokens | Note |
 |-------|----|----------|--------|------|--------|------|
-| GLM 5.2 | `z-ai/glm-5.2` | openrouter | ✅ rendered | 555.0s | 12350 |  |
-| Grok 4.3 | `x-ai/grok-4.3` | openrouter | ✅ rendered | 22.7s | 4020 |  |
-| GPT-5.4 mini | `openai/gpt-5.4-mini` | openrouter | ✅ rendered | 42.9s | 5586 |  |
-| Claude Haiku 4.5 | `anthropic/claude-haiku-4.5` | openrouter | ✅ rendered | 23.0s | 4943 |  |
-| Qwen3.7 Plus | `qwen/qwen3.7-plus` | openrouter | ✅ rendered | 144.7s | 6900 |  |
-| Gemini 3.1 Flash-Lite | `google/gemini-3.1-flash-lite` | openrouter | ✅ rendered | 5.2s | 2508 |  |
-| DeepSeek V4 Pro | `deepseek/deepseek-v4-pro` | openrouter | ✅ rendered | 827.1s | 4476 |  |
-| Kimi K2.6 | `moonshotai/kimi-k2.6` | openrouter | ✅ rendered | 79.4s | 5497 |  |
-| Mistral Small 4 | `mistralai/mistral-small-2603` | openrouter | ✅ rendered | 73.8s | 13966 |  |
+| GLM 5.2 | `z-ai/glm-5.2` | openrouter | ✅ rendered | 572.6s | 13092 |  |
+| Grok 4.3 | `x-ai/grok-4.3` | openrouter | ✅ rendered | 39.7s | 3857 |  |
+| GPT-5.4 mini | `openai/gpt-5.4-mini` | openrouter | ⬛ blank | 29.7s | 5168 | JS error: Unexpected token '*' |
+| Claude Haiku 4.5 | `anthropic/claude-haiku-4.5` | openrouter | ✅ rendered | 29.9s | 6634 |  |
+| Qwen3.7 Plus | `qwen/qwen3.7-plus` | openrouter | ✅ rendered | 563.3s | 8690 |  |
+| Gemini 3.1 Flash-Lite | `google/gemini-3.1-flash-lite` | openrouter | ✅ rendered | 5.5s | 2671 |  |
+| DeepSeek V4 Pro | `deepseek/deepseek-v4-pro` | openrouter | ✅ rendered | 588.1s | 5450 |  |
+| Kimi K2.7 Code | `moonshotai/kimi-k2.7-code` | openrouter | ⬛ blank | 529.7s | 28784 |  |
+| Kimi K2.6 | `moonshotai/kimi-k2.6` | openrouter | ⬛ blank | 16.1s | 4560 | JS error: Unexpected token '*' |
 
 Per-model artifacts live in `models/<slug>/` (`raw.txt`, `output.html`, `screenshot.png`, `result.json`).

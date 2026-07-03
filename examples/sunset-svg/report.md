@@ -6,6 +6,8 @@ A single inline-SVG sunset scene: sun setting behind a mountain range, with clou
 
 ## Prompt
 
+Raw copyable version: [prompt.txt](./prompt.txt) · [system-prompt.txt](./system-prompt.txt)
+
 > Illustrate a serene sunset landscape as a single inline SVG. Match this composition so results are comparable:
 > 
 > - Sky fills the top ~55% of the scene: a smooth vertical sunset gradient, deep blue/indigo at the very top, through magenta/pink, to warm orange/gold near the horizon.

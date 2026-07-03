@@ -1,7 +1,7 @@
 {
   "name": "fireworks",
   "prompt": "Create a continuous FIREWORKS FINALE over a city skyline as a full-screen Canvas 2D animation. A 5-second clip is captured, so the show must be in full swing at ALL times — no idle sky, ever.\n\nComposition (match so results are comparable):\n- Night sky filling the frame: a deep dark blue-to-black vertical gradient with a few faint stars.\n- A dark city skyline silhouette across the bottom ~18% of the frame — varied building heights, a few tiny lit windows.\n- Fireworks burst in the upper two-thirds of the sky.\n\nThe show (the point of this benchmark — judged on motion):\n- A dense, celebratory rhythm: at any moment 3–6 bursts should be visible in different phases (rocket ascending with a bright trail → explosion → expanding glowing sparks that fall with gravity and fade). Start the show ALREADY IN PROGRESS at t=0 — seed several bursts mid-flight on load.\n- Varied burst types (spherical peony, ring, willow with drooping trails) and varied colors — gold, red, cyan, violet, green — with additive glow.\n- Sparks leave fading trails; brief bloom flash at each detonation; subtle reflected glow on the skyline rooftops when a large burst goes off.\n\nUse Math.random() freely for variety (it is seeded by the harness — the show will be reproducible). Return ONLY a single complete HTML document.",
-  "generatedAt": "2026-07-02T11:00:04.078Z",
+  "generatedAt": "2026-07-03T12:32:44.176Z",
   "models": [
     {
       "slug": "glm-5.2",

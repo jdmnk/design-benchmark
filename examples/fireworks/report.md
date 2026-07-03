@@ -6,6 +6,8 @@ Animated Canvas-2D benchmark: a continuous fireworks finale over a city skyline.
 
 ## Prompt
 
+Raw copyable version: [prompt.txt](./prompt.txt) · [system-prompt.txt](./system-prompt.txt)
+
 > Create a continuous FIREWORKS FINALE over a city skyline as a full-screen Canvas 2D animation. A 5-second clip is captured, so the show must be in full swing at ALL times — no idle sky, ever.
 > 
 > Composition (match so results are comparable):

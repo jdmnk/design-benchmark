@@ -6,6 +6,8 @@ Landing page for a fictional electronic-music festival. The content is fixed so 
 
 ## Prompt
 
+Raw copyable version: [prompt.txt](./prompt.txt) · [system-prompt.txt](./system-prompt.txt)
+
 > Design the landing page for «EMBERWAVE» — a fictional 3-day electronic music festival held in a desert canyon, June 18–20 2027. This is a DESIGN benchmark: make it look like a real festival site people would screenshot and share. Bold, expressive, atmospheric — pick a strong visual concept (psychedelic, brutalist rave, retro-futurist, cosmic desert — your call) and commit to it fully. Generic corporate layouts will score poorly.
 > 
 > Required content, all visible within the top ~800px (dense toward the top; the page is captured as a fixed-height crop):

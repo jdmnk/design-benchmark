@@ -26,6 +26,7 @@
           "status": "rendered",
           "elapsedMs": 160320,
           "outputTokens": 13293,
+          "costUsd": null,
           "truncated": false,
           "error": null,
           "page": "pages/festival-landing/glm-5.2.html"
@@ -37,6 +38,7 @@
           "status": "rendered",
           "elapsedMs": 20993,
           "outputTokens": 3129,
+          "costUsd": null,
           "truncated": false,
           "error": null,
           "page": "pages/festival-landing/grok-4.3.html"
@@ -48,6 +50,7 @@
           "status": "rendered",
           "elapsedMs": 36598,
           "outputTokens": 3922,
+          "costUsd": null,
           "truncated": false,
           "error": null,
           "page": "pages/festival-landing/gpt-5.4-mini.html"
@@ -59,6 +62,7 @@
           "status": "rendered",
           "elapsedMs": 30796,
           "outputTokens": 5697,
+          "costUsd": null,
           "truncated": false,
           "error": null,
           "page": "pages/festival-landing/claude-haiku-4.5.html"
@@ -70,6 +74,7 @@
           "status": "rendered",
           "elapsedMs": 138963,
           "outputTokens": 6671,
+          "costUsd": null,
           "truncated": false,
           "error": null,
           "page": "pages/festival-landing/qwen3.7-plus.html"
@@ -81,6 +86,7 @@
           "status": "rendered",
           "elapsedMs": 5683,
           "outputTokens": 1917,
+          "costUsd": null,
           "truncated": false,
           "error": null,
           "page": "pages/festival-landing/gemini-3.1-flash-lite.html"
@@ -92,6 +98,7 @@
           "status": "rendered",
           "elapsedMs": 373873,
           "outputTokens": 18720,
+          "costUsd": null,
           "truncated": false,
           "error": null,
           "page": "pages/festival-landing/deepseek-v4-pro.html"
@@ -103,6 +110,7 @@
           "status": "rendered",
           "elapsedMs": 228079,
           "outputTokens": 8471,
+          "costUsd": null,
           "truncated": false,
           "error": null,
           "page": "pages/festival-landing/kimi-k2.6.html"
@@ -114,6 +122,7 @@
           "status": "rendered",
           "elapsedMs": 75140,
           "outputTokens": 15240,
+          "costUsd": null,
           "truncated": false,
           "error": null,
           "page": "pages/festival-landing/mistral-small-4.html"
@@ -146,8 +155,9 @@
           "modelId": "z-ai/glm-5.2",
           "provider": "openrouter",
           "status": "rendered",
-          "elapsedMs": 186718,
-          "outputTokens": 9291,
+          "elapsedMs": 300793,
+          "outputTokens": 18538,
+          "costUsd": 0.0776420892,
           "truncated": false,
           "error": null,
           "page": "pages/black-hole/glm-5.2.html"
@@ -157,8 +167,9 @@
           "modelId": "x-ai/grok-4.3",
           "provider": "openrouter",
           "status": "rendered",
-          "elapsedMs": 31282,
-          "outputTokens": 3319,
+          "elapsedMs": 32203,
+          "outputTokens": 2455,
+          "costUsd": 0.0069056,
           "truncated": false,
           "error": null,
           "page": "pages/black-hole/grok-4.3.html"
@@ -168,8 +179,9 @@
           "modelId": "openai/gpt-5.4-mini",
           "provider": "openrouter",
           "status": "rendered",
-          "elapsedMs": 39280,
-          "outputTokens": 3954,
+          "elapsedMs": 40111,
+          "outputTokens": 5323,
+          "costUsd": 0.02441025,
           "truncated": false,
           "error": null,
           "page": "pages/black-hole/gpt-5.4-mini.html"
@@ -179,8 +191,9 @@
           "modelId": "anthropic/claude-haiku-4.5",
           "provider": "openrouter",
           "status": "rendered",
-          "elapsedMs": 35014,
-          "outputTokens": 7035,
+          "elapsedMs": 29926,
+          "outputTokens": 5658,
+          "costUsd": 0.029008,
           "truncated": false,
           "error": null,
           "page": "pages/black-hole/claude-haiku-4.5.html"
@@ -190,8 +203,9 @@
           "modelId": "qwen/qwen3.7-plus",
           "provider": "openrouter",
           "status": "rendered",
-          "elapsedMs": 94085,
-          "outputTokens": 5109,
+          "elapsedMs": 134728,
+          "outputTokens": 4807,
+          "costUsd": 0.00635552,
           "truncated": false,
           "error": null,
           "page": "pages/black-hole/qwen3.7-plus.html"
@@ -201,8 +215,9 @@
           "modelId": "google/gemini-3.1-flash-lite",
           "provider": "openrouter",
           "status": "rendered",
-          "elapsedMs": 5219,
-          "outputTokens": 1595,
+          "elapsedMs": 5028,
+          "outputTokens": 1487,
+          "costUsd": 0.002386,
           "truncated": false,
           "error": null,
           "page": "pages/black-hole/gemini-3.1-flash-lite.html"
@@ -212,33 +227,36 @@
           "modelId": "deepseek/deepseek-v4-pro",
           "provider": "openrouter",
           "status": "rendered",
-          "elapsedMs": 406062,
-          "outputTokens": 21473,
+          "elapsedMs": 771241,
+          "outputTokens": 20989,
+          "costUsd": 0.066782915,
           "truncated": false,
           "error": null,
           "page": "pages/black-hole/deepseek-v4-pro.html"
         },
         {
+          "label": "Kimi K2.7 Code",
+          "modelId": "moonshotai/kimi-k2.7-code",
+          "provider": "openrouter",
+          "status": "rendered",
+          "elapsedMs": 333499,
+          "outputTokens": 24371,
+          "costUsd": 0.0772897,
+          "truncated": false,
+          "error": null,
+          "page": "pages/black-hole/kimi-k2.7-code.html"
+        },
+        {
           "label": "Kimi K2.6",
           "modelId": "moonshotai/kimi-k2.6",
           "provider": "openrouter",
-          "status": "rendered",
-          "elapsedMs": 74831,
-          "outputTokens": 3713,
-          "truncated": false,
-          "error": null,
-          "page": "pages/black-hole/kimi-k2.6.html"
-        },
-        {
-          "label": "Mistral Small 4",
-          "modelId": "mistralai/mistral-small-2603",
-          "provider": "openrouter",
           "status": "blank",
-          "elapsedMs": 105999,
-          "outputTokens": 7415,
+          "elapsedMs": 25082,
+          "outputTokens": 5081,
+          "costUsd": 0.0177045,
           "truncated": false,
           "error": "JS error: Unexpected token '*'",
-          "page": "pages/black-hole/mistral-small-4.html"
+          "page": "pages/black-hole/kimi-k2.6.html"
         }
       ],
       "rendered": 8,
@@ -271,8 +289,9 @@
           "modelId": "z-ai/glm-5.2",
           "provider": "openrouter",
           "status": "rendered",
-          "elapsedMs": 554956,
-          "outputTokens": 11571,
+          "elapsedMs": 572604,
+          "outputTokens": 12313,
+          "costUsd": 0.03868746,
           "truncated": false,
           "error": null,
           "page": "pages/black-hole-spin/glm-5.2.html"
@@ -282,8 +301,9 @@
           "modelId": "x-ai/grok-4.3",
           "provider": "openrouter",
           "status": "rendered",
-          "elapsedMs": 22694,
-          "outputTokens": 3135,
+          "elapsedMs": 39681,
+          "outputTokens": 2972,
+          "costUsd": 0.00840185,
           "truncated": false,
           "error": null,
           "page": "pages/black-hole-spin/grok-4.3.html"
@@ -292,11 +312,12 @@
           "label": "GPT-5.4 mini",
           "modelId": "openai/gpt-5.4-mini",
           "provider": "openrouter",
-          "status": "rendered",
-          "elapsedMs": 42863,
-          "outputTokens": 4806,
+          "status": "blank",
+          "elapsedMs": 29704,
+          "outputTokens": 4388,
+          "costUsd": 0.020331,
           "truncated": false,
-          "error": null,
+          "error": "JS error: Unexpected token '*'",
           "page": "pages/black-hole-spin/gpt-5.4-mini.html"
         },
         {
@@ -304,8 +325,9 @@
           "modelId": "anthropic/claude-haiku-4.5",
           "provider": "openrouter",
           "status": "rendered",
-          "elapsedMs": 23042,
-          "outputTokens": 4029,
+          "elapsedMs": 29884,
+          "outputTokens": 5720,
+          "costUsd": 0.029514,
           "truncated": false,
           "error": null,
           "page": "pages/black-hole-spin/claude-haiku-4.5.html"
@@ -315,8 +337,9 @@
           "modelId": "qwen/qwen3.7-plus",
           "provider": "openrouter",
           "status": "rendered",
-          "elapsedMs": 144715,
-          "outputTokens": 6092,
+          "elapsedMs": 563284,
+          "outputTokens": 7882,
+          "costUsd": 0.01034752,
           "truncated": false,
           "error": null,
           "page": "pages/black-hole-spin/qwen3.7-plus.html"
@@ -326,8 +349,9 @@
           "modelId": "google/gemini-3.1-flash-lite",
           "provider": "openrouter",
           "status": "rendered",
-          "elapsedMs": 5182,
-          "outputTokens": 1711,
+          "elapsedMs": 5463,
+          "outputTokens": 1872,
+          "costUsd": 0.00300775,
           "truncated": false,
           "error": null,
           "page": "pages/black-hole-spin/gemini-3.1-flash-lite.html"
@@ -337,36 +361,39 @@
           "modelId": "deepseek/deepseek-v4-pro",
           "provider": "openrouter",
           "status": "rendered",
-          "elapsedMs": 827149,
-          "outputTokens": 3690,
+          "elapsedMs": 588124,
+          "outputTokens": 4664,
+          "costUsd": 0.014078688,
           "truncated": false,
           "error": null,
           "page": "pages/black-hole-spin/deepseek-v4-pro.html"
         },
         {
+          "label": "Kimi K2.7 Code",
+          "modelId": "moonshotai/kimi-k2.7-code",
+          "provider": "openrouter",
+          "status": "blank",
+          "elapsedMs": 529680,
+          "outputTokens": 28000,
+          "costUsd": 0.1127448,
+          "truncated": true,
+          "error": null,
+          "page": "pages/black-hole-spin/kimi-k2.7-code.html"
+        },
+        {
           "label": "Kimi K2.6",
           "modelId": "moonshotai/kimi-k2.6",
           "provider": "openrouter",
-          "status": "rendered",
-          "elapsedMs": 79427,
-          "outputTokens": 4713,
+          "status": "blank",
+          "elapsedMs": 16124,
+          "outputTokens": 3776,
+          "costUsd": 0.0133936,
           "truncated": false,
-          "error": null,
+          "error": "JS error: Unexpected token '*'",
           "page": "pages/black-hole-spin/kimi-k2.6.html"
-        },
-        {
-          "label": "Mistral Small 4",
-          "modelId": "mistralai/mistral-small-2603",
-          "provider": "openrouter",
-          "status": "rendered",
-          "elapsedMs": 73751,
-          "outputTokens": 13144,
-          "truncated": false,
-          "error": null,
-          "page": "pages/black-hole-spin/mistral-small-4.html"
         }
       ],
-      "rendered": 9,
+      "rendered": 6,
       "total": 9
     },
     {
@@ -398,6 +425,7 @@
           "status": "rendered",
           "elapsedMs": 583659,
           "outputTokens": 10631,
+          "costUsd": null,
           "truncated": false,
           "error": null,
           "page": "pages/fireworks/glm-5.2.html"
@@ -409,6 +437,7 @@
           "status": "rendered",
           "elapsedMs": 19428,
           "outputTokens": 3131,
+          "costUsd": null,
           "truncated": false,
           "error": null,
           "page": "pages/fireworks/grok-4.3.html"
@@ -420,6 +449,7 @@
           "status": "rendered",
           "elapsedMs": 26874,
           "outputTokens": 4069,
+          "costUsd": null,
           "truncated": false,
           "error": null,
           "page": "pages/fireworks/gpt-5.4-mini.html"
@@ -431,6 +461,7 @@
           "status": "rendered",
           "elapsedMs": 28671,
           "outputTokens": 4910,
+          "costUsd": null,
           "truncated": false,
           "error": null,
           "page": "pages/fireworks/claude-haiku-4.5.html"
@@ -442,6 +473,7 @@
           "status": "rendered",
           "elapsedMs": 98666,
           "outputTokens": 5344,
+          "costUsd": null,
           "truncated": false,
           "error": null,
           "page": "pages/fireworks/qwen3.7-plus.html"
@@ -453,6 +485,7 @@
           "status": "rendered",
           "elapsedMs": 5975,
           "outputTokens": 1845,
+          "costUsd": null,
           "truncated": false,
           "error": null,
           "page": "pages/fireworks/gemini-3.1-flash-lite.html"
@@ -464,6 +497,7 @@
           "status": "rendered",
           "elapsedMs": 755658,
           "outputTokens": 4927,
+          "costUsd": null,
           "truncated": false,
           "error": null,
           "page": "pages/fireworks/deepseek-v4-pro.html"
@@ -475,6 +509,7 @@
           "status": "rendered",
           "elapsedMs": 15784,
           "outputTokens": 5446,
+          "costUsd": null,
           "truncated": false,
           "error": null,
           "page": "pages/fireworks/kimi-k2.6.html"
@@ -486,6 +521,7 @@
           "status": "rendered",
           "elapsedMs": 53933,
           "outputTokens": 10153,
+          "costUsd": null,
           "truncated": false,
           "error": null,
           "page": "pages/fireworks/mistral-small-4.html"
@@ -520,6 +556,7 @@
           "status": "rendered",
           "elapsedMs": 68458,
           "outputTokens": 4724,
+          "costUsd": null,
           "truncated": false,
           "error": null,
           "page": "pages/sunset-svg/glm-5.2.html"
@@ -531,6 +568,7 @@
           "status": "rendered",
           "elapsedMs": 15052,
           "outputTokens": 1993,
+          "costUsd": null,
           "truncated": false,
           "error": null,
           "page": "pages/sunset-svg/grok-4.3.html"
@@ -542,6 +580,7 @@
           "status": "rendered",
           "elapsedMs": 21105,
           "outputTokens": 3296,
+          "costUsd": null,
           "truncated": false,
           "error": null,
           "page": "pages/sunset-svg/gpt-5.4-mini.html"
@@ -553,6 +592,7 @@
           "status": "rendered",
           "elapsedMs": 30972,
           "outputTokens": 5251,
+          "costUsd": null,
           "truncated": false,
           "error": null,
           "page": "pages/sunset-svg/claude-haiku-4.5.html"
@@ -564,6 +604,7 @@
           "status": "rendered",
           "elapsedMs": 84912,
           "outputTokens": 4587,
+          "costUsd": null,
           "truncated": false,
           "error": null,
           "page": "pages/sunset-svg/qwen3.7-plus.html"
@@ -575,6 +616,7 @@
           "status": "rendered",
           "elapsedMs": 5170,
           "outputTokens": 1564,
+          "costUsd": null,
           "truncated": false,
           "error": null,
           "page": "pages/sunset-svg/gemini-3.1-flash-lite.html"
@@ -586,6 +628,7 @@
           "status": "rendered",
           "elapsedMs": 396408,
           "outputTokens": 2722,
+          "costUsd": null,
           "truncated": false,
           "error": null,
           "page": "pages/sunset-svg/deepseek-v4-pro.html"
@@ -597,6 +640,7 @@
           "status": "rendered",
           "elapsedMs": 21407,
           "outputTokens": 3601,
+          "costUsd": null,
           "truncated": false,
           "error": null,
           "page": "pages/sunset-svg/kimi-k2.6.html"
@@ -608,6 +652,7 @@
           "status": "rendered",
           "elapsedMs": 32785,
           "outputTokens": 6593,
+          "costUsd": null,
           "truncated": false,
           "error": null,
           "page": "pages/sunset-svg/mistral-small-4.html"

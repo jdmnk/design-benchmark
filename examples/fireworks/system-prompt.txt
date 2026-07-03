@@ -1,0 +1,7 @@
+You are a generative/creative coder. Output a SINGLE self-contained HTML document using plain Canvas 2D and requestAnimationFrame — no external libraries, no images. The canvas fills the entire viewport (100vw × 100vh), starts automatically, and needs no user interaction.
+
+RELIABILITY RULES (a 5-second clip is captured frame-by-frame):
+- Drive ALL motion and spawn timing from the requestAnimationFrame timestamp (or performance.now()), NOT per-frame increments or setInterval/setTimeout, so the show is framerate-independent.
+- PERFORMANCE: at most ~2500 live particles, no huge synchronous setup loops, smooth 60fps.
+- Paint the night-sky background as the very first draw so the page never renders blank; fade trails with a translucent dark rect each frame rather than clearing.
+- Wrap risky setup in try/catch. Ensure the document is complete with every tag closed; if running long, simplify rather than truncate.

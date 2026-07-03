@@ -8,7 +8,7 @@
     body {
       margin: 0;
       overflow: hidden;
-      font-family: 'Arial', sans-serif;
+      font-family: 'Segoe UI', sans-serif;
       background-color: black;
     }
     canvas {
@@ -25,306 +25,426 @@
       }
     }
   </script>
+
   <script type="module">
     import * as THREE from 'three';
-    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js'; // only for reference, not used
     
-    // --- INITIALIZATION ---
-    try {
-      // Scene setup with near-black space background
-      const scene = new THREE.Scene();
-      scene.background = new THREE.Color(0x050510);
+    // --- SCENE SETUP ---
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x030311); // near-black space
+    
+    // Renderer with pixel ratio capped for performance
+    const renderer = new THREE.WebGLRenderer({ 
+      antialias: true, 
+      powerPreference: 'high-performance',
+      alpha: false
+    });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2.0));
+    renderer.setClearColor(0x020210);
+    document.body.appendChild(renderer.domElement);
+    
+    // Camera: fixed position, ~6 degrees above the disk plane
+    const camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 500);
+    camera.position.set(0, 0.7, 8.5); // slightly above horizontal plane
+    camera.lookAt(0, 0, 0);
+    
+    // --- LIGHTING & BACKGROUND STARS ---
+    // No traditional lights; use emissive properties and additive blending for glow.
+    
+    // Create a sparse starfield background (static, dim)
+    function createStarfield() {
+      const starsGeo = new THREE.BufferGeometry();
+      const starCount = 800;
+      const positions = new Float32Array(starCount * 3);
+      const colors = new Float32Array(starCount * 3);
       
-      // Renderer
-      const renderer = new THREE.WebGLRenderer({ 
-        antialias: true,
-        powerPreference: "high-performance"
-      });
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2.0)); // limit for performance
-      renderer.setClearColor(0x030310);
-      document.body.appendChild(renderer.domElement);
-      
-      // Camera: fixed position, 7 degrees above the horizontal plane
-      const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-      const camDistance = 8.5;
-      const elevationAngle = 7 * (Math.PI / 180); // 7 degrees
-      camera.position.set(
-        0, 
-        Math.sin(elevationAngle) * camDistance, 
-        Math.cos(elevationAngle) * camDistance
-      );
-      camera.lookAt(0, 0, 0);
-      
-      // --- LIGHTING (ambient only, objects use emissive) ---
-      const ambientLight = new THREE.AmbientLight(0x111122);
-      scene.add(ambientLight);
-      
-      // --- BLACK HOLE SPHERE (Event Horizon) ---
-      const horizonGeometry = new THREE.SphereGeometry(1.0, 64, 64);
-      const horizonMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
-      const blackHole = new THREE.Mesh(horizonGeometry, horizonMaterial);
-      scene.add(blackHole);
-      
-      // --- PHOTON RING (thin bright ring hugging the sphere) ---
-      const photonRingGeometry = new THREE.TorusGeometry(1.02, 0.025, 32, 128);
-      const photonRingMaterial = new THREE.MeshBasicMaterial({ 
-        color: 0xffeedd, 
-        emissive: new THREE.Color(0xffd0a0),
-        transparent: true,
-        opacity: 0.9
-      });
-      const photonRing = new THREE.Mesh(photonRingGeometry, photonRingMaterial);
-      photonRing.rotation.x = Math.PI / 2;
-      scene.add(photonRing);
-      
-      // --- ACCRETION DISK STRUCTURE ---
-      // We build a multi-layered disk with azimuthal clumps using vertex colors and custom rings.
-      const diskGroup = new THREE.Group();
-      scene.add(diskGroup);
-      
-      // Helper to create a textured ring segment with clumps
-      function createClumpyRing(innerRadius, outerRadius, colorInner, colorOuter, segments = 128, clumps = 16, opacity = 0.9) {
-        const geometry = new THREE.RingGeometry(innerRadius, outerRadius, segments, 1);
-        // Modify geometry to have azimuthal brightness variation
-        const positionAttribute = geometry.attributes.position;
-        const colors = [];
-        
-        // Precompute colors based on angle for clumpy appearance
-        for (let i = 0; i < positionAttribute.count; i++) {
-          const x = positionAttribute.getX(i);
-          const y = positionAttribute.getY(i);
-          const angle = Math.atan2(y, x);
-          const radius = Math.sqrt(x*x + y*y);
-          
-          // Normalized radius factor (0 at inner, 1 at outer)
-          const t = (radius - innerRadius) / (outerRadius - innerRadius);
-          
-          // Base color interpolation
-          const baseColor = new THREE.Color().copy(colorInner).lerp(colorOuter, t);
-          
-          // Clump factor: create bright spots based on angle
-          let clumpFactor = 0.0;
-          for (let c = 0; c < clumps; c++) {
-            const clumpAngle = (c / clumps) * Math.PI * 2;
-            // Vary clump angles slightly per ring to create streaks
-            const angleDiff = Math.abs(angle - clumpAngle);
-            const adjustedDiff = Math.min(angleDiff, Math.PI * 2 - angleDiff);
-            // Gaussian-like influence
-            const influence = Math.exp(-adjustedDiff * 3.5);
-            clumpFactor += influence * (0.5 + 0.5 * Math.sin(c * 1.7));
-          }
-          clumpFactor = Math.min(1.0, clumpFactor * 0.9);
-          
-          // Brightness modulation: base brightness + clump boost
-          const brightness = 0.6 + clumpFactor * 0.4;
-          
-          // Apply color
-          const finalColor = baseColor.clone().multiplyScalar(brightness);
-          colors.push(finalColor.r, finalColor.g, finalColor.b);
-        }
-        
-        geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
-        
-        const material = new THREE.MeshBasicMaterial({
-          vertexColors: true,
-          side: THREE.DoubleSide,
-          transparent: true,
-          opacity: opacity,
-          blending: THREE.AdditiveBlending,
-          depthWrite: false
-        });
-        
-        const ring = new THREE.Mesh(geometry, material);
-        ring.rotation.x = -Math.PI / 2; // Lay flat in XZ plane
-        return ring;
-      }
-      
-      // Create multiple rings to simulate disk structure with beaming
-      const diskLayers = [
-        { inner: 1.05, outer: 1.6, colorInner: new THREE.Color('#fff3d0'), colorOuter: new THREE.Color('#ffae3b'), opacity: 0.95, clumps: 14 },
-        { inner: 1.6, outer: 2.1, colorInner: new THREE.Color('#ffae3b'), colorOuter: new THREE.Color('#e8782a'), opacity: 0.9, clumps: 12 },
-        { inner: 2.1, outer: 2.7, colorInner: new THREE.Color('#e8782a'), colorOuter: new THREE.Color('#c8551a'), opacity: 0.85, clumps: 10 },
-        { inner: 2.7, outer: 3.2, colorInner: new THREE.Color('#c8551a'), colorOuter: new THREE.Color('#a03d1a'), opacity: 0.8, clumps: 8 }
-      ];
-      
-      const diskMeshes = [];
-      diskLayers.forEach(layer => {
-        const ring = createClumpyRing(layer.inner, layer.outer, layer.colorInner, layer.colorOuter, 128, layer.clumps, layer.opacity);
-        diskGroup.add(ring);
-        diskMeshes.push(ring);
-      });
-      
-      // Brighter side (relativistic beaming): create a slightly offset brighter copy for one side
-      const beamingGroup = new THREE.Group();
-      beamingGroup.rotation.y = Math.PI * 0.7; // rotate beaming highlight to one side
-      diskGroup.add(beamingGroup);
-      
-      const beamRing = createClumpyRing(1.08, 1.7, new THREE.Color('#fff8e7'), new THREE.Color('#ffb55a'), 128, 10, 0.7);
-      beamingGroup.add(beamRing);
-      
-      // --- GRAVITATIONAL LENSING ARCS (Far side of disk bent over/under) ---
-      const arcsGroup = new THREE.Group();
-      scene.add(arcsGroup);
-      
-      function createLensingArc(radius, verticalOffset, arcLength, color, thickness = 0.08, opacity = 0.85) {
-        // Create a partial torus that wraps over/under the sphere
-        const thetaStart = -arcLength / 2;
-        const thetaEnd = arcLength / 2;
-        const geometry = new THREE.TorusGeometry(radius, thickness, 16, 64, Math.PI * 2);
-        
-        // We'll use a custom approach: create a curved tube along an arc in the YZ plane (for top/bottom arcs)
-        // Actually, simpler: use a torus but rotate and position it.
-        // For top arc: torus in XZ plane? No, we need arcs above and below.
-        // Better: create a custom curve for the arc.
-        const points = [];
-        const steps = 50;
-        for (let i = 0; i <= steps; i++) {
-          const t = i / steps;
-          const angle = thetaStart + t * (thetaEnd - thetaStart);
-          // Position on a circle in the XZ plane? No, lensing arcs bend over the top, so they are in a plane perpendicular to disk?
-          // In Interstellar, the far side of the disk appears bent over the top and mirrored below.
-          // We can approximate with partial tori oriented horizontally but shifted vertically.
-          // Actually, a torus geometry around Y axis? Let's use a torus with rotation.
-          const x = Math.cos(angle) * radius;
-          const z = Math.sin(angle) * radius;
-          const y = verticalOffset;
-          points.push(new THREE.Vector3(x, y, z));
-        }
-        const curve = new THREE.CatmullRomCurve3(points);
-        const tubeGeometry = new THREE.TubeGeometry(curve, 64, thickness, 8, false);
-        
-        const material = new THREE.MeshBasicMaterial({
-          color: color,
-          emissive: new THREE.Color(color).multiplyScalar(0.5),
-          transparent: true,
-          opacity: opacity,
-          blending: THREE.AdditiveBlending,
-          depthWrite: false,
-          side: THREE.DoubleSide
-        });
-        return new THREE.Mesh(tubeGeometry, material);
-      }
-      
-      // Top arc: bends over the top of the sphere, radius slightly larger than sphere
-      const topArcRadius = 1.15;
-      const topArcVertical = 0.9;
-      const topArcLength = Math.PI * 1.3; // wraps over
-      const topArcColor = '#ffcc88';
-      const topArc = createLensingArc(topArcRadius, topArcVertical, topArcLength, topArcColor, 0.07, 0.9);
-      arcsGroup.add(topArc);
-      
-      // Bottom arc: mirrored under
-      const bottomArc = createLensingArc(topArcRadius, -topArcVertical, topArcLength, '#ffbb77', 0.07, 0.9);
-      arcsGroup.add(bottomArc);
-      
-      // Additional thinner arcs closer to photon ring
-      const innerTopArc = createLensingArc(1.08, 0.75, Math.PI * 1.2, '#ffeebb', 0.04, 0.95);
-      arcsGroup.add(innerTopArc);
-      const innerBottomArc = createLensingArc(1.08, -0.75, Math.PI * 1.2, '#ffddaa', 0.04, 0.95);
-      arcsGroup.add(innerBottomArc);
-      
-      // --- STARFIELD BACKGROUND ---
-      const starsGeometry = new THREE.BufferGeometry();
-      const starsCount = 800;
-      const starsPositions = new Float32Array(starsCount * 3);
-      const starsColors = new Float32Array(starsCount * 3);
-      
-      for (let i = 0; i < starsCount * 3; i += 3) {
-        // Random sphere distribution with larger radius
-        const radius = 20 + Math.random() * 30;
+      for (let i = 0; i < starCount * 3; i += 3) {
+        // Random sphere distribution far away
+        const radius = 30 + Math.random() * 30;
         const theta = Math.random() * Math.PI * 2;
-        const phi = Math.acos(2 * Math.random() - 1);
+        const phi = Math.asin((Math.random() * 2) - 1);
         
-        starsPositions[i] = Math.cos(theta) * Math.sin(phi) * radius;
-        starsPositions[i+1] = Math.sin(theta) * Math.sin(phi) * radius * 0.6; // flatten slightly
-        starsPositions[i+2] = Math.cos(phi) * radius;
+        positions[i] = Math.cos(theta) * Math.cos(phi) * radius;
+        positions[i+1] = Math.sin(phi) * radius * 0.8; // slightly flattened
+        positions[i+2] = Math.sin(theta) * Math.cos(phi) * radius;
         
-        // Dim stars with slight color variation
+        // Dim white/blueish stars
         const brightness = 0.3 + Math.random() * 0.7;
-        const tint = Math.random();
-        if (tint < 0.1) {
-          starsColors[i] = 0.8 * brightness;
-          starsColors[i+1] = 0.9 * brightness;
-          starsColors[i+2] = 1.0 * brightness;
-        } else if (tint < 0.2) {
-          starsColors[i] = 1.0 * brightness;
-          starsColors[i+1] = 0.8 * brightness;
-          starsColors[i+2] = 0.7 * brightness;
-        } else {
-          starsColors[i] = 0.9 * brightness;
-          starsColors[i+1] = 0.9 * brightness;
-          starsColors[i+2] = 1.0 * brightness;
-        }
+        colors[i] = 0.8 * brightness;
+        colors[i+1] = 0.8 * brightness;
+        colors[i+2] = 0.9 * brightness;
       }
       
-      starsGeometry.setAttribute('position', new THREE.BufferAttribute(starsPositions, 3));
-      starsGeometry.setAttribute('color', new THREE.BufferAttribute(starsColors, 3));
+      starsGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      starsGeo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
       
-      const starsMaterial = new THREE.PointsMaterial({
+      const starsMat = new THREE.PointsMaterial({
         size: 0.12,
         vertexColors: true,
         blending: THREE.AdditiveBlending,
         depthWrite: false,
+        depthTest: true,
         transparent: true,
         opacity: 0.9
       });
       
-      const stars = new THREE.Points(starsGeometry, starsMaterial);
+      const stars = new THREE.Points(starsGeo, starsMat);
       scene.add(stars);
-      
-      // --- ANIMATION LOOP ---
-      let clock = new THREE.Clock();
-      
-      function animate() {
-        const elapsedTime = performance.now() * 0.001; // seconds, frame-rate independent
-        const delta = clock.getDelta();
-        
-        // Rotate accretion disk (25-40 degrees per second)
-        const rotationSpeed = 32 * (Math.PI / 180); // 32 degrees per second in radians
-        diskGroup.rotation.y += rotationSpeed * delta;
-        
-        // Rotate beaming group slower for drift effect
-        beamingGroup.rotation.y += 0.2 * delta;
-        
-        // Subtle shimmer/flicker on arcs by adjusting opacity slightly
-        const shimmer = 0.85 + Math.sin(elapsedTime * 15) * 0.05 + Math.sin(elapsedTime * 23) * 0.03;
-        arcsGroup.children.forEach(arc => {
-          if (arc.material) {
-            arc.material.opacity = shimmer;
-          }
-        });
-        
-        // Photon ring subtle pulse
-        photonRing.material.opacity = 0.8 + Math.sin(elapsedTime * 12) * 0.1;
-        
-        // Slight starfield rotation for depth
-        stars.rotation.y += 0.02 * delta;
-        stars.rotation.x += 0.005 * delta;
-        
-        // Render
-        renderer.render(scene, camera);
-        requestAnimationFrame(animate);
-      }
-      
-      // Start animation immediately
-      animate();
-      
-      // Handle window resize
-      window.addEventListener('resize', onWindowResize, false);
-      function onWindowResize() {
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-      }
-      
-      console.log('Gargantua scene initialized successfully.');
-      
-    } catch (error) {
-      console.error('Scene initialization failed:', error);
-      // Fallback: render a simple black background with error text
-      document.body.innerHTML = '<div style="color:white; text-align:center; padding-top:50vh;">Scene error. Please check console.</div>';
     }
+    createStarfield();
+    
+    // --- BLACK HOLE CORE (Event Horizon) ---
+    const blackHoleRadius = 0.92; // diameter ~28% of viewport height at this distance
+    const blackHoleGeo = new THREE.SphereGeometry(blackHoleRadius, 64, 64);
+    const blackHoleMat = new THREE.MeshBasicMaterial({ color: 0x000000 });
+    const blackHole = new THREE.Mesh(blackHoleGeo, blackHoleMat);
+    scene.add(blackHole);
+    
+    // --- PHOTON RING (thin bright ring hugging the event horizon) ---
+    const photonRingGeo = new THREE.TorusGeometry(blackHoleRadius * 1.02, 0.025, 32, 128);
+    const photonRingMat = new THREE.MeshBasicMaterial({
+      color: 0xffdd99,
+      emissive: new THREE.Color(0x553322),
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+      depthTest: true,
+      transparent: true,
+      opacity: 0.9
+    });
+    const photonRing = new THREE.Mesh(photonRingGeo, photonRingMat);
+    photonRing.rotation.x = Math.PI / 2;
+    scene.add(photonRing);
+    
+    // --- ACCRETION DISK (horizontal, with structure) ---
+    // We use a ring geometry with custom shader-like approach via canvas texture for azimuthal structure.
+    // Disk extends from just outside photon ring to about 2.5x radius.
+    const diskInnerRadius = blackHoleRadius * 1.15;
+    const diskOuterRadius = blackHoleRadius * 2.6;
+    
+    // Create a canvas texture with streaks/clumps for azimuthal variation
+    function createDiskTexture() {
+      const canvas = document.createElement('canvas');
+      canvas.width = 1024;
+      canvas.height = 64; // radial resolution vs angular
+      const ctx = canvas.getContext('2d');
+      
+      // Clear with transparent background
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Draw angular streaks and clumps
+      const width = canvas.width;
+      const height = canvas.height;
+      
+      // Base gradient: inner bright, outer dimmer, with color shift
+      for (let x = 0; x < width; x++) {
+        // x maps to angle 0 to 2PI
+        const angle = (x / width) * Math.PI * 2;
+        
+        // Create radial gradient for each column to mimic inner hot, outer cool
+        const gradient = ctx.createLinearGradient(0, 0, 0, height);
+        // Inner edge: bright white-yellow
+        gradient.addColorStop(0.0, '#fff8e7');
+        gradient.addColorStop(0.2, '#ffd58c');
+        gradient.addColorStop(0.5, '#ffaa33');
+        gradient.addColorStop(0.8, '#d95f1a');
+        gradient.addColorStop(1.0, '#8a2e0c');
+        
+        ctx.fillStyle = gradient;
+        ctx.fillRect(x, 0, 1, height);
+      }
+      
+      // Add azimuthal structure: bright clumps and dark bands
+      ctx.globalCompositeOperation = 'overlay';
+      for (let i = 0; i < 35; i++) {
+        const startX = Math.random() * width;
+        const clumpWidth = 20 + Math.random() * 80;
+        const alpha = 0.2 + Math.random() * 0.5;
+        
+        const gradientX = ctx.createLinearGradient(startX, 0, startX + clumpWidth, 0);
+        gradientX.addColorStop(0, `rgba(255,255,255,${alpha})`);
+        gradientX.addColorStop(0.5, `rgba(255,200,100,${alpha*0.8})`);
+        gradientX.addColorStop(1, `rgba(255,255,255,0)`);
+        
+        ctx.fillStyle = gradientX;
+        ctx.fillRect(startX, 0, clumpWidth, height);
+        
+        // Add some darker streaks
+        if (Math.random() > 0.6) {
+          const darkStart = Math.random() * width;
+          const darkWidth = 15 + Math.random() * 50;
+          ctx.fillStyle = `rgba(30,10,5,${0.3+Math.random()*0.4})`;
+          ctx.fillRect(darkStart, 0, darkWidth, height);
+        }
+      }
+      
+      // Add turbulent thin lines
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.strokeStyle = 'rgba(255,200,100,0.3)';
+      ctx.lineWidth = 1.5;
+      for (let j = 0; j < 60; j++) {
+        const yPos = Math.random() * height;
+        ctx.beginPath();
+        ctx.moveTo(0, yPos);
+        for (let x = 0; x < width; x += 40) {
+          ctx.lineTo(x + Math.random()*30, yPos + (Math.random()-0.5)*8);
+        }
+        ctx.stroke();
+      }
+      
+      return new THREE.CanvasTexture(canvas);
+    }
+    
+    const diskTexture = createDiskTexture();
+    diskTexture.wrapS = THREE.RepeatWrapping;
+    diskTexture.wrapT = THREE.RepeatWrapping;
+    diskTexture.colorSpace = THREE.SRGBColorSpace;
+    
+    // Main disk using RingGeometry
+    const diskGeo = new THREE.RingGeometry(diskInnerRadius, diskOuterRadius, 200, 1);
+    // Adjust UVs to map texture correctly
+    const pos = diskGeo.attributes.position;
+    const uv = diskGeo.attributes.uv;
+    for (let i = 0; i < pos.count; i++) {
+      const x = pos.getX(i);
+      const y = pos.getY(i);
+      const radius = Math.sqrt(x*x + y*y);
+      const angle = Math.atan2(y, x);
+      
+      // U: angle mapping (0 to 1)
+      let u = (angle + Math.PI) / (Math.PI * 2);
+      // V: radial mapping (0 inner, 1 outer)
+      let v = (radius - diskInnerRadius) / (diskOuterRadius - diskInnerRadius);
+      uv.setXY(i, u, v);
+    }
+    
+    const diskMat = new THREE.MeshBasicMaterial({
+      map: diskTexture,
+      side: THREE.DoubleSide,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+      depthTest: true,
+      transparent: true,
+      opacity: 0.95,
+      emissive: new THREE.Color(0x331100)
+    });
+    
+    const accretionDisk = new THREE.Mesh(diskGeo, diskMat);
+    accretionDisk.rotation.x = -Math.PI / 2; // horizontal plane
+    scene.add(accretionDisk);
+    
+    // --- LENSING ARCS (bent light above and below) ---
+    // These simulate the far side of the disk being warped by gravity.
+    function createLensingArc(upper = true) {
+      const arcRadius = blackHoleRadius * 1.8;
+      const tubeRadius = 0.08;
+      const arcAngle = Math.PI * 1.4; // slightly more than half circle to wrap around
+      
+      const curve = new THREE.EllipseCurve(
+        0, 0,
+        arcRadius, arcRadius,
+        upper ? 0.2 : Math.PI - 0.2,
+        upper ? Math.PI - 0.2 : 2*Math.PI - 0.2,
+        false,
+        0
+      );
+      
+      const points = curve.getPoints(120);
+      const path = new THREE.CatmullRomCurve3(
+        points.map(p => new THREE.Vector3(p.x, upper ? 0.25 : -0.25, p.y)),
+        false
+      );
+      
+      const tubularSegments = 200;
+      const tubeGeo = new THREE.TubeGeometry(path, tubularSegments, tubeRadius, 8, false);
+      
+      // Color gradient along the arc
+      const colors = [];
+      const posAttr = tubeGeo.attributes.position;
+      for (let i = 0; i < posAttr.count; i++) {
+        const x = posAttr.getX(i);
+        const y = posAttr.getY(i);
+        const z = posAttr.getZ(i);
+        const angle = Math.atan2(z, x);
+        // mix colors based on angle to simulate beaming and disk color
+        const t = (angle + Math.PI) / (Math.PI * 2);
+        const color = new THREE.Color();
+        if (t < 0.3) color.setHSL(0.12, 1.0, 0.8);
+        else if (t < 0.6) color.setHSL(0.1, 1.0, 0.6);
+        else color.setHSL(0.08, 1.0, 0.5);
+        colors.push(color.r, color.g, color.b);
+      }
+      tubeGeo.setAttribute('color', new THREE.BufferAttribute(new Float32Array(colors), 3));
+      
+      const tubeMat = new THREE.MeshBasicMaterial({
+        vertexColors: true,
+        side: THREE.DoubleSide,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false,
+        depthTest: true,
+        transparent: true,
+        opacity: 0.9,
+        emissive: new THREE.Color(0x442200)
+      });
+      
+      const arc = new THREE.Mesh(tubeGeo, tubeMat);
+      return arc;
+    }
+    
+    const upperArc = createLensingArc(true);
+    const lowerArc = createLensingArc(false);
+    scene.add(upperArc);
+    scene.add(lowerArc);
+    
+    // Additional thin bright arcs closer to the photon ring for extra glow
+    function createThinArc(upper = true) {
+      const arcRadius = blackHoleRadius * 1.05;
+      const tubeRadius = 0.03;
+      const curve = new THREE.EllipseCurve(
+        0, 0,
+        arcRadius, arcRadius,
+        upper ? 0.1 : Math.PI - 0.1,
+        upper ? Math.PI - 0.1 : 2*Math.PI - 0.1,
+        false,
+        0
+      );
+      const points = curve.getPoints(80);
+      const path = new THREE.CatmullRomCurve3(
+        points.map(p => new THREE.Vector3(p.x, upper ? 0.15 : -0.15, p.y)),
+        false
+      );
+      const geo = new THREE.TubeGeometry(path, 120, tubeRadius, 6, false);
+      const mat = new THREE.MeshBasicMaterial({
+        color: 0xffcc88,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false,
+        depthTest: true,
+        transparent: true,
+        opacity: 0.9
+      });
+      return new THREE.Mesh(geo, mat);
+    }
+    
+    const thinUpper = createThinArc(true);
+    const thinLower = createThinArc(false);
+    scene.add(thinUpper);
+    scene.add(thinLower);
+    
+    // --- ADDITIONAL GLOW SPRITES AROUND DISK EDGES for shimmer ---
+    function createGlowSprites() {
+      const group = new THREE.Group();
+      const spriteCount = 60;
+      const spriteTexture = (() => {
+        const canvas = document.createElement('canvas');
+        canvas.width = 32;
+        canvas.height = 32;
+        const ctx = canvas.getContext('2d');
+        ctx.beginPath();
+        ctx.arc(16, 16, 14, 0, Math.PI*2);
+        const gradient = ctx.createRadialGradient(16,16,0,16,16,14);
+        gradient.addColorStop(0, 'rgba(255,200,100,1)');
+        gradient.addColorStop(0.5, 'rgba(255,100,20,0.9)');
+        gradient.addColorStop(1, 'rgba(255,50,0,0)');
+        ctx.fillStyle = gradient;
+        ctx.fill();
+        return new THREE.CanvasTexture(canvas);
+      })();
+      
+      for (let i = 0; i < spriteCount; i++) {
+        const angle = (i / spriteCount) * Math.PI * 2;
+        const radius = diskInnerRadius + Math.random() * (diskOuterRadius - diskInnerRadius);
+        const x = Math.cos(angle) * radius;
+        const z = Math.sin(angle) * radius;
+        const spriteMat = new THREE.SpriteMaterial({
+          map: spriteTexture,
+          blending: THREE.AdditiveBlending,
+          depthWrite: false,
+          depthTest: true,
+          opacity: 0.4 + Math.random() * 0.5,
+          color: new THREE.Color().setHSL(0.08 + Math.random()*0.1, 1, 0.6)
+        });
+        const sprite = new THREE.Sprite(spriteMat);
+        sprite.position.set(x, 0, z);
+        sprite.scale.set(0.25, 0.25, 1);
+        group.add(sprite);
+      }
+      return group;
+    }
+    
+    const glowSprites = createGlowSprites();
+    scene.add(glowSprites);
+    
+    // --- ADDITIONAL FAINT OUTER DISK for depth ---
+    const outerDiskGeo = new THREE.RingGeometry(diskOuterRadius, diskOuterRadius + 0.4, 150, 1);
+    const outerDiskMat = new THREE.MeshBasicMaterial({
+      color: 0x552211,
+      side: THREE.DoubleSide,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+      depthTest: true,
+      transparent: true,
+      opacity: 0.3
+    });
+    const outerDisk = new THREE.Mesh(outerDiskGeo, outerDiskMat);
+    outerDisk.rotation.x = -Math.PI / 2;
+    scene.add(outerDisk);
+    
+    // --- ANIMATION LOOP ---
+    let clock = new THREE.Clock();
+    
+    function animate() {
+      const delta = clock.getDelta();
+      // Use absolute time for consistent rotation speed
+      const elapsedTime = performance.now() * 0.001; // seconds
+      
+      // Rotate accretion disk and related elements
+      // Speed: ~30 degrees per second = 0.5236 rad/s
+      const rotationSpeed = 0.55; // rad/s
+      const diskRotation = elapsedTime * rotationSpeed;
+      
+      accretionDisk.rotation.z = diskRotation;
+      outerDisk.rotation.z = diskRotation * 0.9;
+      glowSprites.rotation.z = diskRotation;
+      
+      // Rotate lensing arcs? They should remain fixed relative to camera view,
+      // but we can add subtle oscillation for shimmer.
+      // Instead, we modulate their opacity or position slightly.
+      const shimmer = Math.sin(elapsedTime * 15) * 0.03;
+      upperArc.position.y = 0.25 + shimmer;
+      lowerArc.position.y = -0.25 - shimmer;
+      thinUpper.position.y = 0.15 + shimmer * 0.5;
+      thinLower.position.y = -0.15 - shimmer * 0.5;
+      
+      // Beaming effect: vary brightness of one side of the disk by modifying material?
+      // We can rotate a subtle overlay or adjust emissive. Since disk uses texture,
+      // we can rotate the texture offset to shift clumps, but rotation already does that.
+      // For beaming, we'll slightly adjust the color of photon ring based on angle.
+      const beamIntensity = 0.7 + Math.sin(elapsedTime * 2.0) * 0.3;
+      photonRing.material.color.setHSL(0.12, 1, 0.55 + beamIntensity * 0.2);
+      
+      // Rotate photon ring? It should stay fixed relative to camera, but we can rotate it too.
+      photonRing.rotation.z = diskRotation * 0.2;
+      
+      // Starfield subtle rotation for background motion
+      // (static stars, so no rotation)
+      
+      renderer.render(scene, camera);
+      requestAnimationFrame(animate);
+    }
+    
+    // Start animation immediately
+    animate();
+    
+    // Handle window resize
+    window.addEventListener('resize', onWindowResize, false);
+    function onWindowResize() {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+    
+    console.log('Gargantua black hole scene running.');
   </script>
 </body>
 </html>

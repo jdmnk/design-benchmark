@@ -6,6 +6,6 @@
   { "slug": "qwen3.7-plus",        "label": "Qwen3.7 Plus",         "provider": "openrouter", "id": "qwen/qwen3.7-plus" },
   { "slug": "gemini-3.1-flash-lite","label": "Gemini 3.1 Flash-Lite","provider": "openrouter", "id": "google/gemini-3.1-flash-lite" },
   { "slug": "deepseek-v4-pro",     "label": "DeepSeek V4 Pro",      "provider": "openrouter", "id": "deepseek/deepseek-v4-pro" },
-  { "slug": "kimi-k2.6",           "label": "Kimi K2.6",            "provider": "openrouter", "id": "moonshotai/kimi-k2.6" },
-  { "slug": "mistral-small-4",     "label": "Mistral Small 4",      "provider": "openrouter", "id": "mistralai/mistral-small-2603" }
+  { "slug": "kimi-k2.7-code",      "label": "Kimi K2.7 Code",       "provider": "openrouter", "id": "moonshotai/kimi-k2.7-code" },
+  { "slug": "kimi-k2.6",           "label": "Kimi K2.6",            "provider": "openrouter", "id": "moonshotai/kimi-k2.6" }
 ]
