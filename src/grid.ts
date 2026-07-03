@@ -217,18 +217,37 @@ function loadResult(path: string): GenerationResult | null {
   }
 }
 
-/** "12.4s · 3,210 tok" — elapsed time + output (completion) tokens. */
+/** "12m51s · 17.5k tok · $0.014" — elapsed time, output tokens, USD cost. */
 function statsLine(res: GenerationResult | null): string {
   if (!res) return "";
   const parts: string[] = [];
-  if (res.elapsedMs != null) parts.push(`${(res.elapsedMs / 1000).toFixed(1)}s`);
+  if (res.elapsedMs != null) parts.push(formatDuration(res.elapsedMs));
   const out = res.usage?.completionTokens ?? res.usage?.totalTokens;
-  if (out != null) parts.push(`${groupThousands(out)} tok`);
+  if (out != null) parts.push(`${formatTokens(out)} tok`);
+  if (res.usage?.costUsd != null) parts.push(formatUsd(res.usage.costUsd));
   return parts.join("   ·   ");
 }
 
-function groupThousands(n: number): string {
-  return Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+/** "42.3s" under a minute, "15m10s" above. */
+function formatDuration(ms: number): string {
+  const s = ms / 1000;
+  if (s < 60) return `${s.toFixed(1)}s`;
+  const min = Math.floor(s / 60);
+  const rem = Math.round(s % 60);
+  return rem === 60 ? `${min + 1}m0s` : `${min}m${rem}s`;
+}
+
+/** "300" under 1k, then "1.2k", "17.5k", "112k". */
+function formatTokens(n: number): string {
+  if (n < 1000) return `${Math.round(n)}`;
+  const k = n / 1000;
+  return k >= 100 ? `${Math.round(k)}k` : `${k.toFixed(1).replace(/\.0$/, "")}k`;
+}
+
+/** More decimals the cheaper the call, so sub-cent generations stay readable. */
+function formatUsd(cost: number): string {
+  const decimals = cost >= 1 ? 2 : cost >= 0.01 ? 3 : 4;
+  return `$${cost.toFixed(decimals)}`;
 }
 
 /** A solid banner with centred text, rendered as SVG (sharp rasterises it). */

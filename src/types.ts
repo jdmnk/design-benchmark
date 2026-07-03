@@ -150,6 +150,8 @@ export interface GenerationResult {
     promptTokens?: number;
     completionTokens?: number;
     totalTokens?: number;
+    /** What this generation cost in USD (OpenRouter reports it per request). */
+    costUsd?: number;
   };
   startedAt: string;
   /** Filled in by the render stage. */

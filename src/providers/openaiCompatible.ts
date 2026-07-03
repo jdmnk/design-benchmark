@@ -11,6 +11,11 @@ export function makeOpenAICompatibleProvider(opts: {
   baseUrl: string;
   apiKey: string;
   extraHeaders?: Record<string, string>;
+  /**
+   * Ask the endpoint to report the request's USD cost in `usage.cost`.
+   * OpenRouter-specific — the real OpenAI API rejects the extra param.
+   */
+  requestCostInUsage?: boolean;
 }): Provider {
   return {
     name: opts.name,
@@ -38,6 +43,7 @@ export function makeOpenAICompatibleProvider(opts: {
             ...(req.reasoningEffort
               ? { reasoning: { effort: req.reasoningEffort } }
               : {}),
+            ...(opts.requestCostInUsage ? { usage: { include: true } } : {}),
           }),
         });
 
@@ -73,6 +79,9 @@ export function makeOpenAICompatibleProvider(opts: {
                 promptTokens: data.usage.prompt_tokens,
                 completionTokens: data.usage.completion_tokens,
                 totalTokens: data.usage.total_tokens,
+                ...(typeof data.usage.cost === "number"
+                  ? { costUsd: data.usage.cost }
+                  : {}),
               }
             : undefined,
         };

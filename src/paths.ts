@@ -23,6 +23,8 @@ export function runPaths(runName: string) {
     gridWebp: join(root, "grid.webp"),
     report: join(root, "report.md"),
     summary: join(root, "summary.json"),
+    promptTxt: join(root, "prompt.txt"),
+    systemPromptTxt: join(root, "system-prompt.txt"),
   };
 }
 

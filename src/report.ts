@@ -37,6 +37,8 @@ ${cfg.description ?? ""}
 
 ## Prompt
 
+Raw copyable version: [prompt.txt](./prompt.txt)${cfg.systemPrompt ? " · [system-prompt.txt](./system-prompt.txt)" : ""}
+
 > ${cfg.prompt.replace(/\n/g, "\n> ")}
 
 ## Grid
@@ -53,6 +55,13 @@ Per-model artifacts live in \`models/<slug>/\` (\`raw.txt\`, \`output.html\`, \`
 `;
 
   writeFileSync(paths.report, md);
+
+  // The prompts as plain text — readable and copyable without JSON/Markdown
+  // escaping (summary.json keeps them as \n-escaped strings).
+  writeFileSync(paths.promptTxt, cfg.prompt.trimEnd() + "\n");
+  if (cfg.systemPrompt) {
+    writeFileSync(paths.systemPromptTxt, cfg.systemPrompt.trimEnd() + "\n");
+  }
 
   const summary = {
     name: cfg.name,

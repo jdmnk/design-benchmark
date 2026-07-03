@@ -78,6 +78,7 @@ const benchmarks = BENCHES.map(({ configPath }) => {
     status: statusOf(id, m),
     elapsedMs: m.elapsedMs,
     outputTokens: m.usage?.completionTokens ?? m.usage?.totalTokens ?? null,
+    costUsd: m.usage?.costUsd ?? null,
     truncated: Boolean(m.truncated),
     error: cleanError(m.error ?? m.render?.error),
     page: pageSet.has(m.slug) ? `pages/${id}/${m.slug}.html` : null,

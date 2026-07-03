@@ -17,6 +17,7 @@ export function makeProviderRegistry() {
           name: "openrouter",
           baseUrl: "https://openrouter.ai/api/v1",
           apiKey,
+          requestCostInUsage: true,
           extraHeaders: {
             // Optional attribution headers OpenRouter uses for its rankings.
             ...(process.env.OPENROUTER_REFERRER
