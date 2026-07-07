@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gargantua Black Hole</title>
+  <style>
+    body { margin: 0; overflow: hidden; background: #000; }
+    canvas { display: block; }
+  </style>
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+    }
+  }
+  </script>
+</head>
+<body>
+<script type="module">
+  import * as THREE from 'three';
+
+  // ------------------------------------------------------------------
+  // Setup
+  // ------------------------------------------------------------------
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x020205);
+
+  const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 2000);
+  // Camera sits only ~5-8 degrees above the horizontal disk plane
+  const cameraDistance = 18;
+  camera.position.set(0, 2.0, cameraDistance);
+  camera.lookAt(0, 0, 0);
+
+  const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.2;
+  document.body.appendChild(renderer.domElement);
+
+  // ------------------------------------------------------------------
+  // Helpers
+  // ------------------------------------------------------------------
+  function createCanvasTexture(width, height, drawFn) {
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d');
+    drawFn(ctx, width, height);
+    const tex = new THREE.CanvasTexture(canvas);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    return tex;
+  }
+
+  // ------------------------------------------------------------------
+  // Black Hole Event Horizon
+  // Diameter = 28% of viewport height.
+  // At cameraDistance=18, FOV=50deg, viewport height at z=0 is
+  //   2 * 18 * tan(25deg) ≈ 16.78.
+  // 28% of that is 4.70, so radius ≈ 2.35.
+  // ------------------------------------------------------------------
+  const BH_RADIUS = 2.35;
+  const bhGeometry = new THREE.SphereGeometry(BH_RADIUS, 64, 64);
+  const bhMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
+  const blackHole = new THREE.Mesh(bhGeometry, bhMaterial);
+  scene.add(blackHole);
+
+  // ------------------------------------------------------------------
+  // Accretion Disk Texture (radial gradient with azimuthal structure)
+  // ------------------------------------------------------------------
+  const DISK_SEGMENTS = 256;
+  const diskTexture = createCanvasTexture(1024, 1024, (ctx, w, h) => {
+    const cx = w / 2, cy = h / 2;
+    // Background transparent
+    ctx.clearRect(0, 0, w, h);
+
+    // Draw radial gradient base
+    const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, w / 2);
+    grad.addColorStop(0.00, '#fff3d0');
+    grad.addColorStop(0.15, '#fff3d0');
+    grad.addColorStop(0.30, '#ffcc66');
+    grad.addColorStop(0.55, '#ffae3b');
+    grad.addColorStop(0.80, '#c8551a');
+    grad.addColorStop(1.00, 'rgba(80, 20, 5, 0)');
+
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, w, h);
+
+    // Add azimuthal brightness clumps / streaks so rotation reads clearly
+    ctx.globalCompositeOperation = 'lighter';
+    for (let i = 0; i < 18; i++) {
+      const angle = (i / 18) * Math.PI * 2;
+      const spread = 0.15 + Math.random() * 0.25;
+      const bandGrad = ctx.createConicGradient(angle, cx, cy);
+      bandGrad.addColorStop(0, 'rgba(255, 240, 200, 0)');
+      bandGrad.addColorStop(0.5 - spread * 0.5, `rgba(255, 220, 160, ${0.15 + Math.random() * 0.25})`);
+      bandGrad.addColorStop(0.5, `rgba(255, 200, 120, ${0.25 + Math.random() * 0.35})`);
+      bandGrad.addColorStop(0.5 + spread * 0.5, `rgba(255, 220, 160, ${0.15 + Math.random() * 0.25})`);
+      bandGrad.addColorStop(1, 'rgba(255, 240, 200, 0)');
+      ctx.fillStyle = bandGrad;
+      ctx.fillRect(0, 0, w, h);
+    }
+
+    // Add some fine turbulent streaks
+    for (let i = 0; i < 40; i++) {
+      const a = Math.random() * Math.PI * 2;
+      const r = 0.2 + Math.random() * 0.7;
+      const x = cx + Math.cos(a) * r * w * 0.5;
+      const y = cy + Math.sin(a) * r * h * 0.5;
+      const len = 30 + Math.random() * 80;
+      const wid = 2 + Math.random() * 6;
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(a + Math.PI / 2);
+      const streak = ctx.createLinearGradient(-len / 2, 0, len / 2, 0);
+      streak.addColorStop(0, 'rgba(255,255,255,0)');
+      streak.addColorStop(0.5, `rgba(255, 230, 180, ${0.1 + Math.random() * 0.3})`);
+      streak.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.fillStyle = streak;
+      ctx.fillRect(-len / 2, -wid / 2, len, wid);
+      ctx.restore();
+    }
+
+    ctx.globalCompositeOperation = 'source-over';
+  });
+
+  // Relativistic beaming texture: one side brighter
+  const beamingTexture = createCanvasTexture(512, 512, (ctx, w, h) => {
+    const grad = ctx.createLinearGradient(0, 0, w, 0);
+    grad.addColorStop(0.0, 'rgba(255,255,255,0.85)');
+    grad.addColorStop(0.3, 'rgba(255,255,255,0.45)');
+    grad.addColorStop(0.5, 'rgba(255,255,255,0.15)');
+    grad.addColorStop(0.7, 'rgba(255,255,255,0.05)');
+    grad.addColorStop(1.0, 'rgba(255,255,255,0.0)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, w, h);
+  });
+
+  // ------------------------------------------------------------------
+  // Main Accretion Disk (horizontal plane, viewed edge-on)
+  // ------------------------------------------------------------------
+  const DISK_INNER = BH_RADIUS * 1.35;
+  const DISK_OUTER = BH_RADIUS * 6.5;
+  const diskGeometry = new THREE.RingGeometry(DISK_INNER, DISK_OUTER, 128, 1);
+  // Fix UVs for radial mapping
+  const diskPos = diskGeometry.attributes.position;
+  const diskUV = diskGeometry.attributes.uv;
+  for (let i = 0; i < diskPos.count; i++) {
+    const x = diskPos.getX(i);
+    const z = diskPos.getZ(i);
+    const r = Math.sqrt(x * x + z * z);
+    const a = Math.atan2(z, x);
+    diskUV.setXY(i, (a / (Math.PI * 2)) + 0.5, (r - DISK_INNER) / (DISK_OUTER - DISK_INNER));
+  }
+
+  const diskMaterial = new THREE.MeshBasicMaterial({
+    map: diskTexture,
+    transparent: true,
+    opacity: 0.95,
+    side: THREE.DoubleSide,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+  });
+
+  // Beaming multiplier overlay
+  const beamingMaterial = new THREE.MeshBasicMaterial({
+    map: beamingTexture,
+    transparent: true,
+    opacity: 0.55,
+    side: THREE.DoubleSide,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+  });
+
+  const diskMesh = new THREE.Mesh(diskGeometry, diskMaterial);
+  diskMesh.rotation.x = -Math.PI / 2;
+  const beamingMesh = new THREE.Mesh(diskGeometry.clone(), beamingMaterial);
+  beamingMesh.rotation.x = -Math.PI / 2;
+  beamingMesh.rotation.z = 0.3; // initial beaming angle offset
+
+  const diskGroup = new THREE.Group();
+  diskGroup.add(diskMesh);
+  diskGroup.add(beamingMesh);
+  scene.add(diskGroup);
+
+  // ------------------------------------------------------------------
+  // Gravitational Lensing Arcs (partial tori above and below BH)
+  // These simulate the far side of the disk bent up/over and under.
+  // ------------------------------------------------------------------
+  const LENS_TUBE = 0.28;
+  const LENS_RADIUS = BH_RADIUS * 1.15;
+  const lensArcGeo = new THREE.TorusGeometry(LENS_RADIUS, LENS_TUBE, 32, 128, Math.PI * 0.85);
+
+  // Clone texture for lensing arcs with slightly different look
+  const lensTexture = createCanvasTexture(512, 64, (ctx, w, h) => {
+    const grad = ctx.createLinearGradient(0, 0, w, 0);
+    grad.addColorStop(0.0, 'rgba(255, 240, 200, 0)');
+    grad.addColorStop(0.15, 'rgba(255, 220, 160, 0.4)');
+    grad.addColorStop(0.3, 'rgba(255, 200, 120, 0.7)');
+    grad.addColorStop(0.5, 'rgba(255, 180, 90, 0.9)');
+    grad.addColorStop(0.7, 'rgba(255, 200, 120, 0.7)');
+    grad.addColorStop(0.85, 'rgba(255, 220, 160, 0.4)');
+    grad.addColorStop(1.0, 'rgba(255, 240, 200, 0)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, w, h);
+  });
+  lensTexture.wrapS = THREE.RepeatWrapping;
+  lensTexture.wrapT = THREE.RepeatWrapping;
+
+  const lensMaterial = new THREE.MeshBasicMaterial({
+    map: lensTexture,
+    transparent: true,
+    opacity: 0.75,
+    side: THREE.DoubleSide,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+  });
+
+  // Upper arc (far side bent over top)
+  const upperArc = new THREE.Mesh(lensArcGeo, lensMaterial.clone());
+  upperArc.rotation.x = Math.PI / 2;
+  upperArc.rotation.z = Math.PI / 2 + Math.PI * 0.075; // center the arc
+  upperArc.position.y = BH_RADIUS * 0.55;
+
+  // Lower arc (mirrored under bottom)
+  const lowerArc = new THREE.Mesh(lensArcGeo, lensMaterial.clone());
+  lowerArc.rotation.x = Math.PI / 2;
+  lowerArc.rotation.z = Math.PI / 2 + Math.PI * 0.075;
+  lowerArc.scale.y = -1;
+  lowerArc.position.y = -BH_RADIUS * 0.55;
+
+  const lensGroup = new THREE.Group();
+  lensGroup.add(upperArc);
+  lensGroup.add(lowerArc);
+  scene.add(lensGroup);
+
+  // ------------------------------------------------------------------
+  // Photon Ring (thin bright ring hugging the event horizon edge)
+  // ------------------------------------------------------------------
+  const PHOTON_TUBE = 0.05;
+  const PHOTON_RADIUS = BH_RADIUS * 1.02;
+  const photonGeo = new THREE.TorusGeometry(PHOTON_RADIUS, PHOTON_TUBE, 32, 128);
+  const photonMat = new THREE.MeshBasicMaterial({
+    color: 0xfff8e0,
+    transparent: true,
+    opacity: 0.9,
+    side: THREE.DoubleSide,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+  });
+  const photonRing = new THREE.Mesh(photonGeo, photonMat);
+  photonRing.rotation.x = Math.PI / 2;
+  scene.add(photonRing);
+
+  // ------------------------------------------------------------------
+  // Glow / Bloom fakery via layered transparent meshes
+  // ------------------------------------------------------------------
+  // Wide radial glow around the disk
+  const glowGeo = new THREE.PlaneGeometry(DISK_OUTER * 3.2, DISK_OUTER * 3.2);
+  const glowTexture = createCanvasTexture(256, 256, (ctx, w, h) => {
+    const grad = ctx.createRadialGradient(w / 2, h / 2, 0, w / 2, h / 2, w / 2);
+    grad.addColorStop(0.0, 'rgba(255, 200, 100, 0.18)');
+    grad.addColorStop(0.3, 'rgba(255, 160, 60, 0.10)');
+    grad.addColorStop(0.6, 'rgba(200, 100, 30, 0.04)');
+    grad.addColorStop(1.0, 'rgba(0, 0, 0, 0)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, w, h);
+  });
+  const glowMat = new THREE.MeshBasicMaterial({
+    map: glowTexture,
+    transparent: true,
+    opacity: 0.6,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+    side: THREE.DoubleSide,
+  });
+  const glowMesh = new THREE.Mesh(glowGeo, glowMat);
+  glowMesh.rotation.x = -Math.PI / 2;
+  glowMesh.position.y = 0.02;
+  scene.add(glowMesh);
+
+  // Vertical glow halos (above and below BH) to enhance lensing look
+  const haloGeo = new THREE.PlaneGeometry(BH_RADIUS * 3.5, BH_RADIUS * 4.5);
+  const haloTexture = createCanvasTexture(128, 256, (ctx, w, h) => {
+    const grad = ctx.createRadialGradient(w / 2, h / 2, 0, w / 2, h / 2, w * 0.6);
+    grad.addColorStop(0.0, 'rgba(255, 220, 150, 0.20)');
+    grad.addColorStop(0.4, 'rgba(255, 180, 80, 0.08)');
+    grad.addColorStop(1.0, 'rgba(0, 0, 0, 0)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, w, h);
+  });
+  const haloMat = new THREE.MeshBasicMaterial({
+    map: haloTexture,
+    transparent: true,
+    opacity: 0.5,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+    side: THREE.DoubleSide,
+  });
+  const upperHalo = new THREE.Mesh(haloGeo, haloMat.clone());
+  upperHalo.position.set(0, BH_RADIUS * 1.6, 0);
+  const lowerHalo = new THREE.Mesh(haloGeo, haloMat.clone());
+  lowerHalo.position.set(0, -BH_RADIUS * 1.6, 0);
+  scene.add(upperHalo);
+  scene.add(lowerHalo);
+
+  // ------------------------------------------------------------------
+  // Starfield
+  // ------------------------------------------------------------------
+  const STAR_COUNT = 1200;
+  const starGeo = new THREE.BufferGeometry();
+  const starPos = new Float32Array(STAR_COUNT * 3);
+  const starSizes = new Float32Array(STAR_COUNT);
+  for (let i = 0; i < STAR_COUNT; i++) {
+    const r = 400 + Math.random() * 600;
+    const theta = Math.random() * Math.PI * 2;
+    const phi = Math.acos(2 * Math.random() - 1);
+    starPos[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+    starPos[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+    starPos[i * 3 + 2] = r * Math.cos(phi);
+    starSizes[i] = 0.3 + Math.random() * 1.2;
+  }
+  starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+
+  const starMat = new THREE.PointsMaterial({
+    color: 0xaaaacc,
+    size: 1.0,
+    transparent: true,
+    opacity: 0.7,
+    sizeAttenuation: true,
+    depthWrite: false,
+  });
+  const stars = new THREE.Points(starGeo, starMat);
+  scene.add(stars);
+
+  // ------------------------------------------------------------------
+  // Animation Loop
+  // ------------------------------------------------------------------
+  const ROTATION_SPEED = 0.55; // radians per second (~31.5 deg/s)
+
+  function animate(now) {
+    requestAnimationFrame(animate);
+
+    const t = now * 0.001; // seconds
+
+    // Rotate accretion disk
+    diskGroup.rotation.y = t * ROTATION_SPEED;
+
+    // Rotate lensing arcs slightly offset for visual depth
+    lensGroup.rotation.y = t * ROTATION_SPEED * 1.02;
+
+    // Subtle shimmer / flicker in disk and arcs
+    const flicker = 0.92 + 0.08 * Math.sin(t * 7.3) + 0.04 * Math.sin(t * 13.7);
+    diskMaterial.opacity = 0.88 * flicker;
+    lensMaterial.opacity = 0.70 * (0.95 + 0.05 * Math.sin(t * 5.1));
+    photonMat.opacity = 0.85 * (0.97 + 0.03 * Math.sin(t * 9.0));
+
+    // Slow drift in beaming highlight
+    beamingMesh.rotation.z = 0.3 + 0.15 * Math.sin(t * 0.4);
+
+    // Subtle pulse in glow
+    glowMat.opacity = 0.55 + 0.1 * Math.sin(t * 1.8);
+    upperHalo.material.opacity = 0.45 + 0.08 * Math.sin(t * 2.3);
+    lowerHalo.material.opacity = 0.45 + 0.08 * Math.sin(t * 2.3 + 1.0);
+
+    // Starfield slow rotation for alive feel
+    stars.rotation.y = t * 0.005;
+
+    renderer.render(scene, camera);
+  }
+
+  // Handle resize
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+
+  // Start immediately
+  requestAnimationFrame(animate);
+</script>
+</body>
+</html>

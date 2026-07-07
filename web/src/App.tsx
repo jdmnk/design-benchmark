@@ -1,3 +1,4 @@
+import { useState } from "react";
 import data from "./data/benchmarks.json";
 
 type Status = "rendered" | "truncated" | "blank" | "no-html" | "render-failed" | "error";
@@ -15,6 +16,14 @@ interface Model {
   page: string | null;
 }
 
+interface Run {
+  label: string;
+  grid: { image: string; video?: string | null };
+  models: Model[];
+  rendered: number;
+  total: number;
+}
+
 interface Benchmark {
   id: string;
   title: string;
@@ -28,10 +37,8 @@ interface Benchmark {
     deterministic: boolean;
     video?: { durationMs: number; fps: number } | null;
   };
-  grid: { image: string; video?: string | null; columns: number };
-  models: Model[];
-  rendered: number;
-  total: number;
+  columns: number;
+  runs: Run[];
 }
 
 const benchmarks = (data as { benchmarks: Benchmark[] }).benchmarks;
@@ -118,36 +125,64 @@ function ModelTable({ models }: { models: Model[] }) {
   );
 }
 
+function GridView({ run, title }: { run: Run; title: string }) {
+  if (run.grid.video) {
+    return (
+      <a className="grid-link" href={run.grid.video} target="_blank" rel="noreferrer" title="Open full-size video">
+        <video
+          key={run.grid.video}
+          src={run.grid.video}
+          poster={run.grid.image}
+          autoPlay
+          loop
+          muted
+          playsInline
+          onLoadedData={(e) => {
+            // Some browsers block even muted autoplay; nudge it and fall
+            // back silently to the poster if refused.
+            e.currentTarget.play().catch(() => {});
+          }}
+        />
+      </a>
+    );
+  }
+  return (
+    <a className="grid-link" href={run.grid.image} target="_blank" rel="noreferrer" title="Open full-size">
+      <img src={run.grid.image} alt={`${title} grid`} loading="lazy" />
+    </a>
+  );
+}
+
 function BenchmarkSection({ b }: { b: Benchmark }) {
+  const [active, setActive] = useState(0);
+  const run = b.runs[active] ?? b.runs[0];
+  const multi = b.runs.length > 1;
+
   return (
     <section className="bench" id={b.id}>
       <div className="bench-head">
         <h2>{b.title}</h2>
-        <span className="count">{b.rendered}/{b.total} rendered</span>
+        <span className="count">{run.rendered}/{run.total} rendered</span>
       </div>
       <p className="desc">{b.description}</p>
 
-      {b.grid.video ? (
-        <a className="grid-link" href={b.grid.video} target="_blank" rel="noreferrer" title="Open full-size video">
-          <video
-            src={b.grid.video}
-            poster={b.grid.image}
-            autoPlay
-            loop
-            muted
-            playsInline
-            onLoadedData={(e) => {
-              // Some browsers block even muted autoplay; nudge it and fall
-              // back silently to the poster if refused.
-              e.currentTarget.play().catch(() => {});
-            }}
-          />
-        </a>
-      ) : (
-        <a className="grid-link" href={b.grid.image} target="_blank" rel="noreferrer" title="Open full-size">
-          <img src={b.grid.image} alt={`${b.title} grid`} loading="lazy" />
-        </a>
+      {multi && (
+        <div className="runtabs" role="tablist">
+          {b.runs.map((r, i) => (
+            <button
+              key={r.label}
+              role="tab"
+              aria-selected={i === active}
+              className={i === active ? "active" : ""}
+              onClick={() => setActive(i)}
+            >
+              {r.label}
+            </button>
+          ))}
+        </div>
       )}
+
+      <GridView run={run} title={b.title} />
 
       <p className="meta">
         {b.render.viewport} · {b.render.fullPage ? "full page" : "fixed crop"} ·{" "}
@@ -169,8 +204,8 @@ function BenchmarkSection({ b }: { b: Benchmark }) {
       </details>
 
       <details>
-        <summary>Per-model details</summary>
-        <ModelTable models={b.models} />
+        <summary>Per-model details{multi ? ` · ${run.label}` : ""}</summary>
+        <ModelTable models={run.models} />
       </details>
     </section>
   );

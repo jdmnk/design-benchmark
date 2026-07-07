@@ -6,7 +6,7 @@ the prompts and per-model metadata — see [`web/`](../web).
 Every example uses the **same 9 models** (see
 [`config/models/standard-9.json`](../config/models/standard-9.json)):
 
-> GLM 5.2 · Grok 4.3 · GPT-5.4 mini · Claude Haiku 4.5 · Qwen3.7 Plus · Gemini 3.1 Flash-Lite · DeepSeek V4 Pro · Kimi K2.6 · Mistral Small 4
+> GLM 5.2 · Grok 4.3 · GPT-5.4 mini · Claude Haiku 4.5 · Qwen3.7 Plus · Gemini 3.1 Flash-Lite · DeepSeek V4 Pro · Kimi K2.7 Code · Kimi K2.6
 
 Each folder has the grid (lossless `grid.png` + a ~10× smaller `grid.webp`), a `report.md`, a `summary.json`
 (per-model time + tokens + status), and `pages/` (the actual HTML each model produced —
@@ -46,6 +46,11 @@ occasional model still fails outright (recorded per model in the summary). Confi
 
 ![black-hole](black-hole/grid.webp)
 
+**Run #2** — same prompt and models, a fresh set of generations (temperature 0.7, so the
+sampling varies run to run). Switch between runs in the [web app](../web).
+
+![black-hole run 2](black-hole/run-2/grid.webp)
+
 ## black-hole-spin — the animated one 🎬
 
 The same Gargantua composition, but judged in motion: a **5-second clip** (24 fps) is
@@ -57,6 +62,11 @@ the motion actually reads. Per-model clips are in [`black-hole-spin/clips/`](bla
 Config: [`config/examples/black-hole-spin.config.json`](../config/examples/black-hole-spin.config.json).
 
 [![black-hole-spin — animated grid](black-hole-spin/grid-anim.webp)](black-hole-spin/grid.mp4)
+
+**Run #2** — a second set of generations for the animated brief ([grid video](black-hole-spin/run-2/grid.mp4)).
+Switch between runs in the [web app](../web).
+
+[![black-hole-spin run 2 — animated grid](black-hole-spin/run-2/grid-anim.webp)](black-hole-spin/run-2/grid.mp4)
 
 ## fireworks — animated Canvas 2D 🎬
 

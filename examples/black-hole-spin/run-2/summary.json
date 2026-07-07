@@ -1,0 +1,205 @@
+{
+  "name": "black-hole-spin",
+  "prompt": "Render a realistic supermassive black hole — the 'Gargantua' look from the film Interstellar — as a full-screen three.js scene (100vw × 100vh, auto-starting, no user interaction). A 5-SECOND CLIP of the scene is captured, so the motion matters as much as the still composition.\n\nComposition (match exactly so results are comparable):\n- The black hole (event horizon) is a perfectly black sphere centered in the frame, its diameter about 28% of the viewport height.\n- A bright, thin accretion disk lies in a HORIZONTAL plane around the sphere and is viewed nearly edge-on: the camera sits only about 5–8 degrees above the disk plane, so the disk reads as a near-horizontal bright band cutting across the sphere's middle and extending well past it on both sides.\n- Gravitational lensing: the far side of the disk appears bent UP and OVER the top of the black sphere AND mirrored UNDER the bottom, forming the signature bright halo arcs above and below the horizon (not merely a flat ring). Approximate this with extra bright arcs wrapping over and under the sphere (partial ring/torus geometry works well).\n- A thin, bright photon ring hugs the very edge of the black sphere.\n- Disk coloring: hot white-yellow on the inner edge fading outward to amber then deep orange (#fff3d0 → #ffae3b → #c8551a). Make one side of the disk slightly brighter than the other (relativistic beaming).\n- Background: near-black space with a sparse, dim starfield.\n\nMotion (the point of this benchmark — must be clearly visible within the 5-second clip):\n- The accretion disk rotates around the black hole at roughly 25–40 degrees per second, so a recognizable feature travels a quarter to half a revolution during the clip. Give the disk visible azimuthal structure (brightness clumps, streaks, or turbulent bands) so the rotation reads clearly — a featureless ring would look static.\n- Add subtle shimmering/flicker in the disk and lensing arcs, and slow drift in the beaming highlight. The camera stays FIXED.\n\nKeep the black hole centered and the disk horizontal. Return ONLY a single complete HTML document.",
+  "generatedAt": "2026-07-07T22:35:56.014Z",
+  "models": [
+    {
+      "slug": "glm-5.2",
+      "label": "GLM 5.2",
+      "provider": "openrouter",
+      "modelId": "z-ai/glm-5.2",
+      "ok": true,
+      "htmlExtracted": true,
+      "finishReason": "stop",
+      "truncated": false,
+      "elapsedMs": 168781,
+      "usage": {
+        "promptTokens": 779,
+        "completionTokens": 9637,
+        "totalTokens": 10416,
+        "costUsd": 0.0434934
+      },
+      "startedAt": "2026-07-07T22:10:19.760Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
+    },
+    {
+      "slug": "grok-4.3",
+      "label": "Grok 4.3",
+      "provider": "openrouter",
+      "modelId": "x-ai/grok-4.3",
+      "ok": true,
+      "htmlExtracted": true,
+      "finishReason": "stop",
+      "truncated": false,
+      "elapsedMs": 20367,
+      "usage": {
+        "promptTokens": 885,
+        "completionTokens": 2593,
+        "totalTokens": 3478,
+        "costUsd": 0.00745435
+      },
+      "startedAt": "2026-07-07T22:10:19.770Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
+    },
+    {
+      "slug": "gpt-5.4-mini",
+      "label": "GPT-5.4 mini",
+      "provider": "openrouter",
+      "modelId": "openai/gpt-5.4-mini",
+      "ok": true,
+      "htmlExtracted": true,
+      "finishReason": "stop",
+      "truncated": false,
+      "elapsedMs": 26689,
+      "usage": {
+        "promptTokens": 780,
+        "completionTokens": 4969,
+        "totalTokens": 5749,
+        "costUsd": 0.0229455
+      },
+      "startedAt": "2026-07-07T22:10:19.771Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
+    },
+    {
+      "slug": "claude-haiku-4.5",
+      "label": "Claude Haiku 4.5",
+      "provider": "openrouter",
+      "modelId": "anthropic/claude-haiku-4.5",
+      "ok": true,
+      "htmlExtracted": true,
+      "finishReason": "stop",
+      "truncated": false,
+      "elapsedMs": 19764,
+      "usage": {
+        "promptTokens": 914,
+        "completionTokens": 3549,
+        "totalTokens": 4463,
+        "costUsd": 0.018659
+      },
+      "startedAt": "2026-07-07T22:10:19.772Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
+    },
+    {
+      "slug": "qwen3.7-plus",
+      "label": "Qwen3.7 Plus",
+      "provider": "openrouter",
+      "modelId": "qwen/qwen3.7-plus",
+      "ok": true,
+      "htmlExtracted": true,
+      "finishReason": "stop",
+      "truncated": false,
+      "elapsedMs": 113747,
+      "usage": {
+        "promptTokens": 808,
+        "completionTokens": 6257,
+        "totalTokens": 7065,
+        "costUsd": 0.00826752
+      },
+      "startedAt": "2026-07-07T22:10:19.773Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
+    },
+    {
+      "slug": "gemini-3.1-flash-lite",
+      "label": "Gemini 3.1 Flash-Lite",
+      "provider": "openrouter",
+      "modelId": "google/gemini-3.1-flash-lite",
+      "ok": true,
+      "htmlExtracted": true,
+      "finishReason": "stop",
+      "truncated": false,
+      "elapsedMs": 5663,
+      "usage": {
+        "promptTokens": 799,
+        "completionTokens": 1901,
+        "totalTokens": 2700,
+        "costUsd": 0.00305125
+      },
+      "startedAt": "2026-07-07T22:10:19.774Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
+    },
+    {
+      "slug": "deepseek-v4-pro",
+      "label": "DeepSeek V4 Pro",
+      "provider": "openrouter",
+      "modelId": "deepseek/deepseek-v4-pro",
+      "ok": true,
+      "htmlExtracted": true,
+      "finishReason": "stop",
+      "truncated": false,
+      "elapsedMs": 672206,
+      "usage": {
+        "promptTokens": 786,
+        "completionTokens": 17437,
+        "totalTokens": 18223,
+        "costUsd": 0.05591488
+      },
+      "startedAt": "2026-07-07T22:10:19.775Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
+    },
+    {
+      "slug": "kimi-k2.7-code",
+      "label": "Kimi K2.7 Code",
+      "provider": "openrouter",
+      "modelId": "moonshotai/kimi-k2.7-code",
+      "ok": true,
+      "htmlExtracted": true,
+      "finishReason": "stop",
+      "truncated": false,
+      "elapsedMs": 221798,
+      "usage": {
+        "promptTokens": 784,
+        "completionTokens": 21070,
+        "totalTokens": 21854,
+        "costUsd": 0.0814037
+      },
+      "startedAt": "2026-07-07T22:30:43.836Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
+    },
+    {
+      "slug": "kimi-k2.6",
+      "label": "Kimi K2.6",
+      "provider": "openrouter",
+      "modelId": "moonshotai/kimi-k2.6",
+      "ok": true,
+      "htmlExtracted": true,
+      "finishReason": "stop",
+      "truncated": false,
+      "elapsedMs": 134254,
+      "usage": {
+        "promptTokens": 784,
+        "completionTokens": 5748,
+        "totalTokens": 6532,
+        "costUsd": 0.02011812
+      },
+      "startedAt": "2026-07-07T22:10:19.776Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
+    }
+  ]
+}

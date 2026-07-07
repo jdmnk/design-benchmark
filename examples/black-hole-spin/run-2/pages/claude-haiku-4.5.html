@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gargantua Black Hole</title>
+    <style>
+        * { margin: 0; padding: 0; }
+        body { width: 100vw; height: 100vh; overflow: hidden; font-family: sans-serif; }
+        canvas { display: block; width: 100%; height: 100%; }
+    </style>
+</head>
+<body>
+
+<script type="importmap">
+{
+    "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@r160/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@r160/examples/jsm/"
+    }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+
+// Scene setup
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x000001);
+
+const camera = new THREE.PerspectiveCamera(
+    75,
+    window.innerWidth / window.innerHeight,
+    0.1,
+    10000
+);
+camera.position.set(0, 2, 0);
+camera.lookAt(0, 0, 0);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, precision: 'highp' });
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setClearColor(0x000001);
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+document.body.appendChild(renderer.domElement);
+
+// Handle resize
+window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+try {
+    // ===== STARFIELD =====
+    const starGeom = new THREE.BufferGeometry();
+    const starVertices = [];
+    const starColors = [];
+    for (let i = 0; i < 800; i++) {
+        const x = (Math.random() - 0.5) * 200;
+        const y = (Math.random() - 0.5) * 200;
+        const z = (Math.random() - 0.5) * 200;
+        starVertices.push(x, y, z);
+        const brightness = 0.3 + Math.random() * 0.3;
+        starColors.push(brightness, brightness, brightness);
+    }
+    starGeom.setAttribute('position', new THREE.BufferAttribute(new Float32Array(starVertices), 3));
+    starGeom.setAttribute('color', new THREE.BufferAttribute(new Float32Array(starColors), 3));
+    const starMat = new THREE.PointsMaterial({ size: 0.4, vertexColors: true });
+    const stars = new THREE.Points(starGeom, starMat);
+    scene.add(stars);
+
+    // ===== EVENT HORIZON (perfect black sphere) =====
+    const bhRadius = 2;
+    const bhGeom = new THREE.IcosahedronGeometry(bhRadius, 64);
+    const bhMat = new THREE.MeshBasicMaterial({ color: 0x000000 });
+    const blackHole = new THREE.Mesh(bhGeom, bhMat);
+    scene.add(blackHole);
+
+    // ===== ACCRETION DISK =====
+    // Create a disk texture with procedural pattern showing azimuthal structure
+    const diskCanvas = document.createElement('canvas');
+    diskCanvas.width = 512;
+    diskCanvas.height = 512;
+    const ctx = diskCanvas.getContext('2d');
+    
+    // Draw concentric rings with turbulent bands
+    for (let angle = 0; angle < Math.PI * 2; angle += 0.01) {
+        for (let r = 0; r < 512; r++) {
+            const rad = r / 512 * 12;
+            if (rad < 0.5 || rad > 12) continue;
+            
+            // Radial gradient: hot white/yellow inner → orange outer
+            let hue = 0, sat = 0, light = 0;
+            if (rad < 2) {
+                hue = 45;
+                sat = 100;
+                light = 85;
+            } else if (rad < 5) {
+                hue = 32 + (rad - 2) / 3 * 8;
+                sat = 95;
+                light = 70 - (rad - 2) / 3 * 15;
+            } else {
+                hue = 20;
+                sat = 85;
+                light = 40 - Math.min((rad - 5) / 7, 1) * 20;
+            }
+            
+            // Add turbulent bands (brightness clumps)
+            const bandVariation = 0.8 + 0.2 * Math.sin(angle * 7 + r / 50) * Math.sin(rad * 3);
+            light *= bandVariation;
+            
+            const x = Math.floor(256 + Math.cos(angle) * r);
+            const y = Math.floor(256 + Math.sin(angle) * r);
+            if (x >= 0 && x < 512 && y >= 0 && y < 512) {
+                const c = Math.floor(hue);
+                const s = sat / 100;
+                const l = light / 100;
+                const rgb = hslToRgb(c, s, l);
+                ctx.fillStyle = `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`;
+                ctx.fillRect(x, y, 1, 1);
+            }
+        }
+    }
+    
+    function hslToRgb(h, s, l) {
+        const c = (1 - Math.abs(2 * l - 1)) * s;
+        const x = c * (1 - Math.abs((h / 60) % 2 - 1));
+        const m = l - c / 2;
+        let r = 0, g = 0, b = 0;
+        if (h < 60) { r = c; g = x; b = 0; }
+        else if (h < 120) { r = x; g = c; b = 0; }
+        else if (h < 180) { r = 0; g = c; b = x; }
+        else if (h < 240) { r = 0; g = x; b = c; }
+        else if (h < 300) { r = x; g = 0; b = c; }
+        else { r = c; g = 0; b = x; }
+        return [
+            Math.round((r + m) * 255),
+            Math.round((g + m) * 255),
+            Math.round((b + m) * 255)
+        ];
+    }
+    
+    const diskTexture = new THREE.CanvasTexture(diskCanvas);
+    diskTexture.wrapS = THREE.RepeatWrapping;
+    diskTexture.wrapT = THREE.RepeatWrapping;
+    
+    // Disk geometry: thin torus-like ring
+    const diskGeom = new THREE.TorusGeometry(8, 3.5, 2, 512);
+    const diskMat = new THREE.MeshBasicMaterial({
+        map: diskTexture,
+        side: THREE.DoubleSide,
+        emissive: 0x444400,
+        emissiveIntensity: 0.8
+    });
+    const disk = new THREE.Mesh(diskGeom, diskMat);
+    disk.rotation.x = THREE.MathUtils.degToRad(6); // Camera 6 degrees above disk
+    disk.scale.z = 0.05; // Make it thin
+    scene.add(disk);
+
+    // ===== PHOTON RING (bright edge glow) =====
+    const photonGeom = new THREE.TorusGeometry(bhRadius * 1.5, 0.15, 2, 256);
+    const photonMat = new THREE.MeshBasicMaterial({
+        color: 0xffff88,
+        emissive: 0xffff88,
+        emissiveIntensity: 1.5,
+        transparent: true,
+        opacity: 0.9
+    });
+    const photonRing = new THREE.Mesh(photonGeom, photonMat);
+    photonRing.rotation.x = THREE.MathUtils.degToRad(6);
+    photonRing.scale.z = 0.02;
+    scene.add(photonRing);
+
+    // ===== LENSING ARCS (bright rings over/under) =====
+    // Top arc
+    const lensTopGeom = new THREE.TorusGeometry(7.5, 2.2, 2, 256);
+    const lensMat = new THREE.MeshBasicMaterial({
+        color: 0xffdd99,
+        emissive: 0xffbb44,
+        emissiveIntensity: 1.2,
+        side: THREE.DoubleSide,
+        transparent: true,
+        opacity: 0.6,
+        blending: THREE.AdditiveBlending
+    });
+    const lensTop = new THREE.Mesh(lensTopGeom, lensMat);
+    lensTop.rotation.x = THREE.MathUtils.degToRad(35);
+    lensTop.scale.z = 0.08;
+    scene.add(lensTop);
+
+    // Bottom arc
+    const lensBotGeom = new THREE.TorusGeometry(7.5, 2.2, 2, 256);
+    const lensBot = new THREE.Mesh(lensBotGeom, lensMat.clone());
+    lensBot.rotation.x = THREE.MathUtils.degToRad(-35);
+    lensBot.scale.z = 0.08;
+    scene.add(lensBot);
+
+    // ===== ANIMATION LOOP =====
+    const startTime = performance.now();
+    
+    function animate() {
+        requestAnimationFrame(animate);
+        
+        const elapsed = (performance.now() - startTime) / 1000; // seconds
+        
+        // Rotate disk: 30 deg/sec
+        disk.rotation.z = THREE.MathUtils.degToRad(elapsed * 30);
+        photonRing.rotation.z = disk.rotation.z;
+        lensTop.rotation.z = disk.rotation.z;
+        lensBot.rotation.z = disk.rotation.z;
+        
+        // Shimmer/flicker in disk brightness
+        const shimmer = 0.7 + 0.3 * Math.sin(elapsed * 4);
+        diskMat.emissiveIntensity = 0.8 * shimmer;
+        
+        // Flicker photon ring
+        photonMat.emissiveIntensity = 1.5 * (0.8 + 0.2 * Math.sin(elapsed * 3.5));
+        
+        // Slight beaming highlight shift (brightness gradient rotation)
+        lensTop.material.opacity = 0.6 + 0.15 * Math.sin(elapsed * 2);
+        lensBot.material.opacity = 0.6 + 0.15 * Math.sin(elapsed * 2 + 1);
+        
+        renderer.render(scene, camera);
+    }
+    
+    animate();
+
+} catch (err) {
+    console.error('Scene initialization error:', err);
+    // Fallback: at least render a dark scene
+    const fallbackScene = new THREE.Scene();
+    fallbackScene.background = new THREE.Color(0x000000);
+    renderer.render(fallbackScene, camera);
+}
+</script>
+
+</body>
+</html>

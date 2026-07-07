@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Supermassive Black Hole</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      width: 100vw;
+      height: 100vh;
+      background: #020204;
+    }
+    canvas {
+      display: block;
+    }
+  </style>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <script type="module">
+    import * as THREE from 'three';
+
+    function smoothstep(a, b, x) {
+      const t = Math.max(0, Math.min(1, (x - a) / (b - a)));
+      return t * t * (3 - 2 * t);
+    }
+
+    function createDiskTexture() {
+      const w = 1024;
+      const h = 256;
+      const canvas = document.createElement('canvas');
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      const img = ctx.createImageData(w, h);
+      const d = img.data;
+
+      const c1 = { r: 255, g: 243, b: 208 };
+      const c2 = { r: 255, g: 174, b: 59 };
+      const c3 = { r: 200, g: 85, b: 26 };
+
+      for (let y = 0; y < h; y++) {
+        const t = y / (h - 1);
+        let r, g, b;
+
+        if (t < 0.5) {
+          const u = t * 2;
+          r = c1.r + (c2.r - c1.r) * u;
+          g = c1.g + (c2.g - c1.g) * u;
+          b = c1.b + (c2.b - c1.b) * u;
+        } else {
+          const u = (t - 0.5) * 2;
+          r = c2.r + (c3.r - c2.r) * u;
+          g = c2.g + (c3.g - c2.g) * u;
+          b = c2.b + (c3.b - c2.b) * u;
+        }
+
+        const intensity = Math.pow(1 - t, 0.55);
+
+        if (t < 0.04) {
+          r = 255;
+          g = 255;
+          b = 245;
+        }
+
+        r *= intensity;
+        g *= intensity;
+        b *= intensity;
+
+        for (let x = 0; x < w; x++) {
+          const angle = (x / w) * Math.PI * 2;
+          const beam = 1.0 + 0.65 * smoothstep(-0.2, 0.9, Math.cos(angle));
+          const rr = Math.min(255, r * beam);
+          const gg = Math.min(255, g * beam);
+          const bb = Math.min(255, b * beam);
+          const idx = (y * w + x) * 4;
+          d[idx] = rr;
+          d[idx + 1] = gg;
+          d[idx + 2] = bb;
+          d[idx + 3] = 255;
+        }
+      }
+
+      ctx.putImageData(img, 0, 0);
+      const tex = new THREE.CanvasTexture(canvas);
+      tex.colorSpace = THREE.SRGBColorSpace;
+      return tex;
+    }
+
+    function createArc(sign, radius, tubeRadius, cHot, cDeep) {
+      const points = [];
+      const n = 5;
+      for (let i = 0; i < n; i++) {
+        const t = i / (n - 1);
+        const angle = sign === 1
+          ? Math.PI * (1 - t)
+          : Math.PI + Math.PI * t;
+        points.push(new THREE.Vector3(
+          radius * Math.cos(angle),
+          radius * Math.sin(angle),
+          0
+        ));
+      }
+      const curve = new THREE.CatmullRomCurve3(points);
+      const geo = new THREE.TubeGeometry(curve, 64, tubeRadius, 8, false);
+      const pos = geo.attributes.position.array;
+      const cols = new Float32Array(pos.length);
+      const c = new THREE.Color();
+
+      for (let i = 0; i < pos.length / 3; i++) {
+        const x = pos[i * 3];
+        const y = pos[i * 3 + 1];
+        const h = Math.abs(y) / radius;
+        c.lerpColors(cDeep, cHot, h);
+        if (x > 0) c.multiplyScalar(1.35);
+        cols[i * 3] = c.r;
+        cols[i * 3 + 1] = c.g;
+        cols[i * 3 + 2] = c.b;
+      }
+
+      geo.setAttribute('color', new THREE.BufferAttribute(cols, 3));
+      const mat = new THREE.MeshBasicMaterial({
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.9,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false,
+        side: THREE.DoubleSide
+      });
+      const mesh = new THREE.Mesh(geo, mat);
+      mesh.renderOrder = 3;
+      return mesh;
+    }
+
+    try {
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x020204);
+
+      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setClearColor(0x020204);
+      document.body.appendChild(renderer.domElement);
+
+      const R = 2.0;
+      const fov = 45 * Math.PI / 180;
+      const camDist = R / (0.14 * Math.tan(fov / 2));
+      const elev = 6 * Math.PI / 180;
+
+      const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+      camera.position.set(0, camDist * Math.sin(elev), camDist * Math.cos(elev));
+      camera.lookAt(0, 0, 0);
+
+      const blackHole = new THREE.Mesh(
+        new THREE.SphereGeometry(R, 48, 48),
+        new THREE.MeshBasicMaterial({ color: 0x000000 })
+      );
+      blackHole.renderOrder = 0;
+      scene.add(blackHole);
+
+      const photonRing = new THREE.Mesh(
+        new THREE.TorusGeometry(R * 1.08, R * 0.04, 16, 128),
+        new THREE.MeshBasicMaterial({
+          color: 0xfff3d0,
+          transparent: true,
+          opacity: 0.85,
+          blending: THREE.AdditiveBlending,
+          depthWrite: false,
+          side: THREE.FrontSide
+        })
+      );
+      photonRing.lookAt(camera.position);
+      photonRing.renderOrder = 1;
+      scene.add(photonRing);
+
+      const diskGroup = new THREE.Group();
+      scene.add(diskGroup);
+
+      const diskInner = R * 1.12;
+      const diskOuter = R * 4.0;
+      const disk = new THREE.Mesh(
+        new THREE.RingGeometry(diskInner, diskOuter, 128, 1),
+        new THREE.MeshBasicMaterial({
+          map: createDiskTexture(),
+          transparent: true,
+          blending: THREE.AdditiveBlending,
+          side: THREE.DoubleSide,
+          depthWrite: true
+        })
+      );
+      disk.rotation.x = -Math.PI / 2;
+      disk.renderOrder = 2;
+      diskGroup.add(disk);
+
+      const cHot = new THREE.Color(0xfff3d0);
+      const cDeep = new THREE.Color(0xc8551a);
+      const arcRadius = R * 1.35;
+      const tubeRadius = R * 0.04;
+
+      diskGroup.add(createArc(1, arcRadius, tubeRadius, cHot, cDeep

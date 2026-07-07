@@ -1,4 +1,4 @@
-import { writeFileSync } from "node:fs";
+import { existsSync, rmSync, writeFileSync } from "node:fs";
 import type {
   BenchmarkConfig,
   GenerationResult,
@@ -102,6 +102,14 @@ async function generateOne(
     } catch (err) {
       lastErr = err;
     }
+  }
+
+  // A failed attempt must not leave a stale output.html on disk — the render
+  // stage only checks "does output.html exist", so a leftover file from a
+  // previous successful run would silently get re-screenshotted and reported
+  // as this run's result.
+  for (const p of [paths.html(model.slug), paths.raw(model.slug)]) {
+    if (existsSync(p)) rmSync(p);
   }
 
   const result: GenerationResult = {
