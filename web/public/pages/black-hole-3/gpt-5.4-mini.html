@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Gargantua Black Hole</title>
+  <style>
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #020204;
+    }
+    canvas {
+      display: block;
+      width: 100vw;
+      height: 100vh;
+    }
+  </style>
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+    }
+  }
+  </script>
+</head>
+<body>
+<script type="module">
+import * as THREE from 'three';
+
+let scene, camera, renderer, bhGroup, diskGroup, stars;
+let t0 = performance.now();
+
+try {
+  scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x020204);
+  scene.fog = new THREE.Fog(0x020204, 6, 16);
+
+  camera = new THREE.PerspectiveCamera(38, innerWidth / innerHeight, 0.01, 100);
+  camera.position.set(0.0, 0.22, 3.15); // ~4-7 degrees above disk plane
+  camera.lookAt(0, 0, 0);
+
+  renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'high-performance' });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
+  renderer.setSize(innerWidth, innerHeight);
+  renderer.setClearColor(0x020204, 1);
+  document.body.appendChild(renderer.domElement);
+
+  // Lights kept minimal; most look comes from emissive/basic materials.
+  const ambient = new THREE.AmbientLight(0x404040, 0.25);
+  scene.add(ambient);
+
+  bhGroup = new THREE.Group();
+  scene.add(bhGroup);
+
+  // Event horizon: perfectly black sphere
+  const horizonRadius = 0.43;
+  const sphereGeo = new THREE.SphereGeometry(horizonRadius, 48, 32);
+  const sphereMat = new THREE.MeshBasicMaterial({ color: 0x000000 });
+  const sphere = new THREE.Mesh(sphereGeo, sphereMat);
+  sphere.position.set(0, 0, 0);
+  bhGroup.add(sphere);
+
+  // Photon ring hugging the edge
+  const photonRingGeo = new THREE.TorusGeometry(horizonRadius * 1.03, 0.012, 16, 160);
+  const photonRingMat = new THREE.MeshBasicMaterial({
+    color: 0xfff0b8,
+    transparent: true,
+    opacity: 0.95,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false
+  });
+  const photonRing = new THREE.Mesh(photonRingGeo, photonRingMat);
+  photonRing.rotation.x = Math.PI / 2;
+  photonRing.scale.set(1.0, 1.0, 1.0);
+  bhGroup.add(photonRing);
+
+  // Accretion disk: layered torus bands, edge-on view
+  diskGroup = new THREE.Group();
+  scene.add(diskGroup);
+
+  function makeDiskBand(radius, tube, color, opacity, emissive = 0x000000, scaleY = 1.0) {
+    const geo = new THREE.TorusGeometry(radius, tube, 12, 220);
+    const mat = new THREE.MeshStandardMaterial({
+      color,
+      emissive,
+      emissiveIntensity: 1.0,
+      roughness: 0.85,
+      metalness: 0.0,
+      transparent: true,
+      opacity,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+      side: THREE.DoubleSide
+    });
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.rotation.x = Math.PI / 2;
+    mesh.scale.y = scaleY;
+    return mesh;
+  }
+
+  // Main luminous bands: warm core fading outward
+  const innerBright = makeDiskBand(0.78, 0.028, 0xfff3d0, 0.90, 0x7a5a2a, 1.0);
+  const midAmber    = makeDiskBand(1.12, 0.033, 0xffae3b, 0.72, 0x4f2408, 1.0);
+  const outerOrange  = makeDiskBand(1.58, 0.040, 0xc8551a, 0.48, 0x250b02, 1.0);
+  const farHalo      = makeDiskBand(2.10, 0.055, 0xffd28a, 0.16, 0x180600, 1.0);
+
+  // Lensing arcs above and below the sphere: slightly larger, softer torus layers
+  const upperArc = makeDiskBand(1.06, 0.075, 0xffe2ad, 0.18, 0x3b220a, 1.22);
+  upperArc.position.y = 0.17;
+
+  const lowerArc = makeDiskBand(1.06, 0.075, 0xffe2ad, 0.16, 0x3b220a, 1.22);
+  lowerArc.position.y = -0.17;
+
+  // Back-side lensed halo arcs, slightly offset to feel wrapped over/under
+  const topWrap = makeDiskBand(1.55, 0.052, 0xffc977, 0.20, 0x2a1204, 1.02);
+  topWrap.position.y = 0.28;
+
+  const bottomWrap = makeDiskBand(1.55, 0.052, 0xffc977, 0.18, 0x2a1204, 1.02);
+  bottomWrap.position.y = -0.28;
+
+  // Relativistic beaming approximation: split bright/dim halves of the disk
+  const halfArc1 = new THREE.Mesh(
+    new THREE.TorusGeometry(1.26, 0.040, 12, 110, Math.PI),
+    new THREE.MeshStandardMaterial({
+      color: 0xfff1cc,
+      emissive: 0x9a6a2a,
+      emissiveIntensity: 1.2,
+      roughness: 0.8,
+      transparent: true,
+      opacity: 0.85,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+      side: THREE.DoubleSide
+    })
+  );
+  halfArc1.rotation.x = Math.PI / 2;
+  halfArc1.rotation.z = 0.0;
+  halfArc1.position.y = 0.01;
+
+  const halfArc2 = new THREE.Mesh(
+    new THREE.TorusGeometry(1.26, 0.040, 12, 110, Math.PI),
+    new THREE.MeshStandardMaterial({
+      color: 0xd86a22,
+      emissive: 0x311004,
+      emissiveIntensity: 0.7,
+      roughness: 0.8,
+      transparent: true,
+      opacity: 0.56,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+      side: THREE.DoubleSide
+    })
+  );
+  halfArc2.rotation.x = Math.PI / 2;
+  halfArc2.rotation.z = Math.PI;
+  halfArc2.position.y = -0.005;
+
+  diskGroup.add(innerBright, midAmber, outerOrange, farHalo, upperArc, lowerArc, topWrap, bottomWrap, halfArc1, halfArc2);
+
+  // Sparse dim starfield
+  const starCount = 900;
+  const starPositions = new Float32Array(starCount * 3);
+  const starColors = new Float32Array(starCount * 3);
+
+  const c1 = new THREE.Color(0xb8c7ff);
+  const c2 = new THREE.Color(0xffffff);
+  const c3 = new THREE.Color(0xffe8c9);
+
+  for (let i = 0; i < starCount; i++) {
+    const r = 12 + Math.random() * 28;
+    const theta = Math.random() * Math.PI * 2;
+    const phi = Math.acos(THREE.MathUtils.randFloatSpread(2));
+    const x = r * Math.sin(phi) * Math.cos(theta);
+    const y = r * Math.cos(phi);
+    const z = -2 - Math.random() * 10;
+
+    starPositions[i * 3 + 0] = x;
+    starPositions[i * 3 + 1] = y;
+    starPositions[i * 3 + 2] = z;
+
+    const mix = Math.random();
+    const col = mix < 0.34 ? c1 : (mix < 0.72 ? c2 : c3);
+    const dim = 0.35 + Math.random() * 0.55;
+    starColors[i * 3 + 0] = col.r * dim;
+    starColors[i * 3 + 1] = col.g * dim;
+    starColors[i * 3 + 2] = col.b * dim;
+  }
+
+  const starGeo = new THREE.BufferGeometry();
+  starGeo.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
+  starGeo.setAttribute('color', new THREE.BufferAttribute(starColors, 3));
+  const starMat = new THREE.PointsMaterial({
+    size: 0.028,
+    sizeAttenuation: true,
+    vertexColors: true,
+    transparent: true,
+    opacity: 0.65,
+    depthWrite: false
+  });
+  stars = new THREE.Points(starGeo, starMat);
+  scene.add(stars);
+
+  function onResize() {
+    camera.aspect = innerWidth / innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(innerWidth, innerHeight);
+  }
+  addEventListener('resize', onResize);
+
+  function animate() {
+    requestAnimationFrame(animate);
+
+    const t = (performance.now() - t0) * 0.001;
+
+    // Slow disk rotation
+    diskGroup.rotation.y = t * 0.18;
+    bhGroup.rotation.y = t * 0.03;
+
+    // gentle shimmer via subtle opacity modulation
+    const pulse = 0.94 + Math.sin(t * 1.2) * 0.03;
+    photonRing.material.opacity = pulse;
+    innerBright.material.opacity = 0.88 + Math.sin(t * 1.7) * 0.02;
+    midAmber.material.opacity = 0.70 + Math.cos(t * 1.3) * 0.02;
+
+    renderer.render(scene, camera);
+  }
+
+  animate();
+} catch (err) {
+  console.error(err);
+  // Best-effort fallback canvas to avoid a blank screen if setup fails.
+  document.body.innerHTML = '<div style="color:#fff;padding:20px;font:16px monospace;">Scene failed to initialize.</div>';
+}
+</script>
+</body>
+</html>

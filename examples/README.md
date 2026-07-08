@@ -8,6 +8,9 @@ Every example uses the **same 9 models** (see
 
 > GLM 5.2 · Grok 4.3 · GPT-5.4 mini · Claude Haiku 4.5 · Qwen3.7 Plus · Gemini 3.1 Flash-Lite · DeepSeek V4 Pro · Kimi K2.7 Code · Kimi K2.6
 
+(black-hole's **Run #3** predates this lineup and used Mistral Small 4 in place of Kimi K2.7 Code —
+kept as-is since it's an archived run, not reshot with the current lineup.)
+
 Each folder has the grid (lossless `grid.png` + a ~10× smaller `grid.webp`), a `report.md`, a `summary.json`
 (per-model time + tokens + status), and `pages/` (the actual HTML each model produced —
 open them in a browser). Each grid cell carries a thin top-bar label: model name · time ·
@@ -51,6 +54,12 @@ sampling varies run to run). Switch between runs in the [web app](../web).
 
 ![black-hole run 2](black-hole/run-2/grid.webp)
 
+**Run #3** — the original run from before the lineup swap (Mistral Small 4 instead of
+Kimi K2.7 Code), recovered from git history and re-rendered through the current pipeline
+so the labels match. Switch between runs in the [web app](../web).
+
+![black-hole run 3](black-hole/run-3/grid.webp)
+
 ## black-hole-spin — the animated one 🎬
 
 The same Gargantua composition, but judged in motion: a **5-second clip** (24 fps) is
@@ -67,6 +76,13 @@ Config: [`config/examples/black-hole-spin.config.json`](../config/examples/black
 Switch between runs in the [web app](../web).
 
 [![black-hole-spin run 2 — animated grid](black-hole-spin/run-2/grid-anim.webp)](black-hole-spin/run-2/grid.mp4)
+
+**Run #3** — the original animated run from before the lineup swap (Mistral Small 4
+instead of Kimi K2.7 Code), recovered from git history and re-rendered through the current
+pipeline ([grid video](black-hole-spin/run-3/grid.mp4)). Switch between runs in the
+[web app](../web).
+
+[![black-hole-spin run 3 — animated grid](black-hole-spin/run-3/grid-anim.webp)](black-hole-spin/run-3/grid.mp4)
 
 ## fireworks — animated Canvas 2D 🎬
 
