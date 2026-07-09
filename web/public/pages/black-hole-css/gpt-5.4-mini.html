@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Gargantua — Pure CSS</title>
+<style>
+  body { margin: 0; overflow: hidden; background: #03040a; }
+  * { box-sizing: border-box; }
+
+  :root{
+    --bg:#03040a;
+    --horizon:#000;
+    --white:#fff3d0;
+    --amber:#ffae3b;
+    --orange:#c8551a;
+  }
+
+  .scene{
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background:
+      radial-gradient(circle at 50% 50%, rgba(255,255,255,.035) 0 1px, transparent 1.2px) 8% 12% / 320px 260px,
+      radial-gradient(circle at 50% 50%, rgba(255,255,255,.03) 0 1px, transparent 1.1px) 70% 18% / 420px 360px,
+      radial-gradient(circle at 50% 50%, rgba(255,255,255,.025) 0 1px, transparent 1.1px) 24% 78% / 500px 420px,
+      radial-gradient(circle at 50% 50%, rgba(255,255,255,.02) 0 1px, transparent 1.1px) 86% 70% / 600px 520px,
+      radial-gradient(circle at 50% 50%, rgba(255,255,255,.018) 0 1px, transparent 1.1px) 44% 42% / 700px 600px,
+      var(--bg);
+  }
+
+  .bh{
+    position: absolute;
+    inset: 50% auto auto 50%;
+    width: min(56vw, 56vh);
+    aspect-ratio: 1;
+    transform: translate(-50%, -50%);
+    filter: saturate(1.08) contrast(1.1);
+  }
+
+  /* Lensing arcs */
+  .bh::before{
+    content:"";
+    position: absolute;
+    inset: -17% -40%;
+    border-radius: 50%;
+    background:
+      radial-gradient(ellipse at 50% 50%,
+        transparent 0 34%,
+        rgba(255,243,208,.0) 35%,
+        rgba(255,243,208,.0) 39%,
+        rgba(255,243,208,.22) 40%,
+        rgba(255,174,59,.65) 43%,
+        rgba(200,85,26,.52) 47%,
+        rgba(0,0,0,0) 49%);
+    filter:
+      blur(5px)
+      drop-shadow(0 0 12px rgba(255,190,96,.18))
+      drop-shadow(0 0 24px rgba(255,132,40,.08));
+    clip-path: polygon(0 0,100% 0,100% 100%,0 100%,0 56%,15% 52%,24% 43%,35% 35%,50% 31%,65% 35%,76% 43%,85% 52%,100% 56%,100% 100%,0 100%);
+    opacity: .95;
+    animation: shimmer 2.5s linear infinite;
+  }
+
+  /* Mirror arc under the hole */
+  .bh::after{
+    content:"";
+    position: absolute;
+    inset: -17% -40%;
+    border-radius: 50%;
+    background:
+      radial-gradient(ellipse at 50% 50%,
+        transparent 0 35%,
+        rgba(255,243,208,.0) 36%,
+        rgba(255,243,208,.0) 39%,
+        rgba(255,243,208,.16) 40%,
+        rgba(255,174,59,.56) 43%,
+        rgba(200,85,26,.5) 47%,
+        rgba(0,0,0,0) 49%);
+    filter:
+      blur(5px)
+      drop-shadow(0 0 12px rgba(255,190,96,.12))
+      drop-shadow(0 0 24px rgba(255,132,40,.07));
+    clip-path: polygon(0 0,100% 0,100% 44%,85% 48%,76% 57%,65% 65%,50% 69%,35% 65%,24% 57%,15% 48%,0 44%);
+    opacity: .9;
+    animation: shimmer 2.5s linear infinite reverse;
+  }
+
+  .disk-wrap{
+    position: absolute;
+    inset: 50% auto auto 50%;
+    width: min(92vw, 92vh);
+    aspect-ratio: 1;
+    transform: translate(-50%, -50%) rotate(-12deg) scaleY(.34);
+    transform-origin: center;
+    animation: tiltbreath 5s linear infinite;
+  }
+
+  .disk{
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background:
+      /* azimuthal hot streaks */
+      conic-gradient(from 0turn,
+        rgba(255,255,255,0) 0 7%,
+        rgba(255,243,208,.95) 7% 9%,
+        rgba(255,174,59,.9) 9% 13%,
+        rgba(200,85,26,.0) 13% 18%,
+        rgba(255,243,208,.8) 18% 19.2%,
+        rgba(255,174,59,.72) 19.2% 24%,
+        rgba(200,85,26,.0) 24% 31%,
+        rgba(255,243,208,.9) 31% 32.2%,
+        rgba(255,174,59,.8) 32.2% 36%,
+        rgba(200,85,26,.0) 36% 43%,
+        rgba(255,243,208,.86) 43% 44.1%,
+        rgba(255,174,59,.78) 44.1% 49%,
+        rgba(200,85,26,.0) 49% 58%,
+        rgba(255,243,208,.92) 58% 59.2%,
+        rgba(255,174,59,.78) 59.2% 64%,
+        rgba(200,85,26,.0) 64% 72%,
+        rgba(255,243,208,.9) 72% 73.2%,
+        rgba(255,174,59,.76) 73.2% 78%,
+        rgba(200,85,26,.0) 78% 86%,
+        rgba(255,243,208,.84) 86% 87%,
+        rgba(255,174,59,.72) 87% 92%,
+        rgba(200,85,26,.0) 92% 100%);
+    animation: spin 5s linear infinite;
+    filter:
+      blur(.35px)
+      brightness(1.08)
+      contrast(1.1)
+      drop-shadow(0 0 10px rgba(255,193,96,.18));
+    opacity: .98;
+  }
+
+  /* edge-on bright band and photon ring */
+  .band{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 140%;
+    height: 15%;
+    transform: translate(-50%, -50%);
+    border-radius: 999px;
+    background:
+      linear-gradient(90deg,
+        rgba(0,0,0,0) 0%,
+        rgba(255,243,208,.12) 16%,
+        rgba(255,243,208,.95) 28%,
+        rgba(255,174,59,.95) 41%,
+        rgba(200,85,26,.7) 53%,
+        rgba(255,174,59,.95) 65%,
+        rgba(255,243,208,.9) 78%,
+        rgba(0,0,0,0) 100%),
+      radial-gradient(ellipse at 50% 50%,
+        rgba(255,243,208,.4) 0 16%,
+        rgba(255,174,59,.4) 31%,
+        rgba(200,85,26,.28) 58%,
+        transparent 74%);
+    box-shadow:
+      0 0 18px rgba(255,190,96,.35),
+      0 0 42px rgba(255,132,40,.18),
+      0 0 72px rgba(255,94,18,.08);
+    filter: blur(.15px) saturate(1.2);
+    opacity: .96;
+    animation: pulse 2.5s linear infinite;
+  }
+
+  .band::before{
+    content:"";
+    position:absolute;
+    inset: -58% -5%;
+    border-radius: 50%;
+    background:
+      radial-gradient(ellipse at 50% 50%,
+        transparent 0 40%,
+        rgba(255,243,208,.9) 40.5%,
+        rgba(255,174,59,.95) 42.1%,
+        rgba(200,85,26,.45) 44.5%,
+        transparent 47%);
+    filter: blur(1px);
+    opacity: .65;
+    mix-blend-mode: screen;
+  }
+
+  .core{
+    position: absolute;
+    inset: 50% auto auto 50%;
+    width: 32%;
+    aspect-ratio: 1;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: #000;
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,.02),
+      0 0 0 2px rgba(0,0,0,.9),
+      0 0 24px rgba(0,0,0,.85);
+    z-index: 5;
+  }
+
+  .photon{
+    position:absolute;
+    inset: 50% auto auto 50%;
+    width: 34%;
+    aspect-ratio: 1;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    border: 2px solid rgba(255,243,208,.9);
+    box-shadow:
+      0 0 0 1px rgba(255,174,59,.65) inset,
+      0 0 12px rgba(255,243,208,.24),
+      0 0 24px rgba(255,174,59,.12);
+    opacity: .6;
+    clip-path: ellipse(50% 50% at 50% 50%);
+    z-index: 4;
+    animation: shimmer 2.5s linear infinite;
+  }
+
+  .photon::before{
+    content:"";
+    position:absolute;
+    inset: -2%;
+    border-radius: 50%;
+    border-top: 2px solid rgba(255,243,208,.95);
+    border-bottom: 2px solid rgba(255,174,59,.0);
+    filter: blur(.4px);
+  }
+
+  .glow{
+    position:absolute;
+    inset: 50% auto auto 50%;
+    width: 70%;
+    aspect-ratio: 1;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: radial-gradient(circle,
+      rgba(255,243,208,.06) 0 18%,
+      rgba(255,174,59,.03) 24%,
+      rgba(200,85,26,.018) 34%,
+      transparent 58%);
+    filter: blur(10px);
+    opacity: .9;
+    mix-blend-mode: screen;
+  }
+
+  @keyframes spin { to { transform: rotate(1turn); } }
+  @keyframes pulse {
+    0%,100% { filter: blur(.15px) saturate(1.2) brightness(1); }
+    50% { filter: blur(.25px) saturate(1.28) brightness(1.08); }
+  }
+  @keyframes shimmer {
+    0%,100% { opacity: .82; filter: blur(5px) brightness(1); }
+    50% { opacity: .98; filter: blur(4.5px) brightness(1.12); }
+  }
+  @keyframes tiltbreath{
+    0%,100% { transform: translate(-50%, -50%) rotate(-12deg) scaleY(.34); }
+    50% { transform: translate(-50%, -50%) rotate(-12deg) scaleY(.343); }
+  }
+</style>
+</head>
+<body>
+  <div class="scene">
+    <div class="bh">
+      <div class="glow"></div>
+      <div class="disk-wrap">
+        <div class="disk"></div>
+      </div>
+      <div class="band"></div>
+      <div class="photon"></div>
+      <div class="core"></div>
+    </div>
+  </div>
+</body>
+</html>

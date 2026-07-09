@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Gargantua</title>
+<style>
+body {
+  margin: 0;
+  padding: 0;
+  background: #03040a;
+  overflow: hidden;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Stars - static */
+.stars {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: transparent;
+  box-shadow:
+    120px 80px 0 #f5f5f5,
+    340px 150px 0 #e0e0e0,
+    580px 40px 0 #f8f8f8,
+    820px 200px 0 #d8d8d8,
+    210px 420px 0 #e8e8e8,
+    670px 310px 0 #f0f0f0,
+    930px 90px 0 #e4e4e4,
+    150px 580px 0 #dddddd,
+    450px 650px 0 #f2f2f2,
+    780px 480px 0 #e6e6e6,
+    60px 300px 0 #f6f6f6,
+    990px 550px 0 #d4d4d4;
+  z-index: 1;
+}
+
+/* Main container */
+.scene {
+  position: relative;
+  width: 100vmin;
+  height: 100vmin;
+  z-index: 2;
+}
+
+/* Black hole event horizon */
+.horizon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 30vmin;
+  height: 30vmin;
+  background: #000000;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 20px #000000;
+  z-index: 5;
+}
+
+/* Photon ring */
+.photon-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 30.6vmin;
+  height: 30.6vmin;
+  border: 1.2vmin solid #fff9e6;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 
+    0 0 8px #fff9e6,
+    0 0 18px #ffeb99;
+  z-index: 6;
+  opacity: 0.95;
+}
+
+/* Accretion disk - elliptical with rotation */
+.disk {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 92vmin;
+  height: 11vmin;
+  background: conic-gradient(
+    from 0deg at 50% 50%,
+    #c8551a 0deg,
+    #ffae3b 45deg,
+    #fff3d0 90deg,
+    #ffae3b 135deg,
+    #c8551a 180deg,
+    #ffae3b 225deg,
+    #fff3d0 270deg,
+    #ffae3b 315deg,
+    #c8551a 360deg
+  );
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 
+    0 0 30px #fff3d0,
+    0 0 60px #ffae3b;
+  z-index: 3;
+  animation: disk-rotate 5s linear infinite;
+  filter: brightness(1.05);
+}
+
+/* Relativistic beaming asymmetry */
+.disk::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: conic-gradient(
+    from 0deg at 50% 50%,
+    transparent 0deg,
+    transparent 120deg,
+    rgba(255,255,255,0.35) 150deg,
+    transparent 210deg,
+    transparent 360deg
+  );
+  border-radius: 50%;
+  animation: disk-rotate 5s linear infinite;
+}
+
+/* Gravitational lensing arcs - top */
+.lens-top {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 42vmin;
+  height: 42vmin;
+  border: 2.4vmin solid #fff3d0;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 
+    0 0 15px #fff3d0,
+    0 0 30px #ffae3b;
+  clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+  z-index: 4;
+  opacity: 0.75;
+  animation: shimmer 2.5s ease-in-out infinite alternate;
+}
+
+/* Gravitational lensing arcs - bottom */
+.lens-bottom {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 42vmin;
+  height: 42vmin;
+  border: 2.4vmin solid #fff3d0;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 
+    0 0 15px #fff3d0,
+    0 0 30px #ffae3b;
+  clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
+  z-index: 4;
+  opacity: 0.75;
+  animation: shimmer 2.5s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes disk-rotate {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@keyframes shimmer {
+  0% { opacity: 0.65; }
+  100% { opacity: 0.85; }
+}
+</style>
+</head>
+<body>
+<div class="stars"></div>
+<div class="scene">
+  <div class="disk"></div>
+  <div class="horizon"></div>
+  <div class="photon-ring"></div>
+  <div class="lens-top"></div>
+  <div class="lens-bottom"></div>
+</div>
+</body>
+</html>

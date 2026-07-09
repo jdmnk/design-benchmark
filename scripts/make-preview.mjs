@@ -56,8 +56,16 @@ if (inputs.length === 0) {
 
 const ff = (fargs) => execFileSync(ffmpegPath, ["-y", ...fargs], { stdio: ["ignore", "ignore", "pipe"] });
 
-// Normalize every input to the same even-sized frame, then concatenate.
-const scale = `scale=${width}:-2:flags=lanczos,setsar=1,fps=24,format=yuv420p`;
+// Normalize every input to the SAME exact frame, then concatenate. Grids can
+// differ by a few px in height (a "no output" placeholder cell is a different
+// height than a rendered one), and concat requires identical dimensions — so we
+// fit each into a fixed box and pad to it. The pad color matches the grid
+// background, so the letterboxing is invisible.
+const padH = Math.round((width * 0.645) / 2) * 2;
+const scale =
+  `scale=${width}:${padH}:force_original_aspect_ratio=decrease:flags=lanczos,` +
+  `pad=${width}:${padH}:(ow-iw)/2:(oh-ih)/2:color=0x050507,` +
+  `setsar=1,fps=24,format=yuv420p`;
 const inArgs = inputs.flatMap((p) => ["-i", p]);
 const filters = inputs.map((_, i) => `[${i}:v]${scale}[v${i}]`).join(";");
 const concat = inputs.map((_, i) => `[v${i}]`).join("") + `concat=n=${inputs.length}:v=1:a=0[out]`;

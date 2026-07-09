@@ -1,0 +1,15 @@
+Create a realistic supermassive black hole — the 'Gargantua' look from the film Interstellar — as a full-screen scene, in PURE CSS (no JavaScript, no canvas). A 5-second clip is captured and looped, so the rotation is as important as the still composition.
+
+Composition (match so results are comparable — everything centered, frame fixed):
+- A perfectly black EVENT-HORIZON disc dead center, about 30% of the viewport height, with a crisp edge.
+- A bright, thin ACCRETION DISK around it, viewed nearly EDGE-ON so it reads as a near-horizontal bright band cutting across the middle of the black disc and extending well past it on both sides — a wide, flattened ellipse, NOT a head-on ring.
+- Gravitational LENSING: bright arcs bend UP and OVER the top of the black disc AND mirror UNDER the bottom, forming the signature halo arcs above and below the horizon (not merely a flat band). Build them from curved / elliptical shapes wrapping the sphere.
+- A thin, bright PHOTON RING hugging the very edge of the black disc.
+- Disk COLORING: hot white-yellow on the inner edge fading outward to amber then deep orange (#fff3d0 → #ffae3b → #c8551a); make one side slightly brighter than the other (relativistic beaming).
+- Background: near-black space (#03040a) with a sparse scatter of faint, STATIC stars (they do not move).
+
+Motion (the point of this benchmark — clearly visible and seamlessly looping in 5s):
+- The accretion disk ROTATES about the black hole. Give the disk visible azimuthal structure (brightness clumps, streaks, or banding) and revolve it so a recognizable feature travels around — a conic-gradient or repeating pattern rotated EXACTLY one full turn (or a whole number of turns) over the 5-second clip works well and loops cleanly. A featureless band looks static — make the rotation read clearly.
+- Add subtle shimmer/flicker in the disk and lensing arcs. The frame (camera) stays FIXED; keep the black hole centered and the disk horizontal.
+
+Return ONLY a single complete HTML document — no JavaScript.

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Gargantua CSS</title>
+    <style>
+        /* Dark background as first rule */
+        body { margin: 0; padding: 0; background-color: #03040a; height: 100vh; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+
+        .universe {
+            position: relative;
+            width: 100vmin;
+            height: 100vmin;
+        }
+
+        /* Static Stars */
+        .stars {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(1px 1px at 20% 30%, white, transparent),
+                radial-gradient(1px 1px at 80% 10%, white, transparent),
+                radial-gradient(2px 2px at 40% 70%, white, transparent),
+                radial-gradient(1px 1px at 10% 90%, white, transparent),
+                radial-gradient(1px 1px at 90% 80%, white, transparent);
+            opacity: 0.5;
+        }
+
+        /* The Black Hole Container - centralizing */
+        .black-hole {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 30vmin;
+            height: 30vmin;
+            z-index: 2;
+        }
+
+        /* Event Horizon */
+        .event-horizon {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: radial-gradient(circle at 50% 50%, #000 95%, #111 100%);
+            box-shadow: inset 0 0 20px #000;
+            z-index: 10;
+        }
+
+        /* Photon Ring */
+        .photon-ring {
+            position: absolute;
+            width: 102%;
+            height: 102%;
+            top: -1%;
+            left: -1%;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 10px #fff;
+            z-index: 9;
+        }
+
+        /* Accretion Disk - The main structure */
+        .disk-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100vmin;
+            height: 30vmin;
+            transform: translate(-50%, -50%) rotateX(75deg); /* Tilt for edge-on view */
+            transform-style: preserve-3d;
+            z-index: 1;
+        }
+
+        /* The Disk Loop Animation */
+        .disk {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(
+                from 0deg,
+                #c8551a 0deg,
+                #ffae3b 90deg,
+                #fff3d0 180deg,
+                #ffae3b 270deg,
+                #c8551a 360deg
+            );
+            filter: blur(2vmin);
+            animation: rotateDisk 5s linear infinite;
+            mask-image: radial-gradient(circle at 50% 50%, transparent 15%, black 20%, black 40%, transparent 45%);
+            opacity: 0.8;
+        }
+
+        /* Gravitational Lensing Arcs (Top and Bottom) */
+        .lensing {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 30vmin;
+            height: 30vmin;
+            border-radius: 50%;
+            border: 4vmin solid transparent;
+            border-top: 4vmin solid rgba(255, 174, 59, 0.4);
+            border-bottom: 4vmin solid rgba(255, 174, 59, 0.4);
+            filter: blur(1vmin);
+            animation: flicker 2.5s ease-in-out infinite;
+        }
+
+        @keyframes rotateDisk {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes flicker {
+            0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.05); }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="stars"></div>
+    
+    <div class="disk-container">
+        <div class="disk"></div>
+    </div>
+
+    <div class="black-hole">
+        <div class="photon-ring"></div>
+        <div class="event-horizon"></div>
+    </div>
+
+    <div class="lensing"></div>
+</body>
+</html>

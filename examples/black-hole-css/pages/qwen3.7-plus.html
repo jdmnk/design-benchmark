@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Gargantua</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; }
+  body {
+    background: #03040a;
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+  }
+
+  .scene {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+  }
+
+  /* ---------- STARS ---------- */
+  .stars {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+  .stars::before, .stars::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 1px; height: 1px;
+    background: transparent;
+  }
+  .stars::before {
+    box-shadow:
+      3vw 7vh 0 0.4px #ffffff,
+      8vw 22vh 0 0.3px #cfd6ff,
+      12vw 4vh 0 0.5px #ffffff,
+      17vw 38vh 0 0.3px #b8c0ff,
+      21vw 61vh 0 0.4px #ffffff,
+      26vw 12vh 0 0.3px #e6e9ff,
+      31vw 83vh 0 0.5px #ffffff,
+      34vw 29vh 0 0.3px #cfd6ff,
+      39vw 71vh 0 0.4px #ffffff,
+      43vw 9vh 0 0.3px #b8c0ff,
+      48vw 46vh 0 0.5px #ffffff,
+      52vw 88vh 0 0.3px #e6e9ff,
+      57vw 19vh 0 0.4px #ffffff,
+      61vw 54vh 0 0.3px #cfd6ff,
+      66vw 3vh 0 0.5px #ffffff,
+      71vw 77vh 0 0.3px #b8c0ff,
+      76vw 33vh 0 0.4px #ffffff,
+      81vw 66vh 0 0.3px #e6e9ff,
+      86vw 14vh 0 0.5px #ffffff,
+      91vw 49vh 0 0.3px #cfd6ff,
+      95vw 82vh 0 0.4px #ffffff,
+      5vw 91vh 0 0.3px #b8c0ff,
+      14vw 52vh 0 0.4px #ffffff,
+      23vw 75vh 0 0.3px #e6e9ff,
+      28vw 2vh 0 0.5px #ffffff,
+      36vw 39vh 0 0.3px #cfd6ff,
+      44vw 93vh 0 0.4px #ffffff,
+      51vw 26vh 0 0.3px #b8c0ff,
+      59vw 69vh 0 0.5px #ffffff,
+      68vw 42vh 0 0.3px #e6e9ff,
+      74vw 8vh 0 0.4px #ffffff,
+      82vw 58vh 0 0.3px #cfd6ff,
+      89vw 25vh 0 0.5px #ffffff,
+      97vw 73vh 0 0.3px #b8c0ff,
+      7vw 36vh 0 0.4px #ffffff,
+      19vw 85vh 0 0.3px #e6e9ff,
+      29vw 48vh 0 0.5px #ffffff,
+      41vw 17vh 0 0.3px #cfd6ff,
+      55vw 79vh 0 0.4px #ffffff,
+      63vw 31vh 0 0.3px #b8c0ff,
+      78vw 92vh 0 0.5px #ffffff,
+      84vw 21vh 0 0.3px #e6e9ff,
+      93vw 56vh 0 0.4px #ffffff,
+      2vw 64vh 0 0.3px #cfd6ff,
+      15vw 11vh 0 0.5px #ffffff,
+      24vw 44vh 0 0.3px #b8c0ff,
+      33vw 87vh 0 0.4px #ffffff,
+      46vw 3vh 0 0.3px #e6e9ff,
+      54vw 62vh 0 0.5px #ffffff,
+      65vw 24vh 0 0.3px #cfd6ff,
+      73vw 70vh 0 0.4px #ffffff,
+      87vw 40vh 0 0.3px #b8c0ff,
+      98vw 13vh 0 0.5px #ffffff;
+  }
+  .stars::after {
+    box-shadow:
+      4vw 31vh 0 0.3px #ffffff,
+      11vw 68vh 0 0.4px #e6e9ff,
+      20vw 5vh 0 0.3px #ffffff,
+      27vw 55vh 0 0.5px #cfd6ff,
+      35vw 20vh 0 0.3px #ffffff,
+      42vw 81vh 0 0.4px #b8c0ff,
+      50vw 37vh 0 0.3px #ffffff,
+      58vw 95vh 0 0.5px #e6e9ff,
+      64vw 16vh 0 0.3px #ffffff,
+      72vw 48vh 0 0.4px #cfd6ff,
+      79vw 84vh 0 0.3px #ffffff,
+      88vw 28vh 0 0.5px #b8c0ff,
+      94vw 63vh 0 0.3px #ffffff,
+      9vw 78vh 0 0.4px #e6e9ff,
+      16vw 2vh 0 0.3px #ffffff,
+      22vw 41vh 0 0.5px #cfd6ff,
+      30vw 72vh 0 0.3px #ffffff,
+      38vw 18vh 0 0.4px #b8c0ff,
+      47vw 59vh 0 0.3px #ffffff,
+      53vw 1vh 0 0.5px #e6e9ff,
+      60vw 50vh 0 0.3px #ffffff,
+      69vw 86vh 0 0.4px #cfd6ff,
+      75vw 7vh 0 0.3px #ffffff,
+      83vw 43vh 0 0.5px #b8c0ff,
+      90vw 76vh 0 0.3px #ffffff,
+      96vw 34vh 0 0.4px #e6e9ff,
+      1vw 19vh 0 0.3px #ffffff,
+      18vw 94vh 0 0.5px #cfd6ff,
+      25vw 27vh 0 0.3px #ffffff,
+      32vw 65vh 0 0.4px #b8c0ff,
+      40vw 10vh 0 0.3px #ffffff,
+      49vw 53vh 0 0.5px #e6e9ff,
+      56vw 89vh 0 0.3px #ffffff,
+      67vw 35vh 0 0.4px #cfd6ff,
+      77vw 2vh 0 0.3px #ffffff,
+      85vw 60vh 0 0.5px #b8c0ff,
+      92vw 23vh 0 0.3px #ffffff,
+      6vw 47vh 0 0.4px #e6e9ff,
+      13vw 80vh 0 0.3px #ffffff,
+      45vw 30vh 0 0.5px #cfd6ff;
+  }
+
+  /* ---------- LENSING ARCS (tall ring behind EH) ---------- */
+  .lensing {
+    position: absolute;
+    width: 78vh;
+    height: 78vh;
+    border-radius: 50%;
+    background:
+      radial-gradient(circle,
+        transparent 30%,
+        rgba(255, 200, 120, 0.0) 35%,
+        rgba(255, 174, 59, 0.9) 38%,
+        rgba(255, 243, 208, 1) 40%,
+        rgba(255, 174, 59, 0.9) 42%,
+        rgba(200, 85, 26, 0.5) 48%,
+        transparent 55%);
+    -webkit-mask: radial-gradient(circle, transparent 15.5vh, #000 16vh);
+    mask: radial-gradient(circle, transparent 15.5vh, #000 16vh);
+    animation: shimmerArc 2.5s ease-in-out infinite;
+    filter: blur(0.4px);
+  }
+  .lensing::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background:
+      conic-gradient(from 0deg,
+        rgba(255, 243, 208, 0) 0deg,
+        rgba(255, 243, 208, 0.9) 40deg,
+        rgba(255, 174, 59, 0.3) 90deg,
+        rgba(255, 243, 208, 1) 140deg,
+        rgba(200, 85, 26, 0.4) 200deg,
+        rgba(255, 200, 120, 0.8) 260deg,
+        rgba(255, 243, 208, 0.2) 310deg,
+        rgba(255, 243, 208, 0) 360deg);
+    -webkit-mask: radial-gradient(circle, transparent 30%, #000 34%, #000 44%, transparent 48%);
+    mask: radial-gradient(circle, transparent 30%, #000 34%, #000 44%, transparent 48%);
+    animation: spin 5s linear infinite;
+  }
+
+  /* ---------- ACCRETION DISK (horizontal rotating band) ---------- */
+  .disk {
+    position: absolute;
+    width: 150vw;
+    height: 11vh;
+    border-radius: 50%;
+    overflow: hidden;
+    filter: blur(0.3px);
+  }
+  .disk::before {
+    /* radial color fade from inner hot to outer cool */
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 70% 100% at 50% 50%,
+      rgba(255, 243, 208, 0) 0%,
+      rgba(255, 243, 208, 0) 28%,
+      rgba(255, 230, 170, 0.95) 32%,
+      rgba(255, 200, 120, 1) 36%,
+      rgba(255, 174, 59, 1) 42%,
+      rgba(220, 120, 40, 0.9) 55%,
+      rgba(200, 85, 26, 0.7) 70%,
+      rgba(140, 50, 20, 0.3) 85%,
+      rgba(80, 30, 10, 0) 100%);
+    z-index: 3;
+    pointer-events: none;
+  }
+  .disk::after {
+    /* relativistic beaming: right side (approaching) brighter */
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg,
+      rgba(0, 0, 0, 0.55) 0%,
+      rgba(0, 0, 0, 0.15) 30%,
+      rgba(255, 255, 255, 0) 50%,
+      rgba(255, 255, 255, 0.25) 70%,
+      rgba(255, 255, 255, 0.55) 100%);
+    z-index: 4;
+    pointer-events: none;
+    mix-blend-mode: screen;
+  }
+  .disk-spin {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 150vw;
+    height: 150vw;
+    transform: translate(-50%, -50%);
+    background:
+      conic-gradient(from 90deg,
+        rgba(255, 243, 208, 0.95) 0deg,
+        rgba(255, 200, 120, 0.3) 18deg,
+        rgba(200, 85, 26, 0.85) 32deg,
+        rgba(255, 174, 59, 0.2) 50deg,
+        rgba(255, 243, 208, 1) 70deg,
+        rgba(180, 70, 25, 0.4) 88deg,
+        rgba(255, 200, 120, 0.9) 108deg,
+        rgba(255, 174, 59, 0.25) 128deg,
+        rgba(255, 243, 208, 0.85) 150deg,
+        rgba(200, 85, 26, 0.35) 172deg,
+        rgba(255, 220, 150, 0.95) 195deg,
+        rgba(180, 70, 25, 0.3) 218deg,
+        rgba(255, 243, 208, 1) 240deg,
+        rgba(255, 174, 59, 0.2) 262deg,
+        rgba(200, 85, 26, 0.8) 285deg,
+        rgba(255, 200, 120, 0.35) 308deg,
+        rgba(255, 243, 208, 0.9) 330deg,
+        rgba(180, 70, 25, 0.4) 350deg,
+        rgba(255, 243, 208, 0.95) 360deg);
+    animation: spin 5s linear infinite;
+    mix-blend-mode: screen;
+  }
+  .disk-shimmer {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 60% 100% at 50% 50%,
+      rgba(255, 243, 208, 0.15) 0%,
+      rgba(255, 200, 120, 0.08) 40%,
+      transparent 70%);
+    animation: shimmer 2.5s ease-in-out infinite;
+    z-index: 5;
+    pointer-events: none;
+  }
+
+  /* ---------- EVENT HORIZON ---------- */
+  .horizon {
+    position: absolute;
+    width: 30vh;
+    height: 30vh;
+    border-radius: 50%;
+    background: radial-gradient(circle at 50% 50%,
+      #000 0%,
+      #000 92%,
+      #020204 100%);
+    z-index: 10;
+    box-shadow: 0 0 40px 10px rgba(0,0,0,0.9);
+  }
+
+  /* ---------- PHOTON RING ---------- */
+  .photon {
+    position: absolute;
+    width: 31.6vh;
+    height: 31.6vh;
+    border-radius: 50%;
+    border: 0.3vh solid rgba(255, 230, 170, 0.95);
+    box-shadow:
+      0 0 8px 2px rgba(255, 200, 120, 0.8),
+      0 0 20px 4px rgba(255, 174, 59, 0.5),
+      inset 0 0 6px 1px rgba(255, 243, 208, 0.7);
+    z-index: 11;
+    animation: photonPulse 1.25s ease-in-out infinite;
+  }
+
+  /* ---------- OUTER GLOW HINT ---------- */
+  .glow {
+    position: absolute;
+    width: 100vh;
+    height: 100vh;
+    border-radius: 50%;
+    background: radial-gradient(circle,
+      rgba(255, 174, 59, 0.08) 0%,
+      rgba(200, 85, 26, 0.04) 30%,
+      transparent 55%);
+    z-index: 1;
+    pointer-events: none;
+    animation: shimmer 3.333s ease-in-out infinite;
+  }
+
+  /* ---------- ANIMATIONS ---------- */
+  @keyframes spin {
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to   { transform: translate(-50%, -50%) rotate(360deg); }
+  }
+  @keyframes shimmer {
+    0%, 100% { opacity: 0.85; }
+    50%      { opacity: 1; }
+  }
+  @keyframes shimmerArc {
+    0%, 100% { opacity: 0.9; filter: blur(0.4px) brightness(1); }
+    50%      { opacity: 1;   filter: blur(0.6px) brightness(1.15); }
+  }
+  @keyframes photonPulse {
+    0%, 100% { opacity: 0.95; transform: scale(1); }
+    50%      { opacity: 1;    transform: scale(1.02); }
+  }
+</style>
+</head>
+<body>
+  <div class="scene">
+    <div class="glow"></div>
+    <div class="stars"></div>
+    <div class="lensing"></div>
+    <div class="disk">
+      <div class="disk-spin"></div>
+      <div class="disk-shimmer"></div>
+    </div>
+    <div class="photon"></div>
+    <div class="horizon"></div>
+  </div>
+</body>
+</html>

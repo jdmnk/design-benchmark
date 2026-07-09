@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gargantua - Supermassive Black Hole</title>
+    <style>
+        :root {
+            --bh-diameter: 30vh;
+            --bh-radius: 15vh;
+            --ring-diameter: 40vh;
+            --ring-radius: 20vh;
+            --disk-width: 88vw;
+            --disk-height: 2.8vh;
+            --color-inner: #fff8e7;
+            --color-mid: #ffae3b;
+            --color-outer: #c8551a;
+            --color-deep: #7a2a0a;
+            --space-bg: #03040a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #03040a;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            font-size: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .scene {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Stars background */
+        .stars {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .stars::before {
+            content: '';
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            border-radius: 50%;
+            background: #ffffff;
+            top: 15%;
+            left: 8%;
+            box-shadow:
+                0px 0px 0px #fff,
+                12vw 3vh 0px #cdd6e0,
+                28vw 8vh 0px #e8ecf1,
+                45vw 2vh 0px #bac5d0,
+                62vw 12vh 0px #d4dce4,
+                78vw 5vh 0px #a0b0c0,
+                5vw 18vh 0px #eef2f5,
+                18vw 25vh 0px #c8d4de,
+                35vw 32vh 0px #dce4ea,
+                52vw 28vh 0px #b0c0cc,
+                70vw 22vh 0px #e0e6ed,
+                85vw 35vh 0px #c4d0da,
+                3vw 42vh 0px #f0f3f6,
+                22vw 48vh 0px #b8c6d2,
+                40vw 55vh 0px #d8e0e7,
+                58vw 50vh 0px #ccd6df,
+                75vw 44vh 0px #e4eaf0,
+                90vw 52vh 0px #a8b8c8,
+                8vw 60vh 0px #d0dae2,
+                25vw 68vh 0px #ecf0f4,
+                44vw 72vh 0px #bccad5,
+                63vw 65vh 0px #dce3ea,
+                80vw 58vh 0px #c0ced8,
+                6vw 78vh 0px #e8edf2,
+                30vw 82vh 0px #b4c4d0,
+                50vw 88vh 0px #d4dde5,
+                68vw 80vh 0px #eef1f5,
+                84vw 75vh 0px #c8d3dd,
+                15vw 10vh 0px #9eb0c0,
+                55vw 15vh 0px #d0d9e2,
+                92vw 20vh 0px #bcc9d4,
+                38vw 40vh 0px #e2e8ef,
+                72vw 38vh 0px #c2cfda,
+                10vw 50vh 0px #dae2e9,
+                48vw 62vh 0px #ecf0f4,
+                82vw 68vh 0px #b0c0ce,
+                20vw 75vh 0px #d6dfe6,
+                60vw 85vh 0px #c6d2dc,
+                95vw 42vh 0px #e6ebf1,
+                33vw 90vh 0px #b8c7d3,
+                70vw 92vh 0px #dce3eb,
+                2vw 30vh 0px #ced8e1,
+                88vw 10vh 0px #e0e7ed,
+                42vw 95vh 0px #c4d0da;
+        }
+        .stars::after {
+            content: '';
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            border-radius: 50%;
+            background: #ffffff;
+            top: 22%;
+            left: 14%;
+            box-shadow:
+                7vw 6vh 0px #e8ecf0,
+                20vw 14vh 0px #c0ced8,
+                38vw 9vh 0px #dce3ea,
+                55vw 20vh 0px #b4c4d0,
+                73vw 7vh 0px #ecf0f4,
+                88vw 28vh 0px #c8d4de,
+                4vw 35vh 0px #d0dae2,
+                26vw 42vh 0px #e4eaf0,
+                50vw 38vh 0px #bccad5,
+                66vw 30vh 0px #d8e0e7,
+                82vw 48vh 0px #eef2f5,
+                9vw 55vh 0px #c4d0da,
+                32vw 52vh 0px #dce4ea,
+                56vw 58vh 0px #b0c0cc,
+                74vw 54vh 0px #e0e6ed,
+                91vw 62vh 0px #ccd6df,
+                16vw 70vh 0px #d4dde5,
+                40vw 78vh 0px #e8edf2,
+                64vw 72vh 0px #b8c6d2,
+                79vw 85vh 0px #dae2e9,
+                3vw 88vh 0px #c2cfda,
+                28vw 92vh 0px #ecf0f4,
+                53vw 86vh 0px #d6dfe6,
+                77vw 90vh 0px #bac5d0,
+                94vw 55vh 0px #e2e8ef,
+                18vw 18vh 0px #ced8e1,
+                46vw 25vh 0px #e6ebf1,
+                85vw 40vh 0px #bcc9d4,
+                22vw 60vh 0px #d0d9e2;
+        }
+
+        /* Black hole container - center of all elements */
+        .bh-container {
+            position: relative;
+            width: 0;
+            height: 0;
+            z-index: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Lensing ring - far side disk light bent by gravity */
+        .lensing-ring {
+            position: absolute;
+            width: var(--ring-diameter);
+            height: var(--ring-diameter);
+            border-radius: 50%;
+            background: radial-gradient(circle at 49% 50%,
+                    transparent 0%,
+                    transparent 66%,
+                    rgba(255, 248, 220, 0.95) 68%,
+                    #fff3d0 70%,
+                    #ffcc66 73%,
+                    #ffae3b 77%,
+                    #e8782a 81%,
+                    #c8551a 85%,
+                    #8a2a0a 89%,
+                    transparent 92%);
+            z-index: 2;
+            animation: ring-rotate 5s linear infinite;
+            filter: blur(0.3px);
+            box-shadow:
+                0 0 4vh rgba(255, 200, 100, 0.5),
+                0 0 8vh rgba(255, 150, 40, 0.3),
+                0 0 15vh rgba(200, 85, 26, 0.2);
+        }
+        .lensing-ring::after {
+            content: '';
+            position: absolute;
+            inset: -8%;
+            border-radius: 50%;
+            background: radial-gradient(circle at 52% 48%,
+                    transparent 0%,
+                    transparent 64%,
+                    rgba(255, 255, 240, 0.7) 67%,
+                    rgba(255, 220, 150, 0.5) 71%,
+                    rgba(255, 170, 60, 0.3) 76%,
+                    transparent 82%);
+            z-index: -1;
+            animation: ring-glow-pulse 1.25s ease-in-out infinite;
+        }
+        @keyframes ring-rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        @keyframes ring-glow-pulse {
+            0%,
+            100% {
+                opacity: 0.6;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+
+        /* Event horizon - the black disc */
+        .event-horizon {
+            position: absolute;
+            width: var(--bh-diameter);
+            height: var(--bh-diameter);
+            border-radius: 50%;
+            background: #000000;
+            z-index: 5;
+            box-shadow:
+                inset 0 0 3vh rgba(0, 0, 0, 0.95),
+                0 0 1vh rgba(0, 0, 0, 0.9),
+                0 0 3vh rgba(0, 0, 0, 0.7);
+        }
+
+        /* Photon ring - thin bright ring hugging the event horizon */
+        .photon-ring {
+            position: absolute;
+            width: calc(var(--bh-diameter) + 1.8vh);
+            height: calc(var(--bh-diameter) + 1.8vh);
+            border-radius: 50%;
+            border: 1.5px solid rgba(255, 245, 220, 0.9);
+            z-index: 6;
+            box-shadow:
+                0 0 1.5vh rgba(255, 240, 200, 0.7),
+                0 0 4vh rgba(255, 200, 120, 0.4),
+                0 0 8vh rgba(255, 150, 60, 0.25),
+                inset 0 0 0.5vh rgba(255, 240, 210, 0.3);
+            animation: photon-shimmer 0.833s ease-in-out infinite;
+        }
+        @keyframes photon-shimmer {
+            0%,
+            100% {
+                box-shadow: 0 0 1.5vh rgba(255, 240, 200, 0.7), 0 0 4vh rgba(255, 200, 120, 0.4), 0 0 8vh rgba(255, 150, 60, 0.25);
+            }
+            35% {
+                box-shadow: 0 0 2.2vh rgba(255, 245, 210, 0.9), 0 0 5vh rgba(255, 210, 130, 0.55), 0 0 10vh rgba(255, 160, 70, 0.35);
+            }
+            70% {
+                box-shadow: 0 0 1.2vh rgba(255, 235, 195, 0.6), 0 0 3.5vh rgba(255, 190, 110, 0.35), 0 0 7vh rgba(255, 140, 50, 0.2);
+            }
+        }
+
+        /* Near-side accretion disk - thin oval in front of the event horizon */
+        .disk-near {
+            position: absolute;
+            width: var(--disk-width);
+            height: var(--disk-height);
+            border-radius: 50%;
+            overflow: hidden;
+            z-index: 7;
+            background: radial-gradient(ellipse at center,
+                    #fff8e0 0%,
+                    #fff3d0 8%,
+                    #ffd89b 18%,
+                    #ffae3b 35%,
+                    #e8782a 55%,
+                    #c8551a 72%,
+                    #8a2a0a 90%,
+                    #4a1004 100%);
+            box-shadow:
+                0 0 2vh rgba(255, 200, 100, 0.6),
+                0 0 5vh rgba(255, 150, 40, 0.35),
+                0 0 10vh rgba(200, 85, 26, 0.2);
+        }
+        .disk-near::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg,
+                    rgba(0, 0, 0, 0.25) 0%,
+                    rgba(0, 0, 0, 0.05) 25%,
+                    rgba(255, 255, 255, 0.08) 45%,
+                    rgba(255, 255, 255, 0.2) 55%,
+                    rgba(255, 255, 255, 0.1) 65%,
+                    rgba(0, 0, 0, 0.05) 75%,
+                    rgba(0, 0, 0, 0.3) 100%);
+            z-index: 1;
+            pointer-events: none;
+        }
+        /* Rotating pattern inside the disk */
+        .disk-pattern {
+            position: absolute;
+            width: var(--disk-width);
+            height: var(--disk-width);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: conic-gradient(from 0deg,
+                    rgba(255, 250, 235, 0.5) 0deg,
+                    rgba(255, 220, 150, 0.4) 30deg,
+                    rgba(255, 180, 80, 0.55) 55deg,
+                    rgba(255, 200, 120, 0.35) 80deg,
+                    rgba(255, 240, 200, 0.5) 110deg,
+                    rgba(255, 170, 60, 0.45) 140deg,
+                    rgba(255, 210, 140, 0.5) 170deg,
+                    rgba(255, 190, 90, 0.4) 200deg,
+                    rgba(255, 250, 230, 0.55) 230deg,
+                    rgba(255, 160, 50, 0.45) 260deg,
+                    rgba(255, 230, 170, 0.5) 290deg,
+                    rgba(255, 175, 70, 0.4) 320deg,
+                    rgba(255, 245, 210, 0.5) 350deg,
+                    rgba(255, 250, 235, 0.5) 360deg);
+            animation: disk-pattern-rotate 5s linear infinite;
+            mix-blend-mode: overlay;
+            opacity: 0.7;
+        }
+        @keyframes disk-pattern-rotate {
+            from {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+            to {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+
+        /* Additional bright clumps in the disk for visible rotation */
+        .disk-clumps {
+            position: absolute;
+            width: var(--disk-width);
+            height: var(--disk-width);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: conic-gradient(from 15deg,
+                    transparent 0deg,
+                    transparent 40deg,
+                    rgba(255, 255, 240, 0.35) 42deg,
+                    rgba(255, 240, 200, 0.25) 48deg,
+                    transparent 52deg,
+                    transparent 130deg,
+                    rgba(255, 245, 210, 0.3) 135deg,
+                    rgba(255, 220, 150, 0.2) 142deg,
+                    transparent 148deg,
+                    transparent 240deg,
+                    rgba(255, 250, 225, 0.32) 245deg,
+                    rgba(255, 230, 160, 0.22) 252deg,
+                    transparent 258deg,
+                    transparent 360deg);
+            animation: disk-clumps-rotate 5s linear infinite;
+            mix-blend-mode: screen;
+            opacity: 0.6;
+            pointer-events: none;
+        }
+        @keyframes disk-clumps-rotate {
+            from {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+            to {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+
+        /* Shimmer overlay on the disk */
+        .shimmer-disk {
+            position: absolute;
+            width: var(--disk-width);
+            height: var(--disk-height);
+            border-radius: 50%;
+            z-index: 8;
+            pointer-events: none;
+            background: transparent;
+            box-shadow:
+                inset 0 0 3vh rgba(255, 240, 200, 0.3),
+                0 0 4vh rgba(255, 200, 120, 0.4);
+            animation: shimmer-disk-pulse 1.667s ease-in-out infinite;
+        }
+        @keyframes shimmer-disk-pulse {
+            0%,
+            100%
