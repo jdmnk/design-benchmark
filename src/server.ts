@@ -99,6 +99,15 @@ function buildImportMapTag(importMapPath: string): string {
 /** Insert the importmap as early as possible, before any module script runs. */
 function injectImportMap(html: string, tag: string): string {
   if (!tag) return html;
+  // Strip any import map the model wrote itself. A browser honours only ONE
+  // import map, so a model-authored one — which almost always points at a CDN
+  // we can't reach offline, or simply duplicates ours — breaks module
+  // resolution and blanks the page. Ours (vendored, deterministic) is the
+  // single source of truth for bare-specifier imports like `three`.
+  html = html.replace(
+    /<script\b[^>]*\btype\s*=\s*["']importmap["'][^>]*>[\s\S]*?<\/script>/gi,
+    "",
+  );
   const headMatch = html.match(/<head[^>]*>/i);
   if (headMatch) {
     const at = headMatch.index! + headMatch[0].length;
