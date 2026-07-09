@@ -60,11 +60,11 @@ config ──▶ ① generate ──▶ ② render ──▶ ③ grid ──▶ 
 
 ### The config is the run
 
-Everything about a run lives in one JSON file (default
-[`config/benchmark.config.json`](config/benchmark.config.json)) — the prompt, system
-prompt, model list, render settings, and grid layout. To run a different benchmark, write
-a different config. See [`config/examples/`](config/examples) for the three.js and pure-CSS
-space-scene configs. A [JSON schema](config/schema.json) is wired in via `$schema` for
+Everything about a run lives in one JSON file (the default is
+[`config/examples/black-hole.config.json`](config/examples/black-hole.config.json)) — the
+prompt, system prompt, model list, render settings, and grid layout. To run a different
+benchmark, write a different config. See [`config/examples/`](config/examples) for the
+three.js and pure-CSS space-scene configs. A [JSON schema](config/schema.json) is wired in via `$schema` for
 editor autocomplete.
 
 ```jsonc
@@ -292,11 +292,10 @@ results/<run-name>/
 ```
 design-bench/
 ├── config/
-│   ├── benchmark.config.json     # the default run
 │   ├── schema.json               # JSON schema for configs
 │   ├── importmap.json            # bare-specifier → vendored-lib map
 │   ├── models/standard-9.json    # the shared 9-model lineup
-│   └── examples/*.config.json    # black-hole (3D), pulsar-css (CSS)…
+│   └── examples/*.config.json    # black-hole (3D, default), pulsar-css (CSS)…
 ├── web/                          # showcase app (React/Vite/TS, deploy to Vercel)
 ├── scripts/
 │   ├── setup-browser-deps.sh     # rootless Chromium deps installer

@@ -20,7 +20,7 @@ interface Args {
 
 function parseArgs(argv: string[]): Args {
   const args: Args = {
-    config: "config/benchmark.config.json",
+    config: "config/examples/black-hole.config.json",
     stage: "all",
     dryRun: false,
   };
@@ -46,7 +46,7 @@ Usage:
   tsx src/run.ts [options]
 
 Options:
-  -c, --config <path>   Config file (default: config/benchmark.config.json)
+  -c, --config <path>   Config file (default: config/examples/black-hole.config.json)
   -s, --stage <stage>   all | generate | render | grid | video | report (default: all)
   -m, --model <slug>    Only run these models (comma-separated, repeatable)
       --dry-run         Skip API calls; emit placeholder HTML to test the pipeline
