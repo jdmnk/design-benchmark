@@ -17,8 +17,8 @@ import { basename, join, resolve, dirname } from "node:path";
 
 const ROOT = resolve(dirname(new URL(import.meta.url).pathname), "..");
 const BENCHES = [
-  { configPath: "config/examples/black-hole.config.json" },
   { configPath: "config/examples/black-hole-spin.config.json" },
+  { configPath: "config/examples/black-hole.config.json" },
   { configPath: "config/examples/fireworks.config.json" },
   { configPath: "config/examples/sunset-svg.config.json" },
   { configPath: "config/benchmark.config.json" },

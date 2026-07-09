@@ -30,30 +30,9 @@ direction* open, so design sensibilities diverge as far as possible.
 
 ---
 
-## black-hole — Interstellar "Gargantua" in three.js / WebGL
-
-A hard, very prescriptive 3D brief: black event-horizon sphere, near-edge-on accretion
-disk, gravitational-lensing halo arcs, photon ring, specific colors and camera. It
-discriminates sharply — quality ranges from photoreal-ish lensing to bare rings, and the
-occasional model still fails outright (recorded per model in the summary). Config:
-[`config/examples/black-hole.config.json`](../config/examples/black-hole.config.json).
-
-![black-hole](black-hole/grid.webp)
-
-**Run #2** — same prompt and models, a fresh set of generations (temperature 0.7, so the
-sampling varies run to run). Switch between runs in the [web app](../web).
-
-![black-hole run 2](black-hole/run-2/grid.webp)
-
-**Run #3** — the original run from before the lineup swap (Mistral Small 4 instead of
-Kimi K2.7 Code), recovered from git history and re-rendered through the current pipeline
-so the labels match. Switch between runs in the [web app](../web).
-
-![black-hole run 3](black-hole/run-3/grid.webp)
-
 ## black-hole-spin — the animated one 🎬
 
-The same Gargantua composition, but judged in motion: a **5-second clip** (24 fps) is
+The Gargantua composition judged in motion: a **5-second clip** (24 fps) is
 captured per model on the deterministic virtual clock — frame-stepped, so even scenes that
 crawl in software WebGL yield a smooth clip — and composed into one **[grid video](black-hole-spin/grid.mp4)**
 with the same layout as the image grids. The animation below IS the grid video (embedded as animated WebP — click through for the full-quality mp4); the
@@ -74,6 +53,28 @@ pipeline ([grid video](black-hole-spin/run-3/grid.mp4)). Switch between runs in 
 [web app](../web).
 
 [![black-hole-spin run 3 — animated grid](black-hole-spin/run-3/grid-anim.webp)](black-hole-spin/run-3/grid.mp4)
+
+## black-hole — Interstellar "Gargantua" in three.js / WebGL
+
+The same composition as a single deterministic still frame. A hard, very prescriptive 3D
+brief: black event-horizon sphere, near-edge-on accretion disk, gravitational-lensing halo
+arcs, photon ring, specific colors and camera. It discriminates sharply — quality ranges
+from photoreal-ish lensing to bare rings, and the occasional model still fails outright
+(recorded per model in the summary). Config:
+[`config/examples/black-hole.config.json`](../config/examples/black-hole.config.json).
+
+![black-hole](black-hole/grid.webp)
+
+**Run #2** — same prompt and models, a fresh set of generations (temperature 0.7, so the
+sampling varies run to run). Switch between runs in the [web app](../web).
+
+![black-hole run 2](black-hole/run-2/grid.webp)
+
+**Run #3** — the original run from before the lineup swap (Mistral Small 4 instead of
+Kimi K2.7 Code), recovered from git history and re-rendered through the current pipeline
+so the labels match. Switch between runs in the [web app](../web).
+
+![black-hole run 3](black-hole/run-3/grid.webp)
 
 ## fireworks — animated Canvas 2D 🎬
 
