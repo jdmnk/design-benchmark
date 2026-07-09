@@ -185,11 +185,9 @@ function BenchmarkSection({ b }: { b: Benchmark }) {
       <GridView run={run} title={b.title} />
 
       <p className="meta">
-        {b.render.viewport} · {b.render.fullPage ? "full page" : "fixed crop"} ·{" "}
-        {b.render.video
-          ? `${(b.render.video.durationMs / 1000).toFixed(0)}s clip at ${b.render.video.fps} fps`
-          : `${b.render.waitMs}ms settle`}
-        {b.render.deterministic && " · deterministic"}
+        {b.render.viewport}
+        {b.render.video &&
+          ` · ${(b.render.video.durationMs / 1000).toFixed(0)}s clip at ${b.render.video.fps} fps`}
       </p>
 
       <details>
@@ -217,11 +215,32 @@ export default function App() {
       <header>
         <h1>Design Bench</h1>
         <p className="intro">
-          A visual benchmark for LLMs. Each model gets the same creative brief and returns a
-          single self-contained web page; every page is rendered in a headless browser and the
-          screenshots are tiled into one grid. Expand a run for the exact prompt and per-model
-          time, tokens, cost, and generated output.
+          A visual benchmark for LLMs. Every model gets the same brief and returns one
+          self-contained web page; we render it and tile the results into one grid so you can
+          judge them side by side. Expand a run for the exact prompt and per-model time,
+          tokens, cost, and generated output.
         </p>
+
+        <div className="how">
+          <div className="how-label">How it works</div>
+          <ul>
+            <li>
+              <strong>Same brief, many models.</strong> The prompt fixes the exact composition,
+              so any difference in the output is the model's, not the task's — the grids are
+              directly comparable.
+            </li>
+            <li>
+              <strong>Real renders, not code.</strong> Each page runs in a headless browser and
+              is screenshotted — you see what actually paints.
+            </li>
+            <li>
+              <strong>Deterministic &amp; reproducible.</strong> Rendering is seeded (fixed RNG
+              and a virtual clock), so a run repeats exactly; animated scenes are captured
+              frame-by-frame into the grid video.
+            </li>
+          </ul>
+        </div>
+
         <nav>
           {benchmarks.map((b) => (
             <a key={b.id} href={`#${b.id}`}>{b.title}</a>
