@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pulsing Neutron Star Pulsar</title>
+  <style>
+    /* Dark background first */
+    body {
+      background: #03040a;
+      margin: 0;
+      padding: 0;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .scene {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Static stars in background */
+    .stars {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      box-shadow:
+        8% 12% 0 0.8px rgba(255, 255, 255, 0.5),
+        15% 20% 0 0.5px rgba(200, 200, 255, 0.4),
+        22% 8% 0 0.6px rgba(255, 255, 255, 0.6),
+        35% 35% 0 0.7px rgba(220, 220, 255, 0.3),
+        42% 15% 0 0.5px rgba(200, 200, 255, 0.5),
+        58% 12% 0 0.8px rgba(255, 255, 255, 0.4),
+        65% 40% 0 0.6px rgba(200, 220, 255, 0.5),
+        72% 22% 0 0.7px rgba(255, 255, 255, 0.3),
+        78% 58% 0 0.5px rgba(200, 200, 255, 0.6),
+        85% 28% 0 0.8px rgba(255, 255, 255, 0.4),
+        88% 75% 0 0.6px rgba(220, 220, 255, 0.5),
+        12% 65% 0 0.7px rgba(255, 255, 255, 0.3),
+        28% 78% 0 0.5px rgba(200, 220, 255, 0.5),
+        45% 82% 0 0.8px rgba(255, 255, 255, 0.4),
+        62% 68% 0 0.6px rgba(200, 200, 255, 0.6),
+        75% 85% 0 0.7px rgba(220, 220, 255, 0.4),
+        18% 42% 0 0.5px rgba(255, 255, 255, 0.5),
+        38% 55% 0 0.8px rgba(200, 220, 255, 0.4),
+        52% 28% 0 0.6px rgba(255, 255, 255, 0.5),
+        68% 45% 0 0.7px rgba(200, 200, 255, 0.3),
+        92% 62% 0 0.5px rgba(220, 220, 255, 0.6);
+    }
+
+    /* Rotating beams container */
+    .beams-wrapper {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      animation: rotateBeams 5s linear infinite;
+    }
+
+    @keyframes rotateBeams {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Individual beam */
+    .beam {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 6vw;
+      height: 140vh;
+      background: linear-gradient(to bottom,
+        rgba(120, 200, 255, 0.75) 0%,
+        rgba(150, 220, 255, 0.55) 20%,
+        rgba(200, 240, 255, 0.35) 50%,
+        rgba(150, 220, 255, 0.55) 80%,
+        rgba(120, 200, 255, 0.75) 100%
+      );
+      filter: blur(12px);
+      transform: translateX(-50%) translateY(-50%);
+      opacity: 0.85;
+    }
+
+    .beam:nth-child(2) {
+      transform: translateX(-50%) translateY(-50%) rotate(180deg);
+    }
+
+    /* Shockwave rings */
+    .shockwave {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      border: 1.5px solid rgba(100, 200, 255, 0.8);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .shockwave-1 {
+      animation: expandShockwave 1s cubic-bezier(0.36, 0, 0.66, -0.56) infinite;
+    }
+
+    .shockwave-2 {
+      animation: expandShockwave 1s cubic-bezier(0.36, 0, 0.66, -0.56) infinite 0.25s;
+    }
+
+    .shockwave-3 {
+      animation: expandShockwave 1s cubic-bezier(0.36, 0, 0.66, -0.56) infinite 0.5s;
+    }
+
+    .shockwave-4 {
+      animation: expandShockwave 1s cubic-bezier(0.36, 0, 0.66, -0.56) infinite 0.75s;
+    }
+
+    @keyframes expandShockwave {
+      0% {
+        width: 2vw;
+        height: 2vw;
+        opacity: 1;
+      }
+      100% {
+        width: 40vw;
+        height: 40vw;
+        opacity: 0;
+      }
+    }
+
+    /* Equatorial ring */
+    .equatorial-ring {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 24vw;
+      height: 5vw;
+      border: 2px solid rgba(200, 230, 255, 0.9);
+      border-radius: 50%;
+      transform: translate(-50%, -50%) rotateZ(20deg);
+      box-shadow: 
+        0 0 20px rgba(150, 200, 255, 0.7),
+        inset 0 2px 8px rgba(255, 255, 255, 0.3);
+      pointer-events: none;
+    }
+
+    /* Core pulsar */
+    .core {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 9vh;
+      height: 9vh;
+      border-radius: 50%;
+      background: radial-gradient(circle at 32% 32%, #f2f6ff 0%, #d4e4ff 25%, #bcd2ff 50%, #5b7cff 100%);
+      transform: translate(-50%, -50%);
+      animation: corePulse 1s ease-in-out infinite;
+      z-index: 30;
+      box-shadow:
+        0 0 35px 12px rgba(200, 220, 255, 1),
+        0 0 60px 25px rgba(150, 190, 255, 0.6),
+        0 0 95px 45px rgba(100, 150, 255, 0.3),
+        inset -6px -6px 15px rgba(40, 80, 180, 0.5),
+        inset 4px 4px 12px rgba(255, 255, 255, 0.7);
+    }
+
+    @keyframes corePulse {
+      0%, 100% {
+        width: 9vh;
+        height: 9vh;
+        box-shadow:
+          0 0 35px 12px rgba(200, 220, 255, 1),
+          0 0 60px 25px rgba(150, 190, 255, 0.6),
+          0 0 95px 45px rgba(100, 150, 255, 0.3),
+          inset -6px -6px 15px rgba(40, 80, 180, 0.5),
+          inset 4px 4px 12px rgba(255, 255, 255, 0.7);
+      }
+      50% {
+        width: 11.8vh;
+        height: 11.8vh;
+        box-shadow:
+          0 0 50px 18px rgba(200, 220, 255, 1),
+          0 0 85px 35px rgba(150, 190, 255, 0.75),
+          0 0 130px 60px rgba(100, 150, 255, 0.45),
+          inset -10px -10px 25px rgba(40, 80, 180, 0.65),
+          inset 6px 6px 18px rgba(255, 255, 255, 0.85);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="scene">
+    <!-- Static stars background -->
+    <div class="stars"></div>
+
+    <!-- Rotating lighthouse beams -->
+    <div class="beams-wrapper">
+      <div class="beam"></div>
+      <div class="beam"></div>
+    </div>
+
+    <!-- Expanding shockwave rings (staggered to create continuous ring effect) -->
+    <div class="shockwave shockwave-1"></div>
+    <div class="shockwave shockwave-2"></div>
+    <div class="shockwave shockwave-3"></div>
+    <div class="shockwave shockwave-4"></div>
+
+    <!-- Steady equatorial ring/disk -->
+    <div class="equatorial-ring"></div>
+
+    <!-- Pulsing core -->
+    <div class="core"></div>
+  </div>
+</body>
+</html>

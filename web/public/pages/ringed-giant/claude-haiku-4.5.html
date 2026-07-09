@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saturn-like Gas Giant</title>
+    <style>
+        body { margin: 0; overflow: hidden; background: #000; }
+        canvas { display: block; width: 100vw; height: 100vh; }
+    </style>
+</head>
+<body>
+<script type="importmap">
+{
+    "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@r160/build/three.module.js"
+    }
+}
+</script>
+<script type="module">
+import * as THREE from 'three';
+
+// Setup
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x000508);
+
+const w = window.innerWidth;
+const h = window.innerHeight;
+const camera = new THREE.PerspectiveCamera(75, w / h, 0.1, 10000);
+camera.position.z = 3;
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, precision: 'highp' });
+renderer.setSize(w, h);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+document.body.appendChild(renderer.domElement);
+
+// ===== STARFIELD =====
+function createStarfield() {
+    const starsGeometry = new THREE.BufferGeometry();
+    const starCount = 400;
+    const positions = new Float32Array(starCount * 3);
+    const colors = new Float32Array(starCount * 3);
+    
+    for (let i = 0; i < starCount; i++) {
+        positions[i * 3] = (Math.random() - 0.5) * 200;
+        positions[i * 3 + 1] = (Math.random() - 0.5) * 200;
+        positions[i * 3 + 2] = (Math.random() - 0.5) * 200;
+        
+        const brightness = 0.3 + Math.random() * 0.7;
+        colors[i * 3] = brightness;
+        colors[i * 3 + 1] = brightness;
+        colors[i * 3 + 2] = brightness * 0.9;
+    }
+    
+    starsGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    starsGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+    
+    const starsMaterial = new THREE.PointsMaterial({ size: 0.3, sizeAttenuation: true, vertexColors: true });
+    const stars = new THREE.Points(starsGeometry, starsMaterial);
+    scene.add(stars);
+}
+
+// ===== PLANET TEXTURE =====
+function createPlanetTexture() {
+    const canvas = document.createElement('canvas');
+    canvas.width = 1024;
+    canvas.height = 512;
+    const ctx = canvas.getContext('2d');
+    
+    const colors = ['#f3e6c4', '#e6c88f', '#ddb875', '#c99a5b', '#b8824a'];
+    
+    // Base horizontal bands
+    const bandHeights = [0.05, 0.15, 0.25, 0.3, 0.25];
+    let y = 0;
+    for (let i = 0; i < bandHeights.length; i++) {
+        ctx.fillStyle = colors[i % colors.length];
+        const h = canvas.height * bandHeights[i];
+        ctx.fillRect(0, y, canvas.width, h);
+        y += h;
+    }
+    
+    // Add subtle turbulence and detail
+    const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const data = imgData.data;
+    
+    for (let i = 0; i < canvas.height; i++) {
+        const bandFraction = i / canvas.height;
+        
+        // Add horizontal waves/spots
+        for (let j = 0; j < canvas.width; j++) {
+            const idx = (i * canvas.width + j) * 4;
+            const wave = Math.sin(j / 80 + bandFraction * 10) * 8;
+            const spot = Math.sin(j / 120 + i / 60 + bandFraction * 20) * 12;
+            
+            const variation = Math.floor(wave + spot + (i % 3) * 5);
+            data[idx] = Math.max(0, Math.min(255, data[idx] - variation));
+            data[idx + 1] = Math.max(0, Math.min(255, data[idx + 1] - variation * 0.7));
+            data[idx + 2] = Math.max(0, Math.min(255, data[idx + 2] - variation * 0.5));
+        }
+    }
+    
+    // Add a Great Red Spot-like feature
+    const spotX = 400, spotY = 256, spotRadius = 60;
+    for (let yy = spotY - spotRadius; yy < spotY + spotRadius; yy++) {
+        for (let xx = spotX - spotRadius; xx < spotX + spotRadius; xx++) {
+            const dist = Math.sqrt((xx - spotX) ** 2 + (yy - spotY) ** 2);
+            if (dist < spotRadius && xx >= 0 && xx < canvas.width && yy >= 0 && yy < canvas.height) {
+                const idx = (yy * canvas.width + xx) * 4;
+                const fade = 1 - (dist / spotRadius);
+                data[idx] -= 20 * fade;
+                data[idx + 1] -= 30 * fade;
+                data[idx + 2] -= 10 * fade;
+            }
+        }
+    }
+    
+    ctx.putImageData(imgData, 0, 0);
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.magFilter = THREE.LinearFilter;
+    texture.minFilter = THREE.LinearMipmapLinearFilter;
+    return texture;
+}
+
+// ===== PLANET =====
+const planetGeometry = new THREE.IcosahedronGeometry(1, 64);
+const planetTexture = createPlanetTexture();
+const planetMaterial = new THREE.MeshPhongMaterial({
+    map: planetTexture,
+    emissive: 0x1a1410,
+    shininess: 5
+});
+const planet = new THREE.Mesh(planetGeometry, planetMaterial);
+planet.castShadow = false;
+scene.add(planet);
+
+// ===== RINGS =====
+function createRings() {
+    const ringGroup = new THREE.Group();
+    
+    // Ring tilt: 20 degrees from horizontal
+    ringGroup.rotation.x = THREE.MathUtils.degToRad(20);
+    
+    // Main ring disc
+    const ringGeometry = new THREE.LatheGeometry(
+        [
+            new THREE.Vector2(0, 0),
+            new THREE.Vector2(1.2, 0),
+            new THREE.Vector2(2.2, 0),
+            new THREE.Vector2(2.2, 0.05),
+            new THREE.Vector2(1.2, 0.05),
+            new THREE.Vector2(0, 0.05)
+        ],
+        256
+    );
+    
+    // Ring texture with banding and gap
+    const ringCanvas = document.createElement('canvas');
+    ringCanvas.width = 512;
+    ringCanvas.height = 4;
+    const rctx = ringCanvas.getContext('2d');
+    
+    for (let x = 0; x < ringCanvas.width; x++) {
+        const t = x / ringCanvas.width;
+        
+        // Dark gap at 2/3 radius
+        if (t > 0.6 && t < 0.75) {
+            rctx.fillStyle = '#1a1008';
+        } else if (t < 0.1 || t > 0.95) {
+            // Fade at edges
+            const fade = t < 0.1 ? t * 10 : (1 - t) * 20;
+            const c = Math.floor(200 * fade);
+            rctx.fillStyle = `rgb(${c}, ${c - 20}, ${c - 40})`;
+        } else {
+            // Base ring with subtle banding
+            const band = Math.floor((t * 20) % 2) === 0 ? 5 : -5;
+            const base = 180 + band;
+            rctx.fillStyle = `rgb(${base}, ${base - 20}, ${base - 40})`;
+        }
+        rctx.fillRect(x, 0, 1, 4);
+    }
+    
+    const ringTexture = new THREE.CanvasTexture(ringCanvas);
+    ringTexture.magFilter = THREE.LinearFilter;
+    ringTexture.minFilter = THREE.LinearFilter;
+    
+    const ringMaterial = new THREE.MeshPhongMaterial({
+        map: ringTexture,
+        transparent: true,
+        opacity: 0.85,
+        side: THREE.DoubleSide,
+        emissive: 0x0a0804,
+        shininess: 3
+    });
+    
+    const rings = new THREE.Mesh(ringGeometry, ringMaterial);
+    rings.scale.set(1, 1, 0.1);
+    ringGroup.add(rings);
+    
+    // Shadow band on planet (dark band from rings)
+    const shadowGeometry = new THREE.CylinderGeometry(0.95, 0.95, 0.3, 64);
+    const shadowMaterial = new THREE.MeshBasicMaterial({
+        color: 0x000000,
+        transparent: true,
+        opacity: 0.25,
+        side: THREE.BackSide
+    });
+    const shadowBand = new THREE.Mesh(shadowGeometry, shadowMaterial);
+    shadowBand.rotation.x = ringGroup.rotation.x;
+    shadowBand.position.z = -0.2;
+    ringGroup.add(shadowBand);
+    
+    scene.add(ringGroup);
+    return ringGroup;
+}
+
+const ringGroup = createRings();
+
+// ===== LIGHTING =====
+const light1 = new THREE.DirectionalLight(0xffffff, 0.8);
+light1.position.set(0.8, 0.6, 1);
+scene.add(light1);
+
+const light2 = new THREE.DirectionalLight(0x8899ff, 0.3);
+light2.position.set(-1, -0.5, 0.5);
+scene.add(light2);
+
+const ambientLight = new THREE.AmbientLight(0x404050, 0.6);
+scene.add(ambientLight);
+
+// Create starfield
+createStarfield();
+
+// ===== ANIMATION LOOP =====
+function animate(timestamp) {
+    const t = timestamp * 0.001; // Convert to seconds
+    
+    // Rotate planet (axis tilted by 20 degrees like Saturn)
+    planet.rotation.y = t * THREE.MathUtils.degToRad(25); // 25 degrees/sec
+    planet.rotation.x = THREE.MathUtils.degToRad(20);
+    
+    // Orbit rings (slightly slower, inner faster than outer rotation)
+    ringGroup.rotation.z = t * THREE.MathUtils.degToRad(18);
+    ringGroup.rotation.x = THREE.MathUtils.degToRad(20);
+    
+    renderer.render(scene, camera);
+    requestAnimationFrame(animate);
+}
+
+requestAnimationFrame(animate);
+
+// Handle window resize
+window.addEventListener('resize', () => {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+    renderer.setSize(w, h);
+});
+</script>
+</body>
+</html>

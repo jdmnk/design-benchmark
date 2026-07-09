@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Pulsar</title>
+  <style>
+    /* 1) Dark body background FIRST so the page never renders blank */
+    body {
+      margin: 0;
+      padding: 0;
+      background: #03040a;
+      overflow: hidden;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    /* 2) Viewport-filling scene container */
+    .scene {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      background: #03040a;
+      overflow: hidden;
+    }
+
+    /* -------------------------------------------------
+       STARS (static, absolutely positioned tiny dots)
+       ------------------------------------------------- */
+    .star {
+      position: absolute;
+      border-radius: 50%;
+      background: #ffffff;
+      opacity: 0.35;
+    }
+
+    /* -------------------------------------------------
+       BEAMS CONTAINER (rotates 360° over 5s)
+       ------------------------------------------------- */
+    .beams-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      transform: translate(-50%, -50%) rotate(20deg);
+      animation: rotateBeams 5s linear infinite;
+    }
+
+    @keyframes rotateBeams {
+      from { transform: translate(-50%, -50%) rotate(20deg); }
+      to   { transform: translate(-50%, -50%) rotate(380deg); }
+    }
+
+    /* Top beam (emanates upward from center) */
+    .beam-top {
+      position: absolute;
+      left: 50%;
+      bottom: 50%;
+      width: 6vh;
+      height: 60vh;
+      transform: translateX(-50%);
+      background: linear-gradient(
+        to top,
+        rgba(120, 230, 255, 0.55) 0%,
+        rgba(180, 245, 255, 0.18) 40%,
+        rgba(220, 250, 255, 0.04) 75%,
+        rgba(255, 255, 255, 0) 100%
+      );
+      clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+      filter: blur(1.5px);
+      mix-blend-mode: screen;
+      pointer-events: none;
+    }
+
+    /* Bottom beam (emanates downward from center) */
+    .beam-bottom {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 6vh;
+      height: 60vh;
+      transform: translateX(-50%);
+      background: linear-gradient(
+        to bottom,
+        rgba(120, 230, 255, 0.55) 0%,
+        rgba(180, 245, 255, 0.18) 40%,
+        rgba(220, 250, 255, 0.04) 75%,
+        rgba(255, 255, 255, 0) 100%
+      );
+      clip-path: polygon(50% 100%, 0% 0%, 100% 0%);
+      filter: blur(1.5px);
+      mix-blend-mode: screen;
+      pointer-events: none;
+    }
+
+    /* -------------------------------------------------
+       CORE (pulses once per second)
+       ------------------------------------------------- */
+    .core {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 9vh;
+      height: 9vh;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      background: radial-gradient(
+        circle at 50% 50%,
+        #ffffff 0%,
+        #f2f6ff 18%,
+        #bcd2ff 45%,
+        #5b7cff 75%,
+        rgba(91, 124, 255, 0.35) 100%
+      );
+      box-shadow:
+        0 0 1.5vh 0.8vh rgba(255, 255, 255, 0.55),
+        0 0 4vh 2vh rgba(188, 210, 255, 0.45),
+        0 0 10vh 5vh rgba(91, 124, 255, 0.25),
+        0 0 22vh 10vh rgba(91, 124, 255, 0.08);
+      animation: corePulse 1s ease-in-out infinite;
+      z-index: 10;
+      mix-blend-mode: screen;
+      pointer-events: none;
+    }
+
+    @keyframes corePulse {
+      0% {
+        transform: translate(-50%, -50%) scale(1);
+        box-shadow:
+          0 0 1.5vh 0.8vh rgba(255, 255, 255, 0.55),
+          0 0 4vh 2vh rgba(188, 210, 255, 0.45),
+          0 0 10vh 5vh rgba(91, 124, 255, 0.25),
+          0 0 22vh 10vh rgba(91, 124, 255, 0.08);
+      }
+      50% {
+        transform: translate(-50%, -50%) scale(1.22);
+        box-shadow:
+          0 0 2.5vh 1.4vh rgba(255, 255, 255, 0.85),
+          0 0 7vh 3.5vh rgba(188, 210, 255, 0.65),
+          0 0 16vh 8vh rgba(91, 124, 255, 0.42),
+          0 0 32vh 14vh rgba(91, 124, 255, 0.14);
+      }
+      100% {
+        transform: translate(-50%, -50%) scale(1);
+        box-shadow:
+          0 0 1.5vh 0.8vh rgba(255, 255, 255, 0.55),
+          0 0 4vh 2vh rgba(188, 210, 255, 0.45),
+          0 0 10vh 5vh rgba(91, 124, 255, 0.25),
+          0 0 22vh 10vh rgba(91, 124, 255, 0.08);
+      }
+    }
+
+    /* -------------------------------------------------
+       SHOCKWAVE RINGS (expand & fade on each pulse)
+       ------------------------------------------------- */
+    .ring-layer {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 0;
+      height: 0;
+      pointer-events: none;
+    }
+
+    .ring {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 9vh;
+      height: 9vh;
+      margin-top: -4.5vh;
+      margin-left: -4.5vh;
+      border-radius: 50%;
+      border: 0.18vh solid rgba(120, 230, 255, 0.75);
+      box-shadow: 0 0 1.5vh 0.4vh rgba(120, 230, 255, 0.3);
+      animation: ringExpand 1s ease-out infinite;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    @keyframes ringExpand {
+      0% {
+        transform: scale(1);
+        opacity: 0.85;
+        border-width: 0.18vh;
+      }
+      100% {
+        transform: scale(7);
+        opacity: 0;
+        border-width: 0.05vh;
+      }
+    }
+
+    .ring:nth-child(1) { animation-delay: 0.00s; }
+    .ring:nth-child(2) { animation-delay: 0.33s; }
+    .ring:nth-child(3) { animation-delay: 0.66s; }
+
+    /* -------------------------------------------------
+       EQUATORIAL RING (steady, tilted to match beam axis)
+       ------------------------------------------------- */
+    .equator-ring {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 22vh;
+      height: 4.5vh;
+      transform: translate(-50%, -50%) rotate(20deg);
+      border-radius: 50%;
+      border: 0.22vh solid rgba(200, 235, 255, 0.65);
+      box-shadow:
+        0 0 1.2vh 0.3vh rgba(150, 220, 255, 0.35),
+        inset 0 0 1.5vh 0.4vh rgba(120, 210, 255, 0.15);
+      background: rgba(100, 200, 255, 0.04);
+      z-index: 5;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="scene" id="scene">
+
+    <!-- Stars will be injected here by the inline script below -->
+    <div id="stars"></div>
+
+    <!-- Rotating beams + core -->
+    <div class="beams-container">
+      <div class="beam-top"></div>
+      <div class="beam-bottom"></div>
+      <div class="core"></div>
+    </div>
+
+    <!-- Shockwave rings -->
+    <div class="ring-layer">
+      <div class="ring"></div>
+      <div class="ring"></div>
+      <div class="ring"></div>
+    </div>
+
+    <!-- Equatorial ring -->
+    <div class="equator-ring"></div>
+
+  </div>
+
+  <!--
+    Minimal inline script: ONLY runs once on page load to place static star dots.
+    It does NOT drive any animation, does NOT use requestAnimationFrame,
+    and does NOT modify CSS animation timelines.
+  -->
+  <script>
+    (function () {
+      var container = document.getElementById('stars');
+      var count = 120;
+      var fragment = document.createDocumentFragment();
+      for (var i = 0; i < count; i++) {
+        var star = document.createElement('div');
+        star.className = 'star';
+        var size = 1 + Math.random() * 2; // 1px to 3px
+        star.style.width = size + 'px';
+        star.style.height = size + 'px';
+        star.style.left = (Math.random() * 100) + 'vw';
+        star.style.top = (Math.random() * 100) + 'vh';
+        star.style.opacity = (0.15 + Math.random() * 0.45).toFixed(3);
+        fragment.appendChild(star);
+      }
+      container.appendChild(fragment);
+    })();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Pulsar</title>
+<style>
+body {
+  margin: 0;
+  background: #03040a;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+}
+
+/* Stars - static */
+.stars {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  box-shadow:
+    4vw 12vh 1px #fff,
+    18vw 28vh 1px #fff,
+    32vw 7vh 1px #fff,
+    47vw 41vh 1px #fff,
+    61vw 19vh 1px #fff,
+    75vw 53vh 1px #fff,
+    89vw 33vh 1px #fff,
+    11vw 67vh 1px #fff,
+    26vw 81vh 1px #fff,
+    53vw 72vh 1px #fff,
+    69vw 9vh 1px #fff,
+    83vw 64vh 1px #fff,
+    37vw 94vh 1px #fff,
+    94vw 22vh 1px #fff;
+  pointer-events: none;
+}
+
+/* Main container */
+.scene {
+  position: relative;
+  width: 100vmin;
+  height: 100vmin;
+}
+
+/* Rotating axis container (beams + equator) */
+.axis {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  animation: rotate 5s linear infinite;
+  transform-origin: center;
+}
+
+@keyframes rotate {
+  from { transform: translate(-50%, -50%) rotate(-20deg); }
+  to { transform: translate(-50%, -50%) rotate(340deg); }
+}
+
+/* Beams - two opposing cones */
+.beam {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 3.2vmin;
+  height: 120vmin;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(180, 240, 255, 0.85) 12%,
+    rgba(200, 250, 255, 0.95) 50%,
+    rgba(180, 240, 255, 0.85) 88%,
+    transparent 100%
+  );
+  transform: translate(-50%, -50%);
+  filter: blur(1.5px);
+  mix-blend-mode: screen;
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+.beam.opposite {
+  transform: translate(-50%, -50%) rotate(180deg);
+}
+
+/* Equatorial ring - tilted ellipse */
+.equator {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 13vmin;
+  height: 2.8vmin;
+  border: 1.5px solid rgba(200, 235, 255, 0.95);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) rotate(-20deg);
+  box-shadow: 0 0 6px rgba(180, 240, 255, 0.6);
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+/* Core */
+.core {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 9vh;
+  height: 9vh;
+  background: radial-gradient(circle at 40% 40%,
+    #f2f6ff 10%,
+    #bcd2ff 35%,
+    #5b7cff 70%,
+    transparent 78%);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow:
+    0 0 12px 4px #f2f6ff,
+    0 0 28px 10px #bcd2ff,
+    0 0 52px 22px #5b7cff,
+    0 0 90px 40px #3a5cff;
+  mix-blend-mode: screen;
+  animation: pulse 1s ease-in-out infinite;
+  z-index: 10;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+    box-shadow:
+      0 0 12px 4px #f2f6ff,
+      0 0 28px 10px #bcd2ff,
+      0 0 52px 22px #5b7cff,
+      0 0 90px 40px #3a5cff;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.18);
+    box-shadow:
+      0 0 18px 8px #f8fbff,
+      0 0 42px 18px #d4e3ff,
+      0 0 72px 32px #7fa4ff,
+      0 0 120px 55px #5a7eff;
+  }
+}
+
+/* Shockwave rings */
+.ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 9vh;
+  height: 9vh;
+  border: 1px solid rgba(150, 220, 255, 0.65);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  mix-blend-mode: screen;
+  pointer-events: none;
+  animation: ring 1s ease-out infinite;
+}
+
+.ring.r1 { animation-delay: 0s; }
+.ring.r2 { animation-delay: 0.25s; }
+.ring.r3 { animation-delay: 0.5s; }
+.ring.r4 { animation-delay: 0.75s; }
+
+@keyframes ring {
+  0% {
+    transform: translate(-50%, -50%) scale(0.6);
+    opacity: 0.75;
+  }
+  80% {
+    opacity: 0.3;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(4.8);
+    opacity: 0;
+  }
+}
+</style>
+</head>
+<body>
+<div class="stars"></div>
+<div class="scene">
+  <!-- Rotating axis -->
+  <div class="axis">
+    <!-- Beams -->
+    <div class="beam"></div>
+    <div class="beam opposite"></div>
+    <!-- Equatorial ring -->
+    <div class="equator"></div>
+  </div>
+
+  <!-- Core -->
+  <div class="core"></div>
+
+  <!-- Shockwave rings -->
+  <div class="ring r1"></div>
+  <div class="ring r2"></div>
+  <div class="ring r3"></div>
+  <div class="ring r4"></div>
+</div>
+</body>
+</html>

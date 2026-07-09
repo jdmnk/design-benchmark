@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Saturn</title>
+<style>
+  html,body{margin:0;padding:0;overflow:hidden;background:#000;width:100vw;height:100vh;}
+  canvas{display:block;width:100vw;height:100vh;}
+</style>
+</head>
+<body>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+<script type="module">
+import * as THREE from 'three';
+
+try {
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setClearColor(0x03040a, 1);
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+document.body.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x03040a);
+
+const aspect = window.innerWidth / window.innerHeight;
+// Planet diameter ~34% of viewport height. Use orthographic-ish perspective.
+// Place camera so planet fills ~34% of vertical FOV.
+const camDist = 10;
+const camera = new THREE.PerspectiveCamera(40, aspect, 0.1, 200);
+camera.position.set(0, 0, camDist);
+camera.lookAt(0, 0, 0);
+
+// ===== STARFIELD =====
+{
+  const starCount = 600;
+  const positions = new Float32Array(starCount * 3);
+  const colors = new Float32Array(starCount * 3);
+  const sizes = new Float32Array(starCount);
+  for (let i = 0; i < starCount; i++) {
+    // random on a sphere shell
+    const u = Math.random() * 2 - 1;
+    const t = Math.random() * Math.PI * 2;
+    const r = 80 + Math.random() * 20;
+    const s = Math.sqrt(1 - u * u);
+    positions[i*3+0] = r * s * Math.cos(t);
+    positions[i*3+1] = r * u;
+    positions[i*3+2] = r * s * Math.sin(t);
+    const b = 0.3 + Math.random() * 0.7;
+    colors[i*3+0] = b * (0.85 + Math.random()*0.15);
+    colors[i*3+1] = b * (0.85 + Math.random()*0.15);
+    colors[i*3+2] = b;
+    sizes[i] = 0.6 + Math.random() * 1.4;
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+  geo.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+  const mat = new THREE.PointsMaterial({
+    size: 0.25, sizeAttenuation: true, vertexColors: true,
+    transparent: true, opacity: 0.85, depthWrite: false
+  });
+  scene.add(new THREE.Points(geo, mat));
+}
+
+// ===== PLANET TEXTURE (canvas) =====
+function makePlanetTexture() {
+  const W = 1024, H = 512;
+  const c = document.createElement('canvas');
+  c.width = W; c.height = H;
+  const ctx = c.getContext('2d');
+
+  // Base gradient from pole to pole (warm palette)
+  const grad = ctx.createLinearGradient(0, 0, 0, H);
+  grad.addColorStop(0.00, '#c99a5b'); // polar darker
+  grad.addColorStop(0.15, '#d9b178');
+  grad.addColorStop(0.30, '#e6c88f'); // pale gold
+  grad.addColorStop(0.45, '#f3e6c4'); // cream
+  grad.addColorStop(0.50, '#f7eccf'); // slightly lighter equatorial zone
+  grad.addColorStop(0.55, '#f3e6c4');
+  grad.addColorStop(0.70, '#e6c88f');
+  grad.addColorStop(0.85, '#d9b178');
+  grad.addColorStop(1.00, '#c99a5b');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, W, H);
+
+  // Horizontal belts (darker bands)
+  const belts = [
+    { y: 0.22, w: 0.035, color: 'rgba(120, 80, 45, 0.55)' },
+    { y: 0.32, w: 0.025, color: 'rgba(150, 100, 60, 0.45)' },
+    { y: 0.42, w: 0.020, color: 'rgba(180, 130, 80, 0.35)' },
+    { y: 0.58, w: 0.020, color: 'rgba(180, 130, 80, 0.35)' },
+    { y: 0.68, w: 0.028, color: 'rgba(150, 100, 60, 0.45)' },
+    { y: 0.78, w: 0.035, color: 'rgba(120, 80, 45, 0.55)' },
+  ];
+  for (const b of belts) {
+    const y = b.y * H;
+    const h = b.w * H;
+    const g = ctx.createLinearGradient(0, y - h, 0, y + h);
+    g.addColorStop(0, 'rgba(0,0,0,0)');
+    g.addColorStop(0.5, b.color);
+    g.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = g;
+    ctx.fillRect(0, y - h, W, h * 2);
+  }
+
+  // Lighter equatorial zone highlight
+  {
+    const y = 0.5 * H, h = 0.04 * H;
+    const g = ctx.createLinearGradient(0, y - h, 0, y + h);
+    g.addColorStop(0, 'rgba(0,0,0,0)');
+    g.addColorStop(0.5, 'rgba(255,240,210,0.35)');
+    g.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = g;
+    ctx.fillRect(0, y - h, W, h * 2);
+  }
+
+  // Swirls / turbulence: soft blurred noise strokes
+  ctx.globalCompositeOperation = 'overlay';
+  for (let i = 0; i < 120; i++) {
+    const x = Math.random() * W;
+    const y = Math.random() * H;
+    // Bias toward mid-latitudes
+    const lat = (y / H - 0.5);
+    const w = 40 + Math.random() * 120;
+    const h = 4 + Math.random() * 10;
+    const alpha = 0.05 + Math.random() * 0.12;
+    const bright = Math.random() > 0.5;
+    ctx.fillStyle = bright
+      ? `rgba(255,240,210,${alpha})`
+      : `rgba(90,60,30,${alpha})`;
+    ctx.beginPath();
+    ctx.ellipse(x, y, w, h, (Math.random()-0.5)*0.3, 0, Math.PI*2);
+    ctx.fill();
+  }
+  ctx.globalCompositeOperation = 'source-over';
+
+  // A storm oval (great-spot style) - a feature that makes rotation visible
+  {
+    const cx = 0.72 * W, cy = 0.62 * H;
+    const rx = 38, ry = 18;
+    const g = ctx.createRadialGradient(cx, cy, 2, cx, cy, rx);
+    g.addColorStop(0, 'rgba(190, 110, 70, 0.95)');
+    g.addColorStop(0.5, 'rgba(170, 95, 60, 0.75)');
+    g.addColorStop(1, 'rgba(170, 95, 60, 0)');
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI*2);
+    ctx.fill();
+    // inner darker core
+    ctx.fillStyle = 'rgba(120, 60, 35, 0.6)';
+    ctx.beginPath();
+    ctx.ellipse(cx, cy, rx*0.55, ry*0.55, 0, 0, Math.PI*2);
+    ctx.fill();
+  }
+  // Second smaller spot
+  {
+    const cx = 0.25 * W, cy = 0.38 * H;
+    const rx = 22, ry = 10;
+    const g = ctx.createRadialGradient(cx, cy, 1, cx, cy, rx);
+    g.addColorStop(0, 'rgba(230, 200, 150, 0.9)');
+    g.addColorStop(1, 'rgba(230, 200, 150, 0)');
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI*2);
+    ctx.fill();
+  }
+
+  const tex = new THREE.CanvasTexture(c);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.anisotropy = 4;
+  return tex;
+}
+
+const planetTex = makePlanetTexture();
+
+// ===== PLANET SHADER =====
+const planetVertexShader = `
+  varying vec2 vUv;
+  varying vec3 vNormalW;
+  varying vec3 vPosW;
+  void main() {
+    vUv = uv;
+    vec4 wp = modelMatrix * vec4(position, 1.0);
+    vPosW = wp.xyz;
+    vNormalW = normalize(mat3(modelMatrix) * normal);
+    gl_Position = projectionMatrix * viewMatrix * wp;
+  }
+`;
+const planetFragmentShader = `
+  precision highp float;
+  uniform sampler2D uTex;
+  uniform vec3 uLightDir; // world space, normalized, toward light
+  varying vec2 vUv;
+  varying vec3 vNormalW;
+  varying vec3 vPosW;
+  void main() {
+    vec3 N = normalize(vNormalW);
+    vec3 L = normalize(uLightDir);
+    float ndl = dot(N, L);
+    // Soft terminator
+    float light = smoothstep(-0.15, 0.35, ndl);
+    // Ambient on dark side
+    vec3 base = texture2D(uTex, vUv).rgb;
+    vec3 lit = base * (0.55 + 0.55 * max(0.0, ndl));
+    // Slight warm tint on lit side
+    lit *= vec3(1.05, 1.0, 0.95);
+    vec3 dark = base * 0.12 + vec3(0.02, 0.02, 0.04);
+    vec3 col = mix(dark, lit, light);
+
+    // Ring shadow: a dark band near equator on the lit hemisphere
+    // The shadow is cast where rings block the sun.
+    // Approximate: band at latitude near 0, on the sunlit side, attenuated by cos(lat)
+    float lat = abs(vUv.y - 0.5) * 2.0; // 0 at equator, 1 at poles
+    float band = exp(-pow((lat - 0.0) * 9.0, 2.0)); // narrow band at equator
+    // Only on the sunlit side (where L dot N > -0.1) and where the ring plane is between sun and surface
+    // Approximate: darken when ndl > 0 (lit side) and near equator
+    float shadowMask = band * smoothstep(-0.1, 0.3, ndl) * 0.55;
+    col *= (1.0 - shadowMask);
+
+    // Limb darkening
+    float facing = max(0.0, dot(N, normalize(cameraPosition - vPosW)));
+    col *= mix(0.85, 1.0, facing);
+
+    gl_FragColor = vec4(col, 1.0);
+  }
+`;
+
+const planetRadius = 1.7; // world units. We'll tune camera FOV/position so it's ~34% of viewport height.
+// At distance 10, FOV 40°, half-height visible = 10 * tan(20°) ≈ 3.64. Planet radius 1.7 -> diameter 3.4 -> 3.4/7.28 ≈ 46%. A bit large. Let's reduce radius or increase distance.
+// We want diameter = 0.34 * viewport height. In world units at camera: half-height = d*tan(fov/2). So 2R / (2*d*tan(fov/2)) = 0.34. R = 0.34 * d * tan(fov/2).
+// With d=10, fov=40°: R = 0.34 * 10 * 0.3639 ≈ 1.24. Use radius 1.24.
+const R = 1.24;
+
+const planetMat = new THREE.ShaderMaterial({
+  uniforms: {
+    uTex: { value: planetTex },
+    uLightDir: { value: new THREE.Vector3(-0.6, 0.7, 0.4).normalize() } // upper-left toward camera
+  },
+  vertexShader: planetVertexShader,
+  fragmentShader: planetFragmentShader
+});
+
+const planetGeo = new THREE.SphereGeometry(R, 96, 64);
+const planet = new THREE.Mesh(planetGeo, planetMat);
+// Tilt the planet's rotation axis slightly (Saturn ~27°). We tilt around Z so axis leans into screen.
+planet.rotation.z = THREE.MathUtils.degToRad(22);
+planet.rotation.order = 'ZYX';
+scene.add(planet);
+
+// ===== RING SYSTEM =====
+// Rings in planet's equatorial plane. We'll parent them to a group tilted with the planet.
+const ringTilt = THREE.MathUtils.degToRad(20); // ~20° tilt so we view above edge-on
+const ringGroup = new THREE.Group();
+ringGroup.rotation.x = ringTilt; // tilt around X so rings appear as ellipse
+scene.add(ringGroup);
+
+// Ring shader: radial banding, Cassini gap, transparency at edges, angular brightness, rotation
+const ringVertexShader = `
+  varying vec2 vUv;
+  varying vec3 vPosLocal;
+  void main() {
+    vUv = uv;
+    vPosLocal = position;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  }
+`;
+const ringFragmentShader = `
+  precision highp float;
+  uniform float uTime;
+  uniform float uInner;
+  uniform float uOuter;
+  uniform float uRotation; // radians per second of in-plane rotation
+  varying vec2 vUv;
+  varying vec3 vPosLocal;
+
+  float hash(float n) { return fract(sin(n) * 43758.5453); }
+
+  void main() {
+    // v is radial 0..1 from inner to outer
+    float r = vUv.y; // 0 inner, 1 outer
+    float radius = mix(uInner, uOuter, r);
+
+    // u goes around angle 0..1
+    float angle = vUv.x * 6.2831853;
+    // Apply in-plane rotation
+    float a = angle + uTime * uRotation;
+
+    // Radial structure: multiple bright/dark bands
+    // Use r as parameter
+    float bands = 0.0;
+    bands += sin(r * 80.0) * 0.5 + 0.5;
+    bands += sin(r * 35.0 + 1.3) * 0.5 + 0.5;
+    bands += sin(r * 150.0) * 0.3;
+    bands = bands / 2.3;
+
+    // Cassini gap: dark band at r ~ 0.66 (two-thirds out)
+    float gap = smoothstep(0.62, 0.655, r) * (1.0 - smoothstep(0.665, 0.70, r));
+    // Also a narrower Encke-like gap near r=0.88
+    float gap2 = smoothstep(0.87, 0.885, r) * (1.0 - smoothstep(0.895, 0.91, r)) * 0.6;
+
+    // Angular clumps (for visible revolution): subtle brightness variation around angle
+    float clumps = 0.0;
+    clumps += sin(a * 3.0) * 0.08;
+    clumps += sin(a * 7.0 + 2.1) * 0.06;
+    clumps += sin(a * 13.0 + r * 20.0) * 0.04;
+
+    // Base color: pale icy tan
+    vec3 colA = vec3(0.95, 0.90, 0.78); // lighter
+    vec3 colB = vec3(0.78, 0.70, 0.58); // darker
+    vec3 col = mix(colB, colA, bands);
+    col += clumps;
+
+    // Near-side brightness: light from upper-left in world; in ring local space, upper-left is around angle ~135° (upper-left when viewed from +Z)
+    // Since ring group is tilted around X, world upper-left (-x,+y,+z) projected to ring local...
+    // Approximate: brighter on side where world dot with local direction is high.
+    // Use local x,y: brighter when (-x + y) is positive (upper-left in local xy)
+    float localAngle = atan(vPosLocal.y, vPosLocal.x);
+    // Upper-left in local ring coords: direction (-1, 1) normalized.
+    float facing = 0.5 + 0.5 * ( -cos(localAngle) + sin(localAngle) ) * 0.7071;
+    col *= 0.55 + 0.55 * facing;
+
+    // Apply gaps
+    col *= (1.0 - gap * 0.95);
+    col *= (1.0 - gap2);
+
+    // Alpha: fade at inner and outer edges
+    float alpha = smoothstep(0.0, 0.08, r) * (1.0 - smoothstep(0.93, 1.0, r));
+    // Reduce alpha at Cassini gap
+    alpha *= (1.0 - gap * 0.9);
+    alpha *= 0.85;
+
+    if (alpha < 0.01) discard;
+
+    gl_FragColor = vec4(col, alpha);
+  }
+`;
+
+const innerR = R * 1.25;
+const outerR = R * 2.2;
+
+// We need TWO ring meshes:
+// - back ring: drawn BEFORE planet (renderOrder -1), so planet occludes middle
+// - front ring: drawn AFTER planet (renderOrder +1), but only the bottom half (the half facing camera)
+// Since ring group is tilted around X by +20°, the half with y<0 in local space is the "near/bottom" half in view space.
+// Ring geometry lies in local XY plane. After rotation around X by +20°, local +y tilts toward +z (camera), local -y tilts away.
+// Wait: rotation around X by +θ: y -> y cosθ + z sinθ, z -> -y sinθ + z cosθ. So local +y gets +z component (toward camera). So local +y is the NEAR half.
+// Therefore front ring = local y > 0 (the near half, which appears as the BOTTOM of the ellipse on screen because after tilt the near half is lower visually? Actually depends on projection.)
+// Let me just test: with ring tilted around X by +20°, the near edge is at local +y. In screen space after perspective, that near edge appears lower (if camera looks down the +z axis and ring is tilted so near edge is +y which projects down? Actually +y in view space is UP on screen). Hmm.
+// Let's just render: back ring = half with local y<0 (far half, appears as top of ellipse), front ring = half with local y>0 (near half, appears as bottom). We'll use thetaStart/Length.
+// RingGeometry parameters: innerRadius, outerRadius, thetaSegments, phiSegments, thetaStart, thetaLength.
+// In three.js RingGeometry, theta is the angle in the XY plane. theta=0 is +x axis, theta=PI/2 is +y axis.
+// We want back = the half where y<0, i.e., angles from PI to 2PI -> thetaStart=PI, thetaLength=PI.
+// Front = the half where y>0, i.e., angles from 0 to PI -> thetaStart=0, thetaLength=PI.
+
+function makeRingMesh(thetaStart, renderOrder, rotationSpeed) {
+  const geo = new THREE.RingGeometry(innerR, outerR, 256, 8, thetaStart, Math.PI);
+  const mat = new THREE.ShaderMaterial({
+    uniforms: {
+      uTime: { value: 0 },
+      uInner: { value: innerR },
+      uOuter: { value: outerR },
+      uRotation: { value: rotationSpeed }
+    },
+    vertexShader: ringVertexShader,
+    fragmentShader: ringFragmentShader,
+    transparent: true,
+    side: THREE.DoubleSide,
+    depthWrite: false
+  });
+  const m = new THREE.Mesh(geo, mat);
+  m.renderOrder = renderOrder;
+  return m;
+}
+
+// Back ring (behind planet): renderOrder -1, full ring but only the half behind planet (y<0 -> thetaStart=PI)
+// Actually we want the back ring to be visible on the sides too, not just behind. Let me think again.
+// If we use a half-ring for back (only the half behind), it won't show on the sides.
+// Better: back ring is the FULL ring, renderOrder -1. Planet draws over it at renderOrder 0, occluding the middle. Front ring is the half facing camera (y>0), renderOrder +1.
+// But then the front half of the ring (y>0) is drawn twice - once as part of back ring, once as front ring. That's fine since it's transparent and additive-ish but we use normal blending... it'll double alpha slightly.
+// Alternative: back ring uses only the half that's NOT in front (y<0), plus we need to also show the side portions. Actually the sides are shared between both halves. The cleanest split: back = half with y<0 (behind), front = half with y>0 (in front). The sides transition smoothly because the ring is continuous.
+// At the split points (x-axis crossings), we'd see the planet edge but the ring there is at the planet's equator, so it's hidden behind the planet anyway. Great.
+// So: back ring = thetaStart=PI, thetaLength=PI (the y<0 half). renderOrder=-1.
+// front ring = thetaStart=0, thetaLength=PI (the y>0 half). renderOrder=+1.
+// But wait, this means the back ring doesn't include the portions on the left/right sides that extend beyond the planet. Those would be missing.
+// Actually the y<0 half includes the -x side and +x side too (it's the entire bottom half of the ring disc). The ring extends beyond the planet in all directions. The y<0 half covers the entire back half of the ellipse, including the left and right extremities. So it's fine.
+// But the y<0 half of the ring, when projected, appears as the TOP of the ellipse on screen (since local -y after X rotation tilts away from camera, i.e., "up" in screen? Let me just trust and verify visually).
+
+const backRing = makeRingMesh(Math.PI, -1, THREE.MathUtils.degToRad(18) / 1.0); // outer rotates at ~18°/s
+const frontRing = makeRingMesh(0, 1, THREE.MathUtils.degToRad(22) / 1.0); // inner-ish rotates faster
+ringGroup.add(backRing);
+// planet already added to scene
+ringGroup.add(frontRing);
+
+// Shadow of ring on planet: fake as a dark overlay plane just above planet surface on lit side? 
+// Already handled in planet shader as a dark band at equator on lit side.
+
+// A subtle fake shadow of planet on the back ring: a darkening on the back ring where planet blocks light.
+// We fake this by adding a dark disc on the back ring, or by a second shader uniform.
+// Simpler: add a dark ellipse mesh just behind the planet (in the ring plane) representing the planet's shadow on the rings.
+// The shadow falls on the ring on the side opposite the sun. Sun is upper-left, so shadow is lower-right in ring space.
+// We'll add a dark radial-gradient disc positioned in the ring plane, slightly offset.
+// Actually this gets complex. Skip for simplicity - the ring shader already darkens based on facing.
+
+// ===== ANIMATION =====
+const clock = { start: performance.now() };
+const planetRotSpeed = THREE.MathUtils.degToRad(25); // 25°/s
+
+function animate() {
+  const now = performance.now();
+  const t = (now - clock.start) / 1000;
+
+  // Rotate planet around its tilted axis (local Y after the Z tilt)
+  planet.rotation.y = t * planetRotSpeed;
+
+  // Update ring shader times
+  backRing.material.uniforms.uTime.value = t;
+  frontRing.material.uniforms.uTime.value = t;
+
+  renderer.render(scene, camera);
+  requestAnimationFrame(animate);
+}
+requestAnimationFrame(animate);
+
+// ===== RESIZE =====
+window.addEventListener('resize', () => {
+  const w = window.innerWidth, h = window.innerHeight;
+  renderer.setSize(w, h);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+});
+
+} catch (err) {
+  console.error(err);
+  document.body.innerHTML = '<pre style="color:#fff;padding:20px;">'+err.stack+'</pre>';
+}
+</script>
+</body>
+</html>

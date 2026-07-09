@@ -1,0 +1,205 @@
+{
+  "name": "pulsar-css",
+  "prompt": "Create a PULSING, ROTATING PULSAR (a spinning neutron star firing lighthouse beams) as a full-screen scene — pure HTML + CSS only. A 5-second clip is captured and looped, so the rhythm and rotation are the whole point.\n\nComposition (match so results are comparable — everything centered, frame fixed):\n- At the exact center, a small intensely bright CORE: a blue-white orb about 9% of the viewport height, hot white at the middle fading through pale blue to a soft outer glow (#f2f6ff → #bcd2ff → #5b7cff), with an additive-looking bloom (layered box-shadow / blur).\n- The core PULSES rhythmically: its brightness and size swell and shrink with a period of exactly 1 second (so ~5 clean pulses across the clip). This pulse is the signature of the benchmark — make it unmistakable.\n- TWO opposing BEAMS (jets) emanate from the core along a single axis tilted about 20° from vertical — long, narrow, tapering cones of cyan-white light (semi-transparent, additive-looking), extending past the top and bottom edges of the frame. The beam axis ROTATES steadily around the center like a lighthouse, completing EXACTLY one full revolution over the 5-second clip (72°/s).\n- Concentric SHOCKWAVE RINGS pulse outward from the core in time with the pulse: on each beat a thin ring is emitted that expands and fades as it grows, so 3–4 rings are visible at different radii at any moment (stagger them with animation-delays). Faint cyan.\n- A thin, bright EQUATORIAL RING/disk hugs the core, seen nearly edge-on as a horizontal bright ellipse, tilted to match the beam axis, steady (not pulsing much).\n- Background: near-black space (#03040a) with a sparse scatter of faint, static stars (small dots via box-shadow or tiny elements) — the stars do NOT move.\n\nMotion recap (must be visible and loop seamlessly in 5s): core pulses once per second; beams make one full rotation over the clip; shockwave rings expand-and-fade on each pulse; equatorial ring holds steady; stars fixed.\n\nReturn ONLY a single complete HTML document — no JavaScript.",
+  "generatedAt": "2026-07-09T10:26:42.363Z",
+  "models": [
+    {
+      "slug": "glm-5.2",
+      "label": "GLM 5.2",
+      "provider": "openrouter",
+      "modelId": "z-ai/glm-5.2",
+      "ok": true,
+      "htmlExtracted": true,
+      "finishReason": "stop",
+      "truncated": false,
+      "elapsedMs": 123974,
+      "usage": {
+        "promptTokens": 789,
+        "completionTokens": 7251,
+        "totalTokens": 8040,
+        "costUsd": 0.033009
+      },
+      "startedAt": "2026-07-09T10:14:51.838Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
+    },
+    {
+      "slug": "grok-4.3",
+      "label": "Grok 4.3",
+      "provider": "openrouter",
+      "modelId": "x-ai/grok-4.3",
+      "ok": true,
+      "htmlExtracted": true,
+      "finishReason": "stop",
+      "truncated": false,
+      "elapsedMs": 42380,
+      "usage": {
+        "promptTokens": 957,
+        "completionTokens": 2651,
+        "totalTokens": 3608,
+        "costUsd": 0.00762215
+      },
+      "startedAt": "2026-07-09T10:14:51.847Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
+    },
+    {
+      "slug": "gpt-5.4-mini",
+      "label": "GPT-5.4 mini",
+      "provider": "openrouter",
+      "modelId": "openai/gpt-5.4-mini",
+      "ok": true,
+      "htmlExtracted": true,
+      "finishReason": "stop",
+      "truncated": false,
+      "elapsedMs": 18155,
+      "usage": {
+        "promptTokens": 783,
+        "completionTokens": 2887,
+        "totalTokens": 3670,
+        "costUsd": 0.01357875
+      },
+      "startedAt": "2026-07-09T10:14:51.848Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
+    },
+    {
+      "slug": "claude-haiku-4.5",
+      "label": "Claude Haiku 4.5",
+      "provider": "openrouter",
+      "modelId": "anthropic/claude-haiku-4.5",
+      "ok": true,
+      "htmlExtracted": true,
+      "finishReason": "stop",
+      "truncated": false,
+      "elapsedMs": 37078,
+      "usage": {
+        "promptTokens": 902,
+        "completionTokens": 7651,
+        "totalTokens": 8553,
+        "costUsd": 0.039157
+      },
+      "startedAt": "2026-07-09T10:14:51.849Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
+    },
+    {
+      "slug": "qwen3.7-plus",
+      "label": "Qwen3.7 Plus",
+      "provider": "openrouter",
+      "modelId": "qwen/qwen3.7-plus",
+      "ok": true,
+      "htmlExtracted": true,
+      "finishReason": "stop",
+      "truncated": false,
+      "elapsedMs": 108492,
+      "usage": {
+        "promptTokens": 813,
+        "completionTokens": 5954,
+        "totalTokens": 6767,
+        "costUsd": 0.00788128
+      },
+      "startedAt": "2026-07-09T10:14:51.849Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
+    },
+    {
+      "slug": "gemini-3.1-flash-lite",
+      "label": "Gemini 3.1 Flash-Lite",
+      "provider": "openrouter",
+      "modelId": "google/gemini-3.1-flash-lite",
+      "ok": true,
+      "htmlExtracted": true,
+      "finishReason": "stop",
+      "truncated": false,
+      "elapsedMs": 4286,
+      "usage": {
+        "promptTokens": 804,
+        "completionTokens": 1486,
+        "totalTokens": 2290,
+        "costUsd": 0.00243
+      },
+      "startedAt": "2026-07-09T10:14:51.850Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
+    },
+    {
+      "slug": "deepseek-v4-pro",
+      "label": "DeepSeek V4 Pro",
+      "provider": "openrouter",
+      "modelId": "deepseek/deepseek-v4-pro",
+      "ok": true,
+      "htmlExtracted": true,
+      "finishReason": "stop",
+      "truncated": false,
+      "elapsedMs": 286448,
+      "usage": {
+        "promptTokens": 789,
+        "completionTokens": 16881,
+        "totalTokens": 17670,
+        "costUsd": 0.057026031
+      },
+      "startedAt": "2026-07-09T10:14:51.851Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
+    },
+    {
+      "slug": "kimi-k2.7-code",
+      "label": "Kimi K2.7 Code",
+      "provider": "openrouter",
+      "modelId": "moonshotai/kimi-k2.7-code",
+      "ok": true,
+      "htmlExtracted": true,
+      "finishReason": "stop",
+      "truncated": false,
+      "elapsedMs": 269823,
+      "usage": {
+        "promptTokens": 788,
+        "completionTokens": 14141,
+        "totalTokens": 14929,
+        "costUsd": 0.054445
+      },
+      "startedAt": "2026-07-09T10:14:51.851Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
+    },
+    {
+      "slug": "kimi-k2.6",
+      "label": "Kimi K2.6",
+      "provider": "openrouter",
+      "modelId": "moonshotai/kimi-k2.6",
+      "ok": true,
+      "htmlExtracted": true,
+      "finishReason": "stop",
+      "truncated": false,
+      "elapsedMs": 35330,
+      "usage": {
+        "promptTokens": 788,
+        "completionTokens": 3526,
+        "totalTokens": 4314,
+        "costUsd": 0.01254374
+      },
+      "startedAt": "2026-07-09T10:14:51.852Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
+    }
+  ]
+}

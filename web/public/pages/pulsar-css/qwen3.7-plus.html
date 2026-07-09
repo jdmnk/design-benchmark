@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Pulsar</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; height: 100%; overflow: hidden; }
+  body {
+    background: #03040a;
+    font-size: 0;
+  }
+
+  .scene {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+  }
+
+  /* ---------- STARS ---------- */
+  .stars {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 1px; height: 1px;
+    background: transparent;
+    box-shadow:
+      -42vw -38vh 0 0.4px rgba(220,230,255,0.7),
+       31vw -44vh 0 0.3px rgba(200,215,255,0.55),
+      -28vw  22vh 0 0.5px rgba(255,255,255,0.8),
+       45vw  18vh 0 0.3px rgba(210,220,255,0.6),
+      -10vw -20vh 0 0.4px rgba(230,240,255,0.75),
+       18vw  35vh 0 0.3px rgba(200,210,245,0.55),
+      -48vw   8vh 0 0.4px rgba(220,230,255,0.65),
+       38vw -10vh 0 0.3px rgba(255,255,255,0.7),
+       -5vw  42vh 0 0.4px rgba(210,225,255,0.6),
+       22vw -28vh 0 0.3px rgba(200,215,255,0.55),
+      -35vw -15vh 0 0.4px rgba(230,240,255,0.7),
+       48vw -30vh 0 0.3px rgba(220,230,255,0.55),
+      -20vw  45vh 0 0.4px rgba(255,255,255,0.75),
+       12vw -40vh 0 0.3px rgba(210,220,255,0.6),
+      -40vw  35vh 0 0.4px rgba(220,230,255,0.65),
+       28vw   5vh 0 0.3px rgba(200,215,255,0.5),
+      -15vw -48vh 0 0.4px rgba(230,240,255,0.7),
+       40vw  40vh 0 0.3px rgba(255,255,255,0.65),
+       -3vw -10vh 0 0.3px rgba(210,225,255,0.55),
+       50vw -20vh 0 0.4px rgba(220,230,255,0.6),
+      -45vw  40vh 0 0.3px rgba(200,215,255,0.55),
+       15vw  25vh 0 0.4px rgba(230,240,255,0.75),
+      -25vw -30vh 0 0.3px rgba(255,255,255,0.65),
+       35vw  30vh 0 0.4px rgba(210,220,255,0.6),
+      -50vw -25vh 0 0.3px rgba(220,230,255,0.55),
+        5vw  15vh 0 0.4px rgba(230,240,255,0.7),
+       25vw -45vh 0 0.3px rgba(200,215,255,0.6),
+      -38vw   0vh 0 0.4px rgba(255,255,255,0.7),
+       42vw -42vh 0 0.3px rgba(210,225,255,0.55),
+      -18vw  30vh 0 0.4px rgba(220,230,255,0.65),
+        0vw -45vh 0 0.3px rgba(230,240,255,0.7),
+       30vw  45vh 0 0.4px rgba(200,215,255,0.55);
+  }
+
+  /* ---------- PULSAR ---------- */
+  .pulsar {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 0; height: 0;
+  }
+
+  /* ---------- BEAM GROUP (rotates) ---------- */
+  .beam-group {
+    position: absolute;
+    top: 0; left: 0;
+    width: 0; height: 0;
+    transform: rotate(20deg);
+    animation: spin 5s linear infinite;
+    mix-blend-mode: screen;
+  }
+
+  .beam {
+    position: absolute;
+    left: 50%;
+    width: 22vh;
+    height: 120vh;
+    transform: translateX(-50%);
+    filter: blur(1.2vh);
+  }
+  .beam.up {
+    top: -120vh;
+    clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+    background: linear-gradient(to top,
+      rgba(220,240,255,0.95) 0%,
+      rgba(160,220,255,0.7) 15%,
+      rgba(120,200,255,0.35) 45%,
+      rgba(80,160,255,0.08) 80%,
+      transparent 100%);
+  }
+  .beam.down {
+    top: 0;
+    clip-path: polygon(50% 100%, 100% 0%, 0% 0%);
+    background: linear-gradient(to bottom,
+      rgba(220,240,255,0.95) 0%,
+      rgba(160,220,255,0.7) 15%,
+      rgba(120,200,255,0.35) 45%,
+      rgba(80,160,255,0.08) 80%,
+      transparent 100%);
+  }
+
+  /* Bright inner spine of each beam */
+  .beam::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2vh;
+    height: 100%;
+    background: linear-gradient(to top,
+      rgba(255,255,255,0.95),
+      rgba(200,235,255,0.6) 30%,
+      transparent 70%);
+    filter: blur(0.6vh);
+  }
+  .beam.down::after {
+    background: linear-gradient(to bottom,
+      rgba(255,255,255,0.95),
+      rgba(200,235,255,0.6) 30%,
+      transparent 70%);
+  }
+
+  @keyframes spin {
+    from { transform: rotate(20deg); }
+    to   { transform: rotate(380deg); }
+  }
+
+  /* ---------- EQUATORIAL RING (steady, tilted) ---------- */
+  .equatorial {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 42vh;
+    height: 5vh;
+    transform: translate(-50%, -50%) rotate(20deg);
+    border-radius: 50%;
+    background: radial-gradient(ellipse at center,
+      rgba(180,220,255,0.0) 40%,
+      rgba(180,220,255,0.55) 55%,
+      rgba(140,200,255,0.85) 65%,
+      rgba(180,220,255,0.55) 75%,
+      rgba(180,220,255,0.0) 90%);
+    box-shadow:
+      0 0 1.5vh 0.4vh rgba(150,210,255,0.55),
+      0 0 3vh 0.8vh rgba(120,190,255,0.3);
+    mix-blend-mode: screen;
+  }
+
+  /* ---------- SHOCKWAVE RINGS ---------- */
+  .ring {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 9vh;
+    height: 9vh;
+    transform: translate(-50%, -50%) scale(1);
+    border-radius: 50%;
+    border: 1.2px solid rgba(160,220,255,0.9);
+    box-shadow:
+      0 0 1vh rgba(140,210,255,0.6),
+      inset 0 0 1vh rgba(140,210,255,0.4);
+    opacity: 0;
+    animation: ringPulse 1s ease-out infinite;
+    mix-blend-mode: screen;
+  }
+  .ring.r1 { animation-delay: 0s; }
+  .ring.r2 { animation-delay: 0.25s; }
+  .ring.r3 { animation-delay: 0.5s; }
+  .ring.r4 { animation-delay: 0.75s; }
+
+  @keyframes ringPulse {
+    0%   { transform: translate(-50%, -50%) scale(1);   opacity: 0.9; border-width: 1.4px; }
+    60%  { opacity: 0.35; }
+    100% { transform: translate(-50%, -50%) scale(55);  opacity: 0;   border-width: 0.3px; }
+  }
+
+  /* ---------- CORE ---------- */
+  .core {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 9vh;
+    height: 9vh;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: radial-gradient(circle at center,
+      #ffffff 0%,
+      #f2f6ff 18%,
+      #d8e4ff 40%,
+      #bcd2ff 65%,
+      #8aa8ff 82%,
+      #5b7cff 100%);
+    animation: corePulse 1s ease-in-out infinite;
+  }
+
+  .core::before {
+    content: '';
+    position: absolute;
+    inset: -40%;
+    border-radius: 50%;
+    background: radial-gradient(circle,
+      rgba(180,210,255,0.55) 0%,
+      rgba(120,170,255,0.25) 40%,
+      rgba(80,130,255,0.0) 70%);
+    mix-blend-mode: screen;
+    animation: haloPulse 1s ease-in-out infinite;
+  }
+
+  .core::after {
+    content: '';
+    position: absolute;
+    inset: -120%;
+    border-radius: 50%;
+    background: radial-gradient(circle,
+      rgba(140,190,255,0.35) 0%,
+      rgba(100,160,255,0.12) 35%,
+      rgba(80,130,255,0.0) 65%);
+    mix-blend-mode: screen;
+    animation: haloPulse 1s ease-in-out infinite;
+  }
+
+  @keyframes corePulse {
+    0%, 100% {
+      transform: translate(-50%, -50%) scale(0.92);
+      box-shadow:
+        0 0 2vh  0.6vh rgba(200,225,255,0.8),
+        0 0 4vh  1.2vh rgba(140,190,255,0.55),
+        0 0 8vh  2.5vh rgba(90,140,255,0.35),
+        0 0 14vh 4vh   rgba(70,120,255,0.2);
+      filter: brightness(0.95);
+    }
+    50% {
+      transform: translate(-50%, -50%) scale(1.15);
+      box-shadow:
+        0 0 3vh  1vh   rgba(230,240,255,0.95),
+        0 0 6vh  2vh   rgba(170,210,255,0.75),
+        0 0 12vh 4vh   rgba(120,170,255,0.5),
+        0 0 22vh 7vh   rgba(90,140,255,0.3);
+      filter: brightness(1.25);
+    }
+  }
+
+  @keyframes haloPulse {
+    0%, 100% { opacity: 0.55; transform: scale(0.95); }
+    50%      { opacity: 1.0;  transform: scale(1.1); }
+  }
+
+</style>
+</head>
+<body>
+  <div class="scene">
+    <div class="stars"></div>
+    <div class="pulsar">
+      <div class="ring r1"></div>
+      <div class="ring r2"></div>
+      <div class="ring r3"></div>
+      <div class="ring r4"></div>
+      <div class="equatorial"></div>
+      <div class="beam-group">
+        <div class="beam up"></div>
+        <div class="beam down"></div>
+      </div>
+      <div class="core"></div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,13 @@
+Create a PULSING, ROTATING PULSAR (a spinning neutron star firing lighthouse beams) as a full-screen scene — pure HTML + CSS only. A 5-second clip is captured and looped, so the rhythm and rotation are the whole point.
+
+Composition (match so results are comparable — everything centered, frame fixed):
+- At the exact center, a small intensely bright CORE: a blue-white orb about 9% of the viewport height, hot white at the middle fading through pale blue to a soft outer glow (#f2f6ff → #bcd2ff → #5b7cff), with an additive-looking bloom (layered box-shadow / blur).
+- The core PULSES rhythmically: its brightness and size swell and shrink with a period of exactly 1 second (so ~5 clean pulses across the clip). This pulse is the signature of the benchmark — make it unmistakable.
+- TWO opposing BEAMS (jets) emanate from the core along a single axis tilted about 20° from vertical — long, narrow, tapering cones of cyan-white light (semi-transparent, additive-looking), extending past the top and bottom edges of the frame. The beam axis ROTATES steadily around the center like a lighthouse, completing EXACTLY one full revolution over the 5-second clip (72°/s).
+- Concentric SHOCKWAVE RINGS pulse outward from the core in time with the pulse: on each beat a thin ring is emitted that expands and fades as it grows, so 3–4 rings are visible at different radii at any moment (stagger them with animation-delays). Faint cyan.
+- A thin, bright EQUATORIAL RING/disk hugs the core, seen nearly edge-on as a horizontal bright ellipse, tilted to match the beam axis, steady (not pulsing much).
+- Background: near-black space (#03040a) with a sparse scatter of faint, static stars (small dots via box-shadow or tiny elements) — the stars do NOT move.
+
+Motion recap (must be visible and loop seamlessly in 5s): core pulses once per second; beams make one full rotation over the clip; shockwave rings expand-and-fade on each pulse; equatorial ring holds steady; stars fixed.
+
+Return ONLY a single complete HTML document — no JavaScript.

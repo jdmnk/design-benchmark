@@ -19,7 +19,9 @@ const ROOT = resolve(dirname(new URL(import.meta.url).pathname), "..");
 const BENCHES = [
   { configPath: "config/examples/black-hole-spin.config.json" },
   { configPath: "config/examples/black-hole.config.json" },
+  { configPath: "config/examples/ringed-giant.config.json" },
   { configPath: "config/examples/fireworks.config.json" },
+  { configPath: "config/examples/pulsar-css.config.json" },
   { configPath: "config/examples/sunset-svg.config.json" },
   { configPath: "config/benchmark.config.json" },
 ];

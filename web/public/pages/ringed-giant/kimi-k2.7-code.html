@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Saturn-like Ringed Gas Giant</title>
+  <style>
+    body { margin: 0; overflow: hidden; background: #050505; }
+    canvas { display: block; width: 100vw; height: 100vh; }
+  </style>
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+    }
+  }
+  </script>
+</head>
+<body>
+<script type="module">
+import * as THREE from 'three';
+
+try {
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x050505);
+
+  const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+  camera.position.set(0, 0, 15);
+  camera.lookAt(0, 0, 0);
+
+  const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setClearColor(0x050505);
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.shadowMap.enabled = false;
+  document.body.appendChild(renderer.domElement);
+
+  const R = 2.0;
+
+  // --- Texture helpers -------------------------------------------------------
+
+  function lerp(a, b, t) { return a + (b - a) * t; }
+  function lerp3(c1, c2, t) {
+    return [lerp(c1[0], c2[0], t), lerp(c1[1], c2[1], t), lerp(c1[2], c2[2], t)];
+  }
+  function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+  function smoothstep(edge0, edge1, x) {
+    const t = clamp((x - edge0) / (edge1 - edge0), 0, 1);
+    return t * t * (3 - 2 * t);
+  }
+
+  function createPlanetTexture() {
+    const W = 1024, H = 512;
+    const canvas = document.createElement('canvas');
+    canvas.width = W; canvas.height = H;
+    const ctx = canvas.getContext('2d');
+    const img = ctx.createImageData(W, H);
+    const d = img.data;
+
+    const cream = [243, 230, 196];
+    const paleGold = [230, 200, 143];
+    const tan = [201, 154, 91];
+    const amber = [212, 169, 106];
+    const darkBelt = [115, 84, 55];
+
+    const stormU = 0.55, stormV = 0.40;
+    const stormRU = 0.06, stormRV = 0.035;
+
+    for (let y = 0; y < H; y++) {
+      const v = y / H;
+      const lat = (v - 0.5) * Math.PI;
+      for (let x = 0; x < W; x++) {
+        const u = x / W;
+        const latw = lat
+          + 0.035 * Math.sin(u * Math.PI * 2 * 4 + lat * 3)
+          + 0.018 * Math.sin(u * Math.PI * 2 * 7 - lat * 5);
+
+        let band = 0.5 + 0.5 * Math.sin(latw * 4.5);
+        band += 0.12 * Math.sin(latw * 10);
+        band += 0.06 * Math.sin(latw * 18 + u * Math.PI * 4);
+        band = clamp(band, 0, 1);
+
+        let rgb;
+        if (band < 0.45) {
+          rgb = lerp3(cream, paleGold, band / 0.45);
+        } else if (band < 0.75) {
+          rgb = lerp3(paleGold, tan, (band - 0.45) / 0.30);
+        } else {
+          rgb = lerp3(tan, amber, (band - 0.75) / 0.25);
+        }
+
+        if (band > 0.78) {
+          const k = (band - 0.78) / 0.22;
+          rgb = lerp3(rgb, darkBelt, k * 0.45);
+        }
+
+        const eq = Math.exp(-latw * latw * 22);
+        rgb[0] += eq * 14;
+        rgb[1] += eq * 11;
+        rgb[2] += eq * 5;
+
+        let du = u - stormU;
+        if (du > 0.5) du -= 1;
+        if (du < -0.5) du += 1;
+        const dv = v - stormV;
+        const dist2 = (du / stormRU) ** 2 + (dv / stormRV) ** 2;
+        if (dist2 < 1) {
+          const edge = Math.sqrt(dist2);
+          const swirl = Math.sin(Math.atan2(dv, du) * 5 + edge * 14) * 0.04;
+          const darkening = 0.22 + 0.42 * edge + swirl;
+          rgb[0] *= 1 - darkening;
+          rgb[1] *= 1 - darkening;
+          rgb[2] *= 1 - darkening;
+          if (edge > 0.82) {
+            rgb[0] += 22; rgb[1] += 16; rgb[2] += 6;
+          }
+        }
+
+        const n = (Math.random() - 0.5) * 7;
+        rgb[0] = clamp(rgb[0] + n, 0, 255);
+        rgb[1] = clamp(rgb[1] + n, 0, 255);
+        rgb[2] = clamp(rgb[2] + n, 0, 255);
+
+        const i = (y * W + x) * 4;
+        d[i] = rgb[0] | 0;
+        d[i + 1] = rgb[1] | 0;
+        d[i + 2] = rgb[2] | 0;
+        d[i + 3] = 255;
+      }
+    }
+    ctx.putImageData(img, 0, 0);
+    const tex = new THREE.CanvasTexture(canvas);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    return tex;
+  }
+
+  function createRingTexture() {
+    const W = 2048, H = 256;
+    const canvas = document.createElement('canvas');
+    canvas.width = W; canvas.height = H;
+    const ctx = canvas.getContext('2d');
+    const img = ctx.createImageData(W, H);
+    const d = img.data;
+
+    const base = [216, 203, 176];
+
+    for (let y = 0; y < H; y++) {
+      const f = y / (H - 1);
+      for (let x = 0; x < W; x++) {
+        const u = x / W;
+        let r = base[0], g = base[1], b = base[2];
+
+        const rad = Math.sin(f * 28) * 0.04 + Math.sin(f * 52) * 0.025 + Math.sin(f * 90) * 0.015;
+        r += rad * 255; g += rad * 255; b += rad * 255;
+
+        const clump1 = Math.sin(u * Math.PI * 2 * 5 + f * 12) * 0.5 + 0.5;
+        const clump2 = Math.sin(u * Math.PI * 2 * 11 - f * 9) * 0.5 + 0.5;
+        const bright = clump1 * 0.08 + clump2 * 0.05;
+        r += bright * 255; g += bright * 255; b += bright * 255;
+
+        const spoke = Math.sin((u * Math.PI * 2 + f * 6) * 28) * Math.exp(-Math.abs(f - 0.5) * 2);
+        r += spoke * 10; g += spoke * 8; b += spoke * 5;
+
+        if (f > 0.62 && f < 0.71) {
+          const gap = 1 - Math.abs(f - 0.665) / 0.045;
+          const dark = clamp(gap, 0, 1);
+          r *= 0.08 + 0.92 * (1 - dark);
+          g *= 0.08 + 0.92 * (1 - dark);
+          b *= 0.08 + 0.92 * (1 - dark);
+        }
+
+        let alpha = smoothstep(0.0, 0.06, f) * (1 - smoothstep(0.92, 1.0, f));
+        alpha *= 0.82;
+
+        r = clamp(r, 0, 255);
+        g = clamp(g, 0, 255);
+        b = clamp(b, 0, 255);
+
+        const i = (y * W + x) * 4;
+        d[i] = r | 0;
+        d[i + 1] = g | 0;
+        d[i + 2] = b | 0;
+        d[i + 3] = (alpha * 255) | 0;
+      }
+    }
+    ctx.putImageData(img, 0, 0);
+    const tex = new THREE.CanvasTexture(canvas);
+    tex.wrapS = THREE.RepeatWrapping;
+    tex.wrapT = THREE.ClampToEdgeWrapping;
+    tex.colorSpace = THREE.SRGBColorSpace;
+    return tex;
+  }
+
+  function createStars() {
+    const count = 900;
+    const geo = new THREE.BufferGeometry();
+    const pos = new Float32Array(count * 3);
+    const col = new Float32Array(count * 3);
+    for (let i = 0; i < count; i++) {
+      const rad = 60 + Math.random() * 50;
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos(2 * Math.random() - 1);
+      pos[i * 3] = rad * Math.sin(phi) * Math.cos(theta);
+      pos[i * 3 + 1] = rad * Math.sin(phi) * Math.sin(theta);
+      pos[i * 3 + 2] = rad * Math.cos(phi);
+      const s = 0.4 + Math.random() * 0.6;
+      col[i * 3] = s;
+      col[i * 3 + 1] = s * 0.95;
+      col[i * 3 + 2] = s * 1.05;
+    }
+    geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
+    const mat = new THREE.PointsMaterial({
+      size: 0.12,
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.75,
+      sizeAttenuation: true
+    });
+    return new THREE.Points(geo, mat);
+  }
+
+  // --- Scene objects ---------------------------------------------------------
+
+  scene.add(createStars());
+
+  const pivot = new THREE.Group();
+  scene.add(pivot);
+
+  // Viewing angle: 20° above edge-on => pivot tilt 70°
+  const B = THREE.MathUtils.degToRad(20);
+  pivot.rotation.x = Math.PI / 2 - B;
+
+  const planetTex = createPlanetTexture();
+  const planet = new THREE.Mesh(
+    new THREE.SphereGeometry(R, 64, 64),
+    new THREE.MeshStandardMaterial({
+      map: planetTex,
+      roughness: 0.85,
+      metalness: 0.05
+    })
+  );
+  pivot.add(planet);
+
+  const innerR = 1.15 * R;
+  const outerR = 2.20 * R;
+  const ringTex = createRingTexture();
+
+  const ringGeo = new THREE.RingGeometry(innerR, outerR, 256, 12);
+  const ringUniforms = {
+    tRing: { value: ringTex },
+    time: { value: 0 },
+    lightDir: { value: new THREE.Vector3() }
+  };
+  const ringMat = new THREE.ShaderMaterial({
+    uniforms: ringUniforms,
+    vertexShader: `
+      varying vec2 vUv;
+      varying vec3 vNormal;
+      void main() {
+        vUv = uv;
+        vNormal = normalize(normalMatrix * normal);
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `,
+    fragmentShader: `
+      uniform sampler2D tRing;
+      uniform float time;
+      uniform vec3 lightDir;
+      varying vec2 vUv;
+      varying vec3 vNormal;
+      void main() {
+        vec2 uv = vUv;
+        // Differential rotation: inner regions rotate a bit faster
+        uv.x = fract(uv.x + time * 0.018 * (1.0 - uv.y));
+        vec4 tex = texture2D(tRing, uv);
+        if (tex.a < 0.02) discard;
+        vec3 N = normalize(vNormal);
+        vec3 L = normalize(lightDir);
+        float diff = max(dot(N, L), dot(-N, L));
+        float lit = 0.42 + 0.58 * diff;
+        gl_FragColor = vec4(tex.rgb * lit, tex.a);
+      }
+    `,
+    transparent: true,
+    side: THREE.DoubleSide,
+    depthWrite: false
+  });
+  const ring = new THREE.Mesh(ringGeo, ringMat);
+  ring.rotation.x = -Math.PI / 2;
+  pivot.add(ring);
+
+  // Fake ring-shadow band on the planet
+  const shadowUniforms = {
+    inner: { value: innerR },
+    outer: { value: outerR },
+    lightDir: { value: new THREE.Vector3() }
+  };
+  const shadowMat = new THREE.ShaderMaterial({
+    uniforms: shadowUniforms,
+    vertexShader: `
+      varying vec3 vPos;
+      void main() {
+        vPos = position;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `,
+    fragmentShader: `
+      uniform float inner;
+      uniform float outer;
+      uniform vec3 lightDir;
+      varying vec3 vPos;
+      void main() {
+        vec3 P = vPos;
+        vec3 N = normalize(P);
+        vec3 L = normalize(lightDir);
+        float NoL = dot(N, L);
+        float shadowMask = 1.0 - smoothstep(-0.15, 0.35, NoL);
+        float t = -P.y / L.y;
+        float sh = 0.0;
+        if (t > 0.0) {
+          vec3 Q = P + t * L;
+          float r = length(Q.xz);
+          float innerEdge = smoothstep(inner - 0.12, inner, r);
+          float outerEdge = 1.0 - smoothstep(outer, outer + 0.22, r);
+          sh = innerEdge * outerEdge;
+        }
+        float alpha = sh * shadowMask * 0.42;
+        if (alpha < 0.01) discard;
+        gl_FragColor = vec4(vec3(0.0), alpha);
+      }
+    `,
+    transparent: true,
+    depthWrite: false
+  });
+  const shadowSphere = new THREE.Mesh(new THREE.SphereGeometry(R * 1.005, 64, 64), shadowMat);
+  pivot.add(shadowSphere);
+
+  // --- Lighting --------------------------------------------------------------
+
+  const ambient = new THREE.AmbientLight(0x403830, 0.9);
+  scene.add(ambient);
+
+  const sun = new THREE.DirectionalLight(0xfff5e6, 2.4);
+  sun.position.set(12, -8, -8);
+  sun.target.position.set(0, 0, 0);
+  scene.add(sun);
+  scene.add(sun.target);
+
+  // Light direction toward the light source, in world and pivot-local space
+  const lightWorld = sun.position.clone().negate().normalize();
+  const lightLocal = lightWorld.clone().applyAxisAngle(new THREE.Vector3(1, 0, 0), -pivot.rotation.x);
+  ringUniforms.lightDir.value.copy(lightWorld);
+  shadowUniforms.lightDir.value.copy(lightLocal);
+
+  // --- Animation -------------------------------------------------------------
+
+  const planetSpeed = THREE.MathUtils.degToRad(25);
+  const ringBaseSpeed = THREE.MathUtils.degToRad(20);
+
+  function animate(now) {
+    requestAnimationFrame(animate);
+    const t = (now || performance.now()) * 0.001;
+
+    planet.rotation.y = t * planetSpeed;
+    ring.rotation.y = t * ringBaseSpeed;
+    ringUniforms.time.value = t;
+
+    renderer.render(scene, camera);
+  }
+
+  requestAnimationFrame(animate);
+
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+
+} catch (err) {
+  console.error('Scene setup failed:', err);
+  document.body.style.background = '#050505';
+  document.body.innerHTML = '<div style="color:#888;padding:20px;">Unable to load WebGL scene.</div>';
+}
+</script>
+</body>
+</html>

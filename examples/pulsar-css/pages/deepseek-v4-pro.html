@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pulsar - Rotating Neutron Star</title>
+    <style>
+        :root {
+            --bg: #03040a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg);
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0;
+        }
+
+        /* ── Starfield ── */
+        .stars {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            box-shadow:
+                -720px -480px 0 2px rgba(255, 255, 255, 0.85),
+                -580px -390px 0 1px rgba(220, 230, 255, 0.7),
+                -640px -200px 0 1.5px rgba(255, 255, 255, 0.75),
+                -500px -500px 0 2.5px rgba(200, 215, 255, 0.9),
+                -390px -340px 0 1px rgba(240, 245, 255, 0.6),
+                -310px -450px 0 1.5px rgba(255, 255, 255, 0.8),
+                -180px -280px 0 2px rgba(190, 210, 255, 0.7),
+                -90px -520px 0 1px rgba(255, 255, 255, 0.55),
+                -30px -160px 0 2.5px rgba(230, 240, 255, 0.9),
+                60px -490px 0 1.5px rgba(200, 220, 255, 0.65),
+                150px -380px 0 1px rgba(255, 255, 255, 0.7),
+                220px -510px 0 2px rgba(180, 200, 255, 0.8),
+                310px -260px 0 1.5px rgba(240, 248, 255, 0.75),
+                400px -420px 0 1px rgba(210, 225, 255, 0.6),
+                490px -330px 0 2px rgba(255, 255, 255, 0.85),
+                560px -480px 0 1.5px rgba(190, 210, 255, 0.7),
+                650px -190px 0 1px rgba(255, 255, 255, 0.55),
+                720px -440px 0 2.5px rgba(220, 235, 255, 0.9),
+                780px -290px 0 1px rgba(200, 215, 255, 0.65),
+                850px -500px 0 1.5px rgba(255, 255, 255, 0.8),
+                -750px 100px 0 1.5px rgba(230, 240, 255, 0.7),
+                -680px 250px 0 2px rgba(255, 255, 255, 0.8),
+                -590px 420px 0 1px rgba(190, 210, 255, 0.6),
+                -470px 350px 0 2.5px rgba(240, 245, 255, 0.85),
+                -350px 480px 0 1.5px rgba(210, 225, 255, 0.7),
+                -220px 310px 0 1px rgba(255, 255, 255, 0.55),
+                -110px 500px 0 2px rgba(180, 200, 255, 0.75),
+                -40px 180px 0 1.5px rgba(255, 255, 255, 0.8),
+                80px 460px 0 1px rgba(200, 220, 255, 0.65),
+                200px 380px 0 2px rgba(230, 240, 255, 0.9),
+                320px 490px 0 1.5px rgba(255, 255, 255, 0.7),
+                440px 280px 0 1px rgba(190, 210, 255, 0.6),
+                530px 440px 0 2.5px rgba(220, 235, 255, 0.85),
+                620px 320px 0 1px rgba(255, 255, 255, 0.55),
+                700px 470px 0 1.5px rgba(200, 215, 255, 0.7),
+                810px 200px 0 2px rgba(240, 248, 255, 0.8),
+                900px 410px 0 1px rgba(210, 225, 255, 0.6),
+                -810px -80px 0 1px rgba(255, 255, 255, 0.5),
+                -500px 50px 0 2px rgba(220, 230, 255, 0.75),
+                -280px -60px 0 1.5px rgba(255, 255, 255, 0.7),
+                450px -50px 0 1px rgba(190, 205, 255, 0.6),
+                680px 70px 0 2px rgba(240, 245, 255, 0.8),
+                -150px 520px 0 1.5px rgba(255, 255, 255, 0.65),
+                350px 510px 0 1px rgba(200, 220, 255, 0.55);
+        }
+
+        /* ── Main Scene ── */
+        .scene {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ── Rotating Container (beams + equatorial ring) ── */
+        .rotating-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transform-origin: center center;
+            animation: rotate-beams 5s linear infinite;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        @keyframes rotate-beams {
+            0% {
+                transform: rotate(20deg);
+            }
+            100% {
+                transform: rotate(380deg);
+            }
+        }
+
+        /* ── Beams ── */
+        .beam {
+            position: absolute;
+            left: 50%;
+            width: 2.2vw;
+            min-width: 14px;
+            max-width: 28px;
+            pointer-events: none;
+            mix-blend-mode: screen;
+            z-index: 1;
+        }
+
+        .beam-top {
+            bottom: 50%;
+            height: 78vh;
+            transform: translateX(-50%);
+            background: linear-gradient(to top,
+                    rgba(240, 248, 255, 1) 0%,
+                    rgba(220, 238, 255, 0.9) 4%,
+                    rgba(180, 215, 255, 0.7) 12%,
+                    rgba(130, 195, 255, 0.4) 30%,
+                    rgba(90, 160, 240, 0.15) 55%,
+                    rgba(50, 120, 220, 0.03) 78%,
+                    transparent 100%);
+            clip-path: polygon(42% 100%, 58% 100%, 53% 0%, 47% 0%);
+            border-radius: 35% 35% 0 0 / 6% 6% 0 0;
+            box-shadow:
+                0 8px 25px 8px rgba(180, 215, 255, 0.5),
+                0 20px 60px 25px rgba(130, 190, 255, 0.25),
+                0 40px 110px 50px rgba(90, 150, 240, 0.1);
+        }
+
+        .beam-bottom {
+            top: 50%;
+            height: 78vh;
+            transform: translateX(-50%);
+            background: linear-gradient(to bottom,
+                    rgba(240, 248, 255, 1) 0%,
+                    rgba(220, 238, 255, 0.9) 4%,
+                    rgba(180, 215, 255, 0.7) 12%,
+                    rgba(130, 195, 255, 0.4) 30%,
+                    rgba(90, 160, 240, 0.15) 55%,
+                    rgba(50, 120, 220, 0.03) 78%,
+                    transparent 100%);
+            clip-path: polygon(47% 0%, 53% 0%, 58% 100%, 42% 100%);
+            border-radius: 0 0 35% 35% / 0 0 6% 6%;
+            box-shadow:
+                0 -8px 25px 8px rgba(180, 215, 255, 0.5),
+                0 -20px 60px 25px rgba(130, 190, 255, 0.25),
+                0 -40px 110px 50px rgba(90, 150, 240, 0.1);
+        }
+
+        /* ── Equatorial Ring ── */
+        .equatorial-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 20vw;
+            max-width: 280px;
+            min-width: 140px;
+            height: 2.4vh;
+            min-height: 14px;
+            max-height: 22px;
+            border-radius: 50%;
+            border: 1.5px solid rgba(175, 210, 255, 0.7);
+            box-shadow:
+                0 0 8px 3px rgba(160, 200, 255, 0.5),
+                0 0 22px 10px rgba(120, 180, 255, 0.22),
+                0 0 45px 18px rgba(80, 140, 240, 0.08);
+            pointer-events: none;
+            mix-blend-mode: screen;
+            z-index: 2;
+        }
+
+        /* ── Shockwave Rings ── */
+        .shockwave {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            border: 1.8px solid rgba(155, 210, 255, 0.7);
+            box-shadow: 0 0 7px 3px rgba(140, 200, 255, 0.3);
+            pointer-events: none;
+            mix-blend-mode: screen;
+            z-index: 3;
+            animation: expand-ring 1s ease-out infinite;
+            width: 10vh;
+            height: 10vh;
+            opacity: 0;
+        }
+
+        .shockwave:nth-child(1) {
+            animation-delay: 0s;
+        }
+        .shockwave:nth-child(2) {
+            animation-delay: 0.25s;
+        }
+        .shockwave:nth-child(3) {
+            animation-delay: 0.5s;
+        }
+        .shockwave:nth-child(4) {
+            animation-delay: 0.75s;
+        }
+
+        @keyframes expand-ring {
+            0% {
+                width: 9vh;
+                height: 9vh;
+                opacity: 0.85;
+                border-width: 2.2px;
+                box-shadow: 0 0 10px 5px rgba(160, 215, 255, 0.45);
+            }
+            15% {
+                opacity: 0.7;
+                border-width: 1.8px;
+            }
+            40% {
+                opacity: 0.35;
+                border-width: 1.2px;
+                box-shadow: 0 0 18px 8px rgba(130, 190, 255, 0.2);
+            }
+            70% {
+                opacity: 0.08;
+                border-width: 0.5px;
+            }
+            100% {
+                width: 52vh;
+                height: 52vh;
+                opacity: 0;
+                border-width: 0.2px;
+                box-shadow: 0 0 30px 14px rgba(100, 160, 240, 0);
+            }
+        }
+
+        /* ── Core (Pulsing Neutron Star) ── */
+        .core {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 9vh;
+            height: 9vh;
+            min-width: 50px;
+            min-height: 50px;
+            max-width: 100px;
+            max-height: 100px;
+            border-radius: 50%;
+            background: radial-gradient(circle,
+                    #ffffff 0%,
+                    #f2f6ff 8%,
+                    #e0eaff 18%,
+                    #bcd2ff 35%,
+                    #8aaeff 55%,
+                    #5b7cff 72%,
+                    rgba(70, 100, 210, 0.4) 88%,
+                    transparent 100%);
+            box-shadow:
+                0 0 18px 7px rgba(185, 215, 255, 0.85),
+                0 0 45px 20px rgba(145, 195, 255, 0.55),
+                0 0 90px 38px rgba(105, 165, 255, 0.32),
+                0 0 160px 65px rgba(75, 135, 240, 0.16),
+                0 0 220px 90px rgba(55, 105, 220, 0.07);
+            z-index: 10;
+            pointer-events: none;
+            animation: pulse-core 1s ease-in-out infinite;
+        }
+
+        @keyframes pulse-core {
+            0%,
+            100% {
+                transform: translate(-50%, -50%) scale(0.88);
+                box-shadow:
+                    0 0 16px 6px rgba(180, 210, 255, 0.75),
+                    0 0 40px 17px rgba(140, 190, 255, 0.45),
+                    0 0 80px 33px rgba(100, 160, 255, 0.26),
+                    0 0 140px 55px rgba(70, 130, 235, 0.13),
+                    0 0 200px 80px rgba(50, 100, 210, 0.05);
+            }
+            35% {
+                transform: translate(-50%, -50%) scale(1.16);
+                box-shadow:
+                    0 0 32px 14px rgba(205, 235, 255, 1),
+                    0 0 70px 30px rgba(165, 210, 255, 0.75),
+                    0 0 135px 55px rgba(125, 185, 255, 0.48),
+                    0 0 210px 85px rgba(90, 150, 245, 0.28),
+                    0 0 280px 120px rgba(60, 115, 225, 0.12);
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.13);
+                box-shadow:
+                    0 0 28px 12px rgba(200, 230, 255, 0.95),
+                    0 0 62px 26px rgba(158, 205, 255, 0.65),
+                    0 0 120px 48px rgba(118, 178, 255, 0.4),
+                    0 0 185px 75px rgba(82, 142, 240, 0.22),
+                    0 0 250px 105px rgba(55, 108, 218, 0.09);
+            }
+            65% {
+                transform: translate(-50%, -50%) scale(0.92);
+                box-shadow:
+                    0 0 20px 8px rgba(185, 215, 255, 0.8),
+                    0 0 48px 20px rgba(145, 195, 255, 0.5),
+                    0 0 95px 38px rgba(105, 165, 255, 0.3),
+                    0 0 155px 62px rgba(75, 135, 240, 0.15),
+                    0 0 215px 85px rgba(50, 100, 215, 0.06);
+            }
+        }
+
+        /* ── Subtle core shimmer overlay ── */
+        .core::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 55%;
+            height: 55%;
+            border-radius: 50%;
+            background: radial-gradient(circle,
+                    rgba(255, 255, 255, 0.7) 0%,
+                    rgba(240, 245, 255, 0.25) 40%,
+                    transparent 70%);
+            pointer-events: none;
+            animation: shimmer 0.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes shimmer {
+            0% {
+                opacity: 0.5;
+                transform: translate(-50%, -50%) scale(0.85);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1.1);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="stars"></div>
+    <div class="scene">
+        <div class="shockwave"></div>
+        <div class="shockwave"></div>
+        <div class="shockwave"></div>
+        <div class="shockwave"></div>
+        <div class="rotating-container">
+            <div class="beam beam-top"></div>
+            <div class="beam beam-bottom"></div>
+            <div class="equatorial-ring"></div>
+        </div>
+        <div class="core"></div>
+    </div>
+</body>
+</html>

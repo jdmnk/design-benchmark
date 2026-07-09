@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CSS Pulsar</title>
+    <style>
+        /* RELIABILITY: Explicit dark background first */
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #03040a;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Stars background: Fixed, static */
+        .stars {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(white, transparent 1px), radial-gradient(white, transparent 1px);
+            background-size: 50% 50%;
+            background-position: 0 0, 25% 25%;
+            opacity: 0.3;
+            z-index: -1;
+        }
+
+        .scene {
+            position: relative;
+            width: 100vh;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Rotation container for beams and rings */
+        .rotator {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            animation: rotate 5s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(20deg); }
+            to { transform: rotate(380deg); }
+        }
+
+        /* Core */
+        .core {
+            position: absolute;
+            width: 9vh;
+            height: 9vh;
+            border-radius: 50%;
+            background: radial-gradient(circle, #f2f6ff 20%, #bcd2ff 50%, #5b7cff 100%);
+            z-index: 10;
+            box-shadow: 0 0 20px 5px #5b7cff, 0 0 40px 10px #5b7cff;
+            animation: pulse 1s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); filter: brightness(1); }
+            50% { transform: scale(1.2); filter: brightness(1.5); box-shadow: 0 0 40px 15px #5b7cff; }
+        }
+
+        /* Beams */
+        .beam {
+            position: absolute;
+            width: 4vh;
+            height: 100vh;
+            background: linear-gradient(to bottom, transparent, rgba(100, 200, 255, 0.4), transparent);
+            clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+            transform-origin: center;
+        }
+        .beam-top { top: -50vh; }
+        .beam-bottom { bottom: -50vh; transform: rotate(180deg); }
+
+        /* Equatorial Ring */
+        .equator {
+            position: absolute;
+            width: 14vh;
+            height: 3vh;
+            border: 2px solid rgba(173, 216, 230, 0.6);
+            border-radius: 50%;
+            z-index: 5;
+        }
+
+        /* Shockwaves */
+        .ring-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .ring {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 10vh;
+            height: 10vh;
+            border: 1px solid rgba(173, 216, 230, 0.5);
+            border-radius: 50%;
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 0;
+            animation: expand 1s linear infinite;
+        }
+
+        @keyframes expand {
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+            100% { transform: translate(-50%, -50%) scale(5); opacity: 0; }
+        }
+
+        .r1 { animation-delay: 0s; }
+        .r2 { animation-delay: 0.2s; }
+        .r3 { animation-delay: 0.4s; }
+        .r4 { animation-delay: 0.6s; }
+        .r5 { animation-delay: 0.8s; }
+
+    </style>
+</head>
+<body>
+    <div class="stars"></div>
+    <div class="scene">
+        <!-- Rotating elements -->
+        <div class="rotator">
+            <div class="beam beam-top"></div>
+            <div class="beam beam-bottom"></div>
+            <div class="equator"></div>
+        </div>
+        
+        <!-- Expanding shockwaves -->
+        <div class="ring-container">
+            <div class="ring r1"></div>
+            <div class="ring r2"></div>
+            <div class="ring r3"></div>
+            <div class="ring r4"></div>
+            <div class="ring r5"></div>
+        </div>
+
+        <!-- Pulsing core -->
+        <div class="core"></div>
+    </div>
+</body>
+</html>

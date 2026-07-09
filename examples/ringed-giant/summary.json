@@ -1,0 +1,205 @@
+{
+  "name": "ringed-giant",
+  "prompt": "Render a realistic SATURN-LIKE ringed gas giant as a full-screen three.js scene (100vw × 100vh, auto-starting, no user interaction). A 5-SECOND CLIP is captured, so the motion matters as much as the still composition.\n\nComposition (match exactly so results are comparable):\n- The planet is a sphere centered in the frame, its diameter about 34% of the viewport height.\n- Give the planet subtle HORIZONTAL atmospheric bands in a warm palette — cream and pale gold through tan to soft amber (#f3e6c4 → #e6c88f → #c99a5b), with faint darker belts and a slightly lighter equatorial zone. No hard edges; the bands blend.\n- A broad RING SYSTEM lies in the planet's equatorial plane, tilted so we view it about 18–24 degrees above edge-on: the rings read as a wide, flattened ellipse crossing the planet, NOT a head-on circle. Rings extend to roughly 2.2× the planet's radius.\n- The rings clearly pass BEHIND the planet's top half (occluded by the sphere) and IN FRONT of its bottom half (crossing over the lit disc) — so the ellipse is broken by the planet, reading as true 3D, not a flat halo.\n- Include one dark GAP in the rings (a Cassini-division-style black band) about two-thirds of the way out.\n- Cast a soft dark SHADOW BAND from the rings onto the planet on the shadowed side, and darken the arc of ring that passes behind the planet into its shadow (fake it — no shadow maps).\n- Light comes from the upper-left: the planet shows a lit crescent and a soft terminator into shadow on the lower-right; the near/left side of the rings is brighter.\n- Ring coloring: pale icy tan, subtly banded lighter/darker, semi-transparent at the inner and outer edges. Background: near-black space with a sparse, dim starfield.\n\nMotion (the point of this benchmark — clearly visible within the 5-second clip):\n- The planet ROTATES on its (tilted) axis so the atmospheric bands drift horizontally — give the bands visible structure (swirls, spots, or a faint storm oval) so the rotation reads; a featureless sphere would look static. Roughly 20–30 degrees per second.\n- The RINGS orbit in-plane in the same direction: give them faint radial structure / brightness clumps so their revolution is visible, roughly 15–25 degrees per second (inner slightly faster than outer if you can).\n- The camera stays FIXED. Keep the planet centered and the rings horizontal-ish (equatorial).\n\nReturn ONLY a single complete HTML document.",
+  "generatedAt": "2026-07-09T10:26:17.308Z",
+  "models": [
+    {
+      "slug": "glm-5.2",
+      "label": "GLM 5.2",
+      "provider": "openrouter",
+      "modelId": "z-ai/glm-5.2",
+      "ok": true,
+      "htmlExtracted": true,
+      "finishReason": "length",
+      "truncated": true,
+      "elapsedMs": 127341,
+      "usage": {
+        "promptTokens": 900,
+        "completionTokens": 28000,
+        "totalTokens": 28900,
+        "costUsd": 0.18666543
+      },
+      "startedAt": "2026-07-09T10:07:14.354Z",
+      "render": {
+        "rendered": false,
+        "blank": true
+      }
+    },
+    {
+      "slug": "grok-4.3",
+      "label": "Grok 4.3",
+      "provider": "openrouter",
+      "modelId": "x-ai/grok-4.3",
+      "ok": true,
+      "htmlExtracted": true,
+      "finishReason": "stop",
+      "truncated": false,
+      "elapsedMs": 45419,
+      "usage": {
+        "promptTokens": 1070,
+        "completionTokens": 3625,
+        "totalTokens": 4695,
+        "costUsd": 0.0101984
+      },
+      "startedAt": "2026-07-09T10:07:14.363Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
+    },
+    {
+      "slug": "gpt-5.4-mini",
+      "label": "GPT-5.4 mini",
+      "provider": "openrouter",
+      "modelId": "openai/gpt-5.4-mini",
+      "ok": true,
+      "htmlExtracted": true,
+      "finishReason": "stop",
+      "truncated": false,
+      "elapsedMs": 37853,
+      "usage": {
+        "promptTokens": 902,
+        "completionTokens": 5532,
+        "totalTokens": 6434,
+        "costUsd": 0.0255705
+      },
+      "startedAt": "2026-07-09T10:07:14.364Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
+    },
+    {
+      "slug": "claude-haiku-4.5",
+      "label": "Claude Haiku 4.5",
+      "provider": "openrouter",
+      "modelId": "anthropic/claude-haiku-4.5",
+      "ok": true,
+      "htmlExtracted": true,
+      "finishReason": "stop",
+      "truncated": false,
+      "elapsedMs": 19970,
+      "usage": {
+        "promptTokens": 1045,
+        "completionTokens": 3520,
+        "totalTokens": 4565,
+        "costUsd": 0.018645
+      },
+      "startedAt": "2026-07-09T10:07:14.365Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
+    },
+    {
+      "slug": "qwen3.7-plus",
+      "label": "Qwen3.7 Plus",
+      "provider": "openrouter",
+      "modelId": "qwen/qwen3.7-plus",
+      "ok": true,
+      "htmlExtracted": true,
+      "finishReason": "stop",
+      "truncated": false,
+      "elapsedMs": 150098,
+      "usage": {
+        "promptTokens": 937,
+        "completionTokens": 8162,
+        "totalTokens": 9099,
+        "costUsd": 0.0107472
+      },
+      "startedAt": "2026-07-09T10:07:14.366Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
+    },
+    {
+      "slug": "gemini-3.1-flash-lite",
+      "label": "Gemini 3.1 Flash-Lite",
+      "provider": "openrouter",
+      "modelId": "google/gemini-3.1-flash-lite",
+      "ok": true,
+      "htmlExtracted": true,
+      "finishReason": "stop",
+      "truncated": false,
+      "elapsedMs": 6731,
+      "usage": {
+        "promptTokens": 946,
+        "completionTokens": 2040,
+        "totalTokens": 2986,
+        "costUsd": 0.0032965
+      },
+      "startedAt": "2026-07-09T10:07:14.366Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
+    },
+    {
+      "slug": "deepseek-v4-pro",
+      "label": "DeepSeek V4 Pro",
+      "provider": "openrouter",
+      "modelId": "deepseek/deepseek-v4-pro",
+      "ok": true,
+      "htmlExtracted": true,
+      "finishReason": "stop",
+      "truncated": false,
+      "elapsedMs": 603504,
+      "usage": {
+        "promptTokens": 919,
+        "completionTokens": 5286,
+        "totalTokens": 6205,
+        "costUsd": 0.015995472
+      },
+      "startedAt": "2026-07-09T10:07:14.367Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
+    },
+    {
+      "slug": "kimi-k2.7-code",
+      "label": "Kimi K2.7 Code",
+      "provider": "openrouter",
+      "modelId": "moonshotai/kimi-k2.7-code",
+      "ok": true,
+      "htmlExtracted": true,
+      "finishReason": "stop",
+      "truncated": false,
+      "elapsedMs": 758174,
+      "usage": {
+        "promptTokens": 907,
+        "completionTokens": 24845,
+        "totalTokens": 25752,
+        "costUsd": 0.0952273
+      },
+      "startedAt": "2026-07-09T10:07:14.368Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
+    },
+    {
+      "slug": "kimi-k2.6",
+      "label": "Kimi K2.6",
+      "provider": "openrouter",
+      "modelId": "moonshotai/kimi-k2.6",
+      "ok": true,
+      "htmlExtracted": true,
+      "finishReason": "stop",
+      "truncated": false,
+      "elapsedMs": 41732,
+      "usage": {
+        "promptTokens": 907,
+        "completionTokens": 5810,
+        "totalTokens": 6717,
+        "costUsd": 0.0272334
+      },
+      "startedAt": "2026-07-09T10:07:14.368Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
+    }
+  ]
+}

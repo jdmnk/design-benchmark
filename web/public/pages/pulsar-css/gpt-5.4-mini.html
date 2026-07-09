@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Pulsar</title>
+<style>
+  body{
+    margin:0;
+    background:#03040a;
+    overflow:hidden;
+    width:100vw;
+    height:100vh;
+    display:grid;
+    place-items:center;
+    font-family:sans-serif;
+  }
+
+  .scene{
+    position:relative;
+    width:100vw;
+    height:100vh;
+    overflow:hidden;
+    background:
+      radial-gradient(circle at 50% 50%, rgba(255,255,255,0.03), transparent 35%),
+      radial-gradient(circle at 50% 50%, rgba(94,124,255,0.06), transparent 55%),
+      #03040a;
+  }
+
+  .stars,
+  .stars::before{
+    position:absolute;
+    inset:0;
+    content:"";
+    background:transparent;
+    width:2px;
+    height:2px;
+    border-radius:50%;
+    box-shadow:
+      6vw 10vh #8aa0ff, 14vw 22vh #ffffff, 22vw 8vh #6f86d8,
+      28vw 74vh #cfd8ff, 34vw 18vh #7f94df, 41vw 36vh #ffffff,
+      48vw 12vh #6f84d8, 55vw 28vh #9cb0ff, 63vw 16vh #ffffff,
+      70vw 66vh #7d92e8, 78vw 24vh #a8b9ff, 84vw 58vh #ffffff,
+      91vw 14vh #7d90da, 12vw 62vh #97abff, 18vw 86vh #ffffff,
+      26vw 48vh #7487d6, 39vw 78vh #a9baff, 47vw 66vh #ffffff,
+      58vw 82vh #7287d8, 67vw 42vh #9ab0ff, 74vw 86vh #ffffff,
+      86vw 34vh #7486d0, 95vw 70vh #c6d1ff, 6vw 88vh #ffffff,
+      33vw 6vh #94a8ff, 52vw 6vh #ffffff, 61vw 58vh #7b8fdd,
+      77vw 8vh #dbe2ff, 88vw 84vh #ffffff, 44vw 90vh #8798e7;
+    opacity:.65;
+    filter:blur(.2px);
+  }
+  .stars::before{
+    transform:translate(0,0);
+    box-shadow:
+      4vw 16vh #d7ddff, 10vw 40vh #7a8edc, 16vw 12vh #ffffff,
+      24vw 58vh #90a4ff, 31vw 30vh #ffffff, 37vw 80vh #7487d8,
+      45vw 22vh #a8baff, 50vw 88vh #ffffff, 57vw 44vh #7f92df,
+      64vw 76vh #e5eaff, 72vw 20vh #ffffff, 81vw 40vh #7f93e0,
+      89vw 24vh #a7b8ff, 96vw 54vh #ffffff, 8vw 72vh #7387d7,
+      19vw 94vh #ffffff, 27vw 4vh #97abff, 35vw 52vh #ffffff,
+      43vw 64vh #7689d8, 53vw 32vh #b7c5ff, 60vw 10vh #ffffff,
+      69vw 92vh #7d90dd, 76vw 52vh #ffffff, 85vw 8vh #92a6ff,
+      93vw 88vh #ffffff;
+    opacity:.35;
+  }
+
+  .center{
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:0;
+    height:0;
+    transform:translate(-50%,-50%);
+  }
+
+  .beam-rotor{
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:0;
+    height:0;
+    transform:translate(-50%,-50%) rotate(20deg);
+    animation:spin 5s linear infinite;
+    will-change:transform;
+  }
+
+  .beam{
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:20vw;
+    height:62vh;
+    transform:translate(-50%,-100%);
+    transform-origin:50% 100%;
+    clip-path:polygon(50% 0%, 100% 100%, 0% 100%);
+    background:
+      radial-gradient(ellipse at 50% 18%, rgba(255,255,255,.95) 0 8%, rgba(205,245,255,.85) 18%, rgba(101,220,255,.44) 42%, rgba(77,141,255,.18) 64%, transparent 82%),
+      linear-gradient(to bottom, rgba(255,255,255,.95) 0%, rgba(208,246,255,.72) 16%, rgba(113,230,255,.28) 45%, rgba(70,150,255,.10) 72%, transparent 100%);
+    filter:blur(6px) saturate(1.35);
+    mix-blend-mode:screen;
+    opacity:.9;
+  }
+  .beam::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    clip-path:polygon(50% 0%, 100% 100%, 0% 100%);
+    background:linear-gradient(to bottom, rgba(255,255,255,.95), rgba(139,245,255,.25) 35%, transparent 100%);
+    filter:blur(1px);
+    opacity:.8;
+  }
+  .beam.down{
+    transform:translate(-50%,0%) rotate(180deg);
+  }
+
+  .equator{
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:15vw;
+    height:3.2vw;
+    transform:translate(-50%,-50%) rotate(20deg);
+    border-radius:50%;
+    border:2px solid rgba(224,244,255,.92);
+    box-shadow:
+      0 0 10px rgba(200,230,255,.75),
+      0 0 22px rgba(100,180,255,.35),
+      inset 0 0 10px rgba(255,255,255,.55);
+    filter:blur(.2px);
+    mix-blend-mode:screen;
+    opacity:.9;
+  }
+
+  .core-wrap{
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:0;
+    height:0;
+    transform:translate(-50%,-50%);
+    animation:pulse 1s ease-in-out infinite;
+    will-change:transform, filter;
+  }
+
+  .core{
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:9vh;
+    height:9vh;
+    transform:translate(-50%,-50%);
+    border-radius:50%;
+    background:
+      radial-gradient(circle at 50% 45%, #ffffff 0 12%, #f2f6ff 18%, #dce8ff 33%, #bcd2ff 52%, #5b7cff 75%, rgba(91,124,255,0) 100%);
+    box-shadow:
+      0 0 14px rgba(255,255,255,.92),
+      0 0 28px rgba(210,232,255,.72),
+      0 0 52px rgba(118,156,255,.44),
+      0 0 88px rgba(91,124,255,.22);
+    filter:saturate(1.25);
+  }
+
+  .rings{
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:0;
+    height:0;
+    transform:translate(-50%,-50%);
+    mix-blend-mode:screen;
+  }
+
+  .ring{
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:10vh;
+    height:10vh;
+    margin-left:-5vh;
+    margin-top:-5vh;
+    border-radius:50%;
+    border:1.5px solid rgba(143,230,255,.75);
+    box-shadow:0 0 14px rgba(143,230,255,.28);
+    opacity:0;
+    filter:blur(.2px);
+    animation:ring 5s linear infinite;
+    will-change:transform, opacity;
+  }
+  .ring:nth-child(1){ animation-delay:0s; }
+  .ring:nth-child(2){ animation-delay:1s; }
+  .ring:nth-child(3){ animation-delay:2s; }
+  .ring:nth-child(4){ animation-delay:3s; }
+  .ring:nth-child(5){ animation-delay:4s; }
+
+  @keyframes spin{
+    from{ transform:translate(-50%,-50%) rotate(20deg); }
+    to{ transform:translate(-50%,-50%) rotate(380deg); }
+  }
+
+  @keyframes pulse{
+    0%,100%{ transform:translate(-50%,-50%) scale(0.92); filter:brightness(1); }
+    50%{ transform:translate(-50%,-50%) scale(1.22); filter:brightness(1.55); }
+  }
+
+  @keyframes ring{
+    0%{
+      transform:translate(-50%,-50%) scale(0.45);
+      opacity:0;
+    }
+    8%{ opacity:.7; }
+    24%{
+      transform:translate(-50%,-50%) scale(1.35);
+      opacity:.55;
+    }
+    60%{
+      transform:translate(-50%,-50%) scale(3.1);
+      opacity:.18;
+    }
+    100%{
+      transform:translate(-50%,-50%) scale(4.4);
+      opacity:0;
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="scene">
+    <div class="stars"></div>
+
+    <div class="beam-rotor">
+      <div class="beam up"></div>
+      <div class="beam down"></div>
+    </div>
+
+    <div class="equator"></div>
+
+    <div class="rings">
+      <div class="ring"></div>
+      <div class="ring"></div>
+      <div class="ring"></div>
+      <div class="ring"></div>
+      <div class="ring"></div>
+    </div>
+
+    <div class="center">
+      <div class="core-wrap">
+        <div class="core"></div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
