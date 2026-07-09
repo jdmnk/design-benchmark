@@ -1,7 +1,7 @@
 # Examples
 
-Real runs of Design Bench. There's also a **showcase web app** that presents these with
-the prompts and per-model metadata — see [`web/`](../web).
+Real runs of Design Bench — a set of **space scenes**. There's also a **showcase web app**
+that presents these with the prompts and per-model metadata — see [`web/`](../web).
 
 Every example uses the **same 9 models** (see
 [`config/models/standard-9.json`](../config/models/standard-9.json)):
@@ -17,16 +17,15 @@ open them in a browser). Each grid cell carries a thin top-bar label: model name
 output tokens. Reproduce any with:
 
 ```bash
-npm run bench                                                  # festival-landing (default)
-npm run bench -- --config config/examples/black-hole.config.json
 npm run bench -- --config config/examples/black-hole-spin.config.json   # animated
-npm run bench -- --config config/examples/fireworks.config.json         # animated
-npm run bench -- --config config/examples/sunset-svg.config.json
+npm run bench -- --config config/examples/black-hole.config.json        # still frame
+npm run bench -- --config config/examples/ringed-giant.config.json      # animated
+npm run bench -- --config config/examples/pulsar-css.config.json        # animated, pure CSS
 ```
 
-The 3D and SVG prompts are **detailed and prescriptive** so the comparison is about
-execution; the website prompt fixes the *content* but deliberately leaves the *art
-direction* open, so design sensibilities diverge as far as possible.
+Every prompt is **detailed and prescriptive** — the exact composition is specified so the
+comparison is purely about execution: how faithfully each model renders the same scene, in
+three.js/WebGL or in pure CSS.
 
 ---
 
@@ -71,7 +70,7 @@ clips in [`ringed-giant/clips/`](ringed-giant/clips). Config:
 
 The one benchmark with **no JavaScript and no canvas** — a spinning neutron star (pulsing
 core, rotating lighthouse beams, expanding shockwave rings) built entirely from HTML + CSS
-animations. It isolates CSS-animation craft the way sunset-svg isolates hand-coded SVG.
+animations. It isolates pure CSS-animation craft — no scripting, no canvas, no libraries.
 CSS animations run on the browser's own timeline, so the harness pins every Web-Animations
 timeline to its deterministic virtual clock (and waits for paint-commit) to capture the
 clip reproducibly — same as the rAF-driven scenes. **[Grid video](pulsar-css/grid.mp4)** ·
@@ -101,34 +100,6 @@ Kimi K2.7 Code), recovered from git history and re-rendered through the current 
 so the labels match. Switch between runs in the [web app](../web).
 
 ![black-hole run 3](black-hole/run-3/grid.webp)
-
-## fireworks — animated Canvas 2D 🎬
-
-A continuous fireworks finale over a city skyline, judged in motion: 3–6 bursts visible at
-any moment, varied burst types and colors, gravity, trails and glow — pure Canvas 2D, no
-libraries. Captured as a 5-second, 24 fps deterministic clip like black-hole-spin; the
-harness's seeded `Math.random` makes even the "random" show reproducible.
-**[Grid video](fireworks/grid.mp4)** · per-model clips in [`fireworks/clips/`](fireworks/clips).
-Config: [`config/examples/fireworks.config.json`](../config/examples/fireworks.config.json).
-
-[![fireworks — animated grid](fireworks/grid-anim.webp)](fireworks/grid.mp4)
-
-## sunset-svg — a single inline-SVG scene
-
-Sun setting behind a layered mountain range, with clouds and a reflecting river — exact
-composition specified so outputs line up. Pure hand-coded vector art, no libraries.
-Config: [`config/examples/sunset-svg.config.json`](../config/examples/sunset-svg.config.json).
-
-![sunset-svg](sunset-svg/grid.webp)
-
-## festival-landing — an expressive website brief
-
-The landing page for «EMBERWAVE», a fictional desert electronic-music festival. Same
-required content for every model (wordmark, date/place, CTA, a fixed six-act lineup,
-a phase-2 badge — all above the fold), but the visual concept is each model's own call.
-Config: [`config/benchmark.config.json`](../config/benchmark.config.json).
-
-![festival-landing](festival-landing/grid.webp)
 
 ---
 

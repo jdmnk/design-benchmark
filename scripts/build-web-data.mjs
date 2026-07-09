@@ -24,9 +24,6 @@ const BENCHES = [
   { configPath: "config/examples/ringed-giant.config.json" },
   { configPath: "config/examples/pulsar-css.config.json" },
   { configPath: "config/examples/black-hole.config.json" },
-  { configPath: "config/examples/fireworks.config.json" },
-  { configPath: "config/examples/sunset-svg.config.json" },
-  { configPath: "config/benchmark.config.json" },
 ];
 // How many additional runs (run-2, run-3, …) to look for beyond the top-level run.
 const MAX_EXTRA_RUNS = 8;

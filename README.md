@@ -12,8 +12,8 @@ particle systems, hand-coded SVG art, pure-CSS scenes**, anything that renders.
 
 > The animated benchmarks in motion (click for the [higher-quality mp4](docs/preview.mp4);
 > regenerate with `node scripts/make-preview.mjs`). See **[`examples/`](examples/)** for
-> all runs — a festival landing page, an Interstellar-style black hole (still + spinning),
-> a fireworks finale, a hand-coded SVG sunset — including the actual HTML each model
+> all runs — a set of space scenes: an Interstellar-style black hole (still + spinning), a
+> Saturn-like ringed gas giant, and a pure-CSS pulsar — including the actual HTML each model
 > produced. There's also a **[showcase web app](web/)** (React/Vite, deployable to Vercel)
 > that presents the runs with their prompts and per-model metadata.
 
@@ -63,8 +63,8 @@ config ──▶ ① generate ──▶ ② render ──▶ ③ grid ──▶ 
 Everything about a run lives in one JSON file (default
 [`config/benchmark.config.json`](config/benchmark.config.json)) — the prompt, system
 prompt, model list, render settings, and grid layout. To run a different benchmark, write
-a different config. See [`config/examples/`](config/examples) for 3D, particle, SVG, CSS,
-and dashboard configs. A [JSON schema](config/schema.json) is wired in via `$schema` for
+a different config. See [`config/examples/`](config/examples) for the three.js and pure-CSS
+space-scene configs. A [JSON schema](config/schema.json) is wired in via `$schema` for
 editor autocomplete.
 
 ```jsonc
@@ -151,13 +151,13 @@ time still yields a perfect 24 fps clip). The frames are then encoded (bundled s
 ffmpeg — no system install) into per-model `clip.mp4` files and one **`grid.mp4`**: every
 frame of the grid video is composed with the exact same layout, labels and placeholders as
 `grid.png`, which doubles as the poster/mid-frame still. Raw frames are deleted after
-encoding. Two animated benchmarks ship as examples —
-[`black-hole-spin`](config/examples/black-hole-spin.config.json) (the spinning Gargantua)
-and [`fireworks`](config/examples/fireworks.config.json) (a Canvas-2D fireworks finale,
-where the seeded RNG makes even a "random" show reproducible). Both prompts require
-framerate-independent motion driven by the rAF timestamp, and visible structure so the
-motion actually reads on camera. Rebuild the README preview from the grid videos with
-`node scripts/make-preview.mjs`.
+encoding. The animated benchmarks ship as examples —
+[`black-hole-spin`](config/examples/black-hole-spin.config.json) (the spinning Gargantua),
+[`ringed-giant`](config/examples/ringed-giant.config.json) (a rotating Saturn), and
+[`pulsar-css`](config/examples/pulsar-css.config.json) (a pulsar in pure CSS). The three.js
+clips drive motion from the rAF timestamp; the CSS one uses CSS animations pinned to the
+same virtual clock — all demand visible structure so the motion actually reads on camera.
+Rebuild the README preview from the grid videos with `node scripts/make-preview.mjs`.
 
 ## Resilience
 
@@ -296,7 +296,7 @@ design-bench/
 │   ├── schema.json               # JSON schema for configs
 │   ├── importmap.json            # bare-specifier → vendored-lib map
 │   ├── models/standard-9.json    # the shared 9-model lineup
-│   └── examples/*.config.json    # black-hole (3D), sunset-svg…
+│   └── examples/*.config.json    # black-hole (3D), pulsar-css (CSS)…
 ├── web/                          # showcase app (React/Vite/TS, deploy to Vercel)
 ├── scripts/
 │   ├── setup-browser-deps.sh     # rootless Chromium deps installer
