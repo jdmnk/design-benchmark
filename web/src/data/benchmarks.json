@@ -1,142 +1,6 @@
 {
   "benchmarks": [
     {
-      "id": "festival-landing",
-      "title": "Festival Landing",
-      "description": "Landing page for a fictional electronic-music festival. The content is fixed so outputs are comparable; the art direction is deliberately wide open — this brief exists to expose each model's design sensibility, not its ability to follow a template.",
-      "prompt": "Design the landing page for «EMBERWAVE» — a fictional 3-day electronic music festival held in a desert canyon, June 18–20 2027. This is a DESIGN benchmark: make it look like a real festival site people would screenshot and share. Bold, expressive, atmospheric — pick a strong visual concept (psychedelic, brutalist rave, retro-futurist, cosmic desert — your call) and commit to it fully. Generic corporate layouts will score poorly.\n\nRequired content, all visible within the top ~800px (dense toward the top; the page is captured as a fixed-height crop):\n1. The festival name «EMBERWAVE» as a dominant typographic statement — treat the wordmark itself as art.\n2. Date and place: June 18–20, 2027 · Ash Canyon, Nevada.\n3. A 'Get tickets' call-to-action that fits the art direction.\n4. A headliner lineup of exactly these six fictional acts, with clear visual hierarchy (headliners bigger): NOVA CULT, Velvet Static, MOONBURN, Dax Riviera, Cinder & Ash, The Glass Dunes.\n5. A small marquee/ticker or badge announcing 'Phase 2 lineup — March 2027'.\n\nUse expressive typography (Google Fonts allowed), layered CSS/SVG shapes, gradients, texture, and (optionally) subtle CSS animation. No stock-photo look — build the atmosphere from code. Return ONLY a single complete HTML document.",
-      "systemPrompt": "You are a celebrated art director known for wild, unforgettable festival websites. Output a SINGLE self-contained HTML document with all CSS embedded (JS optional but not needed). No external images or assets — any visuals must be built from CSS/SVG you write yourself. RELIABILITY RULES: set an explicit background on <body> as the very first style rule so the page never renders blank; ensure the document is complete with every tag closed; if you are running long, simplify the design rather than let it be cut off mid-file. Web fonts from fonts.googleapis.com are allowed via <link>.",
-      "render": {
-        "viewport": "1280×800",
-        "fullPage": false,
-        "waitMs": 1800,
-        "deterministic": false,
-        "video": null
-      },
-      "columns": 3,
-      "runs": [
-        {
-          "label": "Run 1",
-          "grid": {
-            "image": "grids/festival-landing.webp",
-            "video": null
-          },
-          "models": [
-            {
-              "label": "GLM 5.2",
-              "modelId": "z-ai/glm-5.2",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 160320,
-              "outputTokens": 13293,
-              "costUsd": null,
-              "truncated": false,
-              "error": null,
-              "page": "pages/festival-landing/glm-5.2.html"
-            },
-            {
-              "label": "Grok 4.3",
-              "modelId": "x-ai/grok-4.3",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 20993,
-              "outputTokens": 3129,
-              "costUsd": null,
-              "truncated": false,
-              "error": null,
-              "page": "pages/festival-landing/grok-4.3.html"
-            },
-            {
-              "label": "GPT-5.4 mini",
-              "modelId": "openai/gpt-5.4-mini",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 36598,
-              "outputTokens": 3922,
-              "costUsd": null,
-              "truncated": false,
-              "error": null,
-              "page": "pages/festival-landing/gpt-5.4-mini.html"
-            },
-            {
-              "label": "Claude Haiku 4.5",
-              "modelId": "anthropic/claude-haiku-4.5",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 30796,
-              "outputTokens": 5697,
-              "costUsd": null,
-              "truncated": false,
-              "error": null,
-              "page": "pages/festival-landing/claude-haiku-4.5.html"
-            },
-            {
-              "label": "Qwen3.7 Plus",
-              "modelId": "qwen/qwen3.7-plus",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 138963,
-              "outputTokens": 6671,
-              "costUsd": null,
-              "truncated": false,
-              "error": null,
-              "page": "pages/festival-landing/qwen3.7-plus.html"
-            },
-            {
-              "label": "Gemini 3.1 Flash-Lite",
-              "modelId": "google/gemini-3.1-flash-lite",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 5683,
-              "outputTokens": 1917,
-              "costUsd": null,
-              "truncated": false,
-              "error": null,
-              "page": "pages/festival-landing/gemini-3.1-flash-lite.html"
-            },
-            {
-              "label": "DeepSeek V4 Pro",
-              "modelId": "deepseek/deepseek-v4-pro",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 373873,
-              "outputTokens": 18720,
-              "costUsd": null,
-              "truncated": false,
-              "error": null,
-              "page": "pages/festival-landing/deepseek-v4-pro.html"
-            },
-            {
-              "label": "Kimi K2.6",
-              "modelId": "moonshotai/kimi-k2.6",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 228079,
-              "outputTokens": 8471,
-              "costUsd": null,
-              "truncated": false,
-              "error": null,
-              "page": "pages/festival-landing/kimi-k2.6.html"
-            },
-            {
-              "label": "Mistral Small 4",
-              "modelId": "mistralai/mistral-small-2603",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 75140,
-              "outputTokens": 15240,
-              "costUsd": null,
-              "truncated": false,
-              "error": null,
-              "page": "pages/festival-landing/mistral-small-4.html"
-            }
-          ],
-          "rendered": 9,
-          "total": 9
-        }
-      ]
-    },
-    {
       "id": "black-hole",
       "title": "Black Hole",
       "description": "Realistic supermassive black hole ('Gargantua' from Interstellar) in three.js/WebGL. Prescriptive composition so outputs are directly comparable. Deterministic captured frame.",
@@ -1155,6 +1019,142 @@
               "truncated": false,
               "error": null,
               "page": "pages/sunset-svg/mistral-small-4.html"
+            }
+          ],
+          "rendered": 9,
+          "total": 9
+        }
+      ]
+    },
+    {
+      "id": "festival-landing",
+      "title": "Festival Landing",
+      "description": "Landing page for a fictional electronic-music festival. The content is fixed so outputs are comparable; the art direction is deliberately wide open — this brief exists to expose each model's design sensibility, not its ability to follow a template.",
+      "prompt": "Design the landing page for «EMBERWAVE» — a fictional 3-day electronic music festival held in a desert canyon, June 18–20 2027. This is a DESIGN benchmark: make it look like a real festival site people would screenshot and share. Bold, expressive, atmospheric — pick a strong visual concept (psychedelic, brutalist rave, retro-futurist, cosmic desert — your call) and commit to it fully. Generic corporate layouts will score poorly.\n\nRequired content, all visible within the top ~800px (dense toward the top; the page is captured as a fixed-height crop):\n1. The festival name «EMBERWAVE» as a dominant typographic statement — treat the wordmark itself as art.\n2. Date and place: June 18–20, 2027 · Ash Canyon, Nevada.\n3. A 'Get tickets' call-to-action that fits the art direction.\n4. A headliner lineup of exactly these six fictional acts, with clear visual hierarchy (headliners bigger): NOVA CULT, Velvet Static, MOONBURN, Dax Riviera, Cinder & Ash, The Glass Dunes.\n5. A small marquee/ticker or badge announcing 'Phase 2 lineup — March 2027'.\n\nUse expressive typography (Google Fonts allowed), layered CSS/SVG shapes, gradients, texture, and (optionally) subtle CSS animation. No stock-photo look — build the atmosphere from code. Return ONLY a single complete HTML document.",
+      "systemPrompt": "You are a celebrated art director known for wild, unforgettable festival websites. Output a SINGLE self-contained HTML document with all CSS embedded (JS optional but not needed). No external images or assets — any visuals must be built from CSS/SVG you write yourself. RELIABILITY RULES: set an explicit background on <body> as the very first style rule so the page never renders blank; ensure the document is complete with every tag closed; if you are running long, simplify the design rather than let it be cut off mid-file. Web fonts from fonts.googleapis.com are allowed via <link>.",
+      "render": {
+        "viewport": "1280×800",
+        "fullPage": false,
+        "waitMs": 1800,
+        "deterministic": false,
+        "video": null
+      },
+      "columns": 3,
+      "runs": [
+        {
+          "label": "Run 1",
+          "grid": {
+            "image": "grids/festival-landing.webp",
+            "video": null
+          },
+          "models": [
+            {
+              "label": "GLM 5.2",
+              "modelId": "z-ai/glm-5.2",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 160320,
+              "outputTokens": 13293,
+              "costUsd": null,
+              "truncated": false,
+              "error": null,
+              "page": "pages/festival-landing/glm-5.2.html"
+            },
+            {
+              "label": "Grok 4.3",
+              "modelId": "x-ai/grok-4.3",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 20993,
+              "outputTokens": 3129,
+              "costUsd": null,
+              "truncated": false,
+              "error": null,
+              "page": "pages/festival-landing/grok-4.3.html"
+            },
+            {
+              "label": "GPT-5.4 mini",
+              "modelId": "openai/gpt-5.4-mini",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 36598,
+              "outputTokens": 3922,
+              "costUsd": null,
+              "truncated": false,
+              "error": null,
+              "page": "pages/festival-landing/gpt-5.4-mini.html"
+            },
+            {
+              "label": "Claude Haiku 4.5",
+              "modelId": "anthropic/claude-haiku-4.5",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 30796,
+              "outputTokens": 5697,
+              "costUsd": null,
+              "truncated": false,
+              "error": null,
+              "page": "pages/festival-landing/claude-haiku-4.5.html"
+            },
+            {
+              "label": "Qwen3.7 Plus",
+              "modelId": "qwen/qwen3.7-plus",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 138963,
+              "outputTokens": 6671,
+              "costUsd": null,
+              "truncated": false,
+              "error": null,
+              "page": "pages/festival-landing/qwen3.7-plus.html"
+            },
+            {
+              "label": "Gemini 3.1 Flash-Lite",
+              "modelId": "google/gemini-3.1-flash-lite",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 5683,
+              "outputTokens": 1917,
+              "costUsd": null,
+              "truncated": false,
+              "error": null,
+              "page": "pages/festival-landing/gemini-3.1-flash-lite.html"
+            },
+            {
+              "label": "DeepSeek V4 Pro",
+              "modelId": "deepseek/deepseek-v4-pro",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 373873,
+              "outputTokens": 18720,
+              "costUsd": null,
+              "truncated": false,
+              "error": null,
+              "page": "pages/festival-landing/deepseek-v4-pro.html"
+            },
+            {
+              "label": "Kimi K2.6",
+              "modelId": "moonshotai/kimi-k2.6",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 228079,
+              "outputTokens": 8471,
+              "costUsd": null,
+              "truncated": false,
+              "error": null,
+              "page": "pages/festival-landing/kimi-k2.6.html"
+            },
+            {
+              "label": "Mistral Small 4",
+              "modelId": "mistralai/mistral-small-2603",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 75140,
+              "outputTokens": 15240,
+              "costUsd": null,
+              "truncated": false,
+              "error": null,
+              "page": "pages/festival-landing/mistral-small-4.html"
             }
           ],
           "rendered": 9,

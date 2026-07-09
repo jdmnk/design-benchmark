@@ -30,15 +30,6 @@ direction* open, so design sensibilities diverge as far as possible.
 
 ---
 
-## festival-landing — an expressive website brief
-
-The landing page for «EMBERWAVE», a fictional desert electronic-music festival. Same
-required content for every model (wordmark, date/place, CTA, a fixed six-act lineup,
-a phase-2 badge — all above the fold), but the visual concept is each model's own call.
-Config: [`config/benchmark.config.json`](../config/benchmark.config.json).
-
-![festival-landing](festival-landing/grid.webp)
-
 ## black-hole — Interstellar "Gargantua" in three.js / WebGL
 
 A hard, very prescriptive 3D brief: black event-horizon sphere, near-edge-on accretion
@@ -102,6 +93,15 @@ composition specified so outputs line up. Pure hand-coded vector art, no librari
 Config: [`config/examples/sunset-svg.config.json`](../config/examples/sunset-svg.config.json).
 
 ![sunset-svg](sunset-svg/grid.webp)
+
+## festival-landing — an expressive website brief
+
+The landing page for «EMBERWAVE», a fictional desert electronic-music festival. Same
+required content for every model (wordmark, date/place, CTA, a fixed six-act lineup,
+a phase-2 badge — all above the fold), but the visual concept is each model's own call.
+Config: [`config/benchmark.config.json`](../config/benchmark.config.json).
+
+![festival-landing](festival-landing/grid.webp)
 
 ---
 
