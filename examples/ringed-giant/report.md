@@ -1,8 +1,8 @@
 # ringed-giant
 
-Animated three.js benchmark: a Saturn-like ringed gas giant rotating on its tilted axis, its ring system orbiting in-plane. A 5-second clip is captured frame-by-frame on the deterministic virtual clock and composed into one grid video.
+A Saturn-like ringed gas giant rotating on its tilted axis, its ring system orbiting in-plane — three.js / WebGL.
 
-**Models:** 9 · **Rendered:** 8/9
+**Models:** 9 · **Rendered:** 9/9
 
 ## Prompt
 
@@ -37,7 +37,7 @@ Raw copyable version: [prompt.txt](./prompt.txt) · [system-prompt.txt](./system
 
 | Model | ID | Provider | Status | Time | Tokens | Note |
 |-------|----|----------|--------|------|--------|------|
-| GLM 5.2 | `z-ai/glm-5.2` | openrouter | ⬛ blank | 127.3s | 28900 |  |
+| GLM 5.2 | `z-ai/glm-5.2` | openrouter | ✅ rendered | 217.7s | 17300 |  |
 | Grok 4.3 | `x-ai/grok-4.3` | openrouter | ✅ rendered | 45.4s | 4695 |  |
 | GPT-5.4 mini | `openai/gpt-5.4-mini` | openrouter | ✅ rendered | 37.9s | 6434 |  |
 | Claude Haiku 4.5 | `anthropic/claude-haiku-4.5` | openrouter | ✅ rendered | 20.0s | 4565 |  |

@@ -2,194 +2,383 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Saturn-like Ringed Gas Giant</title>
 <style>
-  html, body { margin: 0; padding: 0; height: 100%; background: #05060a; overflow: hidden; }
-  canvas { display: block; }
+  html,body{margin:0;height:100%;overflow:hidden;background:#05060a;}
+  canvas{display:block;width:100vw;height:100vh;}
 </style>
 </head>
 <body>
-<script type="importmap">
-{
-  "imports": {
-    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
-  }
-}
-</script>
 <script type="module">
 import * as THREE from 'three';
 
 try {
-  // ---------- Renderer / scene / camera ----------
+  // ---- Renderer & scene (set up early so a partial failure still shows space) ----
   const renderer = new THREE.WebGLRenderer({ antialias: true });
-  renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setClearColor(0x05060a, 1);
   document.body.appendChild(renderer.domElement);
 
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(0x05060a);
 
   const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 200);
-  camera.position.set(0, 0, 5);
+  // Planet radius = 1; place camera so diameter ≈ 34% of viewport height.
+  camera.position.set(0, 0, 7.1);
+  camera.lookAt(0, 0, 0);
 
-  // ---------- Constants ----------
-  // Visible world-height at z=0 with cam at z=5, fov=45 -> 2*5*tan(22.5) ~= 4.14
-  // Planet diameter = 34% of viewport height -> radius ~0.70
-  const PLANET_R    = 0.70;
-  const RING_INNER  = 1.02;
-  const RING_OUTER  = 1.54;   // ~2.2x planet radius
-  const TILT        = 20 * Math.PI / 180;
+  // ---- Starfield ----
+  const starCount = 1400;
+  const sp = new Float32Array(starCount * 3);
+  const sc = new Float32Array(starCount * 3);
+  for (let i = 0; i < starCount; i++) {
+    const r = 60, th = Math.random() * Math.PI * 2, ph = Math.acos(2 * Math.random() - 1);
+    sp[i*3]   = r * Math.sin(ph) * Math.cos(th);
+    sp[i*3+1] = r * Math.cos(ph);
+    sp[i*3+2] = r * Math.sin(ph) * Math.sin(th);
+    const b = 0.4 + Math.random() * 0.6;
+    sc[i*3] = b; sc[i*3+1] = b * (0.85 + Math.random()*0.15); sc[i*3+2] = b * (0.9 + Math.random()*0.1);
+  }
+  const starGeo = new THREE.BufferGeometry();
+  starGeo.setAttribute('position', new THREE.BufferAttribute(sp, 3));
+  starGeo.setAttribute('color', new THREE.BufferAttribute(sc, 3));
+  const starMat = new THREE.PointsMaterial({
+    size: 0.12, sizeAttenuation: true, vertexColors: true,
+    transparent: true, opacity: 0.9, depthWrite: false
+  });
+  scene.add(new THREE.Points(starGeo, starMat));
 
-  const lightDirWorld = new THREE.Vector3(-0.7, 0.7, 0.5).normalize(); // upper-left
-  const invTilt = new THREE.Matrix4().makeRotationX(-TILT);
-  const localLightDir = lightDirWorld.clone().applyMatrix4(invTilt).normalize();
+  // ---- Lighting direction (upper-left, slightly toward camera) ----
+  const lightDir = new THREE.Vector3(-0.62, 0.48, 0.62).normalize();
 
-  // ---------- Tilted group (planet + rings share equatorial plane) ----------
+  // ---- Tilt group (planet + rings share equatorial plane) ----
+  const tilt = 21 * Math.PI / 180; // view ~21° above edge-on
   const group = new THREE.Group();
-  group.rotation.x = TILT; // +20deg: near edge drops in front of bottom, far edge rises behind top
+  group.rotation.x = tilt;
   scene.add(group);
 
-  // ---------- Helpers ----------
-  function smoothstep(a, b, x) {
-    const t = Math.max(0, Math.min(1, (x - a) / (b - a)));
-    return t * t * (3 - 2 * t);
-  }
+  // Light direction in the planet/ring local frame (un-tilt the world light)
+  const invTilt = new THREE.Matrix4().makeRotationX(-tilt);
+  const lightDirLocal = lightDir.clone().applyMatrix4(invTilt).normalize();
 
-  // ---------- Procedural planet band texture ----------
-  function makeBandTexture() {
-    const c = document.createElement('canvas');
-    c.width = 1024; c.height = 512;
-    const ctx = c.getContext('2d');
+  const R = 1.0;            // planet radius
+  const innerR = 1.28;      // ring inner radius
+  const outerR = 2.2;       // ring outer radius
 
-    // Latitude gradient: warm cream / pale gold / tan / soft amber
-    const g = ctx.createLinearGradient(0, 0, 0, 512);
-    g.addColorStop(0.00, '#a87440');
-    g.addColorStop(0.12, '#c99a5b');
-    g.addColorStop(0.25, '#e6c88f');
-    g.addColorStop(0.38, '#f3e6c4');
-    g.addColorStop(0.50, '#f8f0d4'); // lighter equatorial zone
-    g.addColorStop(0.62, '#f3e6c4');
-    g.addColorStop(0.75, '#e6c88f');
-    g.addColorStop(0.88, '#c99a5b');
-    g.addColorStop(1.00, '#9c6c3a');
-    ctx.fillStyle = g;
-    ctx.fillRect(0, 0, 1024, 512);
-
-    // Faint darker belts & lighter zones
-    for (let i = 0; i < 90; i++) {
-      const y = Math.random() * 512;
-      const h = 3 + Math.random() * 18;
-      const dark = Math.random() < 0.5;
-      ctx.fillStyle = dark
-        ? `rgba(120,80,40,${0.04 + Math.random() * 0.10})`
-        : `rgba(255,240,200,${0.04 + Math.random() * 0.10})`;
-      ctx.fillRect(0, y, 1024, h);
-    }
-
-    // Wavy swirl lines so rotation reads
-    for (let i = 0; i < 45; i++) {
-      const y = Math.random() * 512;
-      const r = 140 + (Math.random() * 70 | 0);
-      const gg = 100 + (Math.random() * 50 | 0);
-      const b = 55 + (Math.random() * 35 | 0);
-      ctx.strokeStyle = `rgba(${r},${gg},${b},${0.10 + Math.random() * 0.16})`;
-      ctx.lineWidth = 1 + Math.random() * 2.5;
-      ctx.beginPath();
-      for (let x = 0; x <= 1024; x += 6) {
-        const yy = y + Math.sin(x * 0.018 + i * 1.3) * 11 + Math.sin(x * 0.05 + i * 2.1) * 5;
-        if (x === 0) ctx.moveTo(x, yy); else ctx.lineTo(x, yy);
-      }
-      ctx.stroke();
-    }
-
-    // Storm ovals (drift with rotation)
-    function drawStorm(cx, cy, rx, ry, r0, g0, b0, a0) {
-      const sg = ctx.createRadialGradient(cx, cy, 1, cx, cy, rx);
-      sg.addColorStop(0,   `rgba(${r0},${g0},${b0},${a0})`);
-      sg.addColorStop(0.65,`rgba(${r0},${g0},${b0},${a0 * 0.32})`);
-      sg.addColorStop(1,   `rgba(${r0},${g0},${b0},0)`);
-      ctx.save();
-      ctx.translate(cx, cy);
-      ctx.scale(1, ry / rx);
-      ctx.beginPath();
-      ctx.arc(0, 0, rx, 0, Math.PI * 2);
-      ctx.fillStyle = sg;
-      ctx.fill();
-      ctx.restore();
-    }
-    drawStorm(280, 210, 58, 33, 205, 125, 65, 0.78);  // main storm
-    drawStorm(640, 305, 32, 19, 240, 200, 150, 0.50);
-    drawStorm(810, 175, 24, 14, 175, 105, 55, 0.55);
-    drawStorm(130, 360, 20, 12, 250, 220, 170, 0.45);
-    drawStorm(470, 260, 16, 10, 220, 170, 120, 0.40);
-
-    // Fine grain noise
-    const img = ctx.getImageData(0, 0, 1024, 512);
-    for (let i = 0; i < img.data.length; i += 4) {
-      const n = (Math.random() - 0.5) * 14;
-      img.data[i]   = Math.max(0, Math.min(255, img.data[i]   + n));
-      img.data[i+1] = Math.max(0, Math.min(255, img.data[i+1] + n));
-      img.data[i+2] = Math.max(0, Math.min(255, img.data[i+2] + n));
-    }
-    ctx.putImageData(img, 0, 0);
-
-    const tex = new THREE.CanvasTexture(c);
-    tex.wrapS = THREE.RepeatWrapping;
-    tex.wrapT = THREE.ClampToEdgeWrapping;
-    tex.colorSpace = THREE.SRGBColorSpace;
-    return tex;
-  }
-
-  // ---------- Procedural ring (radial) texture ----------
-  function makeRingTexture() {
-    const c = document.createElement('canvas');
-    c.width = 1024; c.height = 8;
-    const ctx = c.getContext('2d');
-    const img = ctx.createImageData(1024, 8);
-    for (let x = 0; x < 1024; x++) {
-      const t = x / 1024;
-      // subtle radial banding
-      let band = 0.5
-        + 0.22 * Math.sin(t * 60 + 0.3)
-        + 0.16 * Math.sin(t * 25 + 1.7)
-        + 0.08 * Math.sin(t * 140 + 0.6);
-      band = Math.max(0, Math.min(1, band));
-      const r = 205 + band * 35;
-      const g = 188 + band * 32;
-      const b = 152 + band * 28;
-      // Cassini-division-style gap ~2/3 out
-      const gap  = 1 - Math.exp(-Math.pow((t - 0.66) / 0.012, 2));
-      // secondary thin gap
-      const gap2 = 1 - 0.65 * Math.exp(-Math.pow((t - 0.40) / 0.007, 2));
-      let a = 0.92 * gap * gap2;
-      a *= smoothstep(0.0, 0.05, t);
-      a *= 1 - smoothstep(0.95, 1.0, t);
-      a *= 0.55 + 0.45 * smoothstep(0.0, 0.18, t); // inner edge fainter
-      a = Math.max(0, Math.min(1, a));
-      for (let y = 0; y < 8; y++) {
-        const idx = (y * 1024 + x) * 4;
-        img.data[idx]     = r;
-        img.data[idx + 1] = g;
-        img.data[idx + 2] = b;
-        img.data[idx + 3] = a * 255;
-      }
-    }
-    ctx.putImageData(img, 0, 0);
-    const tex = new THREE.CanvasTexture(c);
-    tex.wrapS = THREE.ClampToEdgeWrapping;
-    tex.colorSpace = THREE.SRGBColorSpace;
-    return tex;
-  }
-
-  const bandTex = makeBandTexture();
-  const ringTex = makeRingTexture();
-
-  // ---------- Planet ----------
-  const planetGeo = new THREE.SphereGeometry(PLANET_R, 96, 64);
+  // ---- Planet ----
+  const planetGeo = new THREE.SphereGeometry(R, 128, 96);
   const planetMat = new THREE.ShaderMaterial({
     uniforms: {
-      bandTex:        { value: bandTex },
-      lightDir:       { value: lightDirWorld },
+      uTime:        { value: 0 },
+      uLightDir:    { value: lightDir.clone() },
+      uLightDirLocal:{ value: lightDirLocal.clone() },
+      uInnerR:      { value: innerR },
+      uOuterR:      { value: outerR },
+      uPlanetR:     { value: R }
+    },
+    vertexShader: `
+      varying vec3 vLocalPos;
+      varying vec3 vWorldNormal;
+      varying vec3 vWorldPos;
+      void main(){
+        vLocalPos = position;
+        vWorldNormal = normalize(mat3(modelMatrix) * normal);
+        vec4 wp = modelMatrix * vec4(position, 1.0);
+        vWorldPos = wp.xyz;
+        gl_Position = projectionMatrix * viewMatrix * wp;
+      }
+    `,
+    fragmentShader: `
+      precision highp float;
+      varying vec3 vLocalPos;
+      varying vec3 vWorldNormal;
+      varying vec3 vWorldPos;
+      uniform float uTime;
+      uniform vec3 uLightDir;
+      uniform vec3 uLightDirLocal;
+      uniform float uInnerR, uOuterR, uPlanetR;
+
+      // Warm cream -> pale gold -> soft amber palette
+      vec3 palette(float t){
+        vec3 c1 = vec3(0.953, 0.902, 0.769); // #f3e6c4
+        vec3 c2 = vec3(0.902, 0.784, 0.561); // #e6c88f
+        vec3 c3 = vec3(0.788, 0.604, 0.357); // #c99a5b
+        vec3 col = mix(c1, c2, smoothstep(0.0, 0.55, t));
+        col = mix(col, c3, smoothstep(0.5, 1.0, t));
+        return col;
+      }
+
+      float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+      float noise(vec2 p){
+        vec2 i = floor(p), f = fract(p);
+        float a = hash(i), b = hash(i + vec2(1.0, 0.0)),
+              c = hash(i + vec2(0.0, 1.0)), d = hash(i + vec2(1.0, 1.0));
+        vec2 u = f * f * (3.0 - 2.0 * f);
+        return mix(mix(a, b, u.x), mix(c, d, u.x), u.y);
+      }
+      float fbm(vec2 p){
+        float v = 0.0, a = 0.5;
+        for (int i = 0; i < 4; i++){ v += a * noise(p); p *= 2.0; a *= 0.5; }
+        return v;
+      }
+
+      void main(){
+        float lat = vLocalPos.y;                       // -1 .. 1
+        float lon = atan(vLocalPos.z, vLocalPos.x);
+        float rotLon = lon + uTime * 0.42;             // ~24°/s prograde
+
+        // Wavy band structure (bands drift + swirl with rotation)
+        float wave = sin(rotLon * 2.3 + lat * 7.0) * 0.05
+                   + sin(rotLon * 1.31 - lat * 4.5) * 0.035
+                   + sin(rotLon * 4.7 + lat * 2.0) * 0.02;
+        float bandT = clamp(lat * 0.5 + 0.5 + wave, 0.0, 1.0);
+
+        vec3 base = palette(bandT);
+
+        // Belts (darker) and zones (lighter)
+        float belt = sin(bandT * 3.14159 * 7.0) * 0.5 + 0.5;
+        base *= mix(1.0, 0.80, belt * 0.55);
+        // Lighter equatorial zone
+        float eq = smoothstep(0.14, 0.0, abs(lat));
+        base = mix(base, vec3(0.99, 0.93, 0.78), eq * 0.55);
+
+        // Turbulence / swirls (rotates with planet)
+        float n1 = fbm(vec2(rotLon * 3.2, lat * 9.0));
+        float n2 = fbm(vec2(rotLon * 6.5 + 4.0, lat * 18.0));
+        base *= 0.88 + n1 * 0.16;
+        base = mix(base, base * vec3(0.92, 0.80, 0.62), smoothstep(0.55, 0.85, n2) * 0.4);
+
+        // Storm oval (Great-Spot-like) that rotates with the bands
+        float stormLat = 0.22;
+        float dlon = sin((rotLon - 1.1) * 0.5);
+        float dlat = (lat - stormLat);
+        float storm = exp(-(dlat * dlat * 9.0 + dlon * dlon * 3.2));
+        base = mix(base, vec3(0.80, 0.50, 0.30), storm * 0.7);
+        // storm rim highlight
+        base += vec3(0.10, 0.06, 0.03) * smoothstep(0.6, 0.9, storm) * (1.0 - storm);
+
+        // ---- Lighting (upper-left) ----
+        vec3 N = normalize(vWorldNormal);
+        vec3 L = normalize(uLightDir);
+        float ndl = dot(N, L);
+        float diff = max(0.0, ndl);
+        float ambient = 0.05;
+        float light = ambient + diff * 1.15;
+        light += pow(max(0.0, ndl), 3.0) * 0.25; // gentle brightening on lit crescent
+        // soft terminator
+        float term = smoothstep(-0.25, 0.35, ndl);
+        light *= mix(0.35, 1.0, term);
+
+        vec3 color = base * light;
+
+        // ---- Ring shadow cast onto the planet ----
+        // Ring lies in local y=0 plane, innerR..outerR. Trace from surface point
+        // toward the light; if that ray crosses y=0 inside the ring, it's shadowed.
+        vec3 Ll = normalize(uLightDirLocal);
+        float Py = vLocalPos.y;
+        float Ly = Ll.y;
+        float t = -Py / Ly;
+        vec3 crossPos = vLocalPos + t * Ll;
+        float cr = length(crossPos.xz);
+        float inRing = smoothstep(uInnerR, uInnerR + 0.04, cr)
+                     * smoothstep(uOuterR, uOuterR - 0.04, cr);
+        float ringShadow = (t > 0.0 ? inRing : 0.0);
+        // Soften and only where it would be lit (so the band reads on the lit side)
+        ringShadow *= smoothstep(-0.1, 0.45, ndl);
+        color *= mix(1.0, 0.32, ringShadow);
+
+        // ---- Limb darkening ----
+        vec3 V = normalize(cameraPosition - vWorldPos);
+        float limb = pow(max(0.0, dot(V, N)), 0.55);
+        color *= 0.72 + 0.28 * limb;
+
+        gl_FragColor = vec4(color, 1.0);
+      }
+    `
+  });
+  const planet = new THREE.Mesh(planetGeo, planetMat);
+  group.add(planet);
+
+  // ---- Atmospheric rim glow (fake bloom, additive) ----
+  const atmoMat = new THREE.ShaderMaterial({
+    uniforms: { uLightDir: { value: lightDir.clone() } },
+    transparent: true,
+    blending: THREE.AdditiveBlending,
+    side: THREE.BackSide,
+    depthWrite: false,
+    vertexShader: `
+      varying vec3 vN; varying vec3 vW;
+      void main(){
+        vN = normalize(mat3(modelMatrix) * normal);
+        vec4 wp = modelMatrix * vec4(position, 1.0);
+        vW = wp.xyz;
+        gl_Position = projectionMatrix * viewMatrix * wp;
+      }
+    `,
+    fragmentShader: `
+      varying vec3 vN; varying vec3 vW; uniform vec3 uLightDir;
+      void main(){
+        vec3 V = normalize(cameraPosition - vW);
+        float fres = pow(1.0 - max(0.0, dot(V, vN)), 2.5);
+        float lit = max(0.0, dot(vN, normalize(uLightDir)));
+        vec3 c = mix(vec3(0.45, 0.32, 0.18), vec3(0.98, 0.86, 0.62), pow(lit, 0.7));
+        gl_FragColor = vec4(c * fres * 0.9, fres * 0.55);
+      }
+    `
+  });
+  const atmo = new THREE.Mesh(new THREE.SphereGeometry(R * 1.06, 80, 56), atmoMat);
+  group.add(atmo);
+
+  // ---- Rings (custom radial-UV ring geometry) ----
+  const segs = 320, radSegs = 12;
+  const ringPos = [], ringIdx = [], ringUv = [];
+  for (let j = 0; j <= segs; j++) {
+    const a = (j / segs) * Math.PI * 2;
+    for (let i = 0; i <= radSegs; i++) {
+      const r = innerR + (outerR - innerR) * (i / radSegs);
+      ringPos.push(Math.cos(a) * r, 0, Math.sin(a) * r);
+      ringUv.push(i / radSegs, j / segs);
+    }
+  }
+  for (let j = 0; j < segs; j++) {
+    for (let i = 0; i < radSegs; i++) {
+      const a = j * (radSegs + 1) + i;
+      const b = a + (radSegs + 1);
+      ringIdx.push(a, b, a + 1,  a + 1, b, b + 1);
+    }
+  }
+  const ringGeo = new THREE.BufferGeometry();
+  ringGeo.setAttribute('position', new THREE.Float32BufferAttribute(ringPos, 3));
+  ringGeo.setAttribute('uv', new THREE.Float32BufferAttribute(ringUv, 2));
+  ringGeo.setIndex(ringIdx);
+  ringGeo.computeVertexNormals();
+
+  const ringMat = new THREE.ShaderMaterial({
+    uniforms: {
+      uTime:     { value: 0 },
+      uLightDir: { value: lightDir.clone() },
+      uInnerR:   { value: innerR },
+      uOuterR:   { value: outerR },
+      uPlanetR:  { value: R }
+    },
+    transparent: true,
+    side: THREE.FrontSide,
+    depthWrite: false,
+    vertexShader: `
+      varying vec3 vLocalPos;
+      varying vec3 vWorldPos;
+      varying vec2 vUv;
+      void main(){
+        vLocalPos = position;
+        vUv = uv;
+        vec4 wp = modelMatrix * vec4(position, 1.0);
+        vWorldPos = wp.xyz;
+        gl_Position = projectionMatrix * viewMatrix * wp;
+      }
+    `,
+    fragmentShader: `
+      precision highp float;
+      varying vec3 vLocalPos;
+      varying vec3 vWorldPos;
+      varying vec2 vUv;
+      uniform float uTime;
+      uniform vec3 uLightDir;
+      uniform float uInnerR, uOuterR, uPlanetR;
+
+      float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+      float noise(vec2 p){
+        vec2 i = floor(p), f = fract(p);
+        float a = hash(i), b = hash(i + vec2(1.0, 0.0)),
+              c = hash(i + vec2(0.0, 1.0)), d = hash(i + vec2(1.0, 1.0));
+        vec2 u = f * f * (3.0 - 2.0 * f);
+        return mix(mix(a, b, u.x), mix(c, d, u.x), u.y);
+      }
+
+      void main(){
+        float u = vUv.x;                          // 0 inner .. 1 outer
+        float r = mix(uInnerR, uOuterR, u);
+        float ang = atan(vLocalPos.z, vLocalPos.x);
+
+        // In-plane revolution: inner faster than outer (Keplerian-ish)
+        float speed = 0.55 / r;
+        float rotAng = ang + uTime * speed;
+
+        // Radial banding (icy tan, subtly banded)
+        float bands = noise(vec2(u * 80.0, 0.0)) * 0.5
+                    + noise(vec2(u * 160.0, 7.0)) * 0.3
+                    + 0.45;
+        bands *= 0.8 + 0.2 * sin(u * 260.0);
+        // Fine striae
+        bands += 0.06 * sin(u * 900.0 + noise(vec2(u*40.0, 1.0)) * 6.0);
+
+        // Orbiting brightness clumps (radial structure revolving)
+        float clump = 0.65 + 0.35 * sin(rotAng * 6.0 + u * 14.0);
+        clump *= 0.75 + 0.25 * noise(vec2(rotAng * 3.5, u * 10.0));
+        clump *= 0.85 + 0.15 * sin(rotAng * 13.0 - u * 5.0);
+
+        vec3 icyLight = vec3(0.90, 0.84, 0.73);
+        vec3 icyDark  = vec3(0.52, 0.45, 0.35);
+        vec3 col = mix(icyDark, icyLight, clamp(bands * clump, 0.0, 1.0));
+
+        float alpha = 0.92;
+        // Soft inner & outer edges (semi-transparent)
+        alpha *= smoothstep(0.0, 0.05, u) * smoothstep(1.0, 0.93, u);
+        // Cassini-division style gap ~2/3 out
+        float gap = smoothstep(0.006, 0.0, abs(u - 0.665));
+        alpha *= (1.0 - gap);
+        // A couple of fainter gaps
+        alpha *= 1.0 - smoothstep(0.004, 0.0, abs(u - 0.40)) * 0.55;
+        alpha *= 1.0 - smoothstep(0.004, 0.0, abs(u - 0.86)) * 0.4;
+
+        // Brightness: near/left side (toward light) brighter
+        vec3 L = normalize(uLightDir);
+        float sideLight = dot(normalize(vec3(vWorldPos.x, 0.0, vWorldPos.z)), L);
+        float bright = 0.45 + 0.65 * (sideLight * 0.5 + 0.5);
+        col *= bright;
+
+        // Darken the arc of ring that passes through the planet's shadow
+        // (planet blocks the light): points behind the planet from the light,
+        // within the planet's projected radius.
+        float along = dot(vWorldPos, L);
+        float perp = length(vWorldPos - along * L);
+        float inShadow = smoothstep(uPlanetR, uPlanetR * 0.82, perp)
+                       * smoothstep(0.05, -0.15, along);
+        col *= mix(1.0, 0.12, inShadow);
+        alpha *= mix(1.0, 0.55, inShadow);
+
+        gl_FragColor = vec4(col, alpha);
+      }
+    `
+  });
+  const ring = new THREE.Mesh(ringGeo, ringMat);
+  group.add(ring);
+
+  // Render order: opaque planet first, then transparent ring (depth-tested).
+  planet.renderOrder = 1;
+  atmo.renderOrder = 0;
+  ring.renderOrder = 2;
+
+  // ---- Resize ----
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+
+  // ---- Animation loop (framerate-independent, driven by elapsed time) ----
+  const clock = new THREE.Clock();
+  function animate() {
+    requestAnimationFrame(animate);
+    const t = clock.getElapsedTime();
+    planetMat.uniforms.uTime.value = t;
+    ringMat.uniforms.uTime.value = t;
+    renderer.render(scene, camera);
+  }
+  animate();
+} catch (e) {
+  console.error(e);
+}
+</script>
+</body>
+</html>

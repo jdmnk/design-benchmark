@@ -545,11 +545,11 @@
               "label": "GLM 5.2",
               "modelId": "z-ai/glm-5.2",
               "provider": "openrouter",
-              "status": "blank",
-              "elapsedMs": 127341,
-              "outputTokens": 28000,
-              "costUsd": 0.18666543,
-              "truncated": true,
+              "status": "rendered",
+              "elapsedMs": 217747,
+              "outputTokens": 16017,
+              "costUsd": 0.0504167,
+              "truncated": false,
               "error": null,
               "page": "pages/ringed-giant/glm-5.2.html"
             },
@@ -650,7 +650,7 @@
               "page": "pages/ringed-giant/kimi-k2.6.html"
             }
           ],
-          "rendered": 8,
+          "rendered": 9,
           "total": 9
         }
       ]
