@@ -1,0 +1,173 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; box-sizing: border-box; }
+  html, body { width: 100%; height: 100%; overflow: hidden; background: #03040a; }
+  .scene {
+    position: fixed; inset: 0; display: grid; place-items: center;
+    background: radial-gradient(120% 120% at 50% 50%, #0b0d16 0%, #03040a 62%);
+  }
+  /* Starfield — done; leave it as-is. */
+  .stars { position: absolute; inset: 0; opacity: .85;
+    background-image:
+      radial-gradient(1px 1px at 15% 22%, #fff, transparent),
+      radial-gradient(1px 1px at 68% 14%, #cbd5ff, transparent),
+      radial-gradient(1px 1px at 82% 61%, #fff, transparent),
+      radial-gradient(1px 1px at 34% 78%, #e6ecff, transparent),
+      radial-gradient(1px 1px at 52% 41%, #fff, transparent),
+      radial-gradient(1px 1px at 9% 66%, #cfd8ff, transparent),
+      radial-gradient(1px 1px at 91% 33%, #fff, transparent),
+      radial-gradient(1px 1px at 26% 9%, #fff, transparent),
+      radial-gradient(1px 1px at 74% 88%, #dfe6ff, transparent);
+  }
+  /* The black hole is centered here; its size = the event-horizon diameter (~30% of viewport height). */
+  .blackhole { position: relative; width: 30vh; height: 30vh; }
+
+  /* ==================== YOUR CSS BELOW ==================== */
+
+  /* faint warm ambient glow around the whole object */
+  .blackhole::before {
+    content: '';
+    position: absolute;
+    width: 420%; height: 420%;
+    left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: radial-gradient(closest-side,
+      rgba(255,174,59,.10) 0%,
+      rgba(255,174,59,.05) 28%,
+      rgba(120,60,20,.03) 50%,
+      transparent 65%);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* Edge-on accretion disk: wide flattened ellipse with radial color falloff.
+     Inner bright edge sits inside the horizon (hidden), so the visible band
+     emerges from behind the horizon on both sides. */
+  .disk {
+    position: absolute;
+    width: 260%; height: 260%;
+    left: 50%; top: 50%;
+    border-radius: 50%;
+    z-index: 1;
+    background:
+      radial-gradient(closest-side,
+        transparent 20%,
+        #fff3d0 30%,
+        #ffd070 44%,
+        #ffae3b 58%,
+        #d9651a 76%,
+        #c8551a 86%,
+        transparent 97%);
+    animation: spin 5s linear infinite;
+  }
+  /* azimuthal brightness clumps — rotate with the disk so motion reads clearly */
+  .disk::before {
+    content: '';
+    position: absolute; inset: 0;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg,
+      rgba(255,255,255,0)    0deg,
+      rgba(255,255,255,.55) 35deg,
+      rgba(255,255,255,0)   78deg,
+      rgba(255,255,255,.35) 130deg,
+      rgba(255,255,255,0)   172deg,
+      rgba(255,255,255,.60) 215deg,
+      rgba(255,255,255,0)   258deg,
+      rgba(255,255,255,.40) 305deg,
+      rgba(255,255,255,0)   345deg,
+      rgba(255,255,255,0)   360deg);
+    mix-blend-mode: screen;
+  }
+
+  /* relativistic beaming: fixed brighter left side (does NOT rotate) */
+  .blackhole::after {
+    content: '';
+    position: absolute;
+    width: 260%; height: 260%;
+    left: 50%; top: 50%;
+    transform: translate(-50%, -50%) scaleY(.2);
+    border-radius: 50%;
+    z-index: 2;
+    pointer-events: none;
+    background: linear-gradient(90deg,
+      rgba(255,243,208,.45) 0%,
+      rgba(255,243,208,.08) 44%,
+      rgba(0,0,0,.15) 72%,
+      rgba(0,0,0,.35) 100%);
+  }
+
+  /* Solid black event-horizon sphere with a crisp edge */
+  .horizon {
+    position: absolute; inset: 0;
+    border-radius: 50%;
+    background: #000;
+    z-index: 3;
+    box-shadow: 0 0 22px 10px rgba(0,0,0,.95);
+  }
+
+  /* Lensing halo: bright arcs bending OVER the top and mirrored UNDER the bottom.
+     A ring (annulus via mask) whose conic gradient is bright only at 0° and 180°. */
+  .lensing {
+    position: absolute;
+    width: 144%; height: 144%;
+    left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    z-index: 4;
+    background: conic-gradient(from 0deg,
+      rgba(255,243,208,.95)   0deg,
+      rgba(255,174,59,.55)  28deg,
+      rgba(255,174,59,0)    72deg,
+      rgba(255,174,59,0)   108deg,
+      rgba(255,174,59,.55) 152deg,
+      rgba(255,243,208,.95) 180deg,
+      rgba(255,174,59,.55) 208deg,
+      rgba(255,174,59,0)   252deg,
+      rgba(255,174,59,0)   288deg,
+      rgba(255,174,59,.55) 332deg,
+      rgba(255,243,208,.95) 360deg);
+    -webkit-mask: radial-gradient(closest-side, transparent 66%, #000 71%, #000 92%, transparent 96%);
+            mask: radial-gradient(closest-side, transparent 66%, #000 71%, #000 92%, transparent 96%);
+    filter: blur(1.4px);
+    animation: shimmer 5s ease-in-out infinite;
+  }
+
+  /* Thin bright photon ring hugging the very edge of the horizon */
+  .photon-ring {
+    position: absolute; inset: 0;
+    border-radius: 50%;
+    z-index: 5;
+    box-shadow:
+      0 0 0 1.4px rgba(255,243,208,.92),
+      0 0 7px 1px rgba(255,200,120,.65),
+      inset 0 0 5px .5px rgba(255,220,150,.5);
+  }
+
+  /* exactly one full turn per 5s → seamless loop */
+  @keyframes spin {
+    from { transform: translate(-50%, -50%) scaleY(.2) rotate(0deg); }
+    to   { transform: translate(-50%, -50%) scaleY(.2) rotate(360deg); }
+  }
+  @keyframes shimmer {
+    0%, 100% { opacity: .82; }
+    50%      { opacity: 1; }
+  }
+</style>
+</head>
+<body>
+  <div class="scene">
+    <div class="stars"></div>
+    <div class="blackhole">
+      <!-- Style these (add or rename as you need): -->
+      <div class="disk"></div>         <!-- bright accretion disk, viewed edge-on -->
+      <div class="lensing"></div>      <!-- lensing halo: arcs over the top and mirrored under the bottom -->
+      <div class="horizon"></div>      <!-- the solid-black event-horizon sphere -->
+      <div class="photon-ring"></div>  <!-- thin bright ring hugging the horizon edge -->
+    </div>
+  </div>
+</body>
+</html>

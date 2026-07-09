@@ -1,21 +1,28 @@
 {
   "name": "black-hole-css",
-  "prompt": "Create a realistic supermassive black hole — the 'Gargantua' look from the film Interstellar — as a full-screen scene, in PURE CSS (no JavaScript, no canvas). A 5-second clip is captured and looped, so the rotation is as important as the still composition.\n\nComposition (match so results are comparable — everything centered, frame fixed):\n- A perfectly black EVENT-HORIZON disc dead center, about 30% of the viewport height, with a crisp edge.\n- A bright, thin ACCRETION DISK around it, viewed nearly EDGE-ON so it reads as a near-horizontal bright band cutting across the middle of the black disc and extending well past it on both sides — a wide, flattened ellipse, NOT a head-on ring.\n- Gravitational LENSING: bright arcs bend UP and OVER the top of the black disc AND mirror UNDER the bottom, forming the signature halo arcs above and below the horizon (not merely a flat band). Build them from curved / elliptical shapes wrapping the sphere.\n- A thin, bright PHOTON RING hugging the very edge of the black disc.\n- Disk COLORING: hot white-yellow on the inner edge fading outward to amber then deep orange (#fff3d0 → #ffae3b → #c8551a); make one side slightly brighter than the other (relativistic beaming).\n- Background: near-black space (#03040a) with a sparse scatter of faint, STATIC stars (they do not move).\n\nMotion (the point of this benchmark — clearly visible and seamlessly looping in 5s):\n- The accretion disk ROTATES about the black hole. Give the disk visible azimuthal structure (brightness clumps, streaks, or banding) and revolve it so a recognizable feature travels around — a conic-gradient or repeating pattern rotated EXACTLY one full turn (or a whole number of turns) over the 5-second clip works well and loops cleanly. A featureless band looks static — make the rotation read clearly.\n- Add subtle shimmer/flicker in the disk and lensing arcs. The frame (camera) stays FIXED; keep the black hole centered and the disk horizontal.\n\nReturn ONLY a single complete HTML document — no JavaScript.",
-  "generatedAt": "2026-07-09T13:31:23.749Z",
+  "prompt": "Build a spinning supermassive black hole — the 'Gargantua' look from the film Interstellar — as a full-screen scene in PURE CSS (no JavaScript, no canvas). A 5-second clip is captured and looped, so the rotation matters as much as the still.\n\nSTART FROM THIS EXACT TEMPLATE. The skeleton, CSS reset, dark-space background, starfield, and the centered .blackhole box (sized to the event horizon) are ALREADY DONE — keep them exactly as given. Your only job is the black-hole rendering: write the CSS for the elements inside .blackhole and the rotation animation. Keep it TIGHT — a handful of gradients and shapes is plenty; do NOT write hundreds of lines.\n\n```html\n<!doctype html>\n<html>\n<head>\n<meta charset=\"utf-8\">\n<style>\n  * { margin: 0; box-sizing: border-box; }\n  html, body { width: 100%; height: 100%; overflow: hidden; background: #03040a; }\n  .scene {\n    position: fixed; inset: 0; display: grid; place-items: center;\n    background: radial-gradient(120% 120% at 50% 50%, #0b0d16 0%, #03040a 62%);\n  }\n  /* Starfield — done; leave it as-is. */\n  .stars { position: absolute; inset: 0; opacity: .85;\n    background-image:\n      radial-gradient(1px 1px at 15% 22%, #fff, transparent),\n      radial-gradient(1px 1px at 68% 14%, #cbd5ff, transparent),\n      radial-gradient(1px 1px at 82% 61%, #fff, transparent),\n      radial-gradient(1px 1px at 34% 78%, #e6ecff, transparent),\n      radial-gradient(1px 1px at 52% 41%, #fff, transparent),\n      radial-gradient(1px 1px at 9% 66%, #cfd8ff, transparent),\n      radial-gradient(1px 1px at 91% 33%, #fff, transparent),\n      radial-gradient(1px 1px at 26% 9%, #fff, transparent),\n      radial-gradient(1px 1px at 74% 88%, #dfe6ff, transparent);\n  }\n  /* The black hole is centered here; its size = the event-horizon diameter (~30% of viewport height). */\n  .blackhole { position: relative; width: 30vh; height: 30vh; }\n\n  /* ==================== YOUR CSS BELOW ==================== */\n  /* Style the elements inside .blackhole and animate the disk's rotation —\n     exactly ONE full turn over the 5s clip so it loops seamlessly. */\n\n</style>\n</head>\n<body>\n  <div class=\"scene\">\n    <div class=\"stars\"></div>\n    <div class=\"blackhole\">\n      <!-- Style these (add or rename as you need): -->\n      <div class=\"disk\"></div>         <!-- bright accretion disk, viewed edge-on -->\n      <div class=\"lensing\"></div>      <!-- lensing halo: arcs over the top and mirrored under the bottom -->\n      <div class=\"horizon\"></div>      <!-- the solid-black event-horizon sphere -->\n      <div class=\"photon-ring\"></div>  <!-- thin bright ring hugging the horizon edge -->\n    </div>\n  </div>\n</body>\n</html>\n```\n\nRender this exact composition (everything centered, frame fixed):\n- horizon: a solid-black disc filling .blackhole, with a crisp edge.\n- disk: a bright accretion disk seen nearly EDGE-ON — a wide, flattened bright band crossing the middle of the black disc and extending well past it on both sides (roughly 2.5x wider than the horizon). Hot white-yellow on the inner edge fading outward to amber then deep orange (#fff3d0 -> #ffae3b -> #c8551a). Make one side slightly brighter (relativistic beaming).\n- lensing: the signature halo — bright arcs bending UP and OVER the top of the horizon AND mirrored UNDER the bottom (not just a flat band).\n- photon-ring: a thin, bright ring hugging the very edge of the horizon.\n- Background stays near-black with the faint static starfield from the template (do not animate the stars).\n\nMotion (the point of this benchmark — must read clearly and loop seamlessly in 5s):\n- Give the disk visible azimuthal structure (brightness clumps, streaks, or banding — a conic-gradient works well) and ROTATE it EXACTLY one full turn over the 5-second clip. A featureless band would look static.\n- Optional subtle shimmer on the disk and lensing arcs. The frame stays fixed; keep the black hole centered and the disk horizontal.\n\nReturn the COMPLETE HTML document — the template with your CSS filled in — and nothing else.",
+  "generatedAt": "2026-07-09T14:30:27.854Z",
   "models": [
     {
       "slug": "glm-5.2",
       "label": "GLM 5.2",
       "provider": "openrouter",
       "modelId": "z-ai/glm-5.2",
-      "ok": false,
-      "error": "Empty completion (hit token limit before producing output). Raw: {\"id\":\"gen-1783603268-UTePLrB2n0x8fQFo92Y9\",\"object\":\"chat.completion\",\"created\":1783603268,\"model\":\"z-ai/glm-5.2-20260616\",\"provider\":\"AkashML\",\"system_fingerprint\":null,\"service_tier\":null,\"choices\":[{\"index\":0,\"logprobs\":null,\"finish_reason\":\"length\",\"native_finish_reason\":\"length\",\"message\":{\"ro",
-      "htmlExtracted": false,
-      "elapsedMs": 736892,
-      "startedAt": "2026-07-09T13:14:08.008Z",
+      "ok": true,
+      "htmlExtracted": true,
+      "finishReason": "stop",
+      "truncated": false,
+      "elapsedMs": 229628,
+      "usage": {
+        "promptTokens": 1372,
+        "completionTokens": 13748,
+        "totalTokens": 15120,
+        "costUsd": 0.0436884
+      },
+      "startedAt": "2026-07-09T14:13:11.596Z",
       "render": {
-        "rendered": false,
-        "error": "no output.html (generation produced no HTML)"
+        "rendered": true,
+        "blank": false
       }
     },
     {
@@ -27,14 +34,14 @@
       "htmlExtracted": true,
       "finishReason": "stop",
       "truncated": false,
-      "elapsedMs": 31693,
+      "elapsedMs": 20747,
       "usage": {
-        "promptTokens": 941,
-        "completionTokens": 2490,
-        "totalTokens": 3431,
-        "costUsd": 0.00719965
+        "promptTokens": 1529,
+        "completionTokens": 1704,
+        "totalTokens": 3233,
+        "costUsd": 0.00596965
       },
-      "startedAt": "2026-07-09T13:14:08.016Z",
+      "startedAt": "2026-07-09T14:13:11.605Z",
       "render": {
         "rendered": true,
         "blank": false
@@ -49,14 +56,14 @@
       "htmlExtracted": true,
       "finishReason": "stop",
       "truncated": false,
-      "elapsedMs": 72789,
+      "elapsedMs": 13553,
       "usage": {
-        "promptTokens": 772,
-        "completionTokens": 3044,
-        "totalTokens": 3816,
-        "costUsd": 0.014277
+        "promptTokens": 1363,
+        "completionTokens": 2080,
+        "totalTokens": 3443,
+        "costUsd": 0.01038225
       },
-      "startedAt": "2026-07-09T13:14:08.017Z",
+      "startedAt": "2026-07-09T14:13:11.607Z",
       "render": {
         "rendered": true,
         "blank": false
@@ -71,14 +78,14 @@
       "htmlExtracted": true,
       "finishReason": "stop",
       "truncated": false,
-      "elapsedMs": 33182,
+      "elapsedMs": 28603,
       "usage": {
-        "promptTokens": 889,
-        "completionTokens": 6014,
-        "totalTokens": 6903,
-        "costUsd": 0.030959
+        "promptTokens": 1565,
+        "completionTokens": 4565,
+        "totalTokens": 6130,
+        "costUsd": 0.02439
       },
-      "startedAt": "2026-07-09T13:14:08.018Z",
+      "startedAt": "2026-07-09T14:13:11.608Z",
       "render": {
         "rendered": true,
         "blank": false
@@ -93,14 +100,14 @@
       "htmlExtracted": true,
       "finishReason": "stop",
       "truncated": false,
-      "elapsedMs": 562666,
+      "elapsedMs": 713320,
       "usage": {
-        "promptTokens": 802,
-        "completionTokens": 7820,
-        "totalTokens": 8622,
-        "costUsd": 0.01026624
+        "promptTokens": 1476,
+        "completionTokens": 27175,
+        "totalTokens": 28651,
+        "costUsd": 0.03525632
       },
-      "startedAt": "2026-07-09T13:14:08.019Z",
+      "startedAt": "2026-07-09T14:13:11.608Z",
       "render": {
         "rendered": true,
         "blank": false
@@ -115,14 +122,14 @@
       "htmlExtracted": true,
       "finishReason": "stop",
       "truncated": false,
-      "elapsedMs": 8872,
+      "elapsedMs": 4554,
       "usage": {
-        "promptTokens": 783,
-        "completionTokens": 1451,
-        "totalTokens": 2234,
-        "costUsd": 0.00237225
+        "promptTokens": 1460,
+        "completionTokens": 1363,
+        "totalTokens": 2823,
+        "costUsd": 0.0024095
       },
-      "startedAt": "2026-07-09T13:14:08.019Z",
+      "startedAt": "2026-07-09T14:11:54.678Z",
       "render": {
         "rendered": true,
         "blank": false
@@ -135,19 +142,19 @@
       "modelId": "deepseek/deepseek-v4-pro",
       "ok": true,
       "htmlExtracted": true,
-      "finishReason": "length",
-      "truncated": true,
-      "elapsedMs": 768034,
+      "finishReason": "stop",
+      "truncated": false,
+      "elapsedMs": 361097,
       "usage": {
-        "promptTokens": 777,
-        "completionTokens": 20000,
-        "totalTokens": 20777,
-        "costUsd": 0.0305093514
+        "promptTokens": 1375,
+        "completionTokens": 17729,
+        "totalTokens": 19104,
+        "costUsd": 0.0576451425
       },
-      "startedAt": "2026-07-09T13:14:08.020Z",
+      "startedAt": "2026-07-09T14:13:11.609Z",
       "render": {
-        "rendered": false,
-        "blank": true
+        "rendered": true,
+        "blank": false
       }
     },
     {
@@ -155,14 +162,21 @@
       "label": "Kimi K2.7 Code",
       "provider": "openrouter",
       "modelId": "moonshotai/kimi-k2.7-code",
-      "ok": false,
-      "error": "This operation was aborted",
-      "htmlExtracted": false,
-      "elapsedMs": 840010,
-      "startedAt": "2026-07-09T13:14:08.020Z",
+      "ok": true,
+      "htmlExtracted": true,
+      "finishReason": "stop",
+      "truncated": false,
+      "elapsedMs": 270243,
+      "usage": {
+        "promptTokens": 1372,
+        "completionTokens": 10197,
+        "totalTokens": 11569,
+        "costUsd": 0.040407744
+      },
+      "startedAt": "2026-07-09T14:13:11.610Z",
       "render": {
-        "rendered": false,
-        "error": "no output.html (generation produced no HTML)"
+        "rendered": true,
+        "blank": false
       }
     },
     {
@@ -174,14 +188,14 @@
       "htmlExtracted": true,
       "finishReason": "stop",
       "truncated": false,
-      "elapsedMs": 89183,
+      "elapsedMs": 687559,
       "usage": {
-        "promptTokens": 777,
-        "completionTokens": 4194,
-        "totalTokens": 4971,
-        "costUsd": 0.0148812
+        "promptTokens": 1373,
+        "completionTokens": 29190,
+        "totalTokens": 30563,
+        "costUsd": 0.100302372
       },
-      "startedAt": "2026-07-09T13:14:08.021Z",
+      "startedAt": "2026-07-09T14:13:11.611Z",
       "render": {
         "rendered": true,
         "blank": false

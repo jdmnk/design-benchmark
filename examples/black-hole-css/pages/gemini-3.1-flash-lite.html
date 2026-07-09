@@ -1,139 +1,91 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Gargantua CSS</title>
-    <style>
-        /* Dark background as first rule */
-        body { margin: 0; padding: 0; background-color: #03040a; height: 100vh; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+<meta charset="utf-8">
+<style>
+  * { margin: 0; box-sizing: border-box; }
+  html, body { width: 100%; height: 100%; overflow: hidden; background: #03040a; }
+  .scene {
+    position: fixed; inset: 0; display: grid; place-items: center;
+    background: radial-gradient(120% 120% at 50% 50%, #0b0d16 0%, #03040a 62%);
+  }
+  /* Starfield — done; leave it as-is. */
+  .stars { position: absolute; inset: 0; opacity: .85;
+    background-image:
+      radial-gradient(1px 1px at 15% 22%, #fff, transparent),
+      radial-gradient(1px 1px at 68% 14%, #cbd5ff, transparent),
+      radial-gradient(1px 1px at 82% 61%, #fff, transparent),
+      radial-gradient(1px 1px at 34% 78%, #e6ecff, transparent),
+      radial-gradient(1px 1px at 52% 41%, #fff, transparent),
+      radial-gradient(1px 1px at 9% 66%, #cfd8ff, transparent),
+      radial-gradient(1px 1px at 91% 33%, #fff, transparent),
+      radial-gradient(1px 1px at 26% 9%, #fff, transparent),
+      radial-gradient(1px 1px at 74% 88%, #dfe6ff, transparent);
+  }
+  /* The black hole is centered here; its size = the event-horizon diameter (~30% of viewport height). */
+  .blackhole { position: relative; width: 30vh; height: 30vh; }
 
-        .universe {
-            position: relative;
-            width: 100vmin;
-            height: 100vmin;
-        }
+  /* ==================== YOUR CSS BELOW ==================== */
+  
+  .blackhole > div { position: absolute; inset: 0; border-radius: 50%; }
 
-        /* Static Stars */
-        .stars {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                radial-gradient(1px 1px at 20% 30%, white, transparent),
-                radial-gradient(1px 1px at 80% 10%, white, transparent),
-                radial-gradient(2px 2px at 40% 70%, white, transparent),
-                radial-gradient(1px 1px at 10% 90%, white, transparent),
-                radial-gradient(1px 1px at 90% 80%, white, transparent);
-            opacity: 0.5;
-        }
+  /* The horizon: absolute black sphere */
+  .horizon {
+    z-index: 10;
+    background: radial-gradient(circle at 45% 45%, #000 65%, #050508 100%);
+    box-shadow: inset 0 0 20px 5px rgba(0,0,0,1);
+  }
 
-        /* The Black Hole Container - centralizing */
-        .black-hole {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 30vmin;
-            height: 30vmin;
-            z-index: 2;
-        }
+  /* Photon ring: thin glowing edge */
+  .photon-ring {
+    z-index: 5;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.4);
+    transform: scale(1.02);
+  }
 
-        /* Event Horizon */
-        .event-horizon {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: radial-gradient(circle at 50% 50%, #000 95%, #111 100%);
-            box-shadow: inset 0 0 20px #000;
-            z-index: 10;
-        }
+  /* Accretion disk: flattened, wide, anisotropic brightness */
+  .disk {
+    z-index: 2;
+    transform: scaleX(2.8) scaleY(0.4);
+    background: conic-gradient(
+      from 0deg, 
+      #c8551a 0deg, 
+      #ffae3b 90deg, 
+      #fff3d0 180deg, 
+      #ffae3b 270deg, 
+      #c8551a 360deg
+    );
+    filter: blur(8px);
+    animation: rotateDisk 5s linear infinite;
+  }
 
-        /* Photon Ring */
-        .photon-ring {
-            position: absolute;
-            width: 102%;
-            height: 102%;
-            top: -1%;
-            left: -1%;
-            border-radius: 50%;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 0 10px #fff;
-            z-index: 9;
-        }
+  /* Lensing halo: gravitational arcs over/under */
+  .lensing {
+    z-index: 1;
+    border: 2px solid rgba(255, 180, 50, 0.4);
+    transform: scale(1.4);
+    box-shadow: 0 0 30px 5px rgba(255, 180, 50, 0.3);
+    /* Create the "halo" effect with clip-path or gradient masking */
+    mask-image: radial-gradient(circle, transparent 45%, black 50%, black 70%, transparent 75%);
+  }
 
-        /* Accretion Disk - The main structure */
-        .disk-container {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 100vmin;
-            height: 30vmin;
-            transform: translate(-50%, -50%) rotateX(75deg); /* Tilt for edge-on view */
-            transform-style: preserve-3d;
-            z-index: 1;
-        }
+  @keyframes rotateDisk {
+    from { transform: scaleX(2.8) scaleY(0.4) rotate(0deg); }
+    to { transform: scaleX(2.8) scaleY(0.4) rotate(360deg); }
+  }
 
-        /* The Disk Loop Animation */
-        .disk {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: conic-gradient(
-                from 0deg,
-                #c8551a 0deg,
-                #ffae3b 90deg,
-                #fff3d0 180deg,
-                #ffae3b 270deg,
-                #c8551a 360deg
-            );
-            filter: blur(2vmin);
-            animation: rotateDisk 5s linear infinite;
-            mask-image: radial-gradient(circle at 50% 50%, transparent 15%, black 20%, black 40%, transparent 45%);
-            opacity: 0.8;
-        }
-
-        /* Gravitational Lensing Arcs (Top and Bottom) */
-        .lensing {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 30vmin;
-            height: 30vmin;
-            border-radius: 50%;
-            border: 4vmin solid transparent;
-            border-top: 4vmin solid rgba(255, 174, 59, 0.4);
-            border-bottom: 4vmin solid rgba(255, 174, 59, 0.4);
-            filter: blur(1vmin);
-            animation: flicker 2.5s ease-in-out infinite;
-        }
-
-        @keyframes rotateDisk {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        @keyframes flicker {
-            0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
-            50% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.05); }
-        }
-
-    </style>
+</style>
 </head>
 <body>
+  <div class="scene">
     <div class="stars"></div>
-    
-    <div class="disk-container">
-        <div class="disk"></div>
+    <div class="blackhole">
+      <div class="disk"></div>         <!-- bright accretion disk, viewed edge-on -->
+      <div class="lensing"></div>      <!-- lensing halo: arcs over the top and mirrored under the bottom -->
+      <div class="horizon"></div>      <!-- the solid-black event-horizon sphere -->
+      <div class="photon-ring"></div>  <!-- thin bright ring hugging the horizon edge -->
     </div>
-
-    <div class="black-hole">
-        <div class="photon-ring"></div>
-        <div class="event-horizon"></div>
-    </div>
-
-    <div class="lensing"></div>
+  </div>
 </body>
 </html>
