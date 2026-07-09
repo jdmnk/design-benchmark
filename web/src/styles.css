@@ -163,13 +163,42 @@ h2 {
 }
 
 .grid-link { display: block; line-height: 0; }
-.grid-link img,
-.grid-link video {
+.grid-link img {
   width: 100%;
   display: block;
   border: 1px solid var(--border);
   border-radius: 6px;
   background: #000;
+}
+
+/* video grid: the <video> is directly interactive (native controls), with a
+   small corner "open" link — no wrapping anchor to hijack tap-to-play. */
+.grid-media { position: relative; line-height: 0; }
+.grid-media video {
+  width: 100%;
+  display: block;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: #000;
+}
+.grid-open {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-size: 12px;
+  line-height: 1;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  text-decoration: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+.grid-media:hover .grid-open { opacity: 1; }
+/* Touch devices have no hover — keep the open link visible so it's discoverable. */
+@media (hover: none) {
+  .grid-open { opacity: 0.9; }
 }
 
 .meta {

@@ -127,8 +127,12 @@ function ModelTable({ models }: { models: Model[] }) {
 
 function GridView({ run, title }: { run: Run; title: string }) {
   if (run.grid.video) {
+    // Native controls so play/pause works inline on mobile (where muted-autoplay
+    // is often blocked). The video is NOT wrapped in a link — that used to hijack
+    // the tap-to-play and open the file in a new tab. "Open" is a separate corner
+    // link instead. Desktop still muted-autoplays; controls auto-hide until hover.
     return (
-      <a className="grid-link" href={run.grid.video} target="_blank" rel="noreferrer" title="Open full-size video">
+      <div className="grid-media">
         <video
           key={run.grid.video}
           src={run.grid.video}
@@ -137,13 +141,22 @@ function GridView({ run, title }: { run: Run; title: string }) {
           loop
           muted
           playsInline
+          controls
+          controlsList="nodownload"
           onLoadedData={(e) => {
-            // Some browsers block even muted autoplay; nudge it and fall
-            // back silently to the poster if refused.
             e.currentTarget.play().catch(() => {});
           }}
         />
-      </a>
+        <a
+          className="grid-open"
+          href={run.grid.video}
+          target="_blank"
+          rel="noreferrer"
+          title="Open full-size video"
+        >
+          open ↗
+        </a>
+      </div>
     );
   }
   return (
