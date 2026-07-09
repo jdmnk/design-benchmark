@@ -1,0 +1,46 @@
+{
+  "$schema": "../schema.json",
+  "name": "ringed-giant",
+  "description": "Animated three.js benchmark: a Saturn-like ringed gas giant rotating on its tilted axis, its ring system orbiting in-plane. A 5-second clip is captured frame-by-frame on the deterministic virtual clock and composed into one grid video.",
+
+  "systemPrompt": "You are a creative WebGL / three.js developer. Output a SINGLE self-contained HTML document. three.js r160 is available as an ES module — import it with `import * as THREE from 'three'` and add-ons from `three/addons/...` inside a <script type=\"module\"> (an importmap resolves these for you). Follow the composition exactly — this is a controlled comparison, do not improvise the layout or camera.\n\nRELIABILITY RULES (the scene is rendered in HEADLESS SOFTWARE WebGL and a 5-second clip is captured frame-by-frame):\n- Do NOT use postprocessing (EffectComposer, RenderPass, UnrealBloomPass, ShaderPass): in software WebGL these run at seconds per frame and the capture times out. Fake glow with additive blending, emissive colors, and layered transparent meshes instead.\n- Do NOT use shadow maps. Fake the ring's shadow on the planet (and the planet's shadow on the rings) with a dark semi-transparent band / gradient, not real shadow casting.\n- Drive ALL motion from the requestAnimationFrame timestamp (or performance.now()), NOT a fixed per-frame increment, so animation speed is framerate-independent.\n- Set renderer clear color / scene background to near-black space FIRST, and start the render loop immediately, so a partial failure still shows a scene rather than a blank page.\n- Keep the scene lightweight (a few thousand vertices, one canvas-generated texture at most).\n- Wrap risky setup in try/catch so one error cannot blank the whole page. Ensure the document is complete with every tag closed; if running long, simplify rather than truncate.",
+
+  "prompt": "Render a realistic SATURN-LIKE ringed gas giant as a full-screen three.js scene (100vw × 100vh, auto-starting, no user interaction). A 5-SECOND CLIP is captured, so the motion matters as much as the still composition.\n\nComposition (match exactly so results are comparable):\n- The planet is a sphere centered in the frame, its diameter about 34% of the viewport height.\n- Give the planet subtle HORIZONTAL atmospheric bands in a warm palette — cream and pale gold through tan to soft amber (#f3e6c4 → #e6c88f → #c99a5b), with faint darker belts and a slightly lighter equatorial zone. No hard edges; the bands blend.\n- A broad RING SYSTEM lies in the planet's equatorial plane, tilted so we view it about 18–24 degrees above edge-on: the rings read as a wide, flattened ellipse crossing the planet, NOT a head-on circle. Rings extend to roughly 2.2× the planet's radius.\n- The rings clearly pass BEHIND the planet's top half (occluded by the sphere) and IN FRONT of its bottom half (crossing over the lit disc) — so the ellipse is broken by the planet, reading as true 3D, not a flat halo.\n- Include one dark GAP in the rings (a Cassini-division-style black band) about two-thirds of the way out.\n- Cast a soft dark SHADOW BAND from the rings onto the planet on the shadowed side, and darken the arc of ring that passes behind the planet into its shadow (fake it — no shadow maps).\n- Light comes from the upper-left: the planet shows a lit crescent and a soft terminator into shadow on the lower-right; the near/left side of the rings is brighter.\n- Ring coloring: pale icy tan, subtly banded lighter/darker, semi-transparent at the inner and outer edges. Background: near-black space with a sparse, dim starfield.\n\nMotion (the point of this benchmark — clearly visible within the 5-second clip):\n- The planet ROTATES on its (tilted) axis so the atmospheric bands drift horizontally — give the bands visible structure (swirls, spots, or a faint storm oval) so the rotation reads; a featureless sphere would look static. Roughly 20–30 degrees per second.\n- The RINGS orbit in-plane in the same direction: give them faint radial structure / brightness clumps so their revolution is visible, roughly 15–25 degrees per second (inner slightly faster than outer if you can).\n- The camera stays FIXED. Keep the planet centered and the rings horizontal-ish (equatorial).\n\nReturn ONLY a single complete HTML document.",
+
+  "render": {
+    "viewportWidth": 1280,
+    "viewportHeight": 800,
+    "fullPage": false,
+    "waitMs": 4000,
+    "freezeClock": true,
+    "seed": 7,
+    "screenshotTimeoutMs": 120000,
+    "video": {
+      "durationMs": 5000,
+      "fps": 24,
+      "preRollMs": 2000
+    }
+  },
+
+  "grid": {
+    "columns": 3,
+    "cellWidth": 620,
+    "padding": 8,
+    "background": "#050507",
+    "labelStyle": "topbar",
+    "labelColor": "#ffffff",
+    "labelFontSize": 20,
+    "labelOverlayBg": "rgba(10,12,16,0.66)"
+  },
+
+  "generation": {
+    "temperature": 0.7,
+    "maxTokens": 28000,
+    "concurrency": 9,
+    "timeoutMs": 420000,
+    "retries": 1,
+    "reasoningEffort": "low"
+  },
+
+  "models": "../models/standard-9.json"
+}

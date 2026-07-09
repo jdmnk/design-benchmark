@@ -118,6 +118,9 @@ export async function render(
               [preFrames, dt] as const,
             );
           }
+          // Pin CSS/WAAPI animations before the first capture — preFrames may be
+          // 0, in which case no step has run yet to pin them to the virtual clock.
+          await page.evaluate(() => (window as any).__designBenchPin?.());
           mkdirSync(paths.framesDir(model.slug), { recursive: true });
           for (let i = 0; i < total; i++) {
             if (i > 0) {
@@ -126,6 +129,8 @@ export async function render(
                 [1, dt] as const,
               );
             }
+            // Let the just-pinned CSS state composite before capturing.
+            await page.evaluate(() => (window as any).__designBenchCommit?.());
             await page.screenshot({
               path: paths.frame(model.slug, i),
               timeout: r.screenshotTimeoutMs ?? 60000,
@@ -238,17 +243,38 @@ function determinismScript(seed: number, freeze: boolean): string {
     let vnow = 0;
     let queue = [];
     let nextId = 1;
-    const _perf = (typeof performance !== 'undefined' && performance.now) ? performance.now.bind(performance) : () => 0;
+    // Keep the REAL rAF (before we override it) to sync on actual paints below.
+    const _realRaf = (typeof requestAnimationFrame !== 'undefined')
+      ? requestAnimationFrame.bind(window)
+      : (cb) => setTimeout(() => cb(vnow), 0);
     try { performance.now = () => vnow; } catch (e) {}
     try { Date.now = () => vnow; } catch (e) {}
     window.requestAnimationFrame = (cb) => { const id = nextId++; queue.push([id, cb]); return id; };
     window.cancelAnimationFrame = (id) => { queue = queue.filter((q) => q[0] !== id); };
+    // CSS animations & transitions advance on the browser's OWN document
+    // timeline, which our virtual clock does not touch — so without this they'd
+    // be captured at wall-clock time (nondeterministic). Pin every Web-Animations
+    // timeline (getAnimations() includes CSS ones) to the virtual clock so a
+    // CSS-only scene is captured just as deterministically as a rAF-driven one.
+    const pinAnimations = () => {
+      try {
+        const anims = document.getAnimations ? document.getAnimations() : [];
+        for (const a of anims) { try { a.pause(); a.currentTime = vnow; } catch (e) {} }
+      } catch (e) {}
+    };
+    window.__designBenchPin = pinAnimations;
+    // Wait two REAL paints so a just-pinned CSS state is actually composited
+    // before we screenshot. Animations are paused, so waiting can't advance
+    // them — this only removes the commit-timing race, not any determinism.
+    window.__designBenchCommit = () =>
+      new Promise((res) => _realRaf(() => _realRaf(() => res())));
     window.__designBenchStep = (frames, dt) => {
       for (let i = 0; i < frames; i++) {
         vnow += dt;
         const due = queue; queue = [];
         for (const [, cb] of due) { try { cb(vnow); } catch (e) {} }
       }
+      pinAnimations();
     };
   })();`;
 }

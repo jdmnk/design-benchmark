@@ -1,0 +1,46 @@
+{
+  "$schema": "../schema.json",
+  "name": "pulsar-css",
+  "description": "CSS-only animated benchmark: a pulsing, rotating pulsar (neutron star) built with pure HTML + CSS — no JavaScript, no canvas. A 5-second clip is captured frame-by-frame on the deterministic virtual clock (CSS animation timelines are pinned to it) and composed into one grid video.",
+
+  "systemPrompt": "You are a master of pure CSS art and animation. Output a SINGLE self-contained HTML document using ONLY HTML and CSS — no JavaScript, no <canvas>, no <script>, no external resources (no images, no web fonts, no network). Every bit of MOTION must come from CSS @keyframes animations or transitions. You may freely use CSS gradients, radial/conic gradients, box-shadow, filter (blur/brightness), clip-path, transforms, mix-blend-mode, and inline SVG shapes styled/animated purely with CSS.\n\nRELIABILITY RULES (a 5-second clip is captured frame-by-frame; the harness drives CSS animation timelines deterministically):\n- Set an explicit dark background on <body> as the very FIRST style rule so the page never renders blank.\n- The scene fills the entire viewport (100vw × 100vh), is centered, auto-starts, and needs no interaction.\n- Make the animation LOOP SEAMLESSLY within the clip: use periods that divide evenly into 5 seconds (e.g. 1s, 2.5s, 5s) and rotations of exactly one full turn (or a whole number of turns) per 5s, so the first and last frame match.\n- Keep it performant: prefer transform/opacity animations; avoid thousands of elements.\n- Ensure the document is complete with every tag closed; if running long, simplify the design rather than let it be cut off. Absolutely NO JavaScript.",
+
+  "prompt": "Create a PULSING, ROTATING PULSAR (a spinning neutron star firing lighthouse beams) as a full-screen scene — pure HTML + CSS only. A 5-second clip is captured and looped, so the rhythm and rotation are the whole point.\n\nComposition (match so results are comparable — everything centered, frame fixed):\n- At the exact center, a small intensely bright CORE: a blue-white orb about 9% of the viewport height, hot white at the middle fading through pale blue to a soft outer glow (#f2f6ff → #bcd2ff → #5b7cff), with an additive-looking bloom (layered box-shadow / blur).\n- The core PULSES rhythmically: its brightness and size swell and shrink with a period of exactly 1 second (so ~5 clean pulses across the clip). This pulse is the signature of the benchmark — make it unmistakable.\n- TWO opposing BEAMS (jets) emanate from the core along a single axis tilted about 20° from vertical — long, narrow, tapering cones of cyan-white light (semi-transparent, additive-looking), extending past the top and bottom edges of the frame. The beam axis ROTATES steadily around the center like a lighthouse, completing EXACTLY one full revolution over the 5-second clip (72°/s).\n- Concentric SHOCKWAVE RINGS pulse outward from the core in time with the pulse: on each beat a thin ring is emitted that expands and fades as it grows, so 3–4 rings are visible at different radii at any moment (stagger them with animation-delays). Faint cyan.\n- A thin, bright EQUATORIAL RING/disk hugs the core, seen nearly edge-on as a horizontal bright ellipse, tilted to match the beam axis, steady (not pulsing much).\n- Background: near-black space (#03040a) with a sparse scatter of faint, static stars (small dots via box-shadow or tiny elements) — the stars do NOT move.\n\nMotion recap (must be visible and loop seamlessly in 5s): core pulses once per second; beams make one full rotation over the clip; shockwave rings expand-and-fade on each pulse; equatorial ring holds steady; stars fixed.\n\nReturn ONLY a single complete HTML document — no JavaScript.",
+
+  "render": {
+    "viewportWidth": 1280,
+    "viewportHeight": 800,
+    "fullPage": false,
+    "waitMs": 4000,
+    "freezeClock": true,
+    "seed": 7,
+    "screenshotTimeoutMs": 120000,
+    "video": {
+      "durationMs": 5000,
+      "fps": 24,
+      "preRollMs": 1000
+    }
+  },
+
+  "grid": {
+    "columns": 3,
+    "cellWidth": 620,
+    "padding": 8,
+    "background": "#050507",
+    "labelStyle": "topbar",
+    "labelColor": "#ffffff",
+    "labelFontSize": 20,
+    "labelOverlayBg": "rgba(10,12,16,0.66)"
+  },
+
+  "generation": {
+    "temperature": 0.7,
+    "maxTokens": 20000,
+    "concurrency": 9,
+    "timeoutMs": 420000,
+    "retries": 1,
+    "reasoningEffort": "low"
+  },
+
+  "models": "../models/standard-9.json"
+}
