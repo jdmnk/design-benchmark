@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <title>Gargantua</title>
 <style>
-  html,body{margin:0;padding:0;overflow:hidden;background:#000;width:100vw;height:100vh;}
+  html,body{margin:0;padding:0;overflow:hidden;background:#020204;width:100vw;height:100vh;}
   canvas{display:block;width:100vw;height:100vh;}
 </style>
 </head>
@@ -12,8 +12,7 @@
 <script type="importmap">
 {
   "imports": {
-    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
   }
 }
 </script>
@@ -23,161 +22,160 @@ import * as THREE from 'three';
 try {
 
 const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setPixelRatio(1);
 renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setClearColor(0x000000, 1);
+renderer.setClearColor(0x020204, 1);
 document.body.appendChild(renderer.domElement);
 
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x000000);
+scene.background = new THREE.Color(0x020204);
 
-const camera = new THREE.PerspectiveCamera(50, window.innerWidth/window.innerHeight, 0.01, 1000);
+// Camera ~7° above the disk plane, distance chosen so sphere = ~28% of viewport height
+// fov=60 -> half-height 30°. 28% of height -> angular radius 8.4°. R=1, D=1/sin(8.4°)=~6.85
+const R = 1.0;
+const D = 6.85;
+const camElev = 7.0 * Math.PI / 180;
+const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.01, 200);
+camera.position.set(0, D * Math.sin(camElev), D * Math.cos(camElev));
+camera.lookAt(0, 0, 0);
 
-// Viewport-relative sizing: sphere diameter ~ 28% of viewport height.
-// Place camera at distance D, with sphere radius R such that 2R subtends 28% of height.
-// 28% of height => half-angle = atan(0.14) ≈ 0.139 rad. So R/D = 0.139.
-// Choose D = 10 => R ≈ 1.39.
-const camDist = 10;
-const sphereRadius = 1.39 * (camDist / 10); // 1.39
-// Camera 6 degrees above disk plane
-const camPitch = THREE.MathUtils.degToRad(6);
-camera.position.set(0, Math.sin(camPitch)*camDist, Math.cos(camPitch)*camDist);
-camera.lookAt(0,0,0);
-
-// ---------- Starfield ----------
-const starCount = 1200;
-const starGeo = new THREE.BufferGeometry();
-const starPos = new Float32Array(starCount*3);
-const starCol = new Float32Array(starCount*3);
-for (let i=0;i<starCount;i++){
-  // random on sphere far away
-  const u = Math.random()*2-1;
-  const t = Math.random()*Math.PI*2;
-  const r = 200 + Math.random()*50;
-  const s = Math.sqrt(1-u*u);
-  starPos[i*3]   = Math.cos(t)*s*r;
-  starPos[i*3+1] = u*r;
-  starPos[i*3+2] = Math.sin(t)*s*r;
-  const b = 0.3 + Math.random()*0.7;
-  // dim, slightly warm
-  starCol[i*3]   = 0.9*b;
-  starCol[i*3+1] = 0.85*b;
-  starCol[i*3+2] = 0.7*b;
-}
-starGeo.setAttribute('position', new THREE.BufferAttribute(starPos,3));
-starGeo.setAttribute('color', new THREE.BufferAttribute(starCol,3));
-const starMat = new THREE.PointsMaterial({ size: 1.2, vertexColors:true, sizeAttenuation:false, transparent:true, opacity:0.75, depthWrite:false });
-const stars = new THREE.Points(starGeo, starMat);
-scene.add(stars);
-
-// ---------- Event Horizon (black sphere) ----------
-const bhGeo = new THREE.SphereGeometry(sphereRadius, 64, 64);
+// Event horizon — perfectly black sphere
+const bhGeo = new THREE.SphereGeometry(R, 64, 64);
 const bhMat = new THREE.MeshBasicMaterial({ color: 0x000000 });
-const bh = new THREE.Mesh(bhGeo, bhMat);
-scene.add(bh);
+const blackHole = new THREE.Mesh(bhGeo, bhMat);
+scene.add(blackHole);
 
-// ---------- Accretion Disk ----------
-// Disk in XY=horizontal plane, so disk lies in XZ plane.
-// Inner radius slightly > sphere, outer radius larger.
-const diskInner = sphereRadius * 1.15;
-const diskOuter = sphereRadius * 3.6;
+// Starfield
+const starCount = 1400;
+const starPos = new Float32Array(starCount * 3);
+const starCol = new Float32Array(starCount * 3);
+for (let i = 0; i < starCount; i++) {
+  // uniform on sphere shell
+  const u = Math.random();
+  const v = Math.random();
+  const theta = 2 * Math.PI * u;
+  const phi = Math.acos(2 * v - 1);
+  const rad = 80 + Math.random() * 20;
+  starPos[i*3]   = rad * Math.sin(phi) * Math.cos(theta);
+  starPos[i*3+1] = rad * Math.sin(phi) * Math.sin(theta);
+  starPos[i*3+2] = rad * Math.cos(phi);
+  const b = 0.3 + Math.random() * 0.7;
+  const tint = Math.random();
+  starCol[i*3]   = b * (0.8 + 0.2 * tint);
+  starCol[i*3+1] = b * (0.85 + 0.15 * tint);
+  starCol[i*3+2] = b;
+}
+const starGeo = new THREE.BufferGeometry();
+starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+starGeo.setAttribute('color', new THREE.BufferAttribute(starCol, 3));
+const starMat = new THREE.PointsMaterial({
+  size: 0.6, sizeAttenuation: true, vertexColors: true,
+  transparent: true, opacity: 0.9,
+  blending: THREE.AdditiveBlending, depthWrite: false
+});
+scene.add(new THREE.Points(starGeo, starMat));
+
+// Accretion disk — flat ring in XZ plane with shader
+const diskInner = 1.35 * R;
+const diskOuter = 5.2 * R;
+const diskGeo = new THREE.RingGeometry(diskInner, diskOuter, 256, 24);
+// RingGeometry positions are in XY plane; rotate so it lies in XZ plane
+diskGeo.rotateX(-Math.PI / 2);
+
+const diskUniforms = {
+  uTime: { value: 0 },
+  uInner: { value: diskInner },
+  uOuter: { value: diskOuter }
+};
 
 const diskVert = `
-varying vec2 vUv;
-void main(){
-  vUv = uv;
-  gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
-}`;
-
-const diskFrag = `
-precision highp float;
-varying vec2 vUv;
-uniform float uTime;
-uniform float uInner;
-uniform float uOuter;
-
-// hash noise
-float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1,311.7)))*43758.5453); }
-float noise(vec2 p){
-  vec2 i = floor(p); vec2 f = fract(p);
-  float a = hash(i);
-  float b = hash(i+vec2(1.0,0.0));
-  float c = hash(i+vec2(0.0,1.0));
-  float d = hash(i+vec2(1.0,1.0));
-  vec2 u = f*f*(3.0-2.0*f);
-  return mix(a,b,u.x) + (c-a)*u.y*(1.0-u.x) + (d-b)*u.x*u.y;
-}
-float fbm(vec2 p){
-  float v=0.0; float a=0.5;
-  for(int i=0;i<5;i++){ v += a*noise(p); p*=2.07; a*=0.5; }
-  return v;
-}
-
-void main(){
-  // vUv.x is radial 0..1, vUv.y is azimuthal 0..1
-  float rNorm = vUv.x;
-  float r = mix(uInner, uOuter, rNorm);
-  float theta = vUv.y * 6.2831853;
-
-  // Rotate disk: add time*speed to theta
-  float rotSpeed = 0.9; // rad/s
-  float th = theta - uTime*rotSpeed;
-
-  // Relativistic beaming: one side brighter. Approaching side (let's say theta~PI in world) brighter.
-  float beam = 1.0 + 0.55 * (0.5 + 0.5*sin(th + 1.2));
-
-  // Azimuthal clumps / turbulent bands
-  float clump = fbm(vec2(th*3.0, rNorm*18.0 - uTime*0.2));
-  float streak = 0.5 + 0.5*sin(th*7.0 + rNorm*20.0 - uTime*1.5);
-  float structure = mix(0.55, 1.25, clump) * mix(0.8, 1.15, streak);
-
-  // Radial brightness falloff: hot inner, cooler outer
-  // Peak near inner edge, fall off outward
-  float radial = pow(1.0 - rNorm, 1.6) * 1.4 + 0.05;
-  radial = clamp(radial, 0.0, 1.5);
-
-  // Color gradient: inner white-yellow -> amber -> deep orange
-  vec3 cInner = vec3(1.0, 0.95, 0.82);    // #fff3d0
-  vec3 cMid   = vec3(1.0, 0.68, 0.23);    // #ffae3b
-  vec3 cOuter = vec3(0.78, 0.33, 0.10);   // #c8551a
-  float t = clamp(rNorm, 0.0, 1.0);
-  vec3 col = t < 0.5
-    ? mix(cInner, cMid, t*2.0)
-    : mix(cMid, cOuter, (t-0.5)*2.0);
-
-  // Shimmer
-  float shimmer = 0.92 + 0.08*sin(uTime*4.0 + th*2.0 + rNorm*20.0);
-
-  float brightness = radial * beam * structure * shimmer;
-
-  // Inner edge very bright (hot white glow)
-  float innerGlow = exp(-pow((rNorm-0.0)*10.0, 2.0)) * 0.6;
-  col = mix(col, vec3(1.0,0.97,0.85), innerGlow);
-
-  // Soft outer fade
-  float outerFade = smoothstep(1.0, 0.75, rNorm);
-  brightness *= outerFade;
-
-  // Inner cutoff (inside event horizon / inner edge)
-  float innerFade = smoothstep(0.0, 0.06, rNorm);
-  brightness *= innerFade;
-
-  gl_FragColor = vec4(col * brightness, clamp(brightness, 0.0, 1.0));
-}
+  varying vec3 vWorldPos;
+  void main() {
+    vec4 wp = modelMatrix * vec4(position, 1.0);
+    vWorldPos = wp.xyz;
+    gl_Position = projectionMatrix * viewMatrix * wp;
+  }
 `;
 
-const diskGeo = new THREE.RingGeometry(diskInner, diskOuter, 256, 24);
-// Rotate ring geometry so it lies in XZ plane (horizontal). RingGeometry default is in XY plane.
-diskGeo.rotateX(-Math.PI/2);
+const diskFrag = `
+  precision highp float;
+  uniform float uTime;
+  uniform float uInner;
+  uniform float uOuter;
+  varying vec3 vWorldPos;
+
+  float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+  float noise(vec2 p){
+    vec2 i = floor(p); vec2 f = fract(p);
+    float a = hash(i);
+    float b = hash(i + vec2(1.0, 0.0));
+    float c = hash(i + vec2(0.0, 1.0));
+    float d = hash(i + vec2(1.0, 1.0));
+    vec2 u = f*f*(3.0 - 2.0*f);
+    return mix(mix(a,b,u.x), mix(c,d,u.x), u.y);
+  }
+  float fbm(vec2 p){
+    float s = 0.0; float a = 0.5;
+    for(int i=0;i<4;i++){ s += a*noise(p); p *= 2.1; a *= 0.5; }
+    return s;
+  }
+
+  void main() {
+    float r = length(vWorldPos.xz);
+    float ang = atan(vWorldPos.z, vWorldPos.x);
+
+    // rotation ~30 deg/s = 0.524 rad/s
+    float omega = 0.55;
+    // differential rotation: inner parts faster
+    float diffOmega = omega * pow(uInner / max(r, uInner), 0.6);
+    float rotAng = ang - uTime * diffOmega;
+
+    // radial color gradient
+    float t = clamp((r - uInner) / (uOuter - uInner), 0.0, 1.0);
+    vec3 cInner = vec3(1.0, 0.953, 0.816);   // #fff3d0
+    vec3 cMid   = vec3(1.0, 0.678, 0.231);   // #ffae3b
+    vec3 cOuter = vec3(0.784, 0.333, 0.102); // #c8551a
+    vec3 col;
+    if (t < 0.35) col = mix(cInner, cMid, t / 0.35);
+    else col = mix(cMid, cOuter, (t - 0.35) / 0.65);
+
+    // azimuthal structure — clumps and streaks
+    float clump = fbm(vec2(rotAng * 2.5, r * 1.8));
+    float streak = fbm(vec2(rotAng * 6.0 - uTime * 0.25, r * 4.0));
+    float band = 0.55 + 0.55 * clump;
+    band *= 0.75 + 0.55 * streak;
+
+    // relativistic beaming — one side brighter, slow drift
+    float beamPhase = ang + uTime * 0.08;
+    float beam = 0.55 + 0.75 * pow(max(0.0, 0.5 + 0.5 * cos(beamPhase)), 1.5);
+
+    // radial fade
+    float innerFade = smoothstep(uInner * 0.98, uInner * 1.08, r);
+    float outerFade = 1.0 - smoothstep(uOuter * 0.85, uOuter, r);
+
+    // hot-spot near inner edge
+    float innerGlow = exp(-pow((r - uInner * 1.05) / (0.25 * uInner), 2.0)) * 1.6;
+
+    float alpha = innerFade * outerFade * band * beam;
+    alpha += innerGlow * innerFade * outerFade * beam;
+
+    // shimmer
+    float shimmer = 0.88 + 0.18 * sin(uTime * 3.7 + rotAng * 4.0 + r * 1.8);
+    shimmer *= 0.9 + 0.15 * sin(uTime * 7.1 + r * 3.0);
+    alpha *= shimmer;
+
+    col *= (0.9 + 0.6 * band);
+    // boost inner
+    col += vec3(0.35, 0.25, 0.15) * innerGlow * beam;
+
+    gl_FragColor = vec4(col * alpha * 2.1, alpha);
+  }
+`;
 
 const diskMat = new THREE.ShaderMaterial({
+  uniforms: diskUniforms,
   vertexShader: diskVert,
   fragmentShader: diskFrag,
-  uniforms: {
-    uTime: { value: 0 },
-    uInner: { value: diskInner },
-    uOuter: { value: diskOuter }
-  },
   transparent: true,
   blending: THREE.AdditiveBlending,
   depthWrite: false,
@@ -186,223 +184,110 @@ const diskMat = new THREE.ShaderMaterial({
 const disk = new THREE.Mesh(diskGeo, diskMat);
 scene.add(disk);
 
-// ---------- Lensing Arcs (top and bottom) ----------
-// The far side of the disk is lensed up over and under the black hole.
-// Approximate with two partial torus-like arcs in the vertical (XY) plane,
-// curving from one side of the disk to the other, passing above/below the sphere.
-
-function buildLensingArc(side /* 1 = top, -1 = bottom */){
-  // Curve: semicircle in XY plane from (-R, 0, 0) over top to (R, 0, 0)
-  // R slightly larger than sphere so arc grazes sphere edge.
-  const R = sphereRadius * 1.04;
-  const segments = 128;
-  const points = [];
-  for (let i=0;i<=segments;i++){
-    const t = i/segments;
-    const a = Math.PI * t; // 0..PI
-    const x = -Math.cos(a) * R; // -R .. R
-    const y =  Math.sin(a) * R * side; // 0..R (top) or 0..-R (bottom)
-    points.push(new THREE.Vector3(x, y, 0));
-  }
-  const curve = new THREE.CatmullRomCurve3(points);
-  // Tube with small radial segments to keep light
-  const tubeGeo = new THREE.TubeGeometry(curve, 128, sphereRadius*0.05, 8, false);
-  return tubeGeo;
-}
-
-const arcFrag = `
-precision highp float;
-varying vec2 vUv;
-uniform float uTime;
-uniform float uSide;
-
-float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1,311.7)))*43758.5453); }
-float noise(vec2 p){
-  vec2 i = floor(p); vec2 f = fract(p);
-  float a = hash(i); float b = hash(i+vec2(1.0,0.0));
-  float c = hash(i+vec2(0.0,1.0)); float d = hash(i+vec2(1.0,1.0));
-  vec2 u = f*f*(3.0-2.0*f);
-  return mix(a,b,u.x) + (c-a)*u.y*(1.0-u.x) + (d-b)*u.x*u.y;
-}
-
-void main(){
-  // vUv.x runs along the arc (0..1), vUv.y around tube (0..1)
-  float along = vUv.x;
-  float around = vUv.y;
-
-  // Rotating clumps along arc (represents rotating far-side disk)
-  float rotSpeed = 0.9;
-  float th = along * 6.2831853 - uTime*rotSpeed;
-  float clump = 0.6 + 0.4*sin(th*4.0 + uTime*0.7);
-  float beam = 1.0 + 0.4*(0.5 + 0.5*sin(th + 1.2));
-
-  // Radial profile across tube: brightest center, fade out
-  float r = abs(around - 0.5) * 2.0; // 0..1
-  float profile = exp(-pow(r*2.2, 2.0));
-
-  // End fade (arc connects to disk at ends - brighten near ends a bit, but soften)
-  float endFade = smoothstep(0.0, 0.08, along) * smoothstep(1.0, 0.92, along);
-
-  // Color: warm white-orange gradient along arc (hotter near inner side which is... center of arc)
-  // Make center of arc (topmost point) slightly cooler, ends near disk brighter
-  vec3 cHot = vec3(1.0, 0.90, 0.70);
-  vec3 cCool = vec3(1.0, 0.55, 0.18);
-  float hotness = 1.0 - abs(along - 0.5)*2.0; // 1 at center, 0 at ends
-  vec3 col = mix(cCool, cHot, hotness*0.7);
-
-  float shimmer = 0.9 + 0.1*sin(uTime*5.0 + along*30.0);
-
-  float brightness = profile * clump * beam * endFade * shimmer;
-  // Boost brightness so arcs read as bright halo
-  brightness *= 1.6;
-
-  gl_FragColor = vec4(col * brightness, clamp(brightness, 0.0, 1.0));
-}
-`;
-
-const arcVert = `
-varying vec2 vUv;
-void main(){
-  vUv = uv;
-  gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
-}
-`;
-
-function addArc(side){
-  const geo = buildLensingArc(side);
-  const mat = new THREE.ShaderMaterial({
-    vertexShader: arcVert,
-    fragmentShader: arcFrag,
-    uniforms: { uTime:{value:0}, uSide:{value:side} },
-    transparent: true,
-    blending: THREE.AdditiveBlending,
-    depthWrite: false,
-    side: THREE.DoubleSide
-  });
-  const mesh = new THREE.Mesh(geo, mat);
-  scene.add(mesh);
-  return mat;
-}
-const arcTopMat = addArc(1);
-const arcBotMat = addArc(-1);
-
-// Outer glow halo around arcs (larger fainter tube)
-function addArcGlow(side){
-  const R = sphereRadius * 1.04;
-  const segments = 96;
-  const points = [];
-  for (let i=0;i<=segments;i++){
-    const t = i/segments;
-    const a = Math.PI * t;
-    const x = -Math.cos(a) * R * 1.08;
-    const y =  Math.sin(a) * R * 1.08 * side;
-    points.push(new THREE.Vector3(x, y, 0));
-  }
-  const curve = new THREE.CatmullRomCurve3(points);
-  const geo = new THREE.TubeGeometry(curve, 96, sphereRadius*0.14, 6, false);
-  const mat = new THREE.ShaderMaterial({
-    vertexShader: arcVert,
-    fragmentShader: `
-      precision highp float;
-      varying vec2 vUv;
-      uniform float uTime;
-      void main(){
-        float along = vUv.x;
-        float around = abs(vUv.y - 0.5)*2.0;
-        float profile = exp(-pow(around*2.5, 2.0));
-        float th = along*6.2831853 - uTime*0.9;
-        float clump = 0.7 + 0.3*sin(th*4.0 + uTime*0.7);
-        float endFade = smoothstep(0.0,0.1,along)*smoothstep(1.0,0.9,along);
-        vec3 col = mix(vec3(1.0,0.55,0.18), vec3(1.0,0.85,0.55), 1.0-abs(along-0.5)*2.0);
-        float b = profile * clump * endFade * 0.35;
-        gl_FragColor = vec4(col*b, clamp(b,0.0,1.0));
-      }
-    `,
-    uniforms: { uTime:{value:0} },
-    transparent: true,
-    blending: THREE.AdditiveBlending,
-    depthWrite: false,
-    side: THREE.DoubleSide
-  });
-  const mesh = new THREE.Mesh(geo, mat);
-  scene.add(mesh);
-  return mat;
-}
-const glowTopMat = addArcGlow(1);
-const glowBotMat = addArcGlow(-1);
-
-// ---------- Photon Ring (thin bright ring hugging sphere edge) ----------
-// A thin torus in the XY plane (vertical, facing camera) at sphere equator.
-// From our angle, it appears as a thin bright line outlining the sphere.
-const prGeo = new THREE.TorusGeometry(sphereRadius*1.005, sphereRadius*0.008, 12, 256);
-// Orient torus so its ring is in XY plane (vertical facing camera).
-// Torus default: ring in XY plane already? Actually default torus ring is in XY plane with axis along Z.
-// We want ring in XY plane (so its axis along Z) - that's default. Good.
-const prMat = new THREE.ShaderMaterial({
-  vertexShader: `
-    varying vec2 vUv;
-    void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }
-  `,
-  fragmentShader: `
-    precision highp float;
-    varying vec2 vUv;
-    uniform float uTime;
-    void main(){
-      float around = abs(vUv.y - 0.5)*2.0;
-      float profile = exp(-pow(around*3.0, 2.0));
-      float th = vUv.x * 6.2831853;
-      float beam = 1.0 + 0.4*(0.5 + 0.5*sin(th + 1.2 - uTime*0.2));
-      float flick = 0.95 + 0.05*sin(uTime*7.0 + th*6.0);
-      vec3 col = vec3(1.0, 0.92, 0.75);
-      float b = profile * beam * flick * 1.8;
-      gl_FragColor = vec4(col*b, clamp(b,0.0,1.0));
-    }
-  `,
-  uniforms: { uTime:{value:0} },
+// Photon ring — thin bright ring hugging the event horizon
+const photonGeo = new THREE.TorusGeometry(R * 1.03, 0.012 * R, 12, 256);
+const photonMat = new THREE.MeshBasicMaterial({
+  color: 0xfff6d8,
   transparent: true,
+  opacity: 0.95,
   blending: THREE.AdditiveBlending,
-  depthWrite: false,
-  side: THREE.DoubleSide
+  depthWrite: false
 });
-const photonRing = new THREE.Mesh(prGeo, prMat);
+const photonRing = new THREE.Mesh(photonGeo, photonMat);
 scene.add(photonRing);
 
-// A second slightly larger fainter photon ring halo
-const prGeo2 = new THREE.TorusGeometry(sphereRadius*1.025, sphereRadius*0.025, 10, 192);
-const prMat2 = prMat.clone();
-prMat2.uniforms = { uTime: prMat.uniforms.uTime };
-const photonRing2 = new THREE.Mesh(prGeo2, prMat2);
-scene.add(photonRing2);
+// Secondary wider photon glow
+const photonGlowGeo = new THREE.TorusGeometry(R * 1.06, 0.04 * R, 12, 256);
+const photonGlowMat = new THREE.MeshBasicMaterial({
+  color: 0xffcf88,
+  transparent: true,
+  opacity: 0.45,
+  blending: THREE.AdditiveBlending,
+  depthWrite: false
+});
+scene.add(new THREE.Mesh(photonGlowGeo, photonGlowMat));
 
-// ---------- Resize ----------
+// Gravitational lensing arcs — the far side of the disk bent up over and under the sphere.
+// Approximate with thin torus bands above and below the horizon.
+function makeLensArc(yOffset, radius, tube, color, opacity) {
+  const geo = new THREE.TorusGeometry(radius, tube, 16, 256);
+  const mat = new THREE.MeshBasicMaterial({
+    color: color,
+    transparent: true,
+    opacity: opacity,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false,
+    depthTest: true
+  });
+  const m = new THREE.Mesh(geo, mat);
+  m.position.y = yOffset;
+  return m;
+}
+
+// Upper lensed arc (far-side disk bent over the top)
+const arcTop1 = makeLensArc( 0.38 * R, 1.15 * R, 0.055 * R, 0xffd8a0, 0.9);
+const arcTop2 = makeLensArc( 0.55 * R, 1.35 * R, 0.045 * R, 0xffb870, 0.65);
+const arcTop3 = makeLensArc( 0.72 * R, 1.60 * R, 0.035 * R, 0xff9955, 0.45);
+scene.add(arcTop1, arcTop2, arcTop3);
+
+// Lower lensed arc (mirrored under the bottom)
+const arcBot1 = makeLensArc(-0.38 * R, 1.15 * R, 0.055 * R, 0xffd8a0, 0.9);
+const arcBot2 = makeLensArc(-0.55 * R, 1.35 * R, 0.045 * R, 0xffb870, 0.65);
+const arcBot3 = makeLensArc(-0.72 * R, 1.60 * R, 0.035 * R, 0xff9955, 0.45);
+scene.add(arcBot1, arcBot2, arcBot3);
+
+// Soft halo around the shadow — faint outer glow ring
+const haloGeo = new THREE.TorusGeometry(R * 1.25, 0.18 * R, 12, 256);
+const haloMat = new THREE.MeshBasicMaterial({
+  color: 0xffb070,
+  transparent: true,
+  opacity: 0.18,
+  blending: THREE.AdditiveBlending,
+  depthWrite: false
+});
+scene.add(new THREE.Mesh(haloGeo, haloMat));
+
+// Arc shimmer uniforms for time-based flicker
+const arcMeshes = [arcTop1, arcTop2, arcTop3, arcBot1, arcBot2, arcBot3];
+
+// Render loop driven by timestamp
+const clock = { start: performance.now() };
+function animate() {
+  try {
+    const t = (performance.now() - clock.start) / 1000;
+    diskUniforms.uTime.value = t;
+
+    // subtle flicker on lensing arcs
+    for (let i = 0; i < arcMeshes.length; i++) {
+      const m = arcMeshes[i];
+      const base = m.material.userData.baseOpacity ?? m.material.opacity;
+      if (m.material.userData.baseOpacity === undefined) m.material.userData.baseOpacity = m.material.opacity;
+      const flick = 0.88 + 0.14 * Math.sin(t * 2.3 + i * 1.7) + 0.06 * Math.sin(t * 5.1 + i * 0.9);
+      m.material.opacity = base * flick;
+    }
+
+    // slight photon ring pulse
+    photonMat.opacity = 0.9 + 0.08 * Math.sin(t * 1.7);
+    photonGlowMat.opacity = 0.42 + 0.08 * Math.sin(t * 2.1 + 1.0);
+
+    renderer.render(scene, camera);
+    requestAnimationFrame(animate);
+  } catch (e) {
+    console.error(e);
+    requestAnimationFrame(animate);
+  }
+}
+requestAnimationFrame(animate);
+
 window.addEventListener('resize', () => {
-  camera.aspect = window.innerWidth/window.innerHeight;
+  camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-// ---------- Render Loop ----------
-const startTime = performance.now();
-function animate(){
-  try {
-    const t = (performance.now() - startTime) * 0.001;
-    diskMat.uniforms.uTime.value = t;
-    arcTopMat.uniforms.uTime.value = t;
-    arcBotMat.uniforms.uTime.value = t;
-    glowTopMat.uniforms.uTime.value = t;
-    glowBotMat.uniforms.uTime.value = t;
-    prMat.uniforms.uTime.value = t;
-    renderer.render(scene, camera);
-  } catch(e) {
-    console.error(e);
-  }
-  requestAnimationFrame(animate);
-}
-animate();
-
-} catch(err) {
+} catch (err) {
   console.error(err);
-  document.body.style.background = '#000';
+  document.body.innerHTML = '<div style="color:#aaa;font-family:sans-serif;padding:20px;">' + err.message + '</div>';
 }
 </script>
 </body>

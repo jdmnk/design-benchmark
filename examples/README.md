@@ -41,28 +41,12 @@ Config: [`config/examples/black-hole-spin.config.json`](../config/examples/black
 
 [![black-hole-spin — animated grid](black-hole-spin/grid-anim.webp)](black-hole-spin/grid.mp4)
 
-**Run #2** — a second set of generations for the animated brief ([grid video](black-hole-spin/run-2/grid.mp4)).
-Switch between runs in the [web app](../web).
-
-[![black-hole-spin run 2 — animated grid](black-hole-spin/run-2/grid-anim.webp)](black-hole-spin/run-2/grid.mp4)
-
-**Run #3** — the original animated run from before the lineup swap (Mistral Small 4
+**Run #2** — the original animated run from before the lineup swap (Mistral Small 4
 instead of Kimi K2.7 Code), recovered from git history and re-rendered through the current
-pipeline ([grid video](black-hole-spin/run-3/grid.mp4)). Switch between runs in the
+pipeline ([grid video](black-hole-spin/run-2/grid.mp4)). Switch between runs in the
 [web app](../web).
 
-[![black-hole-spin run 3 — animated grid](black-hole-spin/run-3/grid-anim.webp)](black-hole-spin/run-3/grid.mp4)
-
-## black-hole-css — the same spinning black hole, in pure CSS 🎬
-
-The black-hole-spin scene with **no JavaScript, no canvas, no three.js** — a spinning
-Gargantua (event horizon, edge-on accretion disk, lensing arcs, photon ring) built entirely
-from HTML + CSS animations. A direct WebGL-vs-CSS comparison of the same brief. **[Grid
-video](black-hole-css/grid.mp4)** · per-model clips in
-[`black-hole-css/clips/`](black-hole-css/clips). Config:
-[`config/examples/black-hole-css.config.json`](../config/examples/black-hole-css.config.json).
-
-[![black-hole-css — animated grid](black-hole-css/grid-anim.webp)](black-hole-css/grid.mp4)
+[![black-hole-spin run 2 — animated grid](black-hole-spin/run-2/grid-anim.webp)](black-hole-spin/run-2/grid.mp4)
 
 ## ringed-giant — a Saturn-like ringed gas giant in three.js 🎬
 
@@ -76,6 +60,17 @@ clips in [`ringed-giant/clips/`](ringed-giant/clips). Config:
 [`config/examples/ringed-giant.config.json`](../config/examples/ringed-giant.config.json).
 
 [![ringed-giant — animated grid](ringed-giant/grid-anim.webp)](ringed-giant/grid.mp4)
+
+## black-hole-css — the same spinning black hole, in pure CSS 🎬
+
+The black-hole-spin scene with **no JavaScript, no canvas, no three.js** — a spinning
+Gargantua (event horizon, edge-on accretion disk, lensing arcs, photon ring) built entirely
+from HTML + CSS animations. A direct WebGL-vs-CSS comparison of the same brief. **[Grid
+video](black-hole-css/grid.mp4)** · per-model clips in
+[`black-hole-css/clips/`](black-hole-css/clips). Config:
+[`config/examples/black-hole-css.config.json`](../config/examples/black-hole-css.config.json).
+
+[![black-hole-css — animated grid](black-hole-css/grid-anim.webp)](black-hole-css/grid.mp4)
 
 ## pulsar-css — a pulsing pulsar in pure CSS 🎬
 

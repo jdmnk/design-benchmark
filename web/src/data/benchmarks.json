@@ -19,10 +19,10 @@
       "columns": 3,
       "runs": [
         {
-          "label": "Run 2",
+          "label": "Run 1",
           "grid": {
-            "image": "grids/black-hole-spin-2.webp",
-            "video": "grids/black-hole-spin-2.mp4"
+            "image": "grids/black-hole-spin.webp",
+            "video": "grids/black-hole-spin.mp4"
           },
           "models": [
             {
@@ -35,7 +35,7 @@
               "costUsd": 0.0434934,
               "truncated": false,
               "error": null,
-              "page": "pages/black-hole-spin-2/glm-5.2.html"
+              "page": "pages/black-hole-spin/glm-5.2.html"
             },
             {
               "label": "Grok 4.3",
@@ -47,7 +47,7 @@
               "costUsd": 0.00745435,
               "truncated": false,
               "error": null,
-              "page": "pages/black-hole-spin-2/grok-4.3.html"
+              "page": "pages/black-hole-spin/grok-4.3.html"
             },
             {
               "label": "GPT-5.4 mini",
@@ -59,7 +59,7 @@
               "costUsd": 0.0229455,
               "truncated": false,
               "error": null,
-              "page": "pages/black-hole-spin-2/gpt-5.4-mini.html"
+              "page": "pages/black-hole-spin/gpt-5.4-mini.html"
             },
             {
               "label": "Claude Haiku 4.5",
@@ -71,7 +71,7 @@
               "costUsd": 0.018659,
               "truncated": false,
               "error": null,
-              "page": "pages/black-hole-spin-2/claude-haiku-4.5.html"
+              "page": "pages/black-hole-spin/claude-haiku-4.5.html"
             },
             {
               "label": "Qwen3.7 Plus",
@@ -83,7 +83,7 @@
               "costUsd": 0.00826752,
               "truncated": false,
               "error": null,
-              "page": "pages/black-hole-spin-2/qwen3.7-plus.html"
+              "page": "pages/black-hole-spin/qwen3.7-plus.html"
             },
             {
               "label": "Gemini 3.1 Flash-Lite",
@@ -95,7 +95,7 @@
               "costUsd": 0.00305125,
               "truncated": false,
               "error": null,
-              "page": "pages/black-hole-spin-2/gemini-3.1-flash-lite.html"
+              "page": "pages/black-hole-spin/gemini-3.1-flash-lite.html"
             },
             {
               "label": "DeepSeek V4 Pro",
@@ -107,7 +107,7 @@
               "costUsd": 0.05591488,
               "truncated": false,
               "error": null,
-              "page": "pages/black-hole-spin-2/deepseek-v4-pro.html"
+              "page": "pages/black-hole-spin/deepseek-v4-pro.html"
             },
             {
               "label": "Kimi K2.7 Code",
@@ -119,7 +119,7 @@
               "costUsd": 0.0814037,
               "truncated": false,
               "error": null,
-              "page": "pages/black-hole-spin-2/kimi-k2.7-code.html"
+              "page": "pages/black-hole-spin/kimi-k2.7-code.html"
             },
             {
               "label": "Kimi K2.6",
@@ -131,136 +131,17 @@
               "costUsd": 0.02011812,
               "truncated": false,
               "error": null,
-              "page": "pages/black-hole-spin-2/kimi-k2.6.html"
+              "page": "pages/black-hole-spin/kimi-k2.6.html"
             }
           ],
           "rendered": 9,
           "total": 9
         },
         {
-          "label": "Run 1",
+          "label": "Run 2",
           "grid": {
-            "image": "grids/black-hole-spin.webp",
-            "video": "grids/black-hole-spin.mp4"
-          },
-          "models": [
-            {
-              "label": "GLM 5.2",
-              "modelId": "z-ai/glm-5.2",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 572604,
-              "outputTokens": 12313,
-              "costUsd": 0.03868746,
-              "truncated": false,
-              "error": null,
-              "page": "pages/black-hole-spin/glm-5.2.html"
-            },
-            {
-              "label": "Grok 4.3",
-              "modelId": "x-ai/grok-4.3",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 39681,
-              "outputTokens": 2972,
-              "costUsd": 0.00840185,
-              "truncated": false,
-              "error": null,
-              "page": "pages/black-hole-spin/grok-4.3.html"
-            },
-            {
-              "label": "GPT-5.4 mini",
-              "modelId": "openai/gpt-5.4-mini",
-              "provider": "openrouter",
-              "status": "blank",
-              "elapsedMs": 29704,
-              "outputTokens": 4388,
-              "costUsd": 0.020331,
-              "truncated": false,
-              "error": "JS error: Unexpected token '*'",
-              "page": "pages/black-hole-spin/gpt-5.4-mini.html"
-            },
-            {
-              "label": "Claude Haiku 4.5",
-              "modelId": "anthropic/claude-haiku-4.5",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 29884,
-              "outputTokens": 5720,
-              "costUsd": 0.029514,
-              "truncated": false,
-              "error": null,
-              "page": "pages/black-hole-spin/claude-haiku-4.5.html"
-            },
-            {
-              "label": "Qwen3.7 Plus",
-              "modelId": "qwen/qwen3.7-plus",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 563284,
-              "outputTokens": 7882,
-              "costUsd": 0.01034752,
-              "truncated": false,
-              "error": null,
-              "page": "pages/black-hole-spin/qwen3.7-plus.html"
-            },
-            {
-              "label": "Gemini 3.1 Flash-Lite",
-              "modelId": "google/gemini-3.1-flash-lite",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 5463,
-              "outputTokens": 1872,
-              "costUsd": 0.00300775,
-              "truncated": false,
-              "error": null,
-              "page": "pages/black-hole-spin/gemini-3.1-flash-lite.html"
-            },
-            {
-              "label": "DeepSeek V4 Pro",
-              "modelId": "deepseek/deepseek-v4-pro",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 588124,
-              "outputTokens": 4664,
-              "costUsd": 0.014078688,
-              "truncated": false,
-              "error": null,
-              "page": "pages/black-hole-spin/deepseek-v4-pro.html"
-            },
-            {
-              "label": "Kimi K2.7 Code",
-              "modelId": "moonshotai/kimi-k2.7-code",
-              "provider": "openrouter",
-              "status": "blank",
-              "elapsedMs": 529680,
-              "outputTokens": 28000,
-              "costUsd": 0.1127448,
-              "truncated": true,
-              "error": null,
-              "page": "pages/black-hole-spin/kimi-k2.7-code.html"
-            },
-            {
-              "label": "Kimi K2.6",
-              "modelId": "moonshotai/kimi-k2.6",
-              "provider": "openrouter",
-              "status": "blank",
-              "elapsedMs": 16124,
-              "outputTokens": 3776,
-              "costUsd": 0.0133936,
-              "truncated": false,
-              "error": "JS error: Unexpected token '*'",
-              "page": "pages/black-hole-spin/kimi-k2.6.html"
-            }
-          ],
-          "rendered": 6,
-          "total": 9
-        },
-        {
-          "label": "Run 3",
-          "grid": {
-            "image": "grids/black-hole-spin-3.webp",
-            "video": "grids/black-hole-spin-3.mp4"
+            "image": "grids/black-hole-spin-2.webp",
+            "video": "grids/black-hole-spin-2.mp4"
           },
           "models": [
             {
@@ -273,7 +154,7 @@
               "costUsd": null,
               "truncated": false,
               "error": null,
-              "page": "pages/black-hole-spin-3/glm-5.2.html"
+              "page": "pages/black-hole-spin-2/glm-5.2.html"
             },
             {
               "label": "Grok 4.3",
@@ -285,7 +166,7 @@
               "costUsd": null,
               "truncated": false,
               "error": null,
-              "page": "pages/black-hole-spin-3/grok-4.3.html"
+              "page": "pages/black-hole-spin-2/grok-4.3.html"
             },
             {
               "label": "GPT-5.4 mini",
@@ -297,7 +178,7 @@
               "costUsd": null,
               "truncated": false,
               "error": null,
-              "page": "pages/black-hole-spin-3/gpt-5.4-mini.html"
+              "page": "pages/black-hole-spin-2/gpt-5.4-mini.html"
             },
             {
               "label": "Claude Haiku 4.5",
@@ -309,7 +190,7 @@
               "costUsd": null,
               "truncated": false,
               "error": null,
-              "page": "pages/black-hole-spin-3/claude-haiku-4.5.html"
+              "page": "pages/black-hole-spin-2/claude-haiku-4.5.html"
             },
             {
               "label": "Qwen3.7 Plus",
@@ -321,7 +202,7 @@
               "costUsd": null,
               "truncated": false,
               "error": null,
-              "page": "pages/black-hole-spin-3/qwen3.7-plus.html"
+              "page": "pages/black-hole-spin-2/qwen3.7-plus.html"
             },
             {
               "label": "Gemini 3.1 Flash-Lite",
@@ -333,7 +214,7 @@
               "costUsd": null,
               "truncated": false,
               "error": null,
-              "page": "pages/black-hole-spin-3/gemini-3.1-flash-lite.html"
+              "page": "pages/black-hole-spin-2/gemini-3.1-flash-lite.html"
             },
             {
               "label": "DeepSeek V4 Pro",
@@ -345,7 +226,7 @@
               "costUsd": null,
               "truncated": false,
               "error": null,
-              "page": "pages/black-hole-spin-3/deepseek-v4-pro.html"
+              "page": "pages/black-hole-spin-2/deepseek-v4-pro.html"
             },
             {
               "label": "Kimi K2.6",
@@ -357,7 +238,7 @@
               "costUsd": null,
               "truncated": false,
               "error": null,
-              "page": "pages/black-hole-spin-3/kimi-k2.6.html"
+              "page": "pages/black-hole-spin-2/kimi-k2.6.html"
             },
             {
               "label": "Mistral Small 4",
@@ -369,146 +250,7 @@
               "costUsd": null,
               "truncated": false,
               "error": null,
-              "page": "pages/black-hole-spin-3/mistral-small-4.html"
-            }
-          ],
-          "rendered": 9,
-          "total": 9
-        }
-      ]
-    },
-    {
-      "id": "black-hole-css",
-      "title": "Black Hole Css",
-      "description": "The spinning 'Gargantua' black hole built in pure HTML + CSS — no JavaScript, no canvas.",
-      "prompt": "Build a spinning supermassive black hole — the 'Gargantua' look from the film Interstellar — as a full-screen scene in PURE CSS (no JavaScript, no canvas). A 5-second clip is captured and looped, so the rotation matters as much as the still.\n\nSTART FROM THIS EXACT TEMPLATE. The skeleton, CSS reset, dark-space background, starfield, and the centered .blackhole box (sized to the event horizon) are ALREADY DONE — keep them exactly as given. Your only job is the black-hole rendering: write the CSS for the elements inside .blackhole and the rotation animation. Keep it TIGHT — a handful of gradients and shapes is plenty; do NOT write hundreds of lines.\n\n```html\n<!doctype html>\n<html>\n<head>\n<meta charset=\"utf-8\">\n<style>\n  * { margin: 0; box-sizing: border-box; }\n  html, body { width: 100%; height: 100%; overflow: hidden; background: #03040a; }\n  .scene {\n    position: fixed; inset: 0; display: grid; place-items: center;\n    background: radial-gradient(120% 120% at 50% 50%, #0b0d16 0%, #03040a 62%);\n  }\n  /* Starfield — done; leave it as-is. */\n  .stars { position: absolute; inset: 0; opacity: .85;\n    background-image:\n      radial-gradient(1px 1px at 15% 22%, #fff, transparent),\n      radial-gradient(1px 1px at 68% 14%, #cbd5ff, transparent),\n      radial-gradient(1px 1px at 82% 61%, #fff, transparent),\n      radial-gradient(1px 1px at 34% 78%, #e6ecff, transparent),\n      radial-gradient(1px 1px at 52% 41%, #fff, transparent),\n      radial-gradient(1px 1px at 9% 66%, #cfd8ff, transparent),\n      radial-gradient(1px 1px at 91% 33%, #fff, transparent),\n      radial-gradient(1px 1px at 26% 9%, #fff, transparent),\n      radial-gradient(1px 1px at 74% 88%, #dfe6ff, transparent);\n  }\n  /* The black hole is centered here; its size = the event-horizon diameter (~30% of viewport height). */\n  .blackhole { position: relative; width: 30vh; height: 30vh; }\n\n  /* ==================== YOUR CSS BELOW ==================== */\n  /* Style the elements inside .blackhole and animate the disk's rotation —\n     exactly ONE full turn over the 5s clip so it loops seamlessly. */\n\n</style>\n</head>\n<body>\n  <div class=\"scene\">\n    <div class=\"stars\"></div>\n    <div class=\"blackhole\">\n      <!-- Style these (add or rename as you need): -->\n      <div class=\"disk\"></div>         <!-- bright accretion disk, viewed edge-on -->\n      <div class=\"lensing\"></div>      <!-- lensing halo: arcs over the top and mirrored under the bottom -->\n      <div class=\"horizon\"></div>      <!-- the solid-black event-horizon sphere -->\n      <div class=\"photon-ring\"></div>  <!-- thin bright ring hugging the horizon edge -->\n    </div>\n  </div>\n</body>\n</html>\n```\n\nRender this exact composition (everything centered, frame fixed):\n- horizon: a solid-black disc filling .blackhole, with a crisp edge.\n- disk: a bright accretion disk seen nearly EDGE-ON — a wide, flattened bright band crossing the middle of the black disc and extending well past it on both sides (roughly 2.5x wider than the horizon). Hot white-yellow on the inner edge fading outward to amber then deep orange (#fff3d0 -> #ffae3b -> #c8551a). Make one side slightly brighter (relativistic beaming).\n- lensing: the signature halo — bright arcs bending UP and OVER the top of the horizon AND mirrored UNDER the bottom (not just a flat band).\n- photon-ring: a thin, bright ring hugging the very edge of the horizon.\n- Background stays near-black with the faint static starfield from the template (do not animate the stars).\n\nMotion (the point of this benchmark — must read clearly and loop seamlessly in 5s):\n- Give the disk visible azimuthal structure (brightness clumps, streaks, or banding — a conic-gradient works well) and ROTATE it EXACTLY one full turn over the 5-second clip. A featureless band would look static.\n- Optional subtle shimmer on the disk and lensing arcs. The frame stays fixed; keep the black hole centered and the disk horizontal.\n\nReturn the COMPLETE HTML document — the template with your CSS filled in — and nothing else.",
-      "systemPrompt": "You are a master of pure CSS art and animation. Output a SINGLE self-contained HTML document using ONLY HTML and CSS — no JavaScript, no <canvas>, no <script>, no external resources (no images, no web fonts, no network). Every bit of MOTION must come from CSS @keyframes animations or transitions. You may freely use CSS gradients, radial/conic gradients, box-shadow, filter (blur/brightness), clip-path, transforms, mix-blend-mode, and inline SVG shapes styled/animated purely with CSS.\n\nRELIABILITY RULES (a 5-second clip is captured frame-by-frame; the harness drives CSS animation timelines deterministically):\n- Set an explicit dark background on <body> as the very FIRST style rule so the page never renders blank.\n- The scene fills the entire viewport (100vw × 100vh), is centered, auto-starts, and needs no interaction.\n- Make the animation LOOP SEAMLESSLY within the clip: use periods that divide evenly into 5 seconds (e.g. 1s, 2.5s, 5s) and rotations of exactly one full turn (or a whole number of turns) per 5s, so the first and last frame match.\n- Keep it performant: prefer transform/opacity animations; avoid thousands of elements.\n- Ensure the document is complete with every tag closed; if running long, simplify the design rather than let it be cut off. Absolutely NO JavaScript.",
-      "render": {
-        "viewport": "1280×800",
-        "fullPage": false,
-        "waitMs": 4000,
-        "deterministic": true,
-        "video": {
-          "durationMs": 5000,
-          "fps": 24
-        }
-      },
-      "columns": 3,
-      "runs": [
-        {
-          "label": "Run 1",
-          "grid": {
-            "image": "grids/black-hole-css.webp",
-            "video": "grids/black-hole-css.mp4"
-          },
-          "models": [
-            {
-              "label": "GLM 5.2",
-              "modelId": "z-ai/glm-5.2",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 229628,
-              "outputTokens": 13748,
-              "costUsd": 0.0436884,
-              "truncated": false,
-              "error": null,
-              "page": "pages/black-hole-css/glm-5.2.html"
-            },
-            {
-              "label": "Grok 4.3",
-              "modelId": "x-ai/grok-4.3",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 20747,
-              "outputTokens": 1704,
-              "costUsd": 0.00596965,
-              "truncated": false,
-              "error": null,
-              "page": "pages/black-hole-css/grok-4.3.html"
-            },
-            {
-              "label": "GPT-5.4 mini",
-              "modelId": "openai/gpt-5.4-mini",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 13553,
-              "outputTokens": 2080,
-              "costUsd": 0.01038225,
-              "truncated": false,
-              "error": null,
-              "page": "pages/black-hole-css/gpt-5.4-mini.html"
-            },
-            {
-              "label": "Claude Haiku 4.5",
-              "modelId": "anthropic/claude-haiku-4.5",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 28603,
-              "outputTokens": 4565,
-              "costUsd": 0.02439,
-              "truncated": false,
-              "error": null,
-              "page": "pages/black-hole-css/claude-haiku-4.5.html"
-            },
-            {
-              "label": "Qwen3.7 Plus",
-              "modelId": "qwen/qwen3.7-plus",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 713320,
-              "outputTokens": 27175,
-              "costUsd": 0.03525632,
-              "truncated": false,
-              "error": null,
-              "page": "pages/black-hole-css/qwen3.7-plus.html"
-            },
-            {
-              "label": "Gemini 3.1 Flash-Lite",
-              "modelId": "google/gemini-3.1-flash-lite",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 4554,
-              "outputTokens": 1363,
-              "costUsd": 0.0024095,
-              "truncated": false,
-              "error": null,
-              "page": "pages/black-hole-css/gemini-3.1-flash-lite.html"
-            },
-            {
-              "label": "DeepSeek V4 Pro",
-              "modelId": "deepseek/deepseek-v4-pro",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 361097,
-              "outputTokens": 17729,
-              "costUsd": 0.0576451425,
-              "truncated": false,
-              "error": null,
-              "page": "pages/black-hole-css/deepseek-v4-pro.html"
-            },
-            {
-              "label": "Kimi K2.7 Code",
-              "modelId": "moonshotai/kimi-k2.7-code",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 270243,
-              "outputTokens": 10197,
-              "costUsd": 0.040407744,
-              "truncated": false,
-              "error": null,
-              "page": "pages/black-hole-css/kimi-k2.7-code.html"
-            },
-            {
-              "label": "Kimi K2.6",
-              "modelId": "moonshotai/kimi-k2.6",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 687559,
-              "outputTokens": 29190,
-              "costUsd": 0.100302372,
-              "truncated": false,
-              "error": null,
-              "page": "pages/black-hole-css/kimi-k2.6.html"
+              "page": "pages/black-hole-spin-2/mistral-small-4.html"
             }
           ],
           "rendered": 9,
@@ -648,6 +390,145 @@
               "truncated": false,
               "error": null,
               "page": "pages/ringed-giant/kimi-k2.6.html"
+            }
+          ],
+          "rendered": 9,
+          "total": 9
+        }
+      ]
+    },
+    {
+      "id": "black-hole-css",
+      "title": "Black Hole Css",
+      "description": "The spinning 'Gargantua' black hole built in pure HTML + CSS — no JavaScript, no canvas.",
+      "prompt": "Build a spinning supermassive black hole — the 'Gargantua' look from the film Interstellar — as a full-screen scene in PURE CSS (no JavaScript, no canvas). A 5-second clip is captured and looped, so the rotation matters as much as the still.\n\nSTART FROM THIS EXACT TEMPLATE. The skeleton, CSS reset, dark-space background, starfield, and the centered .blackhole box (sized to the event horizon) are ALREADY DONE — keep them exactly as given. Your only job is the black-hole rendering: write the CSS for the elements inside .blackhole and the rotation animation. Keep it TIGHT — a handful of gradients and shapes is plenty; do NOT write hundreds of lines.\n\n```html\n<!doctype html>\n<html>\n<head>\n<meta charset=\"utf-8\">\n<style>\n  * { margin: 0; box-sizing: border-box; }\n  html, body { width: 100%; height: 100%; overflow: hidden; background: #03040a; }\n  .scene {\n    position: fixed; inset: 0; display: grid; place-items: center;\n    background: radial-gradient(120% 120% at 50% 50%, #0b0d16 0%, #03040a 62%);\n  }\n  /* Starfield — done; leave it as-is. */\n  .stars { position: absolute; inset: 0; opacity: .85;\n    background-image:\n      radial-gradient(1px 1px at 15% 22%, #fff, transparent),\n      radial-gradient(1px 1px at 68% 14%, #cbd5ff, transparent),\n      radial-gradient(1px 1px at 82% 61%, #fff, transparent),\n      radial-gradient(1px 1px at 34% 78%, #e6ecff, transparent),\n      radial-gradient(1px 1px at 52% 41%, #fff, transparent),\n      radial-gradient(1px 1px at 9% 66%, #cfd8ff, transparent),\n      radial-gradient(1px 1px at 91% 33%, #fff, transparent),\n      radial-gradient(1px 1px at 26% 9%, #fff, transparent),\n      radial-gradient(1px 1px at 74% 88%, #dfe6ff, transparent);\n  }\n  /* The black hole is centered here; its size = the event-horizon diameter (~30% of viewport height). */\n  .blackhole { position: relative; width: 30vh; height: 30vh; }\n\n  /* ==================== YOUR CSS BELOW ==================== */\n  /* Style the elements inside .blackhole and animate the disk's rotation —\n     exactly ONE full turn over the 5s clip so it loops seamlessly. */\n\n</style>\n</head>\n<body>\n  <div class=\"scene\">\n    <div class=\"stars\"></div>\n    <div class=\"blackhole\">\n      <!-- Style these (add or rename as you need): -->\n      <div class=\"disk\"></div>         <!-- bright accretion disk, viewed edge-on -->\n      <div class=\"lensing\"></div>      <!-- lensing halo: arcs over the top and mirrored under the bottom -->\n      <div class=\"horizon\"></div>      <!-- the solid-black event-horizon sphere -->\n      <div class=\"photon-ring\"></div>  <!-- thin bright ring hugging the horizon edge -->\n    </div>\n  </div>\n</body>\n</html>\n```\n\nRender this exact composition (everything centered, frame fixed):\n- horizon: a solid-black disc filling .blackhole, with a crisp edge.\n- disk: a bright accretion disk seen nearly EDGE-ON — a wide, flattened bright band crossing the middle of the black disc and extending well past it on both sides (roughly 2.5x wider than the horizon). Hot white-yellow on the inner edge fading outward to amber then deep orange (#fff3d0 -> #ffae3b -> #c8551a). Make one side slightly brighter (relativistic beaming).\n- lensing: the signature halo — bright arcs bending UP and OVER the top of the horizon AND mirrored UNDER the bottom (not just a flat band).\n- photon-ring: a thin, bright ring hugging the very edge of the horizon.\n- Background stays near-black with the faint static starfield from the template (do not animate the stars).\n\nMotion (the point of this benchmark — must read clearly and loop seamlessly in 5s):\n- Give the disk visible azimuthal structure (brightness clumps, streaks, or banding — a conic-gradient works well) and ROTATE it EXACTLY one full turn over the 5-second clip. A featureless band would look static.\n- Optional subtle shimmer on the disk and lensing arcs. The frame stays fixed; keep the black hole centered and the disk horizontal.\n\nReturn the COMPLETE HTML document — the template with your CSS filled in — and nothing else.",
+      "systemPrompt": "You are a master of pure CSS art and animation. Output a SINGLE self-contained HTML document using ONLY HTML and CSS — no JavaScript, no <canvas>, no <script>, no external resources (no images, no web fonts, no network). Every bit of MOTION must come from CSS @keyframes animations or transitions. You may freely use CSS gradients, radial/conic gradients, box-shadow, filter (blur/brightness), clip-path, transforms, mix-blend-mode, and inline SVG shapes styled/animated purely with CSS.\n\nRELIABILITY RULES (a 5-second clip is captured frame-by-frame; the harness drives CSS animation timelines deterministically):\n- Set an explicit dark background on <body> as the very FIRST style rule so the page never renders blank.\n- The scene fills the entire viewport (100vw × 100vh), is centered, auto-starts, and needs no interaction.\n- Make the animation LOOP SEAMLESSLY within the clip: use periods that divide evenly into 5 seconds (e.g. 1s, 2.5s, 5s) and rotations of exactly one full turn (or a whole number of turns) per 5s, so the first and last frame match.\n- Keep it performant: prefer transform/opacity animations; avoid thousands of elements.\n- Ensure the document is complete with every tag closed; if running long, simplify the design rather than let it be cut off. Absolutely NO JavaScript.",
+      "render": {
+        "viewport": "1280×800",
+        "fullPage": false,
+        "waitMs": 4000,
+        "deterministic": true,
+        "video": {
+          "durationMs": 5000,
+          "fps": 24
+        }
+      },
+      "columns": 3,
+      "runs": [
+        {
+          "label": "Run 1",
+          "grid": {
+            "image": "grids/black-hole-css.webp",
+            "video": "grids/black-hole-css.mp4"
+          },
+          "models": [
+            {
+              "label": "GLM 5.2",
+              "modelId": "z-ai/glm-5.2",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 229628,
+              "outputTokens": 13748,
+              "costUsd": 0.0436884,
+              "truncated": false,
+              "error": null,
+              "page": "pages/black-hole-css/glm-5.2.html"
+            },
+            {
+              "label": "Grok 4.3",
+              "modelId": "x-ai/grok-4.3",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 20747,
+              "outputTokens": 1704,
+              "costUsd": 0.00596965,
+              "truncated": false,
+              "error": null,
+              "page": "pages/black-hole-css/grok-4.3.html"
+            },
+            {
+              "label": "GPT-5.4 mini",
+              "modelId": "openai/gpt-5.4-mini",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 13553,
+              "outputTokens": 2080,
+              "costUsd": 0.01038225,
+              "truncated": false,
+              "error": null,
+              "page": "pages/black-hole-css/gpt-5.4-mini.html"
+            },
+            {
+              "label": "Claude Haiku 4.5",
+              "modelId": "anthropic/claude-haiku-4.5",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 28603,
+              "outputTokens": 4565,
+              "costUsd": 0.02439,
+              "truncated": false,
+              "error": null,
+              "page": "pages/black-hole-css/claude-haiku-4.5.html"
+            },
+            {
+              "label": "Qwen3.7 Plus",
+              "modelId": "qwen/qwen3.7-plus",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 713320,
+              "outputTokens": 27175,
+              "costUsd": 0.03525632,
+              "truncated": false,
+              "error": null,
+              "page": "pages/black-hole-css/qwen3.7-plus.html"
+            },
+            {
+              "label": "Gemini 3.1 Flash-Lite",
+              "modelId": "google/gemini-3.1-flash-lite",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 4554,
+              "outputTokens": 1363,
+              "costUsd": 0.0024095,
+              "truncated": false,
+              "error": null,
+              "page": "pages/black-hole-css/gemini-3.1-flash-lite.html"
+            },
+            {
+              "label": "DeepSeek V4 Pro",
+              "modelId": "deepseek/deepseek-v4-pro",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 361097,
+              "outputTokens": 17729,
+              "costUsd": 0.0576451425,
+              "truncated": false,
+              "error": null,
+              "page": "pages/black-hole-css/deepseek-v4-pro.html"
+            },
+            {
+              "label": "Kimi K2.7 Code",
+              "modelId": "moonshotai/kimi-k2.7-code",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 270243,
+              "outputTokens": 10197,
+              "costUsd": 0.040407744,
+              "truncated": false,
+              "error": null,
+              "page": "pages/black-hole-css/kimi-k2.7-code.html"
+            },
+            {
+              "label": "Kimi K2.6",
+              "modelId": "moonshotai/kimi-k2.6",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 687559,
+              "outputTokens": 29190,
+              "costUsd": 0.100302372,
+              "truncated": false,
+              "error": null,
+              "page": "pages/black-hole-css/kimi-k2.6.html"
             }
           ],
           "rendered": 9,

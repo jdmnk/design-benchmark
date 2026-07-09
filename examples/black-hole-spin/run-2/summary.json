@@ -1,7 +1,7 @@
 {
-  "name": "black-hole-spin",
+  "name": "black-hole-spin-archived",
   "prompt": "Render a realistic supermassive black hole — the 'Gargantua' look from the film Interstellar — as a full-screen three.js scene (100vw × 100vh, auto-starting, no user interaction). A 5-SECOND CLIP of the scene is captured, so the motion matters as much as the still composition.\n\nComposition (match exactly so results are comparable):\n- The black hole (event horizon) is a perfectly black sphere centered in the frame, its diameter about 28% of the viewport height.\n- A bright, thin accretion disk lies in a HORIZONTAL plane around the sphere and is viewed nearly edge-on: the camera sits only about 5–8 degrees above the disk plane, so the disk reads as a near-horizontal bright band cutting across the sphere's middle and extending well past it on both sides.\n- Gravitational lensing: the far side of the disk appears bent UP and OVER the top of the black sphere AND mirrored UNDER the bottom, forming the signature bright halo arcs above and below the horizon (not merely a flat ring). Approximate this with extra bright arcs wrapping over and under the sphere (partial ring/torus geometry works well).\n- A thin, bright photon ring hugs the very edge of the black sphere.\n- Disk coloring: hot white-yellow on the inner edge fading outward to amber then deep orange (#fff3d0 → #ffae3b → #c8551a). Make one side of the disk slightly brighter than the other (relativistic beaming).\n- Background: near-black space with a sparse, dim starfield.\n\nMotion (the point of this benchmark — must be clearly visible within the 5-second clip):\n- The accretion disk rotates around the black hole at roughly 25–40 degrees per second, so a recognizable feature travels a quarter to half a revolution during the clip. Give the disk visible azimuthal structure (brightness clumps, streaks, or turbulent bands) so the rotation reads clearly — a featureless ring would look static.\n- Add subtle shimmering/flicker in the disk and lensing arcs, and slow drift in the beaming highlight. The camera stays FIXED.\n\nKeep the black hole centered and the disk horizontal. Return ONLY a single complete HTML document.",
-  "generatedAt": "2026-07-07T22:35:56.014Z",
+  "generatedAt": "2026-07-08T13:48:50.569Z",
   "models": [
     {
       "slug": "glm-5.2",
@@ -12,14 +12,13 @@
       "htmlExtracted": true,
       "finishReason": "stop",
       "truncated": false,
-      "elapsedMs": 168781,
+      "elapsedMs": 554956,
       "usage": {
         "promptTokens": 779,
-        "completionTokens": 9637,
-        "totalTokens": 10416,
-        "costUsd": 0.0434934
+        "completionTokens": 11571,
+        "totalTokens": 12350
       },
-      "startedAt": "2026-07-07T22:10:19.760Z",
+      "startedAt": "2026-07-02T09:24:41.076Z",
       "render": {
         "rendered": true,
         "blank": false
@@ -34,14 +33,13 @@
       "htmlExtracted": true,
       "finishReason": "stop",
       "truncated": false,
-      "elapsedMs": 20367,
+      "elapsedMs": 22694,
       "usage": {
         "promptTokens": 885,
-        "completionTokens": 2593,
-        "totalTokens": 3478,
-        "costUsd": 0.00745435
+        "completionTokens": 3135,
+        "totalTokens": 4020
       },
-      "startedAt": "2026-07-07T22:10:19.770Z",
+      "startedAt": "2026-07-02T08:37:30.069Z",
       "render": {
         "rendered": true,
         "blank": false
@@ -56,14 +54,13 @@
       "htmlExtracted": true,
       "finishReason": "stop",
       "truncated": false,
-      "elapsedMs": 26689,
+      "elapsedMs": 42863,
       "usage": {
         "promptTokens": 780,
-        "completionTokens": 4969,
-        "totalTokens": 5749,
-        "costUsd": 0.0229455
+        "completionTokens": 4806,
+        "totalTokens": 5586
       },
-      "startedAt": "2026-07-07T22:10:19.771Z",
+      "startedAt": "2026-07-02T08:37:30.069Z",
       "render": {
         "rendered": true,
         "blank": false
@@ -78,14 +75,13 @@
       "htmlExtracted": true,
       "finishReason": "stop",
       "truncated": false,
-      "elapsedMs": 19764,
+      "elapsedMs": 23042,
       "usage": {
         "promptTokens": 914,
-        "completionTokens": 3549,
-        "totalTokens": 4463,
-        "costUsd": 0.018659
+        "completionTokens": 4029,
+        "totalTokens": 4943
       },
-      "startedAt": "2026-07-07T22:10:19.772Z",
+      "startedAt": "2026-07-02T08:37:30.070Z",
       "render": {
         "rendered": true,
         "blank": false
@@ -100,14 +96,13 @@
       "htmlExtracted": true,
       "finishReason": "stop",
       "truncated": false,
-      "elapsedMs": 113747,
+      "elapsedMs": 144715,
       "usage": {
         "promptTokens": 808,
-        "completionTokens": 6257,
-        "totalTokens": 7065,
-        "costUsd": 0.00826752
+        "completionTokens": 6092,
+        "totalTokens": 6900
       },
-      "startedAt": "2026-07-07T22:10:19.773Z",
+      "startedAt": "2026-07-02T08:37:30.071Z",
       "render": {
         "rendered": true,
         "blank": false
@@ -122,14 +117,13 @@
       "htmlExtracted": true,
       "finishReason": "stop",
       "truncated": false,
-      "elapsedMs": 5663,
+      "elapsedMs": 5182,
       "usage": {
-        "promptTokens": 799,
-        "completionTokens": 1901,
-        "totalTokens": 2700,
-        "costUsd": 0.00305125
+        "promptTokens": 797,
+        "completionTokens": 1711,
+        "totalTokens": 2508
       },
-      "startedAt": "2026-07-07T22:10:19.774Z",
+      "startedAt": "2026-07-02T08:37:30.072Z",
       "render": {
         "rendered": true,
         "blank": false
@@ -144,36 +138,13 @@
       "htmlExtracted": true,
       "finishReason": "stop",
       "truncated": false,
-      "elapsedMs": 672206,
+      "elapsedMs": 827149,
       "usage": {
         "promptTokens": 786,
-        "completionTokens": 17437,
-        "totalTokens": 18223,
-        "costUsd": 0.05591488
+        "completionTokens": 3690,
+        "totalTokens": 4476
       },
-      "startedAt": "2026-07-07T22:10:19.775Z",
-      "render": {
-        "rendered": true,
-        "blank": false
-      }
-    },
-    {
-      "slug": "kimi-k2.7-code",
-      "label": "Kimi K2.7 Code",
-      "provider": "openrouter",
-      "modelId": "moonshotai/kimi-k2.7-code",
-      "ok": true,
-      "htmlExtracted": true,
-      "finishReason": "stop",
-      "truncated": false,
-      "elapsedMs": 221798,
-      "usage": {
-        "promptTokens": 784,
-        "completionTokens": 21070,
-        "totalTokens": 21854,
-        "costUsd": 0.0814037
-      },
-      "startedAt": "2026-07-07T22:30:43.836Z",
+      "startedAt": "2026-07-02T09:24:41.085Z",
       "render": {
         "rendered": true,
         "blank": false
@@ -188,14 +159,34 @@
       "htmlExtracted": true,
       "finishReason": "stop",
       "truncated": false,
-      "elapsedMs": 134254,
+      "elapsedMs": 79427,
       "usage": {
         "promptTokens": 784,
-        "completionTokens": 5748,
-        "totalTokens": 6532,
-        "costUsd": 0.02011812
+        "completionTokens": 4713,
+        "totalTokens": 5497
       },
-      "startedAt": "2026-07-07T22:10:19.776Z",
+      "startedAt": "2026-07-02T08:37:30.073Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
+    },
+    {
+      "slug": "mistral-small-4",
+      "label": "Mistral Small 4",
+      "provider": "openrouter",
+      "modelId": "mistralai/mistral-small-2603",
+      "ok": true,
+      "htmlExtracted": true,
+      "finishReason": "stop",
+      "truncated": false,
+      "elapsedMs": 73751,
+      "usage": {
+        "promptTokens": 822,
+        "completionTokens": 13144,
+        "totalTokens": 13966
+      },
+      "startedAt": "2026-07-02T09:24:41.086Z",
       "render": {
         "rendered": true,
         "blank": false

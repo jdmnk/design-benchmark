@@ -20,9 +20,9 @@ const ROOT = resolve(dirname(new URL(import.meta.url).pathname), "..");
 // benchmark's run tabs — the first entry becomes the default-selected tab;
 // labels stay tied to each run's chronological identity (Run 1/2/3).
 const BENCHES = [
-  { configPath: "config/examples/black-hole-spin.config.json", runOrder: [2, 1, 3] },
-  { configPath: "config/examples/black-hole-css.config.json" },
+  { configPath: "config/examples/black-hole-spin.config.json" },
   { configPath: "config/examples/ringed-giant.config.json" },
+  { configPath: "config/examples/black-hole-css.config.json" },
   { configPath: "config/examples/pulsar-css.config.json" },
   { configPath: "config/examples/black-hole.config.json" },
 ];

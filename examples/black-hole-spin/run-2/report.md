@@ -1,4 +1,4 @@
-# black-hole-spin
+# black-hole-spin-archived
 
 Animated version of the black-hole benchmark: a 5-second clip of the spinning accretion disk is captured frame-by-frame on the deterministic virtual clock, then composed into one grid video (grid.mp4).
 
@@ -34,14 +34,14 @@ Raw copyable version: [prompt.txt](./prompt.txt) · [system-prompt.txt](./system
 
 | Model | ID | Provider | Status | Time | Tokens | Note |
 |-------|----|----------|--------|------|--------|------|
-| GLM 5.2 | `z-ai/glm-5.2` | openrouter | ✅ rendered | 168.8s | 10416 |  |
-| Grok 4.3 | `x-ai/grok-4.3` | openrouter | ✅ rendered | 20.4s | 3478 |  |
-| GPT-5.4 mini | `openai/gpt-5.4-mini` | openrouter | ✅ rendered | 26.7s | 5749 |  |
-| Claude Haiku 4.5 | `anthropic/claude-haiku-4.5` | openrouter | ✅ rendered | 19.8s | 4463 |  |
-| Qwen3.7 Plus | `qwen/qwen3.7-plus` | openrouter | ✅ rendered | 113.7s | 7065 |  |
-| Gemini 3.1 Flash-Lite | `google/gemini-3.1-flash-lite` | openrouter | ✅ rendered | 5.7s | 2700 |  |
-| DeepSeek V4 Pro | `deepseek/deepseek-v4-pro` | openrouter | ✅ rendered | 672.2s | 18223 |  |
-| Kimi K2.7 Code | `moonshotai/kimi-k2.7-code` | openrouter | ✅ rendered | 221.8s | 21854 |  |
-| Kimi K2.6 | `moonshotai/kimi-k2.6` | openrouter | ✅ rendered | 134.3s | 6532 |  |
+| GLM 5.2 | `z-ai/glm-5.2` | openrouter | ✅ rendered | 555.0s | 12350 |  |
+| Grok 4.3 | `x-ai/grok-4.3` | openrouter | ✅ rendered | 22.7s | 4020 |  |
+| GPT-5.4 mini | `openai/gpt-5.4-mini` | openrouter | ✅ rendered | 42.9s | 5586 |  |
+| Claude Haiku 4.5 | `anthropic/claude-haiku-4.5` | openrouter | ✅ rendered | 23.0s | 4943 |  |
+| Qwen3.7 Plus | `qwen/qwen3.7-plus` | openrouter | ✅ rendered | 144.7s | 6900 |  |
+| Gemini 3.1 Flash-Lite | `google/gemini-3.1-flash-lite` | openrouter | ✅ rendered | 5.2s | 2508 |  |
+| DeepSeek V4 Pro | `deepseek/deepseek-v4-pro` | openrouter | ✅ rendered | 827.1s | 4476 |  |
+| Kimi K2.6 | `moonshotai/kimi-k2.6` | openrouter | ✅ rendered | 79.4s | 5497 |  |
+| Mistral Small 4 | `mistralai/mistral-small-2603` | openrouter | ✅ rendered | 73.8s | 13966 |  |
 
 Per-model artifacts live in `models/<slug>/` (`raw.txt`, `output.html`, `screenshot.png`, `result.json`).

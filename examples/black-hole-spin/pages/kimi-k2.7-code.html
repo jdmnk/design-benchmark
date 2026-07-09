@@ -1,286 +1,275 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Interstellar-style Black Hole</title>
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-      width: 100vw;
-      height: 100vh;
-      background: #000;
-    }
-    canvas {
-      display: block;
-      width: 100vw;
-      height: 100vh;
-    }
-  </style>
-  <script type="importmap">
-    {
-      "imports": {
-        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-        "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
-      }
-    }
-  </script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gargantua Black Hole</title>
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #020204;
+  }
+  #canvas-container {
+    width: 100vw;
+    height: 100vh;
+  }
+  canvas {
+    display: block;
+  }
+</style>
 </head>
 <body>
-  <script type="module">
-    import * as THREE from 'three';
+<div id="canvas-container"></div>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+<script type="module">
+(async () => {
+  try {
+    const THREE = await import('three');
 
-    try {
-      // ------------------------------------------------------------------
-      // Scene setup
-      // ------------------------------------------------------------------
-      const scene = new THREE.Scene();
-      scene.background = new THREE.Color(0x020205);
+    const container = document.getElementById('canvas-container');
 
-      const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x020204);
 
-      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-      renderer.setClearColor(0x020205);
-      document.body.appendChild(renderer.domElement);
+    const fov = 45;
+    const cameraZ = 50;
+    const horizonFraction = 0.28;
+    const horizonRadius = cameraZ * Math.tan(THREE.MathUtils.degToRad(fov) * 0.5) * (horizonFraction * 0.5);
+    const camera = new THREE.PerspectiveCamera(fov, window.innerWidth / window.innerHeight, 0.1, 2000);
+    const viewAngle = 6.5;
+    camera.position.set(0, cameraZ * Math.tan(THREE.MathUtils.degToRad(viewAngle)), cameraZ);
+    camera.lookAt(0, 0, 0);
 
-      // ------------------------------------------------------------------
-      // Camera: black-hole shadow ~28% of viewport height, disk nearly edge-on
-      // ------------------------------------------------------------------
-      const R = 1.0;                          // event-horizon radius
-      const fovDeg = 60.0;
-      const fovRad = fovDeg * Math.PI / 180.0;
-      const targetFraction = 0.28;
-      const halfAngularRadius = targetFraction * fovRad * 0.5;
-      const dist = R / Math.tan(halfAngularRadius);
-      const elevation = 6.0 * Math.PI / 180.0;  // camera just above disk plane
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0x020204);
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    container.appendChild(renderer.domElement);
 
-      camera.position.set(0.0, dist * Math.sin(elevation), dist * Math.cos(elevation));
-      camera.lookAt(0, 0, 0);
+    function createDiskTexture() {
+      const w = 1024, h = 128;
+      const canvas = document.createElement('canvas');
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext('2d');
 
-      // ------------------------------------------------------------------
-      // Shared shader for disk and lensing arcs
-      // ------------------------------------------------------------------
-      const diskShader = {
-        uniforms: {
-          uTime: { value: 0 },
-          uColorInner: { value: new THREE.Color(0xfff3d0) },
-          uColorMid: { value: new THREE.Color(0xffae3b) },
-          uColorOuter: { value: new THREE.Color(0xc8551a) },
-          uRmin: { value: 4.2 },
-          uRmax: { value: 4.8 },
-          uBeamAngle: { value: Math.PI },
-          uBeamWidth: { value: 0.65 },
-          uBeamStrength: { value: 1.25 },
-          uBaseAlpha: { value: 0.55 },
-          uMode: { value: 0.0 }
-        },
-        vertexShader: `
-          varying vec3 vWorldPos;
-          void main() {
-            vWorldPos = (modelMatrix * vec4(position, 1.0)).xyz;
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-          }
-        `,
-        fragmentShader: `
-          varying vec3 vWorldPos;
+      const grad = ctx.createLinearGradient(0, h, 0, 0);
+      grad.addColorStop(0.0, '#fff3d0');
+      grad.addColorStop(0.22, '#ffdf88');
+      grad.addColorStop(0.42, '#ffae3b');
+      grad.addColorStop(0.72, '#c8551a');
+      grad.addColorStop(1.0, '#6e2306');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, w, h);
 
-          uniform float uTime;
-          uniform vec3 uColorInner;
-          uniform vec3 uColorMid;
-          uniform vec3 uColorOuter;
-          uniform float uRmin;
-          uniform float uRmax;
-          uniform float uBeamAngle;
-          uniform float uBeamWidth;
-          uniform float uBeamStrength;
-          uniform float uBaseAlpha;
-          uniform float uMode;
+      ctx.globalCompositeOperation = 'screen';
+      for (let i = 0; i < 20; i++) {
+        const cx = Math.random() * w;
+        const rw = (0.05 + Math.random() * 0.13) * w;
+        const y0 = Math.random() * h * 0.25;
+        const y1 = h * (0.55 + Math.random() * 0.45);
+        const streak = ctx.createLinearGradient(cx - rw, 0, cx + rw, 0);
+        streak.addColorStop(0, 'rgba(255, 255, 240, 0)');
+        streak.addColorStop(0.5, 'rgba(255, 255, 240, 0.38)');
+        streak.addColorStop(1, 'rgba(255, 255, 240, 0)');
+        ctx.fillStyle = streak;
+        ctx.fillRect(cx - rw, y0, rw * 2, y1 - y0);
+      }
 
-          const float PI = 3.14159265359;
-          const float TWO_PI = 6.28318530718;
+      const img = ctx.getImageData(0, 0, w, h);
+      const d = img.data;
+      for (let i = 0; i < d.length; i += 4) {
+        const x = (i / 4) % w;
+        const y = Math.floor((i / 4) / w);
+        const u = x / w;
+        const v = y / h;
+        const t1 = Math.sin(u * Math.PI * 13 + v * Math.PI * 5);
+        const t2 = Math.sin(u * Math.PI * 27 - v * Math.PI * 9);
+        const boost = 1 + (t1 * 0.5 + t2 * 0.3) * 0.22;
+        d[i] = Math.min(255, d[i] * boost);
+        d[i + 1] = Math.min(255, d[i + 1] * boost);
+        d[i + 2] = Math.min(255, d[i + 2] * boost);
+      }
+      ctx.putImageData(img, 0, 0);
 
-          float hash(vec2 p) {
-            return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
-          }
+      const tex = new THREE.CanvasTexture(canvas);
+      tex.wrapS = THREE.RepeatWrapping;
+      tex.wrapT = THREE.ClampToEdgeWrapping;
+      tex.colorSpace = THREE.SRGBColorSpace;
+      return tex;
+    }
 
-          float noise(vec2 p) {
-            vec2 i = floor(p);
-            vec2 f = fract(p);
-            f = f * f * (3.0 - 2.0 * f);
-            float a = hash(i);
-            float b = hash(i + vec2(1.0, 0.0));
-            float c = hash(i + vec2(0.0, 1.0));
-            float d = hash(i + vec2(1.0, 1.0));
-            return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
-          }
+    function createGlowTexture() {
+      const size = 256;
+      const canvas = document.createElement('canvas');
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext('2d');
+      const g = ctx.createRadialGradient(size/2, size/2, size * 0.18, size/2, size/2, size * 0.55);
+      g.addColorStop(0, 'rgba(255, 230, 170, 0.35)');
+      g.addColorStop(0.45, 'rgba(255, 160, 60, 0.12)');
+      g.addColorStop(1, 'rgba(255, 100, 30, 0)');
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, size, size);
+      const tex = new THREE.CanvasTexture(canvas);
+      tex.colorSpace = THREE.SRGBColorSpace;
+      return tex;
+    }
 
-          void main() {
-            float r, theta;
-            vec3 p = vWorldPos;
+    const horizon = new THREE.Mesh(
+      new THREE.SphereGeometry(horizonRadius, 64, 64),
+      new THREE.MeshBasicMaterial({ color: 0x000000 })
+    );
+    scene.add(horizon);
 
-            if (uMode < 0.5) {
-              // Main accretion disk: horizontal plane, around Y axis
-              r = length(p.xz);
-              theta = atan(p.x, p.z);
-            } else {
-              // Lensing arcs: partial ring in X-Y plane, around Z axis
-              r = length(p.xy);
-              theta = atan(p.y, p.x);
-            }
-
-            float t = clamp((r - uRmin) / (uRmax - uRmin), 0.0, 1.0);
-
-            vec3 col = mix(uColorInner, uColorMid, smoothstep(0.0, 0.45, t));
-            col = mix(col, uColorOuter, smoothstep(0.55, 1.0, t));
-
-            // Azimuthal rotation of turbulent clumps (~31.5 deg/sec)
-            float spin = theta - uTime * 0.55;
-
-            float clump = 0.0;
-            clump += 0.5 + 0.5 * sin(spin * 6.0 + noise(vec2(spin * 2.0, uTime * 0.3)) * 3.0);
-            clump += 0.3 + 0.2 * sin(spin * 14.0 + uTime * 0.7);
-            clump *= smoothstep(uRmin, uRmin + 0.12, r) * smoothstep(uRmax, uRmax - 0.12, r);
-            clump = clamp(clump, 0.0, 1.0);
-
-            // Slow drift of relativistic beaming highlight
-            float drift = 0.35 * sin(uTime * 0.22);
-            float dtheta = mod(theta - (uBeamAngle + drift) + PI, TWO_PI) - PI;
-            float beam = exp(-dtheta * dtheta / (2.0 * uBeamWidth * uBeamWidth));
-
-            // Shimmer / flicker
-            float flicker = 0.88 + 0.12 * noise(vec2(spin * 8.0, uTime * 4.0));
-
-            float bright = 1.0 + clump * 1.35 + beam * uBeamStrength;
-            col *= bright * flicker;
-
-            // Soft radial edges
-            float radialFade = smoothstep(uRmin, uRmin + 0.05, r) *
-                               smoothstep(uRmax, uRmax - 0.05, r);
-
-            // Fade arc endpoints so they taper into the disk band
-            float endFade = 1.0;
-            if (uMode > 0.5) {
-              endFade = smoothstep(0.0, 0.18, abs(sin(theta)));
-            }
-
-            float alpha = uBaseAlpha * radialFade * endFade;
-
-            gl_FragColor = vec4(col, alpha);
-          }
-        `
-      };
-
-      // ------------------------------------------------------------------
-      // Black event horizon
-      // ------------------------------------------------------------------
-      const horizonGeo = new THREE.SphereGeometry(R, 64, 64);
-      const horizonMat = new THREE.MeshBasicMaterial({ color: 0x000000 });
-      const horizon = new THREE.Mesh(horizonGeo, horizonMat);
-      scene.add(horizon);
-
-      // ------------------------------------------------------------------
-      // Thin photon ring hugging the black sphere
-      // ------------------------------------------------------------------
-      const ringGeo = new THREE.TorusGeometry(1.08, 0.015, 12, 128);
-      const ringMat = new THREE.MeshBasicMaterial({
+    const photonRing = new THREE.Mesh(
+      new THREE.TorusGeometry(horizonRadius * 1.035, horizonRadius * 0.038, 16, 128),
+      new THREE.MeshBasicMaterial({
         color: 0xfff3d0,
         transparent: true,
-        opacity: 0.6,
+        opacity: 0.82,
         blending: THREE.AdditiveBlending,
-        depthWrite: false,
-        side: THREE.DoubleSide
-      });
-      const photonRing = new THREE.Mesh(ringGeo, ringMat);
-      scene.add(photonRing);
+        depthWrite: false
+      })
+    );
+    photonRing.rotation.x = -Math.PI / 2;
+    scene.add(photonRing);
 
-      // ------------------------------------------------------------------
-      // Main accretion disk: horizontal torus, viewed nearly edge-on
-      // ------------------------------------------------------------------
-      const diskGeo = new THREE.TorusGeometry(4.5, 0.3, 16, 180);
-      diskGeo.rotateX(-Math.PI / 2); // lay flat in X-Z plane
-
-      const diskMat = new THREE.ShaderMaterial({
-        uniforms: THREE.UniformsUtils.clone(diskShader.uniforms),
-        vertexShader: diskShader.vertexShader,
-        fragmentShader: diskShader.fragmentShader,
+    const diskInner = horizonRadius * 1.08;
+    const diskOuter = horizonRadius * 4.6;
+    const diskTexture = createDiskTexture();
+    const disk = new THREE.Mesh(
+      new THREE.RingGeometry(diskInner, diskOuter, 144, 8),
+      new THREE.MeshBasicMaterial({
+        map: diskTexture,
         transparent: true,
+        opacity: 0.9,
         blending: THREE.AdditiveBlending,
-        depthWrite: false,
-        side: THREE.DoubleSide
-      });
-      const disk = new THREE.Mesh(diskGeo, diskMat);
-      scene.add(disk);
+        side: THREE.DoubleSide,
+        depthWrite: false
+      })
+    );
+    disk.rotation.x = -Math.PI / 2;
+    scene.add(disk);
 
-      // ------------------------------------------------------------------
-      // Gravitational-lensing arcs above and below the horizon
-      // ------------------------------------------------------------------
-      const arcRadius = 1.55;
-      const arcTube = 0.05;
-      const arcGeo = new THREE.TorusGeometry(arcRadius, arcTube, 12, 100, Math.PI);
-
-      const arcMat = new THREE.ShaderMaterial({
-        uniforms: THREE.UniformsUtils.clone(diskShader.uniforms),
-        vertexShader: diskShader.vertexShader,
-        fragmentShader: diskShader.fragmentShader,
+    const beam = new THREE.Mesh(
+      new THREE.RingGeometry(diskInner, diskOuter, 144, 1, -Math.PI / 4, Math.PI / 2),
+      new THREE.MeshBasicMaterial({
+        color: 0xfff3d0,
         transparent: true,
+        opacity: 0.22,
         blending: THREE.AdditiveBlending,
-        depthWrite: false,
-        side: THREE.DoubleSide
-      });
-      arcMat.uniforms.uRmin.value = arcRadius - arcTube;
-      arcMat.uniforms.uRmax.value = arcRadius + arcTube;
-      arcMat.uniforms.uBaseAlpha.value = 0.75;
-      arcMat.uniforms.uBeamStrength.value = 0.4;
-      arcMat.uniforms.uMode.value = 1.0;
+        side: THREE.DoubleSide,
+        depthWrite: false
+      })
+    );
+    beam.rotation.x = -Math.PI / 2;
+    scene.add(beam);
 
-      const upperArc = new THREE.Mesh(arcGeo, arcMat);
-      scene.add(upperArc);
+    const arcMajor = horizonRadius * 1.24;
+    const arcTube = horizonRadius * 0.078;
+    const arcMat = new THREE.MeshBasicMaterial({
+      color: 0xffae3b,
+      transparent: true,
+      opacity: 0.62,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false
+    });
 
-      const lowerArc = new THREE.Mesh(arcGeo, arcMat.clone());
-      lowerArc.rotation.z = Math.PI; // mirror to bottom
-      lowerArc.material.uniforms = arcMat.uniforms; // share uniforms
-      scene.add(lowerArc);
+    const upperArc = new THREE.Mesh(
+      new THREE.TorusGeometry(arcMajor, arcTube, 16, 96, Math.PI),
+      arcMat
+    );
+    scene.add(upperArc);
 
-      // ------------------------------------------------------------------
-      // Sparse dim starfield
-      // ------------------------------------------------------------------
-      const starCount = 1200;
-      const starGeo = new THREE.BufferGeometry();
-      const starPos = new Float32Array(starCount * 3);
-      for (let i = 0; i < starCount; i++) {
-        const u = Math.random();
-        const v = Math.random();
-        const theta = 2 * Math.PI * u;
-        const phi = Math.acos(2 * v - 1);
-        const rad = 250 + Math.random() * 150;
-        const idx = i * 3;
-        starPos[idx] = rad * Math.sin(phi) * Math.cos(theta);
-        starPos[idx + 1] = rad * Math.sin(phi) * Math.sin(theta);
-        starPos[idx + 2] = rad * Math.cos(phi);
-      }
-      starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
-      const starMat = new THREE.PointsMaterial({
-        color: 0xffffff,
-        size: 1.1,
+    const lowerArc = new THREE.Mesh(
+      new THREE.TorusGeometry(arcMajor, arcTube, 16, 96, Math.PI),
+      arcMat
+    );
+    lowerArc.rotation.z = Math.PI;
+    scene.add(lowerArc);
+
+    const glow = new THREE.Sprite(
+      new THREE.SpriteMaterial({
+        map: createGlowTexture(),
         transparent: true,
-        opacity: 0.55,
-        sizeAttenuation: false
-      });
-      const stars = new THREE.Points(starGeo, starMat);
-      scene.add(stars);
+        opacity: 0.28,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false
+      })
+    );
+    glow.scale.setScalar(horizonRadius * 5.5);
+    scene.add(glow);
 
-      // ------------------------------------------------------------------
-      // Render loop
-      // ------------------------------------------------------------------
-      function onResize() {
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-      }
-      window.addEventListener('resize', onResize);
+    const starGeo = new THREE.BufferGeometry();
+    const starCount = 700;
+    const starPos = new Float32Array(starCount * 3);
+    for (let i = 0; i < starCount; i++) {
+      const r = 250 + Math.random() * 350;
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos(2 * Math.random() - 1);
+      starPos[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+      starPos[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+      starPos[i * 3 + 2] = r * Math.cos(phi);
+    }
+    starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+    const stars = new THREE.Points(
+      starGeo,
+      new THREE.PointsMaterial({
+        color: 0xaaccff,
+        size: 0.45,
+        transparent: true,
+        opacity: 0.45,
+        blending: THREE.AdditiveBlending,
+        sizeAttenuation: true
+      })
+    );
+    scene.add(stars);
 
-      function animate(time) {
+    const diskSpeed = THREE.MathUtils.degToRad(35);
+    const beamSpeed = THREE.MathUtils.degToRad(4);
+
+    function animate(time) {
+      requestAnimationFrame(animate);
+      const t = time * 0.001;
+
+      disk.rotation.y = diskSpeed * t;
+      beam.rotation.y = beamSpeed * t + Math.sin(t * 0.25) * 0.4;
+
+      disk.material.opacity = 0.88 + 0.07 * Math.sin(t * 4.1) + 0.04 * Math.sin(t * 13.7);
+      photonRing.material.opacity = 0.8 + 0.09 * Math.sin(t * 5.3 + 1.0) + 0.05 * Math.sin(t * 17.0);
+      arcMat.opacity = 0.6 + 0.07 * Math.sin(t * 3.2) + 0.04 * Math.sin(t * 9.5);
+
+      const arcScale = 1 + 0.018 * Math.sin(t * 2.4);
+      upperArc.scale.setScalar(arcScale);
+      lowerArc.scale.setScalar(arcScale);
+
+      renderer.render(scene, camera);
+    }
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    requestAnimationFrame(animate);
+  } catch (err) {
+    console.error('Scene setup failed:', err);
+  }
+})();
+</script>
+</body>
+</html>
