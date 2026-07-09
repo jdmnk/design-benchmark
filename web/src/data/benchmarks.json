@@ -19,125 +19,6 @@
       "columns": 3,
       "runs": [
         {
-          "label": "Run 1",
-          "grid": {
-            "image": "grids/black-hole-spin.webp",
-            "video": "grids/black-hole-spin.mp4"
-          },
-          "models": [
-            {
-              "label": "GLM 5.2",
-              "modelId": "z-ai/glm-5.2",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 572604,
-              "outputTokens": 12313,
-              "costUsd": 0.03868746,
-              "truncated": false,
-              "error": null,
-              "page": "pages/black-hole-spin/glm-5.2.html"
-            },
-            {
-              "label": "Grok 4.3",
-              "modelId": "x-ai/grok-4.3",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 39681,
-              "outputTokens": 2972,
-              "costUsd": 0.00840185,
-              "truncated": false,
-              "error": null,
-              "page": "pages/black-hole-spin/grok-4.3.html"
-            },
-            {
-              "label": "GPT-5.4 mini",
-              "modelId": "openai/gpt-5.4-mini",
-              "provider": "openrouter",
-              "status": "blank",
-              "elapsedMs": 29704,
-              "outputTokens": 4388,
-              "costUsd": 0.020331,
-              "truncated": false,
-              "error": "JS error: Unexpected token '*'",
-              "page": "pages/black-hole-spin/gpt-5.4-mini.html"
-            },
-            {
-              "label": "Claude Haiku 4.5",
-              "modelId": "anthropic/claude-haiku-4.5",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 29884,
-              "outputTokens": 5720,
-              "costUsd": 0.029514,
-              "truncated": false,
-              "error": null,
-              "page": "pages/black-hole-spin/claude-haiku-4.5.html"
-            },
-            {
-              "label": "Qwen3.7 Plus",
-              "modelId": "qwen/qwen3.7-plus",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 563284,
-              "outputTokens": 7882,
-              "costUsd": 0.01034752,
-              "truncated": false,
-              "error": null,
-              "page": "pages/black-hole-spin/qwen3.7-plus.html"
-            },
-            {
-              "label": "Gemini 3.1 Flash-Lite",
-              "modelId": "google/gemini-3.1-flash-lite",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 5463,
-              "outputTokens": 1872,
-              "costUsd": 0.00300775,
-              "truncated": false,
-              "error": null,
-              "page": "pages/black-hole-spin/gemini-3.1-flash-lite.html"
-            },
-            {
-              "label": "DeepSeek V4 Pro",
-              "modelId": "deepseek/deepseek-v4-pro",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 588124,
-              "outputTokens": 4664,
-              "costUsd": 0.014078688,
-              "truncated": false,
-              "error": null,
-              "page": "pages/black-hole-spin/deepseek-v4-pro.html"
-            },
-            {
-              "label": "Kimi K2.7 Code",
-              "modelId": "moonshotai/kimi-k2.7-code",
-              "provider": "openrouter",
-              "status": "blank",
-              "elapsedMs": 529680,
-              "outputTokens": 28000,
-              "costUsd": 0.1127448,
-              "truncated": true,
-              "error": null,
-              "page": "pages/black-hole-spin/kimi-k2.7-code.html"
-            },
-            {
-              "label": "Kimi K2.6",
-              "modelId": "moonshotai/kimi-k2.6",
-              "provider": "openrouter",
-              "status": "blank",
-              "elapsedMs": 16124,
-              "outputTokens": 3776,
-              "costUsd": 0.0133936,
-              "truncated": false,
-              "error": "JS error: Unexpected token '*'",
-              "page": "pages/black-hole-spin/kimi-k2.6.html"
-            }
-          ],
-          "rendered": 6,
-          "total": 9
-        },
-        {
           "label": "Run 2",
           "grid": {
             "image": "grids/black-hole-spin-2.webp",
@@ -257,6 +138,125 @@
           "total": 9
         },
         {
+          "label": "Run 1",
+          "grid": {
+            "image": "grids/black-hole-spin.webp",
+            "video": "grids/black-hole-spin.mp4"
+          },
+          "models": [
+            {
+              "label": "GLM 5.2",
+              "modelId": "z-ai/glm-5.2",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 572604,
+              "outputTokens": 12313,
+              "costUsd": 0.03868746,
+              "truncated": false,
+              "error": null,
+              "page": "pages/black-hole-spin/glm-5.2.html"
+            },
+            {
+              "label": "Grok 4.3",
+              "modelId": "x-ai/grok-4.3",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 39681,
+              "outputTokens": 2972,
+              "costUsd": 0.00840185,
+              "truncated": false,
+              "error": null,
+              "page": "pages/black-hole-spin/grok-4.3.html"
+            },
+            {
+              "label": "GPT-5.4 mini",
+              "modelId": "openai/gpt-5.4-mini",
+              "provider": "openrouter",
+              "status": "blank",
+              "elapsedMs": 29704,
+              "outputTokens": 4388,
+              "costUsd": 0.020331,
+              "truncated": false,
+              "error": "JS error: Unexpected token '*'",
+              "page": "pages/black-hole-spin/gpt-5.4-mini.html"
+            },
+            {
+              "label": "Claude Haiku 4.5",
+              "modelId": "anthropic/claude-haiku-4.5",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 29884,
+              "outputTokens": 5720,
+              "costUsd": 0.029514,
+              "truncated": false,
+              "error": null,
+              "page": "pages/black-hole-spin/claude-haiku-4.5.html"
+            },
+            {
+              "label": "Qwen3.7 Plus",
+              "modelId": "qwen/qwen3.7-plus",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 563284,
+              "outputTokens": 7882,
+              "costUsd": 0.01034752,
+              "truncated": false,
+              "error": null,
+              "page": "pages/black-hole-spin/qwen3.7-plus.html"
+            },
+            {
+              "label": "Gemini 3.1 Flash-Lite",
+              "modelId": "google/gemini-3.1-flash-lite",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 5463,
+              "outputTokens": 1872,
+              "costUsd": 0.00300775,
+              "truncated": false,
+              "error": null,
+              "page": "pages/black-hole-spin/gemini-3.1-flash-lite.html"
+            },
+            {
+              "label": "DeepSeek V4 Pro",
+              "modelId": "deepseek/deepseek-v4-pro",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 588124,
+              "outputTokens": 4664,
+              "costUsd": 0.014078688,
+              "truncated": false,
+              "error": null,
+              "page": "pages/black-hole-spin/deepseek-v4-pro.html"
+            },
+            {
+              "label": "Kimi K2.7 Code",
+              "modelId": "moonshotai/kimi-k2.7-code",
+              "provider": "openrouter",
+              "status": "blank",
+              "elapsedMs": 529680,
+              "outputTokens": 28000,
+              "costUsd": 0.1127448,
+              "truncated": true,
+              "error": null,
+              "page": "pages/black-hole-spin/kimi-k2.7-code.html"
+            },
+            {
+              "label": "Kimi K2.6",
+              "modelId": "moonshotai/kimi-k2.6",
+              "provider": "openrouter",
+              "status": "blank",
+              "elapsedMs": 16124,
+              "outputTokens": 3776,
+              "costUsd": 0.0133936,
+              "truncated": false,
+              "error": "JS error: Unexpected token '*'",
+              "page": "pages/black-hole-spin/kimi-k2.6.html"
+            }
+          ],
+          "rendered": 6,
+          "total": 9
+        },
+        {
           "label": "Run 3",
           "grid": {
             "image": "grids/black-hole-spin-3.webp",
@@ -370,6 +370,284 @@
               "truncated": false,
               "error": null,
               "page": "pages/black-hole-spin-3/mistral-small-4.html"
+            }
+          ],
+          "rendered": 9,
+          "total": 9
+        }
+      ]
+    },
+    {
+      "id": "ringed-giant",
+      "title": "Ringed Giant",
+      "description": "Animated three.js benchmark: a Saturn-like ringed gas giant rotating on its tilted axis, its ring system orbiting in-plane. A 5-second clip is captured frame-by-frame on the deterministic virtual clock and composed into one grid video.",
+      "prompt": "Render a realistic SATURN-LIKE ringed gas giant as a full-screen three.js scene (100vw × 100vh, auto-starting, no user interaction). A 5-SECOND CLIP is captured, so the motion matters as much as the still composition.\n\nComposition (match exactly so results are comparable):\n- The planet is a sphere centered in the frame, its diameter about 34% of the viewport height.\n- Give the planet subtle HORIZONTAL atmospheric bands in a warm palette — cream and pale gold through tan to soft amber (#f3e6c4 → #e6c88f → #c99a5b), with faint darker belts and a slightly lighter equatorial zone. No hard edges; the bands blend.\n- A broad RING SYSTEM lies in the planet's equatorial plane, tilted so we view it about 18–24 degrees above edge-on: the rings read as a wide, flattened ellipse crossing the planet, NOT a head-on circle. Rings extend to roughly 2.2× the planet's radius.\n- The rings clearly pass BEHIND the planet's top half (occluded by the sphere) and IN FRONT of its bottom half (crossing over the lit disc) — so the ellipse is broken by the planet, reading as true 3D, not a flat halo.\n- Include one dark GAP in the rings (a Cassini-division-style black band) about two-thirds of the way out.\n- Cast a soft dark SHADOW BAND from the rings onto the planet on the shadowed side, and darken the arc of ring that passes behind the planet into its shadow (fake it — no shadow maps).\n- Light comes from the upper-left: the planet shows a lit crescent and a soft terminator into shadow on the lower-right; the near/left side of the rings is brighter.\n- Ring coloring: pale icy tan, subtly banded lighter/darker, semi-transparent at the inner and outer edges. Background: near-black space with a sparse, dim starfield.\n\nMotion (the point of this benchmark — clearly visible within the 5-second clip):\n- The planet ROTATES on its (tilted) axis so the atmospheric bands drift horizontally — give the bands visible structure (swirls, spots, or a faint storm oval) so the rotation reads; a featureless sphere would look static. Roughly 20–30 degrees per second.\n- The RINGS orbit in-plane in the same direction: give them faint radial structure / brightness clumps so their revolution is visible, roughly 15–25 degrees per second (inner slightly faster than outer if you can).\n- The camera stays FIXED. Keep the planet centered and the rings horizontal-ish (equatorial).\n\nReturn ONLY a single complete HTML document.",
+      "systemPrompt": "You are a creative WebGL / three.js developer. Output a SINGLE self-contained HTML document. three.js r160 is available as an ES module — import it with `import * as THREE from 'three'` and add-ons from `three/addons/...` inside a <script type=\"module\"> (an importmap resolves these for you). Follow the composition exactly — this is a controlled comparison, do not improvise the layout or camera.\n\nRELIABILITY RULES (the scene is rendered in HEADLESS SOFTWARE WebGL and a 5-second clip is captured frame-by-frame):\n- Do NOT use postprocessing (EffectComposer, RenderPass, UnrealBloomPass, ShaderPass): in software WebGL these run at seconds per frame and the capture times out. Fake glow with additive blending, emissive colors, and layered transparent meshes instead.\n- Do NOT use shadow maps. Fake the ring's shadow on the planet (and the planet's shadow on the rings) with a dark semi-transparent band / gradient, not real shadow casting.\n- Drive ALL motion from the requestAnimationFrame timestamp (or performance.now()), NOT a fixed per-frame increment, so animation speed is framerate-independent.\n- Set renderer clear color / scene background to near-black space FIRST, and start the render loop immediately, so a partial failure still shows a scene rather than a blank page.\n- Keep the scene lightweight (a few thousand vertices, one canvas-generated texture at most).\n- Wrap risky setup in try/catch so one error cannot blank the whole page. Ensure the document is complete with every tag closed; if running long, simplify rather than truncate.",
+      "render": {
+        "viewport": "1280×800",
+        "fullPage": false,
+        "waitMs": 4000,
+        "deterministic": true,
+        "video": {
+          "durationMs": 5000,
+          "fps": 24
+        }
+      },
+      "columns": 3,
+      "runs": [
+        {
+          "label": "Run 1",
+          "grid": {
+            "image": "grids/ringed-giant.webp",
+            "video": "grids/ringed-giant.mp4"
+          },
+          "models": [
+            {
+              "label": "GLM 5.2",
+              "modelId": "z-ai/glm-5.2",
+              "provider": "openrouter",
+              "status": "blank",
+              "elapsedMs": 127341,
+              "outputTokens": 28000,
+              "costUsd": 0.18666543,
+              "truncated": true,
+              "error": null,
+              "page": "pages/ringed-giant/glm-5.2.html"
+            },
+            {
+              "label": "Grok 4.3",
+              "modelId": "x-ai/grok-4.3",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 45419,
+              "outputTokens": 3625,
+              "costUsd": 0.0101984,
+              "truncated": false,
+              "error": null,
+              "page": "pages/ringed-giant/grok-4.3.html"
+            },
+            {
+              "label": "GPT-5.4 mini",
+              "modelId": "openai/gpt-5.4-mini",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 37853,
+              "outputTokens": 5532,
+              "costUsd": 0.0255705,
+              "truncated": false,
+              "error": null,
+              "page": "pages/ringed-giant/gpt-5.4-mini.html"
+            },
+            {
+              "label": "Claude Haiku 4.5",
+              "modelId": "anthropic/claude-haiku-4.5",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 19970,
+              "outputTokens": 3520,
+              "costUsd": 0.018645,
+              "truncated": false,
+              "error": null,
+              "page": "pages/ringed-giant/claude-haiku-4.5.html"
+            },
+            {
+              "label": "Qwen3.7 Plus",
+              "modelId": "qwen/qwen3.7-plus",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 150098,
+              "outputTokens": 8162,
+              "costUsd": 0.0107472,
+              "truncated": false,
+              "error": null,
+              "page": "pages/ringed-giant/qwen3.7-plus.html"
+            },
+            {
+              "label": "Gemini 3.1 Flash-Lite",
+              "modelId": "google/gemini-3.1-flash-lite",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 6731,
+              "outputTokens": 2040,
+              "costUsd": 0.0032965,
+              "truncated": false,
+              "error": null,
+              "page": "pages/ringed-giant/gemini-3.1-flash-lite.html"
+            },
+            {
+              "label": "DeepSeek V4 Pro",
+              "modelId": "deepseek/deepseek-v4-pro",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 603504,
+              "outputTokens": 5286,
+              "costUsd": 0.015995472,
+              "truncated": false,
+              "error": null,
+              "page": "pages/ringed-giant/deepseek-v4-pro.html"
+            },
+            {
+              "label": "Kimi K2.7 Code",
+              "modelId": "moonshotai/kimi-k2.7-code",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 758174,
+              "outputTokens": 24845,
+              "costUsd": 0.0952273,
+              "truncated": false,
+              "error": null,
+              "page": "pages/ringed-giant/kimi-k2.7-code.html"
+            },
+            {
+              "label": "Kimi K2.6",
+              "modelId": "moonshotai/kimi-k2.6",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 41732,
+              "outputTokens": 5810,
+              "costUsd": 0.0272334,
+              "truncated": false,
+              "error": null,
+              "page": "pages/ringed-giant/kimi-k2.6.html"
+            }
+          ],
+          "rendered": 8,
+          "total": 9
+        }
+      ]
+    },
+    {
+      "id": "pulsar-css",
+      "title": "Pulsar Css",
+      "description": "CSS-only animated benchmark: a pulsing, rotating pulsar (neutron star) built with pure HTML + CSS — no JavaScript, no canvas. A 5-second clip is captured frame-by-frame on the deterministic virtual clock (CSS animation timelines are pinned to it) and composed into one grid video.",
+      "prompt": "Create a PULSING, ROTATING PULSAR (a spinning neutron star firing lighthouse beams) as a full-screen scene — pure HTML + CSS only. A 5-second clip is captured and looped, so the rhythm and rotation are the whole point.\n\nComposition (match so results are comparable — everything centered, frame fixed):\n- At the exact center, a small intensely bright CORE: a blue-white orb about 9% of the viewport height, hot white at the middle fading through pale blue to a soft outer glow (#f2f6ff → #bcd2ff → #5b7cff), with an additive-looking bloom (layered box-shadow / blur).\n- The core PULSES rhythmically: its brightness and size swell and shrink with a period of exactly 1 second (so ~5 clean pulses across the clip). This pulse is the signature of the benchmark — make it unmistakable.\n- TWO opposing BEAMS (jets) emanate from the core along a single axis tilted about 20° from vertical — long, narrow, tapering cones of cyan-white light (semi-transparent, additive-looking), extending past the top and bottom edges of the frame. The beam axis ROTATES steadily around the center like a lighthouse, completing EXACTLY one full revolution over the 5-second clip (72°/s).\n- Concentric SHOCKWAVE RINGS pulse outward from the core in time with the pulse: on each beat a thin ring is emitted that expands and fades as it grows, so 3–4 rings are visible at different radii at any moment (stagger them with animation-delays). Faint cyan.\n- A thin, bright EQUATORIAL RING/disk hugs the core, seen nearly edge-on as a horizontal bright ellipse, tilted to match the beam axis, steady (not pulsing much).\n- Background: near-black space (#03040a) with a sparse scatter of faint, static stars (small dots via box-shadow or tiny elements) — the stars do NOT move.\n\nMotion recap (must be visible and loop seamlessly in 5s): core pulses once per second; beams make one full rotation over the clip; shockwave rings expand-and-fade on each pulse; equatorial ring holds steady; stars fixed.\n\nReturn ONLY a single complete HTML document — no JavaScript.",
+      "systemPrompt": "You are a master of pure CSS art and animation. Output a SINGLE self-contained HTML document using ONLY HTML and CSS — no JavaScript, no <canvas>, no <script>, no external resources (no images, no web fonts, no network). Every bit of MOTION must come from CSS @keyframes animations or transitions. You may freely use CSS gradients, radial/conic gradients, box-shadow, filter (blur/brightness), clip-path, transforms, mix-blend-mode, and inline SVG shapes styled/animated purely with CSS.\n\nRELIABILITY RULES (a 5-second clip is captured frame-by-frame; the harness drives CSS animation timelines deterministically):\n- Set an explicit dark background on <body> as the very FIRST style rule so the page never renders blank.\n- The scene fills the entire viewport (100vw × 100vh), is centered, auto-starts, and needs no interaction.\n- Make the animation LOOP SEAMLESSLY within the clip: use periods that divide evenly into 5 seconds (e.g. 1s, 2.5s, 5s) and rotations of exactly one full turn (or a whole number of turns) per 5s, so the first and last frame match.\n- Keep it performant: prefer transform/opacity animations; avoid thousands of elements.\n- Ensure the document is complete with every tag closed; if running long, simplify the design rather than let it be cut off. Absolutely NO JavaScript.",
+      "render": {
+        "viewport": "1280×800",
+        "fullPage": false,
+        "waitMs": 4000,
+        "deterministic": true,
+        "video": {
+          "durationMs": 5000,
+          "fps": 24
+        }
+      },
+      "columns": 3,
+      "runs": [
+        {
+          "label": "Run 1",
+          "grid": {
+            "image": "grids/pulsar-css.webp",
+            "video": "grids/pulsar-css.mp4"
+          },
+          "models": [
+            {
+              "label": "GLM 5.2",
+              "modelId": "z-ai/glm-5.2",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 123974,
+              "outputTokens": 7251,
+              "costUsd": 0.033009,
+              "truncated": false,
+              "error": null,
+              "page": "pages/pulsar-css/glm-5.2.html"
+            },
+            {
+              "label": "Grok 4.3",
+              "modelId": "x-ai/grok-4.3",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 42380,
+              "outputTokens": 2651,
+              "costUsd": 0.00762215,
+              "truncated": false,
+              "error": null,
+              "page": "pages/pulsar-css/grok-4.3.html"
+            },
+            {
+              "label": "GPT-5.4 mini",
+              "modelId": "openai/gpt-5.4-mini",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 18155,
+              "outputTokens": 2887,
+              "costUsd": 0.01357875,
+              "truncated": false,
+              "error": null,
+              "page": "pages/pulsar-css/gpt-5.4-mini.html"
+            },
+            {
+              "label": "Claude Haiku 4.5",
+              "modelId": "anthropic/claude-haiku-4.5",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 37078,
+              "outputTokens": 7651,
+              "costUsd": 0.039157,
+              "truncated": false,
+              "error": null,
+              "page": "pages/pulsar-css/claude-haiku-4.5.html"
+            },
+            {
+              "label": "Qwen3.7 Plus",
+              "modelId": "qwen/qwen3.7-plus",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 108492,
+              "outputTokens": 5954,
+              "costUsd": 0.00788128,
+              "truncated": false,
+              "error": null,
+              "page": "pages/pulsar-css/qwen3.7-plus.html"
+            },
+            {
+              "label": "Gemini 3.1 Flash-Lite",
+              "modelId": "google/gemini-3.1-flash-lite",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 4286,
+              "outputTokens": 1486,
+              "costUsd": 0.00243,
+              "truncated": false,
+              "error": null,
+              "page": "pages/pulsar-css/gemini-3.1-flash-lite.html"
+            },
+            {
+              "label": "DeepSeek V4 Pro",
+              "modelId": "deepseek/deepseek-v4-pro",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 286448,
+              "outputTokens": 16881,
+              "costUsd": 0.057026031,
+              "truncated": false,
+              "error": null,
+              "page": "pages/pulsar-css/deepseek-v4-pro.html"
+            },
+            {
+              "label": "Kimi K2.7 Code",
+              "modelId": "moonshotai/kimi-k2.7-code",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 269823,
+              "outputTokens": 14141,
+              "costUsd": 0.054445,
+              "truncated": false,
+              "error": null,
+              "page": "pages/pulsar-css/kimi-k2.7-code.html"
+            },
+            {
+              "label": "Kimi K2.6",
+              "modelId": "moonshotai/kimi-k2.6",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 35330,
+              "outputTokens": 3526,
+              "costUsd": 0.01254374,
+              "truncated": false,
+              "error": null,
+              "page": "pages/pulsar-css/kimi-k2.6.html"
             }
           ],
           "rendered": 9,
@@ -752,145 +1030,6 @@
       ]
     },
     {
-      "id": "ringed-giant",
-      "title": "Ringed Giant",
-      "description": "Animated three.js benchmark: a Saturn-like ringed gas giant rotating on its tilted axis, its ring system orbiting in-plane. A 5-second clip is captured frame-by-frame on the deterministic virtual clock and composed into one grid video.",
-      "prompt": "Render a realistic SATURN-LIKE ringed gas giant as a full-screen three.js scene (100vw × 100vh, auto-starting, no user interaction). A 5-SECOND CLIP is captured, so the motion matters as much as the still composition.\n\nComposition (match exactly so results are comparable):\n- The planet is a sphere centered in the frame, its diameter about 34% of the viewport height.\n- Give the planet subtle HORIZONTAL atmospheric bands in a warm palette — cream and pale gold through tan to soft amber (#f3e6c4 → #e6c88f → #c99a5b), with faint darker belts and a slightly lighter equatorial zone. No hard edges; the bands blend.\n- A broad RING SYSTEM lies in the planet's equatorial plane, tilted so we view it about 18–24 degrees above edge-on: the rings read as a wide, flattened ellipse crossing the planet, NOT a head-on circle. Rings extend to roughly 2.2× the planet's radius.\n- The rings clearly pass BEHIND the planet's top half (occluded by the sphere) and IN FRONT of its bottom half (crossing over the lit disc) — so the ellipse is broken by the planet, reading as true 3D, not a flat halo.\n- Include one dark GAP in the rings (a Cassini-division-style black band) about two-thirds of the way out.\n- Cast a soft dark SHADOW BAND from the rings onto the planet on the shadowed side, and darken the arc of ring that passes behind the planet into its shadow (fake it — no shadow maps).\n- Light comes from the upper-left: the planet shows a lit crescent and a soft terminator into shadow on the lower-right; the near/left side of the rings is brighter.\n- Ring coloring: pale icy tan, subtly banded lighter/darker, semi-transparent at the inner and outer edges. Background: near-black space with a sparse, dim starfield.\n\nMotion (the point of this benchmark — clearly visible within the 5-second clip):\n- The planet ROTATES on its (tilted) axis so the atmospheric bands drift horizontally — give the bands visible structure (swirls, spots, or a faint storm oval) so the rotation reads; a featureless sphere would look static. Roughly 20–30 degrees per second.\n- The RINGS orbit in-plane in the same direction: give them faint radial structure / brightness clumps so their revolution is visible, roughly 15–25 degrees per second (inner slightly faster than outer if you can).\n- The camera stays FIXED. Keep the planet centered and the rings horizontal-ish (equatorial).\n\nReturn ONLY a single complete HTML document.",
-      "systemPrompt": "You are a creative WebGL / three.js developer. Output a SINGLE self-contained HTML document. three.js r160 is available as an ES module — import it with `import * as THREE from 'three'` and add-ons from `three/addons/...` inside a <script type=\"module\"> (an importmap resolves these for you). Follow the composition exactly — this is a controlled comparison, do not improvise the layout or camera.\n\nRELIABILITY RULES (the scene is rendered in HEADLESS SOFTWARE WebGL and a 5-second clip is captured frame-by-frame):\n- Do NOT use postprocessing (EffectComposer, RenderPass, UnrealBloomPass, ShaderPass): in software WebGL these run at seconds per frame and the capture times out. Fake glow with additive blending, emissive colors, and layered transparent meshes instead.\n- Do NOT use shadow maps. Fake the ring's shadow on the planet (and the planet's shadow on the rings) with a dark semi-transparent band / gradient, not real shadow casting.\n- Drive ALL motion from the requestAnimationFrame timestamp (or performance.now()), NOT a fixed per-frame increment, so animation speed is framerate-independent.\n- Set renderer clear color / scene background to near-black space FIRST, and start the render loop immediately, so a partial failure still shows a scene rather than a blank page.\n- Keep the scene lightweight (a few thousand vertices, one canvas-generated texture at most).\n- Wrap risky setup in try/catch so one error cannot blank the whole page. Ensure the document is complete with every tag closed; if running long, simplify rather than truncate.",
-      "render": {
-        "viewport": "1280×800",
-        "fullPage": false,
-        "waitMs": 4000,
-        "deterministic": true,
-        "video": {
-          "durationMs": 5000,
-          "fps": 24
-        }
-      },
-      "columns": 3,
-      "runs": [
-        {
-          "label": "Run 1",
-          "grid": {
-            "image": "grids/ringed-giant.webp",
-            "video": "grids/ringed-giant.mp4"
-          },
-          "models": [
-            {
-              "label": "GLM 5.2",
-              "modelId": "z-ai/glm-5.2",
-              "provider": "openrouter",
-              "status": "blank",
-              "elapsedMs": 127341,
-              "outputTokens": 28000,
-              "costUsd": 0.18666543,
-              "truncated": true,
-              "error": null,
-              "page": "pages/ringed-giant/glm-5.2.html"
-            },
-            {
-              "label": "Grok 4.3",
-              "modelId": "x-ai/grok-4.3",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 45419,
-              "outputTokens": 3625,
-              "costUsd": 0.0101984,
-              "truncated": false,
-              "error": null,
-              "page": "pages/ringed-giant/grok-4.3.html"
-            },
-            {
-              "label": "GPT-5.4 mini",
-              "modelId": "openai/gpt-5.4-mini",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 37853,
-              "outputTokens": 5532,
-              "costUsd": 0.0255705,
-              "truncated": false,
-              "error": null,
-              "page": "pages/ringed-giant/gpt-5.4-mini.html"
-            },
-            {
-              "label": "Claude Haiku 4.5",
-              "modelId": "anthropic/claude-haiku-4.5",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 19970,
-              "outputTokens": 3520,
-              "costUsd": 0.018645,
-              "truncated": false,
-              "error": null,
-              "page": "pages/ringed-giant/claude-haiku-4.5.html"
-            },
-            {
-              "label": "Qwen3.7 Plus",
-              "modelId": "qwen/qwen3.7-plus",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 150098,
-              "outputTokens": 8162,
-              "costUsd": 0.0107472,
-              "truncated": false,
-              "error": null,
-              "page": "pages/ringed-giant/qwen3.7-plus.html"
-            },
-            {
-              "label": "Gemini 3.1 Flash-Lite",
-              "modelId": "google/gemini-3.1-flash-lite",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 6731,
-              "outputTokens": 2040,
-              "costUsd": 0.0032965,
-              "truncated": false,
-              "error": null,
-              "page": "pages/ringed-giant/gemini-3.1-flash-lite.html"
-            },
-            {
-              "label": "DeepSeek V4 Pro",
-              "modelId": "deepseek/deepseek-v4-pro",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 603504,
-              "outputTokens": 5286,
-              "costUsd": 0.015995472,
-              "truncated": false,
-              "error": null,
-              "page": "pages/ringed-giant/deepseek-v4-pro.html"
-            },
-            {
-              "label": "Kimi K2.7 Code",
-              "modelId": "moonshotai/kimi-k2.7-code",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 758174,
-              "outputTokens": 24845,
-              "costUsd": 0.0952273,
-              "truncated": false,
-              "error": null,
-              "page": "pages/ringed-giant/kimi-k2.7-code.html"
-            },
-            {
-              "label": "Kimi K2.6",
-              "modelId": "moonshotai/kimi-k2.6",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 41732,
-              "outputTokens": 5810,
-              "costUsd": 0.0272334,
-              "truncated": false,
-              "error": null,
-              "page": "pages/ringed-giant/kimi-k2.6.html"
-            }
-          ],
-          "rendered": 8,
-          "total": 9
-        }
-      ]
-    },
-    {
       "id": "fireworks",
       "title": "Fireworks",
       "description": "Animated Canvas-2D benchmark: a continuous fireworks finale over a city skyline. A 5-second clip is captured frame-by-frame on the deterministic virtual clock and composed into one grid video.",
@@ -1022,145 +1161,6 @@
               "truncated": false,
               "error": null,
               "page": "pages/fireworks/mistral-small-4.html"
-            }
-          ],
-          "rendered": 9,
-          "total": 9
-        }
-      ]
-    },
-    {
-      "id": "pulsar-css",
-      "title": "Pulsar Css",
-      "description": "CSS-only animated benchmark: a pulsing, rotating pulsar (neutron star) built with pure HTML + CSS — no JavaScript, no canvas. A 5-second clip is captured frame-by-frame on the deterministic virtual clock (CSS animation timelines are pinned to it) and composed into one grid video.",
-      "prompt": "Create a PULSING, ROTATING PULSAR (a spinning neutron star firing lighthouse beams) as a full-screen scene — pure HTML + CSS only. A 5-second clip is captured and looped, so the rhythm and rotation are the whole point.\n\nComposition (match so results are comparable — everything centered, frame fixed):\n- At the exact center, a small intensely bright CORE: a blue-white orb about 9% of the viewport height, hot white at the middle fading through pale blue to a soft outer glow (#f2f6ff → #bcd2ff → #5b7cff), with an additive-looking bloom (layered box-shadow / blur).\n- The core PULSES rhythmically: its brightness and size swell and shrink with a period of exactly 1 second (so ~5 clean pulses across the clip). This pulse is the signature of the benchmark — make it unmistakable.\n- TWO opposing BEAMS (jets) emanate from the core along a single axis tilted about 20° from vertical — long, narrow, tapering cones of cyan-white light (semi-transparent, additive-looking), extending past the top and bottom edges of the frame. The beam axis ROTATES steadily around the center like a lighthouse, completing EXACTLY one full revolution over the 5-second clip (72°/s).\n- Concentric SHOCKWAVE RINGS pulse outward from the core in time with the pulse: on each beat a thin ring is emitted that expands and fades as it grows, so 3–4 rings are visible at different radii at any moment (stagger them with animation-delays). Faint cyan.\n- A thin, bright EQUATORIAL RING/disk hugs the core, seen nearly edge-on as a horizontal bright ellipse, tilted to match the beam axis, steady (not pulsing much).\n- Background: near-black space (#03040a) with a sparse scatter of faint, static stars (small dots via box-shadow or tiny elements) — the stars do NOT move.\n\nMotion recap (must be visible and loop seamlessly in 5s): core pulses once per second; beams make one full rotation over the clip; shockwave rings expand-and-fade on each pulse; equatorial ring holds steady; stars fixed.\n\nReturn ONLY a single complete HTML document — no JavaScript.",
-      "systemPrompt": "You are a master of pure CSS art and animation. Output a SINGLE self-contained HTML document using ONLY HTML and CSS — no JavaScript, no <canvas>, no <script>, no external resources (no images, no web fonts, no network). Every bit of MOTION must come from CSS @keyframes animations or transitions. You may freely use CSS gradients, radial/conic gradients, box-shadow, filter (blur/brightness), clip-path, transforms, mix-blend-mode, and inline SVG shapes styled/animated purely with CSS.\n\nRELIABILITY RULES (a 5-second clip is captured frame-by-frame; the harness drives CSS animation timelines deterministically):\n- Set an explicit dark background on <body> as the very FIRST style rule so the page never renders blank.\n- The scene fills the entire viewport (100vw × 100vh), is centered, auto-starts, and needs no interaction.\n- Make the animation LOOP SEAMLESSLY within the clip: use periods that divide evenly into 5 seconds (e.g. 1s, 2.5s, 5s) and rotations of exactly one full turn (or a whole number of turns) per 5s, so the first and last frame match.\n- Keep it performant: prefer transform/opacity animations; avoid thousands of elements.\n- Ensure the document is complete with every tag closed; if running long, simplify the design rather than let it be cut off. Absolutely NO JavaScript.",
-      "render": {
-        "viewport": "1280×800",
-        "fullPage": false,
-        "waitMs": 4000,
-        "deterministic": true,
-        "video": {
-          "durationMs": 5000,
-          "fps": 24
-        }
-      },
-      "columns": 3,
-      "runs": [
-        {
-          "label": "Run 1",
-          "grid": {
-            "image": "grids/pulsar-css.webp",
-            "video": "grids/pulsar-css.mp4"
-          },
-          "models": [
-            {
-              "label": "GLM 5.2",
-              "modelId": "z-ai/glm-5.2",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 123974,
-              "outputTokens": 7251,
-              "costUsd": 0.033009,
-              "truncated": false,
-              "error": null,
-              "page": "pages/pulsar-css/glm-5.2.html"
-            },
-            {
-              "label": "Grok 4.3",
-              "modelId": "x-ai/grok-4.3",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 42380,
-              "outputTokens": 2651,
-              "costUsd": 0.00762215,
-              "truncated": false,
-              "error": null,
-              "page": "pages/pulsar-css/grok-4.3.html"
-            },
-            {
-              "label": "GPT-5.4 mini",
-              "modelId": "openai/gpt-5.4-mini",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 18155,
-              "outputTokens": 2887,
-              "costUsd": 0.01357875,
-              "truncated": false,
-              "error": null,
-              "page": "pages/pulsar-css/gpt-5.4-mini.html"
-            },
-            {
-              "label": "Claude Haiku 4.5",
-              "modelId": "anthropic/claude-haiku-4.5",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 37078,
-              "outputTokens": 7651,
-              "costUsd": 0.039157,
-              "truncated": false,
-              "error": null,
-              "page": "pages/pulsar-css/claude-haiku-4.5.html"
-            },
-            {
-              "label": "Qwen3.7 Plus",
-              "modelId": "qwen/qwen3.7-plus",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 108492,
-              "outputTokens": 5954,
-              "costUsd": 0.00788128,
-              "truncated": false,
-              "error": null,
-              "page": "pages/pulsar-css/qwen3.7-plus.html"
-            },
-            {
-              "label": "Gemini 3.1 Flash-Lite",
-              "modelId": "google/gemini-3.1-flash-lite",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 4286,
-              "outputTokens": 1486,
-              "costUsd": 0.00243,
-              "truncated": false,
-              "error": null,
-              "page": "pages/pulsar-css/gemini-3.1-flash-lite.html"
-            },
-            {
-              "label": "DeepSeek V4 Pro",
-              "modelId": "deepseek/deepseek-v4-pro",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 286448,
-              "outputTokens": 16881,
-              "costUsd": 0.057026031,
-              "truncated": false,
-              "error": null,
-              "page": "pages/pulsar-css/deepseek-v4-pro.html"
-            },
-            {
-              "label": "Kimi K2.7 Code",
-              "modelId": "moonshotai/kimi-k2.7-code",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 269823,
-              "outputTokens": 14141,
-              "costUsd": 0.054445,
-              "truncated": false,
-              "error": null,
-              "page": "pages/pulsar-css/kimi-k2.7-code.html"
-            },
-            {
-              "label": "Kimi K2.6",
-              "modelId": "moonshotai/kimi-k2.6",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 35330,
-              "outputTokens": 3526,
-              "costUsd": 0.01254374,
-              "truncated": false,
-              "error": null,
-              "page": "pages/pulsar-css/kimi-k2.6.html"
             }
           ],
           "rendered": 9,

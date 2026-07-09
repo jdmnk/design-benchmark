@@ -16,12 +16,15 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync, copyFileSync, readd
 import { basename, join, resolve, dirname } from "node:path";
 
 const ROOT = resolve(dirname(new URL(import.meta.url).pathname), "..");
+// Space videos lead. `runOrder` (1-based original run numbers) reorders a
+// benchmark's run tabs — the first entry becomes the default-selected tab;
+// labels stay tied to each run's chronological identity (Run 1/2/3).
 const BENCHES = [
-  { configPath: "config/examples/black-hole-spin.config.json" },
-  { configPath: "config/examples/black-hole.config.json" },
+  { configPath: "config/examples/black-hole-spin.config.json", runOrder: [2, 1, 3] },
   { configPath: "config/examples/ringed-giant.config.json" },
-  { configPath: "config/examples/fireworks.config.json" },
   { configPath: "config/examples/pulsar-css.config.json" },
+  { configPath: "config/examples/black-hole.config.json" },
+  { configPath: "config/examples/fireworks.config.json" },
   { configPath: "config/examples/sunset-svg.config.json" },
   { configPath: "config/benchmark.config.json" },
 ];
@@ -104,17 +107,24 @@ function buildRun(exDir, key, label) {
   };
 }
 
-const benchmarks = BENCHES.map(({ configPath }) => {
+const benchmarks = BENCHES.map(({ configPath, runOrder }) => {
   const cfg = read(configPath);
   const id = cfg.name;
   const baseDir = join("examples", id);
 
   // Run 1 at the folder top level; run-2, run-3, … as subdirectories.
-  const runs = [buildRun(baseDir, id, "Run 1")];
+  let runs = [buildRun(baseDir, id, "Run 1")];
   for (let n = 2; n <= MAX_EXTRA_RUNS + 1; n++) {
     const sub = join(baseDir, `run-${n}`);
     if (!existsSync(join(ROOT, sub, "summary.json"))) break;
     runs.push(buildRun(sub, `${id}-${n}`, `Run ${n}`));
+  }
+  // Optional custom tab order (1-based run numbers). First entry is the
+  // default-selected tab; any run not listed keeps its place after the rest.
+  if (runOrder) {
+    const picked = runOrder.map((n) => runs[n - 1]).filter(Boolean);
+    const leftover = runs.filter((r) => !picked.includes(r));
+    runs = [...picked, ...leftover];
   }
 
   return {

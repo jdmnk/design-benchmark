@@ -54,6 +54,32 @@ pipeline ([grid video](black-hole-spin/run-3/grid.mp4)). Switch between runs in 
 
 [![black-hole-spin run 3 — animated grid](black-hole-spin/run-3/grid-anim.webp)](black-hole-spin/run-3/grid.mp4)
 
+## ringed-giant — a Saturn-like ringed gas giant in three.js 🎬
+
+A second animated three.js brief, sibling to black-hole-spin: a banded gas giant rotating
+on its tilted axis while its ring system orbits in-plane. Prescriptive composition (ring
+tilt ~18–24° off edge-on, rings occluding the planet's top half and crossing in front of
+its lower half, a Cassini-style gap, a faked ring shadow) so results line up. It tests 3D
+ring geometry and occlusion — where black-hole tests lensing. Captured as a 5-second, 24 fps
+deterministic clip and composed into one **[grid video](ringed-giant/grid.mp4)**; per-model
+clips in [`ringed-giant/clips/`](ringed-giant/clips). Config:
+[`config/examples/ringed-giant.config.json`](../config/examples/ringed-giant.config.json).
+
+[![ringed-giant — animated grid](ringed-giant/grid-anim.webp)](ringed-giant/grid.mp4)
+
+## pulsar-css — a pulsing pulsar in pure CSS 🎬
+
+The one benchmark with **no JavaScript and no canvas** — a spinning neutron star (pulsing
+core, rotating lighthouse beams, expanding shockwave rings) built entirely from HTML + CSS
+animations. It isolates CSS-animation craft the way sunset-svg isolates hand-coded SVG.
+CSS animations run on the browser's own timeline, so the harness pins every Web-Animations
+timeline to its deterministic virtual clock (and waits for paint-commit) to capture the
+clip reproducibly — same as the rAF-driven scenes. **[Grid video](pulsar-css/grid.mp4)** ·
+per-model clips in [`pulsar-css/clips/`](pulsar-css/clips). Config:
+[`config/examples/pulsar-css.config.json`](../config/examples/pulsar-css.config.json).
+
+[![pulsar-css — animated grid](pulsar-css/grid-anim.webp)](pulsar-css/grid.mp4)
+
 ## black-hole — Interstellar "Gargantua" in three.js / WebGL
 
 The same composition as a single deterministic still frame. A hard, very prescriptive 3D
@@ -76,19 +102,6 @@ so the labels match. Switch between runs in the [web app](../web).
 
 ![black-hole run 3](black-hole/run-3/grid.webp)
 
-## ringed-giant — a Saturn-like ringed gas giant in three.js 🎬
-
-A second animated three.js brief, sibling to black-hole-spin: a banded gas giant rotating
-on its tilted axis while its ring system orbits in-plane. Prescriptive composition (ring
-tilt ~18–24° off edge-on, rings occluding the planet's top half and crossing in front of
-its lower half, a Cassini-style gap, a faked ring shadow) so results line up. It tests 3D
-ring geometry and occlusion — where black-hole tests lensing. Captured as a 5-second, 24 fps
-deterministic clip and composed into one **[grid video](ringed-giant/grid.mp4)**; per-model
-clips in [`ringed-giant/clips/`](ringed-giant/clips). Config:
-[`config/examples/ringed-giant.config.json`](../config/examples/ringed-giant.config.json).
-
-[![ringed-giant — animated grid](ringed-giant/grid-anim.webp)](ringed-giant/grid.mp4)
-
 ## fireworks — animated Canvas 2D 🎬
 
 A continuous fireworks finale over a city skyline, judged in motion: 3–6 bursts visible at
@@ -99,19 +112,6 @@ harness's seeded `Math.random` makes even the "random" show reproducible.
 Config: [`config/examples/fireworks.config.json`](../config/examples/fireworks.config.json).
 
 [![fireworks — animated grid](fireworks/grid-anim.webp)](fireworks/grid.mp4)
-
-## pulsar-css — a pulsing pulsar in pure CSS 🎬
-
-The one benchmark with **no JavaScript and no canvas** — a spinning neutron star (pulsing
-core, rotating lighthouse beams, expanding shockwave rings) built entirely from HTML + CSS
-animations. It isolates CSS-animation craft the way sunset-svg isolates hand-coded SVG.
-CSS animations run on the browser's own timeline, so the harness pins every Web-Animations
-timeline to its deterministic virtual clock (and waits for paint-commit) to capture the
-clip reproducibly — same as the rAF-driven scenes. **[Grid video](pulsar-css/grid.mp4)** ·
-per-model clips in [`pulsar-css/clips/`](pulsar-css/clips). Config:
-[`config/examples/pulsar-css.config.json`](../config/examples/pulsar-css.config.json).
-
-[![pulsar-css — animated grid](pulsar-css/grid-anim.webp)](pulsar-css/grid.mp4)
 
 ## sunset-svg — a single inline-SVG scene
 
