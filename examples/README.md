@@ -8,9 +8,10 @@ Most examples use the **same 9 models** (see
 
 > GLM 5.2 · Grok 4.3 · GPT-5.4 mini · Claude Haiku 4.5 · Qwen3.7 Plus · Gemini 3.1 Flash-Lite · DeepSeek V4 Pro · Kimi K2.7 Code · Kimi K2.6
 
-**jupiter** runs a **frontier-model lineup** ([`config/models/sota-9.json`](../config/models/sota-9.json))
-instead — Opus 4.8, Fable 5, Sonnet 5 (via the local Claude CLI subscription), GPT-5.5 high and
-GPT-5.4 high (via the Codex CLI), plus GLM 5.2, Qwen3.7 Plus, Grok 4.3 and Kimi K2.7 Code.
+**jupiter** and **black-hole-spin-sota** run a **frontier-model lineup**
+([`config/models/sota-9.json`](../config/models/sota-9.json)) instead — Opus 4.8, Fable 5,
+Sonnet 5 (via the local Claude CLI subscription), GPT-5.5 high and GPT-5.4 high (via the Codex
+CLI), plus GLM 5.2, Qwen3.7 Plus, Grok 4.3 and Kimi K2.7 Code.
 
 (black-hole's **Run #3** predates this lineup and used Mistral Small 4 in place of Kimi K2.7 Code —
 kept as-is since it's an archived run, not reshot with the current lineup.)
@@ -51,6 +52,18 @@ pipeline ([grid video](black-hole-spin/run-2/grid.mp4)). Switch between runs in 
 [web app](../web).
 
 [![black-hole-spin run 2 — animated grid](black-hole-spin/run-2/grid-anim.webp)](black-hole-spin/run-2/grid.mp4)
+
+## black-hole-spin-sota — the same scene, run by frontier models 🎬
+
+The exact black-hole-spin brief, but run by the **SOTA lineup** ([`config/models/sota-9.json`](../config/models/sota-9.json)):
+Opus 4.8, Fable 5, Sonnet 5 through the local Claude CLI subscription; GPT-5.5 high and
+GPT-5.4 high through the Codex CLI; plus GLM 5.2, Qwen3.7 Plus, Grok 4.3 and Kimi K2.7 Code.
+A side-by-side of frontier models on the Gargantua scene — the strongest here produce clean
+lensing halos and beamed disks. **[Grid video](black-hole-spin-sota/grid.mp4)** · per-model
+clips in [`black-hole-spin-sota/clips/`](black-hole-spin-sota/clips). Config:
+[`config/examples/black-hole-spin-sota.config.json`](../config/examples/black-hole-spin-sota.config.json).
+
+[![black-hole-spin-sota — animated grid](black-hole-spin-sota/grid-anim.webp)](black-hole-spin-sota/grid.mp4)
 
 ## ringed-giant — a Saturn-like ringed gas giant in three.js 🎬
 

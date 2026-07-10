@@ -21,6 +21,7 @@ const ROOT = resolve(dirname(new URL(import.meta.url).pathname), "..");
 // labels stay tied to each run's chronological identity (Run 1/2/3).
 const BENCHES = [
   { configPath: "config/examples/black-hole-spin.config.json" },
+  { configPath: "config/examples/black-hole-spin-sota.config.json" },
   { configPath: "config/examples/ringed-giant.config.json" },
   { configPath: "config/examples/jupiter.config.json" },
   { configPath: "config/examples/black-hole-css.config.json" },

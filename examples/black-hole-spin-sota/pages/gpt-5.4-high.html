@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gargantua</title>
+  <style>
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #020205;
+    }
+    canvas {
+      display: block;
+      width: 100vw;
+      height: 100vh;
+    }
+  </style>
+</head>
+<body>
+<script type="module">
+import * as THREE from 'three';
+
+try {
+  const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+  renderer.setSize(window.innerWidth, window.innerHeight, false);
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.setClearColor(0x020205, 1);
+  document.body.appendChild(renderer.domElement);
+
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x020205);
+
+  const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
+  camera.position.set(0, 0.97, 9.2);
+  camera.lookAt(0, 0, 0);
+
+  const blackHoleRadius = 1.08;
+  const diskOuterRadius = 4.7;
+
+  function smoothstep(edge0, edge1, x) {
+    const t = Math.max(0, Math.min(1, (x - edge0) / (edge1 - edge0)));
+    return t * t * (3 - 2 * t);
+  }
+
+  function angleDelta(a, b) {
+    let d = a - b;
+    while (d > Math.PI) d -= Math.PI * 2;
+    while (d < -Math.PI) d += Math.PI * 2;
+    return d;
+  }
+
+  function lerpColor(c1, c2, t) {
+    return [
+      c1[0] + (c2[0] - c1[0]) * t,
+      c1[1] + (c2[1] - c1[1]) * t,
+      c1[2] + (c2[2] - c1[2]) * t
+    ];
+  }
+
+  function makeDiskTexture() {
+    const size = 1024;
+    const canvas = document.createElement('canvas');
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext('2d');
+    const image = ctx.createImageData(size, size);
+    const data = image.data;
+
+    const inner = 1.33 / 6.5;
+    const outer = diskOuterRadius / 6.5;
+
+    const c0 = [255, 243, 208];
+    const c1 = [255, 174, 59];
+    const c2 = [200, 85, 26];
+
+    for (let y = 0; y < size; y++) {
+      const ny = (y / (size - 1)) * 2 - 1;
+      for (let x = 0; x < size; x++) {
+        const nx = (x / (size - 1)) * 2 - 1;
+        const r = Math.sqrt(nx * nx + ny * ny);
+        const idx = (y * size + x) * 4;
+
+        if (r <= inner - 0.01 || r >= outer + 0.02) {
+          data[idx + 3] = 0;
+          continue;
+        }
+
+        const a = Math.atan2(ny, nx);
+        const rt = (r - inner) / (outer - inner);
+        const innerFade = smoothstep(inner - 0.004, inner + 0.05, r);
+        const outerFade = 1 - smoothstep(outer - 0.07, outer + 0.01, r);
+        const edge = innerFade * outerFade;
+
+        const bandA = 0.5 + 0.5 * Math.sin(10.0 * a + 21.0 * r + 0.8);
+        const bandB = 0.5 + 0.5 * Math.sin(23.0 * a - 33.0 * r + 1.7);
+        const bandC = 0.5 + 0.5 * Math.sin(37.0 * a + 8.0 * r - 0.9);
+        const ridges = 0.62 + 0.38 * (0.45 * bandA + 0.35 * bandB + 0.20 * bandC);
+
+        const hotspot = Math.exp(-Math.pow(angleDelta(a, 0.42), 2) / 0.18) * (1.15 - 0.55 * rt);
+        const dimSector = 0.88 - 0.10 * Math.exp(-Math.pow(angleDelta(a, -2.25), 2) / 0.45);
+        const turbulence = 0.86 + 0.14 * Math.sin(6.0 * a + 42.0 * rt * rt + 0.5);
+        const radialHeat = 1.22 - 0.72 * rt;
+        const brightness = edge * ridges * dimSector * turbulence * radialHeat * (1.0 + 0.35 * hotspot);
+
+        let rgb;
+        if (rt < 0.28) {
+          rgb = lerpColor(c0, c1, rt / 0.28);
+        } else {
+          rgb = lerpColor(c1, c2, (rt - 0.28) / 0.72);
+        }
+
+        const lift = 0.9 + 0.45 * Math.exp(-rt * 5.0);
+        data[idx] = Math.min(255, rgb[0] * brightness * lift);
+        data[idx + 1] = Math.min(255, rgb[1] * brightness * lift);
+        data[idx + 2] = Math.min(255, rgb[2] * brightness * lift);
+        data[idx + 3] = Math.min(255, 255 * edge * (0.52 + 0.48 * ridges));
+      }
+    }
+
+    ctx.putImageData(image, 0, 0);
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.colorSpace = THREE.SRGBColorSpace;
+    texture.needsUpdate = true;
+    return texture;
+  }
+
+  const diskTexture = makeDiskTexture();
+
+  const starsGeometry = new THREE.BufferGeometry();
+  const starCount = 700;
+  const starPositions = new Float32Array(starCount * 3);
+  const starColors = new Float32Array(starCount * 3);
+
+  for (let i = 0; i < starCount; i++) {
+    const radius = 18 + Math.random() * 40;
+    const u = Math.random();
+    const v = Math.random();
+    const theta = 2 * Math.PI * u;
+    const phi = Math.acos(2 * v - 1);
+    const s = Math.sin(phi);
+
+    starPositions[i * 3] = radius * s * Math.cos(theta);
+    starPositions[i * 3 + 1] = radius * Math.cos(phi) * 0.8;
+    starPositions[i * 3 + 2] = radius * s * Math.sin(theta);
+
+    const tint = 0.65 + Math.random() * 0.35;
+    const warm = Math.random();
+    starColors[i * 3] = tint;
+    starColors[i * 3 + 1] = tint * (0.92 + warm * 0.08);
+    starColors[i * 3 + 2] = tint * (0.88 + warm * 0.12);
+  }
+
+  starsGeometry.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
+  starsGeometry.setAttribute('color', new THREE.BufferAttribute(starColors, 3));
+
+  const stars = new THREE.Points(
+    starsGeometry,
+    new THREE.PointsMaterial({
+      size: 0.05,
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.8,
+      sizeAttenuation: true,
+      depthWrite: false
+    })
+  );
+  scene.add(stars);
+
+  const diskPlane = new THREE.PlaneGeometry(13, 13);
+
+  const diskSystem = new THREE.Group();
+  scene.add(diskSystem);
+
+  const diskBase = new THREE.Mesh(
+    diskPlane,
+    new THREE.MeshBasicMaterial({
+      map: diskTexture,
+      transparent: true,
+      side: THREE.DoubleSide,
+      depthWrite: false,
+      color: 0xffffff,
+      opacity: 0.92
+    })
+  );
+  diskBase.rotation.x = -Math.PI / 2;
+  diskSystem.add(diskBase);
+
+  const diskGlow = new THREE.Mesh(
+    diskPlane,
+    new THREE.MeshBasicMaterial({
+      map: diskTexture,
+      transparent: true,
+      side: THREE.DoubleSide,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+      color: 0xffbf66,
+      opacity: 0.28
+    })
+  );
+  diskGlow.rotation.x = -Math.PI / 2;
+  diskGlow.scale.setScalar(1.04);
+  diskGlow.position.y = 0.006;
+  diskSystem.add(diskGlow);
+
+  const beamGroup = new THREE.Group();
+  diskSystem.add(beamGroup);
+
+  const diskBeam = new THREE.Mesh(
+    diskPlane,
+    new THREE.MeshBasicMaterial({
+      map: diskTexture,
+      transparent: true,
+      side: THREE.DoubleSide,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+      color: 0xfff3dc,
+      opacity: 0.18
+    })
+  );
+  diskBeam.rotation.x = -Math.PI / 2;
+  diskBeam.scale.setScalar(0.985);
+  diskBeam.position.y = 0.012;
+  beamGroup.add(diskBeam);
+
+  const arcGroup = new THREE.Group();
+  arcGroup.scale.set(1.72, 0.82, 1);
+  scene.add(arcGroup);
+
+  function makeArc(thetaStart) {
+    return new THREE.Mesh(
+      new THREE.TorusGeometry(1.48, 0.13, 14, 160, Math.PI * 0.88),
+      new THREE.MeshBasicMaterial({
+        color: 0xffd99a,
+        transparent: true,
+        opacity: 0.72,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false
+      })
+    );
+  }
+
+  function makeArcCore() {
+    return new THREE.Mesh(
+      new THREE.TorusGeometry(1.48, 0.055, 10, 160, Math.PI * 0.86),
+      new THREE.MeshBasicMaterial({
+        color: 0xfff4df,
+        transparent: true,
+        opacity: 0.82,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false
+      })
+    );
+  }
+
+  const topArc = makeArc();
+  topArc.rotation.z = Math.PI * 0.06;
+  arcGroup.add(topArc);
+
+  const topArcCore = makeArcCore();
+  topArcCore.rotation.z = Math.PI * 0.07;
+  arcGroup.add(topArcCore);
+
+  const bottomArc = makeArc();
+  bottomArc.rotation.z = Math.PI * 1.06;
+  arcGroup.add(bottomArc);
+
+  const bottomArcCore = makeArcCore();
+  bottomArcCore.rotation.z = Math.PI * 1.07;
+  arcGroup.add(bottomArcCore);
+
+  const photonRing = new THREE.Mesh(
+    new THREE.TorusGeometry(blackHoleRadius * 1.02, 0.028, 10, 180),
+    new THREE.MeshBasicMaterial({
+      color: 0xfff1cf,
+      transparent: true,
+      opacity: 0.95,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false
+    })
+  );
+  scene.add(photonRing);
+
+  const photonRingGlow = new THREE.Mesh(
+    new THREE.TorusGeometry(blackHoleRadius * 1.045, 0.05, 10, 180),
+    new THREE.MeshBasicMaterial({
+      color: 0xffc980,
+      transparent: true,
+      opacity: 0.26,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false
+    })
+  );
+  scene.add(photonRingGlow);
+
+  const eventHorizon = new THREE.Mesh(
+    new THREE.SphereGeometry(blackHoleRadius, 64, 64),
+    new THREE.MeshBasicMaterial({ color: 0x000000 })
+  );
+  scene.add(eventHorizon);
+
+  const subtleHalo = new THREE.Mesh(
+    new THREE.SphereGeometry(blackHoleRadius * 1.005, 32, 32),
+    new THREE.MeshBasicMaterial({
+      color: 0x1b1208,
+      transparent: true,
+      opacity: 0.08,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+      side: THREE.BackSide
+    })
+  );
+  scene.add(subtleHalo);
+
+  function resize() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight, false);
+  }
+
+  window.addEventListener('resize', resize);
+
+  function renderFrame(ms) {
+    const t = ms * 0.001;
+
+    const spin = t * THREE.MathUtils.degToRad(33);
+    diskSystem.rotation.y = spin;
+    beamGroup.rotation.y = t * THREE.MathUtils.degToRad(26) + 0.14 * Math.sin(t * 0.35);
+
+    const shimmer = 0.5 + 0.5 * Math.sin(t * 8.4);
+    const shimmer2 = 0.5 + 0.5 * Math.sin(t * 11.3 + 1.4);
+
+    diskGlow.material.opacity = 0.24 + 0.08 * shimmer;
+    diskBeam.material.opacity = 0.14 + 0.08 * shimmer2;
+
+    topArc.material.opacity = 0.62 + 0.10 * shimmer2;
+    bottomArc.material.opacity = 0.58 + 0.12 * shimmer;
+    topArcCore.material.opacity = 0.76 + 0.10 * shimmer;
+    bottomArcCore.material.opacity = 0.74 + 0.10 * shimmer2;
+
+    const arcPulse = 1 + 0.008 * Math.sin(t * 2.2);
+    arcGroup.scale.set(1.72 * arcPulse, 0.82 * (1 + 0.01 * Math.sin(t * 1.8 + 0.7)), 1);
+
+    photonRing.material.opacity = 0.9 + 0.06 * Math.sin(t * 6.8);
+    photonRingGlow.material.opacity = 0.22 + 0.05 * Math.sin(t * 5.4 + 0.8);
+
+    stars.rotation.y = t * 0.01;
+    renderer.render(scene, camera);
+    requestAnimationFrame(renderFrame);
+  }
+
+  requestAnimationFrame(renderFrame);
+} catch (e) {
+  console.error(e);
+}
+</script>
+</body>
+</html>
