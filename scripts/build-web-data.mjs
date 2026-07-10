@@ -22,6 +22,7 @@ const ROOT = resolve(dirname(new URL(import.meta.url).pathname), "..");
 const BENCHES = [
   { configPath: "config/examples/black-hole-spin.config.json" },
   { configPath: "config/examples/ringed-giant.config.json" },
+  { configPath: "config/examples/jupiter.config.json" },
   { configPath: "config/examples/black-hole-css.config.json" },
   { configPath: "config/examples/pulsar-css.config.json" },
   { configPath: "config/examples/black-hole.config.json" },
@@ -155,7 +156,10 @@ function cleanError(err) {
 }
 
 function titleCase(id) {
-  return id.replace(/[-_]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+  const acronyms = { sota: "SOTA", css: "CSS", svg: "SVG", webgl: "WebGL", "3d": "3D" };
+  return id
+    .replace(/[-_]/g, " ")
+    .replace(/\b\w+/g, (w) => acronyms[w.toLowerCase()] ?? w.charAt(0).toUpperCase() + w.slice(1));
 }
 
 const outDir = join(ROOT, "web/src/data");

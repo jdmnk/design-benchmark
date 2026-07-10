@@ -1,0 +1,40 @@
+{
+  "$schema": "../schema.json",
+  "name": "jupiter",
+  "description": "The planet Jupiter — detailed turbulent banded atmosphere and the Great Red Spot — in three.js / WebGL.",
+  "systemPrompt": "You are a creative WebGL / three.js developer. Output a SINGLE self-contained HTML document. three.js r160 is preloaded; an import map that resolves it is ALREADY injected into your page — you never add it or fetch anything.\n\nIMPORTS — follow this exactly; deviating renders a BLANK page:\n1. Use ONE <script type=\"module\"> for your code. Put EVERY `import` statement at its very top, at module top level.\n2. A static `import` is legal ONLY at module top level — NEVER inside a try/catch, function, if, or any block. `import * as THREE from 'three';` placed inside a try { } is a SYNTAX ERROR that blanks the whole page. This is the single most common failure here — do not do it.\n3. Import the core library with the bare specifier `three`; import add-ons with the `three/addons/…` prefix (the same paths as three r160's examples/jsm/). These bare specifiers are the ONLY thing that resolves:\n     import * as THREE from 'three';\n     import { OrbitControls } from 'three/addons/controls/OrbitControls.js';\n4. Do NOT write your own <script type=\"importmap\">, and do NOT import from any URL or CDN (unpkg, jsdelivr, esm.sh, skypack, cdnjs, or any http(s)://…). The sandbox has NO network — every external request fails, and a second import map breaks module loading. Bare specifiers only.\n5. For error handling, wrap the SCENE SETUP that runs AFTER the imports in try/catch — never the import lines themselves.\n\nExact skeleton to follow:\n<script type=\"module\">\nimport * as THREE from 'three';\n// any other top-level imports here, e.g. three/addons/...\ntry {\n  // ALL renderer + scene setup + the render loop go here\n} catch (e) {\n  // optional; whatever was built above still shows\n}\n</script>\n\nFollow the composition exactly — this is a controlled comparison, do not improvise the layout or camera.\n\nRELIABILITY RULES (the scene is rendered in HEADLESS SOFTWARE WebGL and a 5-second clip is captured frame-by-frame):\n- Do NOT use postprocessing (EffectComposer, RenderPass, UnrealBloomPass, ShaderPass): in software WebGL these run at seconds per frame and the capture times out. Fake glow instead with additive blending, sprite/point textures, emissive colors, and layered transparent meshes — it looks just as good here.\n- Drive ALL motion from the requestAnimationFrame timestamp (or performance.now()), NOT a fixed per-frame increment, so animation speed is framerate-independent.\n- Set renderer clear color / scene background to near-black space FIRST, and start the render loop immediately, so a partial failure still shows a scene rather than a blank page.\n- Keep the scene lightweight (a few thousand vertices, one canvas-generated texture at most). No shadow maps.\n- Keep every `import` at module top level — never inside a try/catch or any block (a static import there is a syntax error that blanks the page; see IMPORTS above). Put try/catch around the scene setup that runs AFTER the imports. Ensure the document is complete with every tag closed; if running long, simplify rather than truncate.",
+  "prompt": "Render the planet JUPITER as a full-screen three.js scene (100vw × 100vh, auto-starting, no user interaction) — a close-up of the gas giant filling most of the frame. A 5-SECOND CLIP is captured, so the atmospheric motion matters as much as the still.\n\nComposition (match so results are comparable):\n- Jupiter is a large sphere centered in the frame, its diameter about 78% of the viewport height (it dominates the view). Light it from the upper-left with a soft terminator curving into shadow on the lower-right, and gentle limb darkening at the edge.\n- DETAILED BANDED ATMOSPHERE: alternating horizontal ZONES (light: cream, ivory, pale tan) and BELTS (dark: tan, ochre, red-brown, rust) — at least 8–12 bands of varying width across the disc. The band boundaries are NOT clean lines: they are turbulent, with swirling eddies, wisps and festoons where zones and belts shear against each other. Build the surface from a procedurally detailed, high-frequency texture (a canvas-generated turbulence/noise texture), NOT flat stripes.\n- THE GREAT RED SPOT: a large red-orange oval storm in the southern hemisphere (below the equator, offset left or right of center), roughly 22% of the planet's width, ringed by a paler eyewall with an internal spiral swirl. This is the signature 'eye' — make it unmistakable.\n- Coloring: a warm Jovian palette — cream/ivory zones, tan/ochre/rust belts, the Great Red Spot a deeper brick red-orange.\n- Background: near-black space with a sparse, dim starfield; optionally one tiny bright moon.\n\nMotion (the point of this benchmark — clearly visible within the 5-second clip):\n- ZONAL FLOW: the bands stream HORIZONTALLY at different speeds, and adjacent bands flow in OPPOSITE directions (as Jupiter's zones and belts do), so texture detail in neighbouring bands visibly shears past itself during the clip. Give the flow visible structure (clumps, wisps, turbulence) so the motion reads clearly — flat scrolling stripes would look wrong.\n- The Great Red Spot slowly churns / rotates (a counter-clockwise swirl) and drifts with its band.\n- Add subtle turbulent shimmer along the band boundaries. Keep Jupiter centered; the flowing, shearing atmosphere must be the dominant, clearly visible motion.\n\nReturn ONLY a single complete HTML document.",
+  "render": {
+    "viewportWidth": 1280,
+    "viewportHeight": 800,
+    "fullPage": false,
+    "waitMs": 4000,
+    "freezeClock": true,
+    "seed": 7,
+    "screenshotTimeoutMs": 120000,
+    "video": {
+      "durationMs": 5000,
+      "fps": 24,
+      "preRollMs": 2000
+    }
+  },
+  "grid": {
+    "columns": 3,
+    "cellWidth": 620,
+    "padding": 8,
+    "background": "#050507",
+    "labelStyle": "topbar",
+    "labelColor": "#ffffff",
+    "labelFontSize": 20,
+    "labelOverlayBg": "rgba(10,12,16,0.66)"
+  },
+  "generation": {
+    "temperature": 0.7,
+    "maxTokens": 32000,
+    "concurrency": 3,
+    "timeoutMs": 900000,
+    "retries": 1,
+    "reasoningEffort": "low"
+  },
+  "models": "../models/sota-9.json"
+}

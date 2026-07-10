@@ -3,10 +3,14 @@
 Real runs of Design Bench — a set of **space scenes**. There's also a **showcase web app**
 that presents these with the prompts and per-model metadata — see [`web/`](../web).
 
-Every example uses the **same 9 models** (see
+Most examples use the **same 9 models** (see
 [`config/models/standard-9.json`](../config/models/standard-9.json)):
 
 > GLM 5.2 · Grok 4.3 · GPT-5.4 mini · Claude Haiku 4.5 · Qwen3.7 Plus · Gemini 3.1 Flash-Lite · DeepSeek V4 Pro · Kimi K2.7 Code · Kimi K2.6
+
+**jupiter** runs a **frontier-model lineup** ([`config/models/sota-9.json`](../config/models/sota-9.json))
+instead — Opus 4.8, Fable 5, Sonnet 5 (via the local Claude CLI subscription), GPT-5.5 high and
+GPT-5.4 high (via the Codex CLI), plus GLM 5.2, Qwen3.7 Plus, Grok 4.3 and Kimi K2.7 Code.
 
 (black-hole's **Run #3** predates this lineup and used Mistral Small 4 in place of Kimi K2.7 Code —
 kept as-is since it's an archived run, not reshot with the current lineup.)
@@ -60,6 +64,19 @@ clips in [`ringed-giant/clips/`](ringed-giant/clips). Config:
 [`config/examples/ringed-giant.config.json`](../config/examples/ringed-giant.config.json).
 
 [![ringed-giant — animated grid](ringed-giant/grid-anim.webp)](ringed-giant/grid.mp4)
+
+## jupiter — a turbulent gas giant + the Great Red Spot in three.js 🎬
+
+A close-up of Jupiter: a detailed, turbulent banded atmosphere (zones and belts
+shearing past each other in opposite-direction zonal flow) with the Great Red Spot as the
+signature "eye". This is the first benchmark run by a **frontier-model lineup** — Opus 4.8,
+Fable 5 and Sonnet 5 through the local Claude CLI subscription, GPT-5.5 high and GPT-5.4 high
+through the Codex CLI, alongside GLM 5.2, Qwen3.7 Plus, Grok 4.3 and Kimi K2.7 Code. Captured
+as a 5-second, 24 fps deterministic clip. **[Grid video](jupiter/grid.mp4)** · per-model clips
+in [`jupiter/clips/`](jupiter/clips). Config:
+[`config/examples/jupiter.config.json`](../config/examples/jupiter.config.json).
+
+[![jupiter — animated grid](jupiter/grid-anim.webp)](jupiter/grid.mp4)
 
 ## black-hole-css — the same spinning black hole, in pure CSS 🎬
 

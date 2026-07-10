@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Jupiter</title>
+<style>
+  html,body{margin:0;height:100%;background:#05060a;overflow:hidden;}
+  #c{display:block;width:100vw;height:100vh;}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<script type="module">
+import * as THREE from 'three';
+
+try {
+  // ---------- renderer / scene ----------
+  const canvas = document.getElementById('c');
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+  renderer.setSize(window.innerWidth, window.innerHeight);
+
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x05060a);
+
+  const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
+  // sphere radius 1 -> diameter ~78% of viewport height
+  camera.position.set(0, 0, 1 / (0.78 * Math.tan(THREE.MathUtils.degToRad(45) / 2)));
+  camera.lookAt(0, 0, 0);
+
+  // ---------- lights (upper-left, terminator to lower-right) ----------
+  const sun = new THREE.DirectionalLight(0xfff4e0, 2.1);
+  sun.position.set(-1.0, 0.85, 0.7);
+  scene.add(sun);
+  scene.add(new THREE.AmbientLight(0x2a2320, 0.55));
+
+  // ======================================================================
+  // Procedural Jupiter texture
+  // ======================================================================
+  const W = 512, H = 256;
+
+  // ---- tileable fbm turbulence field ----
+  function buildFBM(aniY) {
+    const GW = 256, GH = 128;
+    const g = new Float32Array(GW * GH);
+    for (let i = 0; i < g.length; i++) g[i] = Math.random();
+    function grid(u, v) {
+      let x = u * GW, y = v * GH;
+      let xi = Math.floor(x), yi = Math.floor(y);
+      let xf = x - xi, yf = y - yi;
+      xf = xf * xf * (3 - 2 * xf); yf = yf * yf * (3 - 2 * yf);
+      let x0 = ((xi % GW) + GW) % GW, x1 = (x0 + 1) % GW;
+      let y0 = ((yi % GH) + GH) % GH, y1 = (y0 + 1) % GH;
+      const a = g[y0 * GW + x0], b = g[y0 * GW + x1];
+      const c = g[y1 * GW + x0], d = g[y1 * GW + x1];
+      return a * (1 - xf) * (1 - yf) + b * xf * (1 - yf) + c * (1 - xf) * yf + d * xf * yf;
+    }
+    const arr = new Float32Array(W * H);
+    let mn = 1e9, mx = -1e9;
+    for (let y = 0; y < H; y++) {
+      const v = y / H;
+      for (let x = 0; x < W; x++) {
+        const u = x / W;
+        let amp = 0.5, sum = 0;
+        for (let o = 0; o < 5; o++) {
+          const f = 1 << o;
+          const n = grid(u * f, v * f * aniY);   // horizontally elongated features
+          sum += amp * Math.abs(2 * n - 1);       // ridged turbulence
+          amp *= 0.5;
+        }
+        arr[y * W + x] = sum;
+        if (sum < mn) mn = sum; if (sum > mx) mx = sum;
+      }
+    }
+    const inv = 1 / (mx - mn);
+    for (let i = 0; i < arr.length; i++) arr[i] = (arr[i] - mn) * inv;
+    return arr;
+  }
+  const noiseA = buildFBM(3);
+  const noiseB = buildFBM(4);
+
+  function sampleWrap(arr, fx, y) {
+    let x0 = Math.floor(fx);
+    const frac = fx - x0;
+    x0 = ((x0 % W) + W) % W;
+    const x1 = (x0 + 1) % W;
+    const row = y * W;
+    return arr[row + x0] * (1 - frac) + arr[row + x1] * frac;
+  }
+
+  // ---- band definitions (north -> south) ----
+  const widths = [0.10,0.09,0.07,0.09,0.08,0.10,0.09,0.08,0.07,0.08,0.07,0.08];
+  const bandCol = [
+    [175,158,148],[228,214,180],[168,122,82],[232,220,188],
+    [150,96,60],[236,224,185],[158,102,66],[224,208,174],
+    [176,132,88],[230,216,182],[162,112,76],[170,150,140]
+  ];
+  const bandFlow = [3,10,-12,12,-15,14,-13,11,-10,12,-11,4]; // px/sec, alternating
+  const edges = [0];
+  for (let i = 0; i < widths.length; i++) edges.push(edges[i] + widths[i]);
+
+  function bandAt(v) {
+    for (let i = 0; i < widths.length; i++) if (v < edges[i + 1]) return i;
+    return widths.length - 1;
+  }
+
+  // colour LUT over latitude (smoothed so band boundaries aren't razor lines)
+  const CL = 512;
+  const rawLUT = new Float32Array(CL * 3);
+  for (let i = 0; i < CL; i++) {
+    const c = bandCol[bandAt(i / CL)];
+    rawLUT[i*3] = c[0]; rawLUT[i*3+1] = c[1]; rawLUT[i*3+2] = c[2];
+  }
+  const colorLUT = new Float32Array(CL * 3);
+  const R = 4;
+  for (let i = 0; i < CL; i++) {
+    let r=0,gg=0,b=0,n=0;
+    for (let k=-R;k<=R;k++){ const j=Math.min(CL-1,Math.max(0,i+k)); r+=rawLUT[j*3]; gg+=rawLUT[j*3+1]; b+=rawLUT[j*3+2]; n++; }
+    colorLUT[i*3]=r/n; colorLUT[i*3+1]=gg/n; colorLUT[i*3+2]=b/n;
+  }
+
+  // flow per pixel row
+  const flowRow = new Float32Array(H);
+  for (let y = 0; y < H; y++) flowRow[y] = bandFlow[bandAt(y / H)];
+
+  const smoothstep = (a,b,x)=>{ let t=Math.min(1,Math.max(0,(x-a)/(b-a))); return t*t*(3-2*t); };
+
+  // Great Red Spot params
+  const GRS_u = 0.60, GRS_v = 0.635, GRS_au = 0.11, GRS_av = 0.072;
+
+  const texCanvas = document.createElement('canvas');
+  texCanvas.width = W; texCanvas.height = H;
+  const tctx = texCanvas.getContext('2d');
+  const img = tctx.createImageData(W, H);
+  const data = img.data;
+  const texture = new THREE.CanvasTexture(texCanvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.wrapS = THREE.RepeatWrapping;
+
+  function updateTexture(t) {
+    const grsU = GRS_u + 0.008 * t; // slow drift with its band
+    for (let y = 0; y < H; y++) {
+      const v = y / H;
+      const ox = flowRow[y] * t;
+      const base = y * W * 4;
+      for (let x = 0; x < W; x++) {
+        const a = sampleWrap(noiseA, x + ox, y);
+        const b = sampleWrap(noiseB, x - ox * 0.6, y);
+        const turb = 0.6 * a + 0.4 * b;
+
+        // turbulent, sheared band boundaries (festoons / wisps)
+        let vv = v + (turb - 0.5) * 0.06;
+        if (vv < 0) vv = 0; else if (vv > 0.999) vv = 0.999;
+        const li = (vv * CL) | 0;
+        let shade = 0.66 + 0.62 * turb;
+        let r = colorLUT[li*3] * shade;
+        let g = colorLUT[li*3+1] * shade;
+        let bl = colorLUT[li*3+2] * shade;
+
+        // ---- Great Red Spot ----
+        let du = (x / W) - grsU;
+        du -= Math.round(du);              // wrap to [-0.5,0.5]
+        const dv = v - GRS_v;
+        const nx = du / GRS_au, ny = dv / GRS_av;
+        const rr = Math.sqrt(nx * nx + ny * ny);
+        if (rr < 1.2) {
+          const ang = Math.atan2(ny, nx);
+          const swirl = 0.5 + 0.5 * Math.sin(2.4 * ang + rr * 9.0 - t * 1.5); // CCW churn
+          const bright = 0.8 + 0.45 * swirl;
+          let cr, cg, cb;
+          if (rr < 0.58) { cr=172; cg=66; cb=42; }        // brick-red core
+          else if (rr < 0.9) { cr=198; cg=98; cb=56; }    // orange body
+          else { cr=222; cg=188; cb=150; }                // pale eyewall
+          cr *= bright; cg *= bright * 0.98; cb *= bright * 0.95;
+          const inf = smoothstep(1.15, 0.88, rr) + 0.15 * (rr < 1.0 ? 1 : 0);
+          const w = Math.min(1, inf);
+          r = r * (1 - w) + cr * w;
+          g = g * (1 - w) + cg * w;
+          bl = bl * (1 - w) + cb * w;
+        }
+
+        const p = base + x * 4;
+        data[p]   = r > 255 ? 255 : r;
+        data[p+1] = g > 255 ? 255 : g;
+        data[p+2] = bl > 255 ? 255 : bl;
+        data[p+3] = 255;
+      }
+    }
+    tctx.putImageData(img, 0, 0);
+    texture.needsUpdate = true;
+  }
+  updateTexture(0);
+
+  // ---------- Jupiter sphere ----------
+  const mat = new THREE.MeshPhongMaterial({
+    map: texture,
+    shininess: 3,
+    specular: 0x111008,
+    emissive: 0x140f0a,
+    emissiveIntensity: 0.35
+  });
+  const jupiter = new THREE.Mesh(new THREE.SphereGeometry(1, 96, 64), mat);
+  jupiter.rotation.z = 0.05;
+  scene.add(jupiter);
+
+  // faint limb-darkening / atmosphere halo (additive, fake glow)
+  const haloMat = new THREE.MeshBasicMaterial({
+    color: 0x6b5230, transparent: true, opacity: 0.18,
+    side: THREE.BackSide, blending: THREE.AdditiveBlending, depthWrite: false
+  });
+  scene.add(new THREE.Mesh(new THREE.SphereGeometry(1.045, 48, 32), haloMat));
+
+  // ---------- starfield ----------
+  const starN = 500;
+  const sPos = new Float32Array(starN * 3);
+  for (let i = 0; i < starN; i++) {
+    const th = Math.random() * Math.PI * 2;
+    const ph = Math.acos(2 * Math.random() - 1);
+    const rad = 40 + Math.random() * 20;
+    sPos[i*3]   = rad * Math.sin(ph) * Math.cos(th);
+    sPos[i*3+1] = rad * Math.sin(ph) * Math.sin(th);
+    sPos[i*3+2] = rad * Math.cos(ph);
+  }
+  const sGeo = new THREE.BufferGeometry();
+  sGeo.setAttribute('position', new THREE.BufferAttribute(sPos, 3));
+  const stars = new THREE.Points(sGeo, new THREE.PointsMaterial({
+    color: 0x9fb0c8, size: 0.18, sizeAttenuation: true,
+    transparent: true, opacity: 0.75
+  }));
+  scene.add(stars);
+
+  // ---------- tiny moon ----------
+  const moon = new THREE.Mesh(
+    new THREE.SphereGeometry(0.045, 20, 16),
+    new THREE.MeshPhongMaterial({ color: 0xcfc8bf, shininess: 2 })
+  );
+  moon.position.set(2.15, 1.25, -0.6);
+  scene.add(moon);
+
+  // ---------- resize ----------
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+
+  // ---------- render loop ----------
+  const start = performance.now();
+  function animate(now) {
+    const t = (now - start) / 1000;
+    updateTexture(t);
+    stars.rotation.y = t * 0.005;
+    renderer.render(scene, camera);
+    requestAnimationFrame(animate);
+  }
+  requestAnimationFrame(animate);
+
+} catch (e) {
+  console.error(e);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Jupiter</title>
+<style>
+  html,body{margin:0;padding:0;overflow:hidden;background:#000;width:100%;height:100%;}
+  canvas{display:block;width:100vw;height:100vh;}
+</style>
+</head>
+<body>
+<script type="module">
+import * as THREE from 'three';
+
+try {
+  // ---------- Renderer ----------
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setClearColor(0x02030a, 1);
+  document.body.appendChild(renderer.domElement);
+
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x02030a);
+
+  const camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 100);
+  camera.position.set(0, 0, 3.2);
+  camera.lookAt(0, 0, 0);
+
+  // ---------- Procedural Jupiter Texture ----------
+  const TEX_W = 2048, TEX_H = 1024;
+  const cvs = document.createElement('canvas');
+  cvs.width = TEX_W; cvs.height = TEX_H;
+  const ctx = cvs.getContext('2d');
+  const img = ctx.createImageData(TEX_W, TEX_H);
+
+  // Hash-based value noise
+  function hash2(x, y) {
+    let h = (x | 0) * 374761393 + (y | 0) * 668265263;
+    h = (h ^ (h >>> 13)) >>> 0;
+    h = Math.imul(h, 1274126177) >>> 0;
+    h = (h ^ (h >>> 16)) >>> 0;
+    return h / 4294967295;
+  }
+  function smooth(x, y) {
+    const xi = Math.floor(x), yi = Math.floor(y);
+    const xf = x - xi, yf = y - yi;
+    const u = xf * xf * (3 - 2 * xf);
+    const v = yf * yf * (3 - 2 * yf);
+    const a = hash2(xi, yi);
+    const b = hash2(xi + 1, yi);
+    const c = hash2(xi, yi + 1);
+    const d = hash2(xi + 1, yi + 1);
+    return a + (b - a) * u + (c - a) * v + (a - b - c + d) * u * v;
+  }
+  function fbm(x, y, oct) {
+    let s = 0, a = 0.5, f = 1, norm = 0;
+    for (let i = 0; i < oct; i++) {
+      s += a * smooth(x * f, y * f);
+      norm += a;
+      f *= 2.07;
+      a *= 0.5;
+    }
+    return s / norm;
+  }
+
+  // Band definitions: v in [0,1] (0 = north pole, 1 = south pole)
+  // Colors as RGB [0..1]
+  const bands = [
+    { v: 0.00, c: [0.55, 0.50, 0.42] }, // NP dark
+    { v: 0.08, c: [0.78, 0.72, 0.60] }, // N polar hood
+    { v: 0.16, c: [0.42, 0.30, 0.22] }, // NNTB dark
+    { v: 0.24, c: [0.90, 0.83, 0.70] }, // NTZ cream
+    { v: 0.32, c: [0.55, 0.38, 0.25] }, // NEB brown
+    { v: 0.40, c: [0.95, 0.88, 0.75] }, // NEZ ivory
+    { v: 0.48, c: [0.72, 0.45, 0.28] }, // EQB / SEB upper (rust)
+    { v: 0.56, c: [0.50, 0.30, 0.20] }, // SEB main (dark red-brown)
+    { v: 0.64, c: [0.88, 0.78, 0.62] }, // SEZ tan
+    { v: 0.72, c: [0.60, 0.40, 0.28] }, // STB
+    { v: 0.80, c: [0.92, 0.85, 0.72] }, // STZ cream
+    { v: 0.88, c: [0.48, 0.35, 0.26] }, // STB south
+    { v: 0.95, c: [0.70, 0.62, 0.50] }, // SP polar
+    { v: 1.00, c: [0.45, 0.40, 0.35] }  // SP
+  ];
+
+  function bandColor(v) {
+    v = Math.max(0, Math.min(1, v));
+    for (let i = 0; i < bands.length - 1; i++) {
+      if (v <= bands[i + 1].v) {
+        const t = (v - bands[i].v) / (bands[i + 1].v - bands[i].v);
+        const s = t * t * (3 - 2 * t);
+        const a = bands[i].c, b = bands[i + 1].c;
+        return [
+          a[0] + (b[0] - a[0]) * s,
+          a[1] + (b[1] - a[1]) * s,
+          a[2] + (b[2] - a[2]) * s
+        ];
+      }
+    }
+    return bands[bands.length - 1].c;
+  }
+
+  // Flow-speed profile: alternating prograde/retrograde with the bands
+  // Positive = eastward (increasing u). We want adjacent bands to flow opposite.
+  function flowSpeed(v) {
+    // Use a sine with frequency matching the band count (~12 bands across disc)
+    const s = Math.sin(v * Math.PI * 11.0 + 0.3);
+    // Add a secondary modulation
+    const s2 = Math.sin(v * Math.PI * 5.2) * 0.3;
+    return (s + s2) * 0.022;
+  }
+
+  // Precompute a flow-offset field (applied during texture paint for static shear detail)
+  // We'll also use it to warp the turbulence lookup so bands have internal streaks.
+
+  const GRS_U = 0.30; // longitude center
+  const GRS_V = 0.60; // southern hemisphere
+  const GRS_RX = 0.11; // oval half-width in u
+  const GRS_RY = 0.055; // oval half-height in v
+
+  for (let y = 0; y < TEX_H; y++) {
+    const v = y / TEX_H;
+    const flow = flowSpeed(v);
+    for (let x = 0; x < TEX_W; x++) {
+      const u = x / TEX_W;
+
+      // Turbulent warp: shift v slightly with horizontal streaks
+      const warp1 = fbm(u * 8 + 3.1, v * 22 + 1.7, 5) - 0.5;
+      const warp2 = fbm(u * 16 + 7.3, v * 40 + 2.1, 4) - 0.5;
+      const vEff = v + warp1 * 0.012 + warp2 * 0.004;
+
+      let base = bandColor(vEff);
+
+      // High-frequency turbulence modulating brightness
+      const turb = fbm(u * 40 + 11.0, v * 80 + 5.0, 5) - 0.5;
+      const fine = fbm(u * 120 + 2.3, v * 200 + 3.1, 3) - 0.5;
+
+      // Wispy streaks aligned with flow direction
+      const streak = (fbm(u * 60 + v * 2.0, v * 6, 4) - 0.5);
+
+      let r = base[0] + turb * 0.18 + fine * 0.08 + streak * 0.06;
+      let g = base[1] + turb * 0.14 + fine * 0.06 + streak * 0.05;
+      let b = base[2] + turb * 0.10 + fine * 0.05 + streak * 0.04;
+
+      // Darken belts slightly, brighten zones - subtle contrast boost
+      const beltness = Math.abs(Math.sin(v * Math.PI * 11.0 + 0.3));
+      r *= 1.0 - beltness * 0.05;
+      g *= 1.0 - beltness * 0.05;
+
+      // ---- Great Red Spot ----
+      let du = u - GRS_U;
+      if (du > 0.5) du -= 1;
+      if (du < -0.5) du += 1;
+      const dv = v - GRS_V;
+      const ex = du / GRS_RX;
+      const ey = dv / GRS_RY;
+      const d2 = ex * ex + ey * ey;
+
+      // Outer pale eyewall
+      if (d2 < 1.6 && d2 > 0.0) {
+        const fade = Math.exp(-d2 * 1.1);
+        // Internal spiral: swirl the sampling point around GRS center
+        const ang = Math.atan2(ey, ex);
+        const rad = Math.sqrt(d2);
+        const spiralAng = ang + rad * 6.0;
+        const spiralNoise = (Math.sin(spiralAng * 3.0) * 0.5 + 0.5);
+        const swirlTex = fbm(u * 30 + Math.cos(ang) * 2, v * 30 + Math.sin(ang) * 2, 4);
+
+        // Eyewall ring (pale orange)
+        const ring = Math.exp(-Math.pow(Math.sqrt(d2) - 0.95, 2) * 40.0);
+        // Inner core: deep brick red-orange
+        const core = Math.exp(-d2 * 2.2);
+
+        const eyewallR = 0.95, eyewallG = 0.72, eyewallB = 0.50;
+        const coreR = 0.72, coreG = 0.28, coreB = 0.18;
+
+        const w = ring * 0.7 + core * 0.9;
+        r = r * (1 - w) + (eyewallR * ring + coreR * core + swirlTex * 0.15) * (ring + core);
+        g = g * (1 - w) + (eyewallG * ring + coreG * core + spiralNoise * 0.08) * (ring + core);
+        b = b * (1 - w) + (eyewallB * ring + coreB * core) * (ring + core);
+
+        // subtle brightening at very center
+        r += core * 0.08;
+      }
+
+      r = Math.max(0, Math.min(1, r));
+      g = Math.max(0, Math.min(1, g));
+      b = Math.max(0, Math.min(1, b));
+
+      const idx = (y * TEX_W + x) * 4;
+      img.data[idx] = r * 255;
+      img.data[idx + 1] = g * 255;
+      img.data[idx + 2] = b * 255;
+      img.data[idx + 3] = 255;
+    }
+  }
+  ctx.putImageData(img, 0, 0);
+
+  const jupiterTex = new THREE.CanvasTexture(cvs);
+  jupiterTex.anisotropy = 8;
+  jupiterTex.wrapS = THREE.RepeatWrapping;
+  jupiterTex.wrapT = THREE.ClampToEdgeWrapping;
+  jupiterTex.minFilter = THREE.LinearMipmapLinearFilter;
+  jupiterTex.magFilter = THREE.LinearFilter;
+
+  // ---------- Shaders ----------
+  const vertexShader = `
+    varying vec2 vUv;
+    varying vec3 vNormalW;
+    varying vec3 vPosW;
+    void main() {
+      vUv = uv;
+      vec4 wp = modelMatrix * vec4(position, 1.0);
+      vPosW = wp.xyz;
+      vNormalW = normalize((modelMatrix * vec4(normal, 0.0)).xyz);
+      gl_Position = projectionMatrix * viewMatrix * wp;
+    }
+  `;
+
+  const fragmentShader = `
+    precision highp float;
+    uniform sampler2D baseTex;
+    uniform float uTime;
+    uniform vec3 uLightDir;
+    uniform vec3 uCamPos;
+    varying vec2 vUv;
+    varying vec3 vNormalW;
+    varying vec3 vPosW;
+
+    float flowSpeed(float v) {
+      float s = sin(v * 3.14159265 * 11.0 + 0.3);
+      float s2 = sin(v * 3.14159265 * 5.2) * 0.3;
+      return (s + s2) * 0.022;
+    }
+
+    void main() {
+      vec2 uv = vUv;
+      float v = uv.y;
+
+      // Zonal flow: each latitude drifts at its own speed
+      float flow = flowSpeed(v);
+      // Add small turbulent shimmer
+      float shimmer = sin(uv.x * 80.0 + uTime * 1.3 + v * 40.0) * 0.0006
+                    + sin(uv.x * 200.0 - uTime * 2.1 + v * 120.0) * 0.0004;
+
+      vec2 suv = vec2(uv.x + flow * uTime + shimmer, uv.y);
+      suv.x = fract(suv.x);
+
+      vec4 col = texture2D(baseTex, suv);
+
+      // Great Red Spot internal counter-clockwise swirl
+      vec2 grsC = vec2(${GRS_U.toFixed(4)}, ${GRS_V.toFixed(4)});
+      vec2 d = suv - grsC;
+      d.x = d.x - round(d.x); // wrap
+      vec2 dd = d / vec2(${GRS_RX.toFixed(4)}, ${GRS_RY.toFixed(4)});
+      float d2 = dot(dd, dd);
+      if (d2 < 1.4) {
+        float rad = length(dd);
+        // counter-clockwise rotation (positive angle in screen space with v down)
+        float ang = -uTime * 0.25 * (1.0 - rad * 0.5);
+        float ca = cos(ang), sa = sin(ang);
+        vec2 rd = vec2(d.x * ca - d.y * sa, d.x * sa + d.y * ca);
+        vec2 swirlUV = grsC + rd;
+        swirlUV.x = fract(swirlUV.x);
+        vec4 swirlCol = texture2D(baseTex, swirlUV);
+        float w = smoothstep(1.4, 0.2, d2);
+        col = mix(col, swirlCol, w * 0.85);
+      }
+
+      // Lighting: key light from upper-left
+      vec3 N = normalize(vNormalW);
+      vec3 L = normalize(uLightDir);
+      vec3 V = normalize(uCamPos - vPosW);
+      float ndl = max(dot(N, L), 0.0);
+      // Soften terminator
+      float light = 0.08 + 0.92 * pow(ndl, 0.9);
+
+      // Limb darkening
+      float nv = max(dot(N, V), 0.0);
+      float limb = pow(nv, 0.45);
+
+      // Slight warm tint in shadow
+      vec3 litColor = col.rgb * light * limb;
+      // Add a touch of blue-ish ambient in deep shadow
+      vec3 ambient = vec3(0.04, 0.05, 0.08) * (1.0 - ndl);
+      litColor += ambient * col.rgb;
+
+      gl_FragColor = vec4(litColor, 1.0);
+    }
+  `;
+
+  // ---------- Jupiter Sphere ----------
+  // Diameter ~78% of viewport height. With fov=35 and distance 3.2,
+  // visible height at z=0 is 2 * 3.2 * tan(17.5deg) ≈ 2.02
+  // So radius for 78% height: 0.78 * 2.02 / 2 ≈ 0.79
+  const radius = 0.79;
+  const geom = new THREE.SphereGeometry(radius, 192, 128);
+  const mat = new THREE.ShaderMaterial({
+    uniforms: {
+      baseTex: { value: jupiterTex },
+      uTime: { value: 0 },
+      uLightDir: { value: new THREE.Vector3(-0.55, 0.55, 0.7).normalize() },
+      uCamPos: { value: camera.position.clone() }
+    },
+    vertexShader,
+    fragmentShader
+  });
+  const jupiter = new THREE.Mesh(geom, mat);
+  scene.add(jupiter);
+
+  // ---------- Starfield ----------
+  const starCount = 700;
+  const starPos = new Float32Array(starCount * 3);
+  const starCol = new Float32Array(starCount * 3);
+  for (let i = 0; i < starCount; i++) {
+    // uniform on sphere
+    const u = Math.random();
+    const v = Math.random();
+    const theta = 2 * Math.PI * u;
+    const phi = Math.acos(2 * v - 1);
+    const R = 40;
+    starPos[i * 3] = R * Math.sin(phi) * Math.cos(theta);
+    starPos[i * 3 + 1] = R * Math.sin(phi) * Math.sin(theta);
+    starPos[i * 3 + 2] = R * Math.cos(phi);
+    const b = 0.3 + Math.random() * 0.7;
+    const tint = Math.random();
+    starCol[i * 3] = b * (tint < 0.2 ? 0.8 : 1.0);
+    starCol[i * 3 + 1] = b * (tint < 0.2 ? 0.85 : 1.0);
+    starCol[i * 3 + 2] = b * (tint > 0.8 ? 0.9 : 1.0);
+  }
+  const starGeom = new THREE.BufferGeometry();
+  starGeom.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+  starGeom.setAttribute('color', new THREE.BufferAttribute(starCol, 3));
+  const starMat = new THREE.PointsMaterial({
+    size: 0.08,
+    sizeAttenuation: true,
+    vertexColors: true,
+    transparent: true,
+    opacity: 0.9,
+    depthWrite: false
+  });
+  const stars = new THREE.Points(starGeom, starMat);
+  scene.add(stars);
+
+  // One small bright moon
+  const moonGeom = new THREE.SphereGeometry(0.04, 16, 16);
+  const moonMat = new THREE.MeshBasicMaterial({ color: 0xd8d0b8 });
+  const moon = new THREE.Mesh(moonGeom, moonMat);
+  moon.position.set(2.2, 0.6, -0.5);
+  scene.add(moon);
+
+  // Tiny glow sprite for the moon (fake, additive)
+  const glowCvs = document.createElement('canvas');
+  glowCvs.width = glowCvs.height = 64;
+  const gctx = glowCvs.getContext('2d');
+  const grad = gctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+  grad.addColorStop(0, 'rgba(255,240,200,1)');
+  grad.addColorStop(0.3, 'rgba(255,220,170,0.4)');
+  grad.addColorStop(1, 'rgba(255,220,170,0)');
+  gctx.fillStyle = grad;
+  gctx.fillRect(0, 0, 64, 64);
+  const glowTex = new THREE.CanvasTexture(glowCvs);
+  const glowMat = new THREE.SpriteMaterial({ map: glowTex, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false });
+  const glow = new THREE.Sprite(glowMat);
+  glow.scale.set(0.4, 0.4, 1);
+  glow.position.copy(moon.position);
+  scene.add(glow);
+
+  // ---------- Resize ----------
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+
+  // ---------- Render Loop ----------
+  const clock = new THREE.Clock();
+  function animate() {
+    const t = clock.getElapsedTime();
+    mat.uniforms.uTime.value = t;
+    // Very slow axial rotation of the whole planet (secondary to zonal flow)
+    jupiter.rotation.y = t * 0.01;
+    // Moon slow orbit
+    moon.position.x = Math.cos(t * 0.08) * 2.3;
+    moon.position.z = Math.sin(t * 0.08) * 2.3 - 0.5;
+    moon.position.y = 0.55 + Math.sin(t * 0.12) * 0.1;
+    glow.position.copy(moon.position);
+    renderer.render(scene, camera);
+    requestAnimationFrame(animate);
+  }
+  requestAnimationFrame(animate);
+
+} catch (e) {
+  console.error(e);
+  document.body.style.background = '#000';
+}
+</script>
+</body>
+</html>

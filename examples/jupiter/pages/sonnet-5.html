@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Jupiter</title>
+<style>
+  html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; }
+  canvas { display: block; width: 100vw; height: 100vh; }
+</style>
+</head>
+<body>
+<script type="module">
+import * as THREE from 'three';
+
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setClearColor(0x000006, 1);
+document.body.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x000006);
+
+const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 100);
+camera.position.set(0, 0, 2.75);
+camera.lookAt(0, 0, 0);
+
+let updateFn = null;
+
+function animate(t) {
+  requestAnimationFrame(animate);
+  const elapsed = t * 0.001;
+  if (updateFn) {
+    try { updateFn(elapsed); } catch (e) { /* keep rendering even if update fails */ }
+  }
+  renderer.render(scene, camera);
+}
+requestAnimationFrame(animate);
+
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+try {
+
+  // ---------- noise helpers (value noise + fbm) ----------
+  function hash3(x, y, z) {
+    let n = Math.sin(x * 127.1 + y * 311.7 + z * 74.7) * 43758.5453123;
+    return n - Math.floor(n);
+  }
+  function noise3(x, y, z) {
+    const xi = Math.floor(x), yi = Math.floor(y), zi = Math.floor(z);
+    const xf = x - xi, yf = y - yi, zf = z - zi;
+    const u = xf * xf * (3 - 2 * xf), v = yf * yf * (3 - 2 * yf), w = zf * zf * (3 - 2 * zf);
+    const c000 = hash3(xi, yi, zi), c100 = hash3(xi + 1, yi, zi);
+    const c010 = hash3(xi, yi + 1, zi), c110 = hash3(xi + 1, yi + 1, zi);
+    const c001 = hash3(xi, yi, zi + 1), c101 = hash3(xi + 1, yi, zi + 1);
+    const c011 = hash3(xi, yi + 1, zi + 1), c111 = hash3(xi + 1, yi + 1, zi + 1);
+    const x00 = c000 + (c100 - c000) * u, x10 = c010 + (c110 - c010) * u;
+    const x01 = c001 + (c101 - c001) * u, x11 = c011 + (c111 - c011) * u;
+    const y0 = x00 + (x10 - x00) * v, y1 = x01 + (x11 - x01) * v;
+    return y0 + (y1 - y0) * w;
+  }
+  function fbm(x, y, z, octaves) {
+    let sum = 0, amp = 0.5, freq = 1.0;
+    for (let i = 0; i < octaves; i++) {
+      sum += amp * noise3(x * freq, y * freq, z * freq);
+      freq *= 2.05; amp *= 0.5;
+    }
+    return sum;
+  }
+  function lerp3(a, b, t) {
+    return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
+  }
+
+  // ---------- Great Red Spot placement (shared by texture bake + shader overlay) ----------
+  const GRS_U0 = 0.42, GRS_V0 = 0.60, GRS_RU = 0.065, GRS_RV = 0.05;
+
+  // ---------- build the banded, turbulent Jupiter texture ----------
+  function buildJupiterTexture() {
+    const W = 512, H = 256;
+    const canvas = document.createElement('canvas');
+    canvas.width = W; canvas.height = H;
+    const ctx = canvas.getContext('2d');
+    const img = ctx.createImageData(W, H);
+    const data = img.data;
+
+    const bandColors = [
+      [214, 196, 160], // pale zone (north)
+      [176, 128, 88],  // belt
+      [238, 226, 194], // zone
+      [161, 108, 68],  // belt (ochre)
+      [247, 238, 210], // bright equatorial zone
+      [150, 88, 58],   // belt (rust)
+      [232, 208, 172], // zone
+      [172, 120, 78],  // belt
+      [222, 202, 164], // zone
+      [140, 92, 62],   // belt (south)
+      [202, 182, 146]  // pale zone (south pole)
+    ];
+    const NUMBANDS = bandColors.length;
+
+    for (let y = 0; y < H; y++) {
+      const v = y / H;
+      for (let x = 0; x < W; x++) {
+        const angle = (x / W) * Math.PI * 2.0;
+        const nx = Math.cos(angle), nz = Math.sin(angle);
+
+        // low-frequency turbulence warps the band boundaries (swirling eddies / festoons)
+        const warp = fbm(nx * 1.5, v * 4.0, nz * 1.5, 3);
+        const warpC = (warp - 0.5) * 1.35;
+        let bandPos = v * NUMBANDS + warpC * 1.4;
+        let bandIdx = Math.floor(bandPos);
+        if (bandIdx < 0) bandIdx = 0;
+        if (bandIdx > NUMBANDS - 1) bandIdx = NUMBANDS - 1;
+        const baseColor = bandColors[bandIdx];
+
+        // fine high-frequency turbulence for wispy detail
+        const fine = fbm(nx * 6.0 + 10.0, v * 22.0 + 5.0, nz * 6.0 + 10.0, 3);
+        const shade = 0.80 + 0.4 * fine;
+
+        let r = baseColor[0] * shade, g = baseColor[1] * shade, b = baseColor[2] * shade;
+
+        // Great Red Spot bake-in
+        let du = (x / W) - GRS_U0;
+        du -= Math.round(du);
+        const dv = v - GRS_V0;
+        const dist = Math.sqrt((du / GRS_RU) * (du / GRS_RU) + (dv / GRS_RV) * (dv / GRS_RV));
+        if (dist < 1.05) {
+          const core = [172, 58, 38];
+          const mid = [205, 92, 54];
+          const ring = [227, 168, 122];
+          let col;
+          if (dist < 0.55) col = lerp3(core, mid, dist / 0.55);
+          else if (dist < 0.85) col = lerp3(mid, ring, (dist - 0.55) / 0.30);
+          else col = lerp3(ring, [r, g, b], Math.min(1.0, (dist - 0.85) / 0.20));
+          r = col[0] * shade; g = col[1] * shade; b = col[2] * shade;
+        }
+
+        const idx = (y * W + x) * 4;
+        data[idx] = Math.max(0, Math.min(255, r));
+        data[idx + 1] = Math.max(0, Math.min(255, g));
+        data[idx + 2] = Math.max(0, Math.min(255, b));
+        data[idx + 3] = 255;
+      }
+    }
+    ctx.putImageData(img, 0, 0);
+    const tex = new THREE.CanvasTexture(canvas);
+    tex.wrapS = THREE.RepeatWrapping;
+    tex.wrapT = THREE.RepeatWrapping;
+    tex.minFilter = THREE.LinearMipmapLinearFilter;
+    tex.magFilter = THREE.LinearFilter;
+    tex.needsUpdate = true;
+    return tex;
+  }
+
+  const bandTexture = buildJupiterTexture();
+
+  // ---------- Jupiter sphere with custom shader (flow, terminator, limb darkening, GRS swirl) ----------
+  const jupiterGeo = new THREE.SphereGeometry(1, 64, 48);
+  const jupiterMat = new THREE.ShaderMaterial({
+    uniforms: {
+      uTime: { value: 0 },
+      uBandTex: { value: bandTexture },
+      uLightDir: { value: new THREE.Vector3(-0.6, 0.45, 0.65).normalize() },
+      uFlowSpeed: { value: 0.04 },
+      uGRSu0: { value: GRS_U0 },
+      uGRSv0: { value: GRS_V0 },
+      uGRSru: { value: GRS_RU },
+      uGRSrv: { value: GRS_RV },
+      uSwirlSpeed: { value: 1.1 }
+    },
+    vertexShader: `
+      varying vec2 vUv;
+      varying vec3 vNormal;
+      void main() {
+        vUv = uv;
+        vNormal = normalize(normal);
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `,
+    fragmentShader: `
+      uniform sampler2D uBandTex;
+      uniform float uTime;
+      uniform vec3 uLightDir;
+      uniform float uFlowSpeed;
+      uniform float uGRSu0;
+      uniform float uGRSv0;
+      uniform float uGRSru;
+      uniform float uGRSrv;
+      uniform float uSwirlSpeed;
+      varying vec2 vUv;
+      varying vec3 vNormal;
+
+      float flow(float v) {
+        float band = v * 10.0;
+        float dir = sin(band * 3.14159265);
+        float mag = 0.5 + 0.5 * sin(v * 23.0 + 1.7);
+        return dir * mag;
+      }
+
+      void main() {
+        float offsetU = flow(vUv.y) * uFlowSpeed * uTime;
+        vec2 sampleUv = vec2(vUv.x + offsetU, vUv.y);
+        vec4 tex = texture2D(uBandTex, sampleUv);
+        vec3 color = tex.rgb;
+
+        // subtle turbulent shimmer along boundaries
+        float shimmer = sin(vUv.y * 90.0 + uTime * 2.0) * sin(vUv.x * 60.0 - uTime * 1.3);
+        color += shimmer * 0.02;
+
+        // lighting: soft terminator curving to lower-right shadow
+        float ndotl = dot(normalize(vNormal), normalize(uLightDir));
+        float diffuse = smoothstep(-0.2, 0.55, ndotl);
+        float lightAmt = 0.12 + diffuse * 0.95;
+        color *= lightAmt;
+
+        // limb darkening
+        float limb = mix(0.45, 1.0, pow(clamp(vNormal.z, 0.0, 1.0), 0.55));
+        color *= limb;
+
+        // Great Red Spot dynamic churn overlay (drifts with its band's flow, self-rotates)
+        float grsFlowOffset = flow(uGRSv0) * uFlowSpeed * uTime;
+        float du = vUv.x - (uGRSu0 - grsFlowOffset);
+        du -= floor(du + 0.5);
+        float dv = vUv.y - uGRSv0;
+        float dist = sqrt((du / uGRSru) * (du / uGRSru) + (dv / uGRSrv) * (dv / uGRSrv));
+        float mask = 1.0 - smoothstep(0.7, 1.05, dist);
+        float ang = atan(dv, du);
+        float spiral = sin(ang * 3.0 - dist * 8.0 - uTime * uSwirlSpeed) * 0.5 + 0.5;
+        color = mix(color, color * (0.65 + 0.7 * spiral), mask * 0.55);
+
+        gl_FragColor = vec4(color, 1.0);
+      }
+    `
+  });
+  const jupiter = new THREE.Mesh(jupiterGeo, jupiterMat);
+  scene.add(jupiter);
+
+  // ---------- starfield ----------
+  const starCount = 700;
+  const starPositions = new Float32Array(starCount * 3);
+  const starColors = new Float32Array(starCount * 3);
+  for (let i = 0; i < starCount; i++) {
+    const r = 20 + Math.random() * 30;
+    const theta = Math.random() * Math.PI * 2;
+    const phi = Math.acos(2 * Math.random() - 1);
+    starPositions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+    starPositions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+    starPositions[i * 3 + 2] = r * Math.cos(phi) - 5.0;
+    const b = 0.35 + Math.random() * 0.65;
+    starColors[i * 3] = b;
+    starColors[i * 3 + 1] = b;
+    starColors[i * 3 + 2] = b;
+  }
+  const starGeo = new THREE.BufferGeometry();
+  starGeo.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
+  starGeo.setAttribute('color', new THREE.BufferAttribute(starColors, 3));
+  const starMat = new THREE.PointsMaterial({ size: 0.06, vertexColors: true, transparent: true, opacity: 0.85, sizeAttenuation: true });
+  const stars = new THREE.Points(starGeo, starMat);
+  scene.add(stars);
+
+  // ---------- tiny moon ----------
+  const moonGeo = new THREE.SphereGeometry(0.045, 16, 16);
+  const moonMat = new THREE.MeshBasicMaterial({ color: 0xdCD6C9 });
+  const moon = new THREE.Mesh(moonGeo, moonMat);
+  moon.position.set(2.1, 1.15, -1.6);
+  scene.add(moon);
+
+  // ---------- animation update ----------
+  updateFn = function (elapsed) {
+    jupiterMat.uniforms.uTime.value = elapsed;
+  };
+
+} catch (e) {
+  console.error('Scene setup error:', e);
+}
+</script>
+</body>
+</html>

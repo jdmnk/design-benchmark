@@ -1,6 +1,13 @@
 // Shared types for the design benchmark.
 
-export type ProviderName = "openrouter" | "openai" | "anthropic";
+export type ProviderName =
+  | "openrouter"
+  | "openai"
+  | "anthropic"
+  // Local CLI subscriptions (not the API): the machine's logged-in Claude Code
+  // and Codex CLIs. Used to showcase subscription-only SOTA models.
+  | "claude-cli"
+  | "codex-cli";
 
 export interface ModelEntry {
   /** Stable identifier used for folder names and the CLI. */

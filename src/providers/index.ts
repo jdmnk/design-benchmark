@@ -1,6 +1,7 @@
 import type { Provider, ProviderName } from "../types.js";
 import { makeOpenAICompatibleProvider } from "./openaiCompatible.js";
 import { makeAnthropicProvider } from "./anthropic.js";
+import { makeClaudeCliProvider, makeCodexCliProvider } from "./cli.js";
 
 /**
  * Lazily build the provider a model needs, reading credentials from the
@@ -38,6 +39,11 @@ export function makeProviderRegistry() {
         const apiKey = requireEnv("ANTHROPIC_API_KEY");
         return makeAnthropicProvider({ apiKey });
       }
+      // Subscription CLIs — no API key; auth comes from the logged-in CLI.
+      case "claude-cli":
+        return makeClaudeCliProvider();
+      case "codex-cli":
+        return makeCodexCliProvider();
       default:
         throw new Error(`Unknown provider: ${name}`);
     }

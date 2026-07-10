@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Jupiter</title>
+  <style>
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #02030a;
+    }
+    canvas {
+      display: block;
+      width: 100vw;
+      height: 100vh;
+    }
+  </style>
+</head>
+<body>
+<script type="module">
+import * as THREE from 'three';
+
+try {
+  const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setClearColor(0x02030a, 1);
+  document.body.appendChild(renderer.domElement);
+
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x02030a);
+
+  const camera = new THREE.PerspectiveCamera(32, window.innerWidth / window.innerHeight, 0.1, 100);
+  camera.position.set(0, 0, 4.6);
+
+  const starGeo = new THREE.BufferGeometry();
+  const starCount = 220;
+  const starPos = new Float32Array(starCount * 3);
+  const starSize = new Float32Array(starCount);
+  for (let i = 0; i < starCount; i++) {
+    const r = 18 + Math.random() * 28;
+    const theta = Math.random() * Math.PI * 2;
+    const phi = Math.acos(THREE.MathUtils.randFloatSpread(2));
+    starPos[i * 3 + 0] = r * Math.sin(phi) * Math.cos(theta);
+    starPos[i * 3 + 1] = r * Math.cos(phi);
+    starPos[i * 3 + 2] = r * Math.sin(phi) * Math.sin(theta) - 6;
+    starSize[i] = 0.4 + Math.random() * 1.5;
+  }
+  starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+  starGeo.setAttribute('aSize', new THREE.BufferAttribute(starSize, 1));
+
+  const starMat = new THREE.ShaderMaterial({
+    transparent: true,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+    uniforms: {},
+    vertexShader: `
+      attribute float aSize;
+      varying float vAlpha;
+      void main() {
+        vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+        gl_Position = projectionMatrix * mvPosition;
+        gl_PointSize = aSize * (120.0 / -mvPosition.z);
+        vAlpha = clamp(aSize * 0.55, 0.15, 0.9);
+      }
+    `,
+    fragmentShader: `
+      varying float vAlpha;
+      void main() {
+        vec2 p = gl_PointCoord - 0.5;
+        float d = length(p);
+        float a = smoothstep(0.5, 0.0, d);
+        gl_FragColor = vec4(vec3(0.8, 0.86, 1.0), a * vAlpha * 0.5);
+      }
+    `
+  });
+  scene.add(new THREE.Points(starGeo, starMat));
+
+  const moon = new THREE.Mesh(
+    new THREE.SphereGeometry(0.03, 16, 16),
+    new THREE.MeshBasicMaterial({ color: 0xe8edf7, transparent: true, opacity: 0.95 })
+  );
+  moon.position.set(1.85, 0.55, -1.5);
+  scene.add(moon);
+
+  const noiseCanvas = document.createElement('canvas');
+  noiseCanvas.width = 256;
+  noiseCanvas.height = 256;
+  const nctx = noiseCanvas.getContext('2d');
+  const img = nctx.createImageData(noiseCanvas.width, noiseCanvas.height);
+  for (let y = 0; y < noiseCanvas.height; y++) {
+    for (let x = 0; x < noiseCanvas.width; x++) {
+      const i = (y * noiseCanvas.width + x) * 4;
+      const v0 = Math.random();
+      const v1 = Math.sin(x * 0.19 + Math.random() * 6.283) * 0.5 + 0.5;
+      const v2 = Math.sin((x + y) * 0.09 + Math.random() * 6.283) * 0.5 + 0.5;
+      const v = Math.floor((v0 * 0.45 + v1 * 0.3 + v2 * 0.25) * 255);
+      img.data[i + 0] = v;
+      img.data[i + 1] = v;
+      img.data[i + 2] = v;
+      img.data[i + 3] = 255;
+    }
+  }
+  nctx.putImageData(img, 0, 0);
+  const noiseTex = new THREE.CanvasTexture(noiseCanvas);
+  noiseTex.wrapS = THREE.RepeatWrapping;
+  noiseTex.wrapT = THREE.RepeatWrapping;
+  noiseTex.minFilter = THREE.LinearFilter;
+  noiseTex.magFilter = THREE.LinearFilter;
+  noiseTex.colorSpace = THREE.NoColorSpace;
+
+  const jupiterMat = new THREE.ShaderMaterial({
+    uniforms: {
+      uTime: { value: 0 },
+      uNoise: { value: noiseTex },
+      uLightDir: { value: new THREE.Vector3(-0.7, 0.45, 0.55).normalize() }
+    },
+    vertexShader: `
+      varying vec2 vUv;
+      varying vec3 vNormalW;
+      varying vec3 vPosW;
+      void main() {
+        vUv = uv;
+        vec4 worldPos = modelMatrix * vec4(position, 1.0);
+        vPosW = worldPos.xyz;
+        vNormalW = normalize(mat3(modelMatrix) * normal);
+        gl_Position = projectionMatrix * viewMatrix * worldPos;
+      }
+    `,
+    fragmentShader: `
+      uniform float uTime;
+      uniform sampler2D uNoise;
+      uniform vec3 uLightDir;
+      varying vec2 vUv;
+      varying vec3 vNormalW;
+      varying vec3 vPosW;
+
+      float hash(vec2 p) {
+        return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
+      }
+
+      float noise2(vec2 p) {
+        vec2 i = floor(p);
+        vec2 f = fract(p);
+        float a = hash(i);
+        float b = hash(i + vec2(1.0, 0.0));
+        float c = hash(i + vec2(0.0, 1.0));
+        float d = hash(i + vec2(1.0, 1.0));
+        vec2 u = f * f * (3.0 - 2.0 * f);
+        return mix(a, b, u.x) + (c - a) * u.y * (1.0 - u.x) + (d - b) * u.x * u.y;
+      }
+
+      float fbm(vec2 p) {
+        float v = 0.0;
+        float a = 0.5;
+        for (int i = 0; i < 4; i++) {
+          v += a * noise2(p);
+          p *= 2.03;
+          a *= 0.5;
+        }
+        return v;
+      }
+
+      vec3 palette(float t) {
+        vec3 c0 = vec3(0.93, 0.88, 0.77);
+        vec3 c1 = vec3(0.84, 0.73, 0.54);
+        vec3 c2 = vec3(0.70, 0.50, 0.32);
+        vec3 c3 = vec3(0.56, 0.35, 0.22);
+        if (t < 0.33) return mix(c0, c1, smoothstep(0.0, 0.33, t));
+        if (t < 0.66) return mix(c1, c2, smoothstep(0.33, 0.66, t));
+        return mix(c2, c3, smoothstep(0.66, 1.0, t));
+      }
+
+      void main() {
+        float t = uTime;
+        vec2 uv = vUv;
+        float lat = uv.y * 2.0 - 1.0;
+        float absLat = abs(lat);
+
+        float broadWarp =
+          (texture2D(uNoise, vec2(uv.x * 0.7 + 0.03 * t, uv.y * 1.8)).r - 0.5) * 0.10 +
+          (texture2D(uNoise, vec2(uv.x * 1.5 - 0.02 * t, uv.y * 4.2)).r - 0.5) * 0.05;
+        float fineWarp =
+          (texture2D(uNoise, vec2(uv.x * 8.0, uv.y * 16.0 + 0.08 * t)).r - 0.5) * 0.018;
+        float warpedLat = lat + broadWarp + fineWarp;
+
+        float bandSignal =
+          0.90 * sin((warpedLat + 0.03) * 18.5) +
+          0.45 * sin((warpedLat - 0.08) * 31.0) +
+          0.20 * sin((warpedLat + 0.16) * 53.0);
+
+        float boundaryTurb =
+          (texture2D(uNoise, vec2(uv.x * 5.0 + t * 0.04, uv.y * 20.0)).r - 0.5) * 0.55 +
+          (texture2D(uNoise, vec2(uv.x * 11.0 - t * 0.06, uv.y * 36.0)).r - 0.5) * 0.25;
+        bandSignal += boundaryTurb;
+
+        float bandIndex = floor((warpedLat + 1.0) * 6.4);
+        float dir = mod(bandIndex, 2.0) < 1.0 ? 1.0 : -1.0;
+        float speed = dir * (0.018 + 0.028 * smoothstep(0.0, 1.0, 1.0 - absLat));
+        float flowX = uv.x + t * speed;
+
+        float curl =
+          (texture2D(uNoise, vec2(flowX * 3.2, uv.y * 12.0 + t * dir * 0.05)).r - 0.5) * 0.05 +
+          (texture2D(uNoise, vec2(flowX * 8.0 - t * dir * 0.09, uv.y * 26.0)).r - 0.5) * 0.018;
+
+        float streakA = texture2D(uNoise, vec2(flowX * 2.3 + curl, uv.y * 7.0)).r;
+        float streakB = texture2D(uNoise, vec2(flowX * 6.8 - curl * 2.0, uv.y * 15.0 + dir * t * 0.03)).r;
+        float streakC = texture2D(uNoise, vec2(flowX * 13.0 + curl * 1.5, uv.y * 42.0)).r;
+        float wisps = streakA * 0.45 + streakB * 0.35 + streakC * 0.20;
+
+        float beltMask = smoothstep(-0.10, 0.18, bandSignal);
+        float zoneMask = 1.0 - beltMask;
+
+        vec3 zoneColor = mix(vec3(0.96, 0.92, 0.84), vec3(0.88, 0.80, 0.66), wisps * 0.55 + absLat * 0.12);
+        vec3 beltColor = palette(clamp(0.45 + wisps * 0.8 + boundaryTurb * 0.2, 0.0, 1.0));
+        vec3 baseColor = mix(zoneColor, beltColor, beltMask);
+
+        float festoon = smoothstep(0.12, 0.75, texture2D(uNoise, vec2(flowX * 7.5, uv.y * 24.0 - t * 0.08)).r);
+        float boundaryStrength = 1.0 - smoothstep(0.0, 0.22, abs(bandSignal));
+        baseColor = mix(baseColor, baseColor * vec3(0.83, 0.91, 1.02), boundaryStrength * festoon * 0.14);
+        baseColor = mix(baseColor, baseColor * vec3(1.06, 1.00, 0.93), boundaryStrength * (1.0 - festoon) * 0.10);
+
+        vec2 center = vec2(0.36, 0.63);
+        vec2 d = uv - center;
+        d.x *= 1.55;
+        d.y *= 2.05;
+        float drift = t * 0.020;
+        d.x += drift;
+        float angle = atan(d.y, d.x);
+        float radius = length(d);
+
+        float swirl = angle + radius * 9.0 - t * 0.65;
+        float eyeNoise = texture2D(uNoise, vec2(swirl * 0.08, radius * 2.3 - t * 0.05)).r;
+        float spotShape = 1.0 - smoothstep(0.19, 0.33, radius + (eyeNoise - 0.5) * 0.04);
+        float eyewall = smoothstep(0.17, 0.26, radius) * (1.0 - smoothstep(0.26, 0.34, radius));
+        float spiral = 0.5 + 0.5 * sin(swirl * 2.2 + eyeNoise * 3.5);
+        vec3 spotCore = mix(vec3(0.77, 0.34, 0.20), vec3(0.62, 0.24, 0.16), spiral * 0.65);
+        vec3 eyeWallColor = vec3(0.93, 0.78, 0.58);
+        baseColor = mix(baseColor, spotCore, spotShape * 0.95);
+        baseColor = mix(baseColor, eyeWallColor, eyewall * 0.85);
+
+        float localShear = smoothstep(0.12, 0.45, radius) * (1.0 - smoothstep(0.45, 0.65, radius));
+        baseColor += localShear * (spiral - 0.5) * vec3(0.06, 0.03, -0.01);
+
+        vec3 n = normalize(vNormalW);
+        vec3 l = normalize(uLightDir);
+        float ndl = max(dot(n, l), 0.0);
+        float diffuse = pow(ndl, 0.82);
+        float ambient = 0.18;
+        float rim = pow(1.0 - max(n.z, 0.0), 2.2);
+        float limbDark = 1.0 - rim * 0.42;
+        float terminatorSoft = smoothstep(-0.18, 0.22, dot(n, l));
+
+        vec3 color = baseColor * (ambient + diffuse * 0.95) * limbDark;
+        color *= mix(0.55, 1.0, terminatorSoft);
+
+        float haze = pow(1.0 - max(n.z, 0.0), 5.0) * 0.18;
+        color += vec3(0.34, 0.22, 0.12) * haze;
+
+        gl_FragColor = vec4(color, 1.0);
+      }
+    `
+  });
+
+  const jupiter = new THREE.Mesh(new THREE.SphereGeometry(1, 144, 96), jupiterMat);
+  scene.add(jupiter);
+
+  function resize() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  }
+  window.addEventListener('resize', resize);
+
+  function render(now) {
+    const t = now * 0.001;
+    jupiterMat.uniforms.uTime.value = t;
+    renderer.render(scene, camera);
+    requestAnimationFrame(render);
+  }
+  requestAnimationFrame(render);
+} catch (e) {
+  console.error(e);
+}
+</script>
+</body>
+</html>

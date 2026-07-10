@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jupiter</title>
+  <style>
+    body { margin: 0; overflow: hidden; background: #000; }
+    canvas { display: block; }
+  </style>
+</head>
+<body>
+<script type="module">
+import * as THREE from 'three';
+
+try {
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x000000);
+
+  const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+  
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  document.body.appendChild(renderer.domElement);
+
+  // Sparse starfield
+  const starsGeometry = new THREE.BufferGeometry();
+  const starCount = 800;
+  const starPositions = new Float32Array(starCount * 3);
+  const starColors = new Float32Array(starCount * 3);
+  for (let i = 0; i < starCount * 3; i += 3) {
+    const r = 120 + Math.random() * 60;
+    const theta = Math.random() * Math.PI * 2;
+    const phi = Math.acos(2 * Math.random() - 1);
+    starPositions[i] = r * Math.sin(phi) * Math.cos(theta);
+    starPositions[i + 1] = r * Math.sin(phi) * Math.sin(theta);
+    starPositions[i + 2] = r * Math.cos(phi);
+    const c = 0.6 + Math.random() * 0.4;
+    starColors[i] = starColors[i + 1] = starColors[i + 2] = c;
+  }
+  starsGeometry.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
+  starsGeometry.setAttribute('color', new THREE.BufferAttribute(starColors, 3));
+  const starsMaterial = new THREE.PointsMaterial({ size: 0.6, vertexColors: true, transparent: true, opacity: 0.7 });
+  const stars = new THREE.Points(starsGeometry, starsMaterial);
+  scene.add(stars);
+
+  // Tiny moon
+  const moonGeometry = new THREE.SphereGeometry(0.8, 16, 16);
+  const moonMaterial = new THREE.MeshBasicMaterial({ color: 0xaaaaaa });
+  const moon = new THREE.Mesh(moonGeometry, moonMaterial);
+  moon.position.set(38, 12, -22);
+  scene.add(moon);
+
+  // Procedural Jupiter texture
+  const texSize = 1024;
+  const canvas = document.createElement('canvas');
+  canvas.width = canvas.height = texSize;
+  const ctx = canvas.getContext('2d', { alpha: false });
+
+  // Base colors
+  const palette = {
+    zone: ['#f5f0d8', '#e8e0c8', '#d4c9a8', '#c9b98a'],
+    belt: ['#8c6642', '#6b5133', '#5c4033', '#4a3228', '#3d2a22']
+  };
+
+  // Draw turbulent bands
+  const bandCount = 11;
+  const bandHeights = [0.04, 0.07, 0.05, 0.09, 0.06, 0.11, 0.07, 0.08, 0.05, 0.09, 0.08];
+  let y = 0;
+  for (let b = 0; b < bandCount; b++) {
+    const h = bandHeights[b] * texSize;
+    const isZone = b % 2 === 0;
+    const cols = isZone ? palette.zone : palette.belt;
+    ctx.fillStyle = cols[b % cols.length];
+    ctx.fillRect(0, y, texSize, h);
+
+    // Turbulence / wisps
+    ctx.strokeStyle = isZone ? '#d4c9a8' : '#6b5133';
+    ctx.lineWidth = 1.5;
+    for (let i = 0; i < 22; i++) {
+      ctx.beginPath();
+      const startY = y + Math.random() * h;
+      ctx.moveTo(0, startY);
+      let x = 0;
+      while (x < texSize) {
+        x += 12 + Math.random() * 30;
+        const yy = startY + (Math.random() - 0.5) * 22;
+        ctx.lineTo(x, yy);
+      }
+      ctx.stroke();
+    }
+    y += h;
+  }
+
+  // Great Red Spot
+  const grsX = 280;
+  const grsY = texSize * 0.62;
+  const grsW = texSize * 0.22;
+  const grsH = texSize * 0.09;
+
+  // Eyewall
+  ctx.fillStyle = '#d8a070';
+  ctx.beginPath();
+  ctx.ellipse(grsX, grsY, grsW, grsH, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Core storm
+  ctx.fillStyle = '#b04d2e';
+  ctx.beginPath();
+  ctx.ellipse(grsX, grsY, grsW * 0.72, grsH * 0.7, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Internal swirl
+  ctx.strokeStyle = '#e8a070';
+  ctx.lineWidth = 4.5;
+  for (let s = 0; s < 5; s++) {
+    ctx.beginPath();
+    ctx.ellipse(grsX + s * 4, grsY, grsW * (0.5 - s * 0.08), grsH * (0.45 - s * 0.07), s * 0.3, 0, Math.PI * 1.7);
+    ctx.stroke();
+  }
+
+  const jupiterTexture = new THREE.CanvasTexture(canvas);
+  jupiterTexture.anisotropy = 4;
+
+  // Jupiter sphere
+  const radius = 18.5;
+  const geometry = new THREE.SphereGeometry(radius, 96, 96);
+
+  const material = new THREE.ShaderMaterial({
+    uniforms: {
+      map: { value: jupiterTexture },
+      time: { value: 0 }
+    },
+    vertexShader: `
+      varying vec2 vUv;
+      void main() {
+        vUv = uv;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `,
+    fragmentShader: `
+      uniform sampler2D map;
+      uniform float time;
+      varying vec2 vUv;
+
+      void main() {
+        vec2 uv = vUv;
+        float band = floor(uv.y * 11.0) / 11.0;
+        float speed = mix(0.028, -0.032, mod(band * 11.0, 2.0));
+        uv.x += speed * time * 0.6;
+
+        // Subtle turbulent shimmer at boundaries
+        float edge = abs(fract(uv.y * 11.0) - 0.5);
+        uv.x += sin(uv.y * 80.0 + time * 1.8) * 0.003 * (1.0 - edge * 2.5);
+
+        vec4 color = texture2D(map, uv);
+        
+        // Gentle limb darkening
+        float limb = 1.0 - pow(1.0 - length(uv - 0.5) * 1.7, 1.6);
+        color.rgb *= (1.0 - limb * 0.35);
+        
+        gl_FragColor = color;
+      }
+    `
+  });
+
+  const jupiter = new THREE.Mesh(geometry, material);
+  scene.add(jupiter);
+
+  // Lighting
+  const light = new THREE.DirectionalLight(0xffffff, 1.15);
+  light.position.set(-22, 18, 22);
+  scene.add(light);
+  scene.add(new THREE.AmbientLight(0x222222));
+
+  // Camera position for 78% diameter
+  camera.position.z = 52;
+
+  // Render loop
+  const clock = new THREE.Clock();
+  function animate() {
+    const t = clock.getElapsedTime();
+    material.uniforms.time.value = t;
+
+    // GRS churn (slow counter-clockwise)
+    jupiter.rotation.y = t * 0.015;
+    jupiter.rotation.x = Math.sin(t * 0.02) * 0.008;
+
+    renderer.render(scene, camera);
+    requestAnimationFrame(animate);
+  }
+
+  // Resize handler
+  function onResize() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  }
+  window.addEventListener('resize', onResize);
+
+  animate();
+} catch (e) {
+  console.error(e);
+}
+</script>
+</body>
+</html>
