@@ -34,14 +34,14 @@ Raw copyable version: [prompt.txt](./prompt.txt) · [system-prompt.txt](./system
 
 | Model | ID | Provider | Status | Time | Tokens | Note |
 |-------|----|----------|--------|------|--------|------|
-| Opus 4.8 | `claude-opus-4-8` | claude-cli | ✅ rendered | 249.8s | — |  |
-| GPT-5.5 high | `gpt-5.5` | codex-cli | ✅ rendered | 72.9s | — |  |
-| GLM 5.2 | `z-ai/glm-5.2` | openrouter | ✅ rendered | 173.3s | 15268 |  |
 | Fable 5 | `claude-fable-5` | claude-cli | ✅ rendered | 312.9s | — |  |
-| GPT-5.4 high | `gpt-5.4` | codex-cli | ✅ rendered | 79.9s | — |  |
-| Qwen3.7 Plus | `qwen/qwen3.7-plus` | openrouter | ✅ rendered | 276.4s | 8781 |  |
+| Opus 4.8 | `claude-opus-4-8` | claude-cli | ✅ rendered | 249.8s | — |  |
 | Sonnet 5 | `claude-sonnet-5` | claude-cli | ✅ rendered | 253.5s | — |  |
+| GPT-5.5 high | `gpt-5.5` | codex-cli | ✅ rendered | 72.9s | — |  |
+| GPT-5.4 high | `gpt-5.4` | codex-cli | ✅ rendered | 79.9s | — |  |
+| GLM 5.2 | `z-ai/glm-5.2` | openrouter | ✅ rendered | 173.3s | 15268 |  |
 | Grok 4.3 | `x-ai/grok-4.3` | openrouter | ✅ rendered | 27.1s | 4150 |  |
 | Kimi K2.7 Code | `moonshotai/kimi-k2.7-code` | openrouter | ✅ rendered | 374.0s | 23393 |  |
+| Qwen3.7 Plus | `qwen/qwen3.7-plus` | openrouter | ✅ rendered | 276.4s | 8781 |  |
 
 Per-model artifacts live in `models/<slug>/` (`raw.txt`, `output.html`, `screenshot.png`, `result.json`).

@@ -1,8 +1,28 @@
 {
   "name": "jupiter",
   "prompt": "Render the planet JUPITER as a full-screen three.js scene (100vw × 100vh, auto-starting, no user interaction) — a close-up of the gas giant filling most of the frame. A 5-SECOND CLIP is captured, so the atmospheric motion matters as much as the still.\n\nComposition (match so results are comparable):\n- Jupiter is a large sphere centered in the frame, its diameter about 78% of the viewport height (it dominates the view). Light it from the upper-left with a soft terminator curving into shadow on the lower-right, and gentle limb darkening at the edge.\n- DETAILED BANDED ATMOSPHERE: alternating horizontal ZONES (light: cream, ivory, pale tan) and BELTS (dark: tan, ochre, red-brown, rust) — at least 8–12 bands of varying width across the disc. The band boundaries are NOT clean lines: they are turbulent, with swirling eddies, wisps and festoons where zones and belts shear against each other. Build the surface from a procedurally detailed, high-frequency texture (a canvas-generated turbulence/noise texture), NOT flat stripes.\n- THE GREAT RED SPOT: a large red-orange oval storm in the southern hemisphere (below the equator, offset left or right of center), roughly 22% of the planet's width, ringed by a paler eyewall with an internal spiral swirl. This is the signature 'eye' — make it unmistakable.\n- Coloring: a warm Jovian palette — cream/ivory zones, tan/ochre/rust belts, the Great Red Spot a deeper brick red-orange.\n- Background: near-black space with a sparse, dim starfield; optionally one tiny bright moon.\n\nMotion (the point of this benchmark — clearly visible within the 5-second clip):\n- ZONAL FLOW: the bands stream HORIZONTALLY at different speeds, and adjacent bands flow in OPPOSITE directions (as Jupiter's zones and belts do), so texture detail in neighbouring bands visibly shears past itself during the clip. Give the flow visible structure (clumps, wisps, turbulence) so the motion reads clearly — flat scrolling stripes would look wrong.\n- The Great Red Spot slowly churns / rotates (a counter-clockwise swirl) and drifts with its band.\n- Add subtle turbulent shimmer along the band boundaries. Keep Jupiter centered; the flowing, shearing atmosphere must be the dominant, clearly visible motion.\n\nReturn ONLY a single complete HTML document.",
-  "generatedAt": "2026-07-10T10:10:46.640Z",
+  "generatedAt": "2026-07-10T11:05:03.510Z",
   "models": [
+    {
+      "slug": "fable-5",
+      "label": "Fable 5",
+      "provider": "claude-cli",
+      "modelId": "claude-fable-5",
+      "ok": true,
+      "htmlExtracted": true,
+      "finishReason": "end_turn",
+      "truncated": false,
+      "elapsedMs": 312891,
+      "usage": {
+        "promptTokens": 2975,
+        "completionTokens": 22101
+      },
+      "startedAt": "2026-07-10T09:45:00.921Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
+    },
     {
       "slug": "opus-4.8",
       "label": "Opus 4.8",
@@ -18,6 +38,26 @@
         "completionTokens": 19224
       },
       "startedAt": "2026-07-10T09:38:21.613Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
+    },
+    {
+      "slug": "sonnet-5",
+      "label": "Sonnet 5",
+      "provider": "claude-cli",
+      "modelId": "claude-sonnet-5",
+      "ok": true,
+      "htmlExtracted": true,
+      "finishReason": "end_turn",
+      "truncated": false,
+      "elapsedMs": 253527,
+      "usage": {
+        "promptTokens": 3108,
+        "completionTokens": 23491
+      },
+      "startedAt": "2026-07-10T10:04:36.443Z",
       "render": {
         "rendered": true,
         "blank": false
@@ -40,48 +80,6 @@
       }
     },
     {
-      "slug": "glm-5.2",
-      "label": "GLM 5.2",
-      "provider": "openrouter",
-      "modelId": "z-ai/glm-5.2",
-      "ok": true,
-      "htmlExtracted": true,
-      "finishReason": "stop",
-      "truncated": false,
-      "elapsedMs": 173266,
-      "usage": {
-        "promptTokens": 1216,
-        "completionTokens": 14052,
-        "totalTokens": 15268,
-        "costUsd": 0.0635312
-      },
-      "startedAt": "2026-07-10T09:45:00.912Z",
-      "render": {
-        "rendered": true,
-        "blank": false
-      }
-    },
-    {
-      "slug": "fable-5",
-      "label": "Fable 5",
-      "provider": "claude-cli",
-      "modelId": "claude-fable-5",
-      "ok": true,
-      "htmlExtracted": true,
-      "finishReason": "end_turn",
-      "truncated": false,
-      "elapsedMs": 312891,
-      "usage": {
-        "promptTokens": 2975,
-        "completionTokens": 22101
-      },
-      "startedAt": "2026-07-10T09:45:00.921Z",
-      "render": {
-        "rendered": true,
-        "blank": false
-      }
-    },
-    {
       "slug": "gpt-5.4-high",
       "label": "GPT-5.4 high",
       "provider": "codex-cli",
@@ -98,42 +96,22 @@
       }
     },
     {
-      "slug": "qwen3.7-plus",
-      "label": "Qwen3.7 Plus",
+      "slug": "glm-5.2",
+      "label": "GLM 5.2",
       "provider": "openrouter",
-      "modelId": "qwen/qwen3.7-plus",
+      "modelId": "z-ai/glm-5.2",
       "ok": true,
       "htmlExtracted": true,
       "finishReason": "stop",
       "truncated": false,
-      "elapsedMs": 276406,
+      "elapsedMs": 173266,
       "usage": {
-        "promptTokens": 1261,
-        "completionTokens": 7520,
-        "totalTokens": 8781,
-        "costUsd": 0.01002912
+        "promptTokens": 1216,
+        "completionTokens": 14052,
+        "totalTokens": 15268,
+        "costUsd": 0.0635312
       },
-      "startedAt": "2026-07-10T09:46:20.794Z",
-      "render": {
-        "rendered": true,
-        "blank": false
-      }
-    },
-    {
-      "slug": "sonnet-5",
-      "label": "Sonnet 5",
-      "provider": "claude-cli",
-      "modelId": "claude-sonnet-5",
-      "ok": true,
-      "htmlExtracted": true,
-      "finishReason": "end_turn",
-      "truncated": false,
-      "elapsedMs": 253527,
-      "usage": {
-        "promptTokens": 3108,
-        "completionTokens": 23491
-      },
-      "startedAt": "2026-07-10T10:04:36.443Z",
+      "startedAt": "2026-07-10T09:45:00.912Z",
       "render": {
         "rendered": true,
         "blank": false
@@ -178,6 +156,28 @@
         "costUsd": 0.07848668
       },
       "startedAt": "2026-07-10T09:50:40.911Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
+    },
+    {
+      "slug": "qwen3.7-plus",
+      "label": "Qwen3.7 Plus",
+      "provider": "openrouter",
+      "modelId": "qwen/qwen3.7-plus",
+      "ok": true,
+      "htmlExtracted": true,
+      "finishReason": "stop",
+      "truncated": false,
+      "elapsedMs": 276406,
+      "usage": {
+        "promptTokens": 1261,
+        "completionTokens": 7520,
+        "totalTokens": 8781,
+        "costUsd": 0.01002912
+      },
+      "startedAt": "2026-07-10T09:46:20.794Z",
       "render": {
         "rendered": true,
         "blank": false

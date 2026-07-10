@@ -1,959 +1,6 @@
 {
   "benchmarks": [
     {
-      "id": "black-hole-spin",
-      "title": "Black Hole Spin",
-      "description": "The Gargantua black hole in motion — a spinning accretion disk — in three.js / WebGL.",
-      "prompt": "Render a realistic supermassive black hole — the 'Gargantua' look from the film Interstellar — as a full-screen three.js scene (100vw × 100vh, auto-starting, no user interaction). A 5-SECOND CLIP of the scene is captured, so the motion matters as much as the still composition.\n\nComposition (match exactly so results are comparable):\n- The black hole (event horizon) is a perfectly black sphere centered in the frame, its diameter about 28% of the viewport height.\n- A bright, thin accretion disk lies in a HORIZONTAL plane around the sphere and is viewed nearly edge-on: the camera sits only about 5–8 degrees above the disk plane, so the disk reads as a near-horizontal bright band cutting across the sphere's middle and extending well past it on both sides.\n- Gravitational lensing: the far side of the disk appears bent UP and OVER the top of the black sphere AND mirrored UNDER the bottom, forming the signature bright halo arcs above and below the horizon (not merely a flat ring). Approximate this with extra bright arcs wrapping over and under the sphere (partial ring/torus geometry works well).\n- A thin, bright photon ring hugs the very edge of the black sphere.\n- Disk coloring: hot white-yellow on the inner edge fading outward to amber then deep orange (#fff3d0 → #ffae3b → #c8551a). Make one side of the disk slightly brighter than the other (relativistic beaming).\n- Background: near-black space with a sparse, dim starfield.\n\nMotion (the point of this benchmark — must be clearly visible within the 5-second clip):\n- The accretion disk rotates around the black hole at roughly 25–40 degrees per second, so a recognizable feature travels a quarter to half a revolution during the clip. Give the disk visible azimuthal structure (brightness clumps, streaks, or turbulent bands) so the rotation reads clearly — a featureless ring would look static.\n- Add subtle shimmering/flicker in the disk and lensing arcs, and slow drift in the beaming highlight. The camera stays FIXED.\n\nKeep the black hole centered and the disk horizontal. Return ONLY a single complete HTML document.",
-      "systemPrompt": "You are a creative WebGL / three.js developer. Output a SINGLE self-contained HTML document. three.js r160 is preloaded; an import map that resolves it is ALREADY injected into your page — you never add it or fetch anything.\n\nIMPORTS — follow this exactly; deviating renders a BLANK page:\n1. Use ONE <script type=\"module\"> for your code. Put EVERY `import` statement at its very top, at module top level.\n2. A static `import` is legal ONLY at module top level — NEVER inside a try/catch, function, if, or any block. `import * as THREE from 'three';` placed inside a try { } is a SYNTAX ERROR that blanks the whole page. This is the single most common failure here — do not do it.\n3. Import the core library with the bare specifier `three`; import add-ons with the `three/addons/…` prefix (the same paths as three r160's examples/jsm/). These bare specifiers are the ONLY thing that resolves:\n     import * as THREE from 'three';\n     import { OrbitControls } from 'three/addons/controls/OrbitControls.js';\n4. Do NOT write your own <script type=\"importmap\">, and do NOT import from any URL or CDN (unpkg, jsdelivr, esm.sh, skypack, cdnjs, or any http(s)://…). The sandbox has NO network — every external request fails, and a second import map breaks module loading. Bare specifiers only.\n5. For error handling, wrap the SCENE SETUP that runs AFTER the imports in try/catch — never the import lines themselves.\n\nExact skeleton to follow:\n<script type=\"module\">\nimport * as THREE from 'three';\n// any other top-level imports here, e.g. three/addons/...\ntry {\n  // ALL renderer + scene setup + the render loop go here\n} catch (e) {\n  // optional; whatever was built above still shows\n}\n</script>\n\nFollow the composition exactly — this is a controlled comparison, do not improvise the layout or camera.\n\nRELIABILITY RULES (the scene is rendered in HEADLESS SOFTWARE WebGL and a 5-second clip is captured frame-by-frame):\n- Do NOT use postprocessing (EffectComposer, RenderPass, UnrealBloomPass, ShaderPass): in software WebGL these run at seconds per frame and the capture times out. Fake glow instead with additive blending, sprite/point textures, emissive colors, and layered transparent meshes — it looks just as good here.\n- Drive ALL motion from the requestAnimationFrame timestamp (or performance.now()), NOT a fixed per-frame increment, so animation speed is framerate-independent.\n- Set renderer clear color / scene background to near-black space FIRST, and start the render loop immediately, so a partial failure still shows a scene rather than a blank page.\n- Keep the scene lightweight (a few thousand vertices, one canvas-generated texture at most). No shadow maps.\n- Keep every `import` at module top level — never inside a try/catch or any block (a static import there is a syntax error that blanks the page; see IMPORTS above). Put try/catch around the scene setup that runs AFTER the imports. Ensure the document is complete with every tag closed; if running long, simplify rather than truncate.",
-      "render": {
-        "viewport": "1280×800",
-        "fullPage": false,
-        "waitMs": 4000,
-        "deterministic": true,
-        "video": {
-          "durationMs": 5000,
-          "fps": 24
-        }
-      },
-      "columns": 3,
-      "runs": [
-        {
-          "label": "Run 1",
-          "grid": {
-            "image": "grids/black-hole-spin.webp",
-            "video": "grids/black-hole-spin.mp4"
-          },
-          "models": [
-            {
-              "label": "GLM 5.2",
-              "modelId": "z-ai/glm-5.2",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 168781,
-              "outputTokens": 9637,
-              "costUsd": 0.0434934,
-              "truncated": false,
-              "error": null,
-              "page": "pages/black-hole-spin/glm-5.2.html"
-            },
-            {
-              "label": "Grok 4.3",
-              "modelId": "x-ai/grok-4.3",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 20367,
-              "outputTokens": 2593,
-              "costUsd": 0.00745435,
-              "truncated": false,
-              "error": null,
-              "page": "pages/black-hole-spin/grok-4.3.html"
-            },
-            {
-              "label": "GPT-5.4 mini",
-              "modelId": "openai/gpt-5.4-mini",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 26689,
-              "outputTokens": 4969,
-              "costUsd": 0.0229455,
-              "truncated": false,
-              "error": null,
-              "page": "pages/black-hole-spin/gpt-5.4-mini.html"
-            },
-            {
-              "label": "Claude Haiku 4.5",
-              "modelId": "anthropic/claude-haiku-4.5",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 19764,
-              "outputTokens": 3549,
-              "costUsd": 0.018659,
-              "truncated": false,
-              "error": null,
-              "page": "pages/black-hole-spin/claude-haiku-4.5.html"
-            },
-            {
-              "label": "Qwen3.7 Plus",
-              "modelId": "qwen/qwen3.7-plus",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 113747,
-              "outputTokens": 6257,
-              "costUsd": 0.00826752,
-              "truncated": false,
-              "error": null,
-              "page": "pages/black-hole-spin/qwen3.7-plus.html"
-            },
-            {
-              "label": "Gemini 3.1 Flash-Lite",
-              "modelId": "google/gemini-3.1-flash-lite",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 5663,
-              "outputTokens": 1901,
-              "costUsd": 0.00305125,
-              "truncated": false,
-              "error": null,
-              "page": "pages/black-hole-spin/gemini-3.1-flash-lite.html"
-            },
-            {
-              "label": "DeepSeek V4 Pro",
-              "modelId": "deepseek/deepseek-v4-pro",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 672206,
-              "outputTokens": 17437,
-              "costUsd": 0.05591488,
-              "truncated": false,
-              "error": null,
-              "page": "pages/black-hole-spin/deepseek-v4-pro.html"
-            },
-            {
-              "label": "Kimi K2.7 Code",
-              "modelId": "moonshotai/kimi-k2.7-code",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 221798,
-              "outputTokens": 21070,
-              "costUsd": 0.0814037,
-              "truncated": false,
-              "error": null,
-              "page": "pages/black-hole-spin/kimi-k2.7-code.html"
-            },
-            {
-              "label": "Kimi K2.6",
-              "modelId": "moonshotai/kimi-k2.6",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 134254,
-              "outputTokens": 5748,
-              "costUsd": 0.02011812,
-              "truncated": false,
-              "error": null,
-              "page": "pages/black-hole-spin/kimi-k2.6.html"
-            }
-          ],
-          "rendered": 9,
-          "total": 9
-        },
-        {
-          "label": "Run 2",
-          "grid": {
-            "image": "grids/black-hole-spin-2.webp",
-            "video": "grids/black-hole-spin-2.mp4"
-          },
-          "models": [
-            {
-              "label": "GLM 5.2",
-              "modelId": "z-ai/glm-5.2",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 554956,
-              "outputTokens": 11571,
-              "costUsd": null,
-              "truncated": false,
-              "error": null,
-              "page": "pages/black-hole-spin-2/glm-5.2.html"
-            },
-            {
-              "label": "Grok 4.3",
-              "modelId": "x-ai/grok-4.3",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 22694,
-              "outputTokens": 3135,
-              "costUsd": null,
-              "truncated": false,
-              "error": null,
-              "page": "pages/black-hole-spin-2/grok-4.3.html"
-            },
-            {
-              "label": "GPT-5.4 mini",
-              "modelId": "openai/gpt-5.4-mini",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 42863,
-              "outputTokens": 4806,
-              "costUsd": null,
-              "truncated": false,
-              "error": null,
-              "page": "pages/black-hole-spin-2/gpt-5.4-mini.html"
-            },
-            {
-              "label": "Claude Haiku 4.5",
-              "modelId": "anthropic/claude-haiku-4.5",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 23042,
-              "outputTokens": 4029,
-              "costUsd": null,
-              "truncated": false,
-              "error": null,
-              "page": "pages/black-hole-spin-2/claude-haiku-4.5.html"
-            },
-            {
-              "label": "Qwen3.7 Plus",
-              "modelId": "qwen/qwen3.7-plus",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 144715,
-              "outputTokens": 6092,
-              "costUsd": null,
-              "truncated": false,
-              "error": null,
-              "page": "pages/black-hole-spin-2/qwen3.7-plus.html"
-            },
-            {
-              "label": "Gemini 3.1 Flash-Lite",
-              "modelId": "google/gemini-3.1-flash-lite",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 5182,
-              "outputTokens": 1711,
-              "costUsd": null,
-              "truncated": false,
-              "error": null,
-              "page": "pages/black-hole-spin-2/gemini-3.1-flash-lite.html"
-            },
-            {
-              "label": "DeepSeek V4 Pro",
-              "modelId": "deepseek/deepseek-v4-pro",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 827149,
-              "outputTokens": 3690,
-              "costUsd": null,
-              "truncated": false,
-              "error": null,
-              "page": "pages/black-hole-spin-2/deepseek-v4-pro.html"
-            },
-            {
-              "label": "Kimi K2.6",
-              "modelId": "moonshotai/kimi-k2.6",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 79427,
-              "outputTokens": 4713,
-              "costUsd": null,
-              "truncated": false,
-              "error": null,
-              "page": "pages/black-hole-spin-2/kimi-k2.6.html"
-            },
-            {
-              "label": "Mistral Small 4",
-              "modelId": "mistralai/mistral-small-2603",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 73751,
-              "outputTokens": 13144,
-              "costUsd": null,
-              "truncated": false,
-              "error": null,
-              "page": "pages/black-hole-spin-2/mistral-small-4.html"
-            }
-          ],
-          "rendered": 9,
-          "total": 9
-        }
-      ]
-    },
-    {
-      "id": "black-hole-spin-sota",
-      "title": "Black Hole Spin SOTA",
-      "description": "The spinning Gargantua black hole in three.js / WebGL — the same scene as black-hole-spin, run by the SOTA lineup.",
-      "prompt": "Render a realistic supermassive black hole — the 'Gargantua' look from the film Interstellar — as a full-screen three.js scene (100vw × 100vh, auto-starting, no user interaction). A 5-SECOND CLIP of the scene is captured, so the motion matters as much as the still composition.\n\nComposition (match exactly so results are comparable):\n- The black hole (event horizon) is a perfectly black sphere centered in the frame, its diameter about 28% of the viewport height.\n- A bright, thin accretion disk lies in a HORIZONTAL plane around the sphere and is viewed nearly edge-on: the camera sits only about 5–8 degrees above the disk plane, so the disk reads as a near-horizontal bright band cutting across the sphere's middle and extending well past it on both sides.\n- Gravitational lensing: the far side of the disk appears bent UP and OVER the top of the black sphere AND mirrored UNDER the bottom, forming the signature bright halo arcs above and below the horizon (not merely a flat ring). Approximate this with extra bright arcs wrapping over and under the sphere (partial ring/torus geometry works well).\n- A thin, bright photon ring hugs the very edge of the black sphere.\n- Disk coloring: hot white-yellow on the inner edge fading outward to amber then deep orange (#fff3d0 → #ffae3b → #c8551a). Make one side of the disk slightly brighter than the other (relativistic beaming).\n- Background: near-black space with a sparse, dim starfield.\n\nMotion (the point of this benchmark — must be clearly visible within the 5-second clip):\n- The accretion disk rotates around the black hole at roughly 25–40 degrees per second, so a recognizable feature travels a quarter to half a revolution during the clip. Give the disk visible azimuthal structure (brightness clumps, streaks, or turbulent bands) so the rotation reads clearly — a featureless ring would look static.\n- Add subtle shimmering/flicker in the disk and lensing arcs, and slow drift in the beaming highlight. The camera stays FIXED.\n\nKeep the black hole centered and the disk horizontal. Return ONLY a single complete HTML document.",
-      "systemPrompt": "You are a creative WebGL / three.js developer. Output a SINGLE self-contained HTML document. three.js r160 is preloaded; an import map that resolves it is ALREADY injected into your page — you never add it or fetch anything.\n\nIMPORTS — follow this exactly; deviating renders a BLANK page:\n1. Use ONE <script type=\"module\"> for your code. Put EVERY `import` statement at its very top, at module top level.\n2. A static `import` is legal ONLY at module top level — NEVER inside a try/catch, function, if, or any block. `import * as THREE from 'three';` placed inside a try { } is a SYNTAX ERROR that blanks the whole page. This is the single most common failure here — do not do it.\n3. Import the core library with the bare specifier `three`; import add-ons with the `three/addons/…` prefix (the same paths as three r160's examples/jsm/). These bare specifiers are the ONLY thing that resolves:\n     import * as THREE from 'three';\n     import { OrbitControls } from 'three/addons/controls/OrbitControls.js';\n4. Do NOT write your own <script type=\"importmap\">, and do NOT import from any URL or CDN (unpkg, jsdelivr, esm.sh, skypack, cdnjs, or any http(s)://…). The sandbox has NO network — every external request fails, and a second import map breaks module loading. Bare specifiers only.\n5. For error handling, wrap the SCENE SETUP that runs AFTER the imports in try/catch — never the import lines themselves.\n\nExact skeleton to follow:\n<script type=\"module\">\nimport * as THREE from 'three';\n// any other top-level imports here, e.g. three/addons/...\ntry {\n  // ALL renderer + scene setup + the render loop go here\n} catch (e) {\n  // optional; whatever was built above still shows\n}\n</script>\n\nFollow the composition exactly — this is a controlled comparison, do not improvise the layout or camera.\n\nRELIABILITY RULES (the scene is rendered in HEADLESS SOFTWARE WebGL and a 5-second clip is captured frame-by-frame):\n- Do NOT use postprocessing (EffectComposer, RenderPass, UnrealBloomPass, ShaderPass): in software WebGL these run at seconds per frame and the capture times out. Fake glow instead with additive blending, sprite/point textures, emissive colors, and layered transparent meshes — it looks just as good here.\n- Drive ALL motion from the requestAnimationFrame timestamp (or performance.now()), NOT a fixed per-frame increment, so animation speed is framerate-independent.\n- Set renderer clear color / scene background to near-black space FIRST, and start the render loop immediately, so a partial failure still shows a scene rather than a blank page.\n- Keep the scene lightweight (a few thousand vertices, one canvas-generated texture at most). No shadow maps.\n- Keep every `import` at module top level — never inside a try/catch or any block (a static import there is a syntax error that blanks the page; see IMPORTS above). Put try/catch around the scene setup that runs AFTER the imports. Ensure the document is complete with every tag closed; if running long, simplify rather than truncate.",
-      "render": {
-        "viewport": "1280×800",
-        "fullPage": false,
-        "waitMs": 4000,
-        "deterministic": true,
-        "video": {
-          "durationMs": 5000,
-          "fps": 24
-        }
-      },
-      "columns": 3,
-      "runs": [
-        {
-          "label": "Run 1",
-          "grid": {
-            "image": "grids/black-hole-spin-sota.webp",
-            "video": "grids/black-hole-spin-sota.mp4"
-          },
-          "models": [
-            {
-              "label": "Opus 4.8",
-              "modelId": "claude-opus-4-8",
-              "provider": "claude-cli",
-              "status": "rendered",
-              "elapsedMs": 157992,
-              "outputTokens": 11949,
-              "costUsd": null,
-              "truncated": false,
-              "error": null,
-              "page": "pages/black-hole-spin-sota/opus-4.8.html"
-            },
-            {
-              "label": "GPT-5.5 high",
-              "modelId": "gpt-5.5",
-              "provider": "codex-cli",
-              "status": "rendered",
-              "elapsedMs": 87483,
-              "outputTokens": null,
-              "costUsd": null,
-              "truncated": false,
-              "error": null,
-              "page": "pages/black-hole-spin-sota/gpt-5.5-high.html"
-            },
-            {
-              "label": "GLM 5.2",
-              "modelId": "z-ai/glm-5.2",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 1143960,
-              "outputTokens": 13418,
-              "costUsd": 0.0424662,
-              "truncated": false,
-              "error": null,
-              "page": "pages/black-hole-spin-sota/glm-5.2.html"
-            },
-            {
-              "label": "Fable 5",
-              "modelId": "claude-fable-5",
-              "provider": "claude-cli",
-              "status": "rendered",
-              "elapsedMs": 169496,
-              "outputTokens": 13474,
-              "costUsd": null,
-              "truncated": false,
-              "error": null,
-              "page": "pages/black-hole-spin-sota/fable-5.html"
-            },
-            {
-              "label": "GPT-5.4 high",
-              "modelId": "gpt-5.4",
-              "provider": "codex-cli",
-              "status": "rendered",
-              "elapsedMs": 166380,
-              "outputTokens": null,
-              "costUsd": null,
-              "truncated": false,
-              "error": null,
-              "page": "pages/black-hole-spin-sota/gpt-5.4-high.html"
-            },
-            {
-              "label": "Qwen3.7 Plus",
-              "modelId": "qwen/qwen3.7-plus",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 146672,
-              "outputTokens": 5238,
-              "costUsd": 0.00709152,
-              "truncated": false,
-              "error": null,
-              "page": "pages/black-hole-spin-sota/qwen3.7-plus.html"
-            },
-            {
-              "label": "Sonnet 5",
-              "modelId": "claude-sonnet-5",
-              "provider": "claude-cli",
-              "status": "rendered",
-              "elapsedMs": 216632,
-              "outputTokens": 20204,
-              "costUsd": null,
-              "truncated": false,
-              "error": null,
-              "page": "pages/black-hole-spin-sota/sonnet-5.html"
-            },
-            {
-              "label": "Grok 4.3",
-              "modelId": "x-ai/grok-4.3",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 42489,
-              "outputTokens": 3004,
-              "costUsd": 0.00896465,
-              "truncated": false,
-              "error": null,
-              "page": "pages/black-hole-spin-sota/grok-4.3.html"
-            },
-            {
-              "label": "Kimi K2.7 Code",
-              "modelId": "moonshotai/kimi-k2.7-code",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 229414,
-              "outputTokens": 15926,
-              "costUsd": 0.05601434,
-              "truncated": false,
-              "error": null,
-              "page": "pages/black-hole-spin-sota/kimi-k2.7-code.html"
-            }
-          ],
-          "rendered": 9,
-          "total": 9
-        }
-      ]
-    },
-    {
-      "id": "ringed-giant",
-      "title": "Ringed Giant",
-      "description": "A Saturn-like ringed gas giant rotating on its tilted axis, its ring system orbiting in-plane — three.js / WebGL.",
-      "prompt": "Render a realistic SATURN-LIKE ringed gas giant as a full-screen three.js scene (100vw × 100vh, auto-starting, no user interaction). A 5-SECOND CLIP is captured, so the motion matters as much as the still composition.\n\nComposition (match exactly so results are comparable):\n- The planet is a sphere centered in the frame, its diameter about 34% of the viewport height.\n- Give the planet subtle HORIZONTAL atmospheric bands in a warm palette — cream and pale gold through tan to soft amber (#f3e6c4 → #e6c88f → #c99a5b), with faint darker belts and a slightly lighter equatorial zone. No hard edges; the bands blend.\n- A broad RING SYSTEM lies in the planet's equatorial plane, tilted so we view it about 18–24 degrees above edge-on: the rings read as a wide, flattened ellipse crossing the planet, NOT a head-on circle. Rings extend to roughly 2.2× the planet's radius.\n- The rings clearly pass BEHIND the planet's top half (occluded by the sphere) and IN FRONT of its bottom half (crossing over the lit disc) — so the ellipse is broken by the planet, reading as true 3D, not a flat halo.\n- Include one dark GAP in the rings (a Cassini-division-style black band) about two-thirds of the way out.\n- Cast a soft dark SHADOW BAND from the rings onto the planet on the shadowed side, and darken the arc of ring that passes behind the planet into its shadow (fake it — no shadow maps).\n- Light comes from the upper-left: the planet shows a lit crescent and a soft terminator into shadow on the lower-right; the near/left side of the rings is brighter.\n- Ring coloring: pale icy tan, subtly banded lighter/darker, semi-transparent at the inner and outer edges. Background: near-black space with a sparse, dim starfield.\n\nMotion (the point of this benchmark — clearly visible within the 5-second clip):\n- The planet ROTATES on its (tilted) axis so the atmospheric bands drift horizontally — give the bands visible structure (swirls, spots, or a faint storm oval) so the rotation reads; a featureless sphere would look static. Roughly 20–30 degrees per second.\n- The RINGS orbit in-plane in the same direction: give them faint radial structure / brightness clumps so their revolution is visible, roughly 15–25 degrees per second (inner slightly faster than outer if you can).\n- The camera stays FIXED. Keep the planet centered and the rings horizontal-ish (equatorial).\n\nReturn ONLY a single complete HTML document.",
-      "systemPrompt": "You are a creative WebGL / three.js developer. Output a SINGLE self-contained HTML document. three.js r160 is preloaded; an import map that resolves it is ALREADY injected into your page — you never add it or fetch anything.\n\nIMPORTS — follow this exactly; deviating renders a BLANK page:\n1. Use ONE <script type=\"module\"> for your code. Put EVERY `import` statement at its very top, at module top level.\n2. A static `import` is legal ONLY at module top level — NEVER inside a try/catch, function, if, or any block. `import * as THREE from 'three';` placed inside a try { } is a SYNTAX ERROR that blanks the whole page. This is the single most common failure here — do not do it.\n3. Import the core library with the bare specifier `three`; import add-ons with the `three/addons/…` prefix (the same paths as three r160's examples/jsm/). These bare specifiers are the ONLY thing that resolves:\n     import * as THREE from 'three';\n     import { OrbitControls } from 'three/addons/controls/OrbitControls.js';\n4. Do NOT write your own <script type=\"importmap\">, and do NOT import from any URL or CDN (unpkg, jsdelivr, esm.sh, skypack, cdnjs, or any http(s)://…). The sandbox has NO network — every external request fails, and a second import map breaks module loading. Bare specifiers only.\n5. For error handling, wrap the SCENE SETUP that runs AFTER the imports in try/catch — never the import lines themselves.\n\nExact skeleton to follow:\n<script type=\"module\">\nimport * as THREE from 'three';\n// any other top-level imports here, e.g. three/addons/...\ntry {\n  // ALL renderer + scene setup + the render loop go here\n} catch (e) {\n  // optional; whatever was built above still shows\n}\n</script>\n\nFollow the composition exactly — this is a controlled comparison, do not improvise the layout or camera.\n\nRELIABILITY RULES (the scene is rendered in HEADLESS SOFTWARE WebGL and a 5-second clip is captured frame-by-frame):\n- Do NOT use postprocessing (EffectComposer, RenderPass, UnrealBloomPass, ShaderPass): in software WebGL these run at seconds per frame and the capture times out. Fake glow with additive blending, emissive colors, and layered transparent meshes instead.\n- Do NOT use shadow maps. Fake the ring's shadow on the planet (and the planet's shadow on the rings) with a dark semi-transparent band / gradient, not real shadow casting.\n- Drive ALL motion from the requestAnimationFrame timestamp (or performance.now()), NOT a fixed per-frame increment, so animation speed is framerate-independent.\n- Set renderer clear color / scene background to near-black space FIRST, and start the render loop immediately, so a partial failure still shows a scene rather than a blank page.\n- Keep the scene lightweight (a few thousand vertices, one canvas-generated texture at most).\n- Keep every `import` at module top level — never inside a try/catch or any block (a static import there is a syntax error that blanks the page; see IMPORTS above). Put try/catch around the scene setup that runs AFTER the imports. Ensure the document is complete with every tag closed; if running long, simplify rather than truncate.",
-      "render": {
-        "viewport": "1280×800",
-        "fullPage": false,
-        "waitMs": 4000,
-        "deterministic": true,
-        "video": {
-          "durationMs": 5000,
-          "fps": 24
-        }
-      },
-      "columns": 3,
-      "runs": [
-        {
-          "label": "Run 1",
-          "grid": {
-            "image": "grids/ringed-giant.webp",
-            "video": "grids/ringed-giant.mp4"
-          },
-          "models": [
-            {
-              "label": "GLM 5.2",
-              "modelId": "z-ai/glm-5.2",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 217747,
-              "outputTokens": 16017,
-              "costUsd": 0.0504167,
-              "truncated": false,
-              "error": null,
-              "page": "pages/ringed-giant/glm-5.2.html"
-            },
-            {
-              "label": "Grok 4.3",
-              "modelId": "x-ai/grok-4.3",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 45419,
-              "outputTokens": 3625,
-              "costUsd": 0.0101984,
-              "truncated": false,
-              "error": null,
-              "page": "pages/ringed-giant/grok-4.3.html"
-            },
-            {
-              "label": "GPT-5.4 mini",
-              "modelId": "openai/gpt-5.4-mini",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 37853,
-              "outputTokens": 5532,
-              "costUsd": 0.0255705,
-              "truncated": false,
-              "error": null,
-              "page": "pages/ringed-giant/gpt-5.4-mini.html"
-            },
-            {
-              "label": "Claude Haiku 4.5",
-              "modelId": "anthropic/claude-haiku-4.5",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 19970,
-              "outputTokens": 3520,
-              "costUsd": 0.018645,
-              "truncated": false,
-              "error": null,
-              "page": "pages/ringed-giant/claude-haiku-4.5.html"
-            },
-            {
-              "label": "Qwen3.7 Plus",
-              "modelId": "qwen/qwen3.7-plus",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 150098,
-              "outputTokens": 8162,
-              "costUsd": 0.0107472,
-              "truncated": false,
-              "error": null,
-              "page": "pages/ringed-giant/qwen3.7-plus.html"
-            },
-            {
-              "label": "Gemini 3.1 Flash-Lite",
-              "modelId": "google/gemini-3.1-flash-lite",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 6731,
-              "outputTokens": 2040,
-              "costUsd": 0.0032965,
-              "truncated": false,
-              "error": null,
-              "page": "pages/ringed-giant/gemini-3.1-flash-lite.html"
-            },
-            {
-              "label": "DeepSeek V4 Pro",
-              "modelId": "deepseek/deepseek-v4-pro",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 603504,
-              "outputTokens": 5286,
-              "costUsd": 0.015995472,
-              "truncated": false,
-              "error": null,
-              "page": "pages/ringed-giant/deepseek-v4-pro.html"
-            },
-            {
-              "label": "Kimi K2.7 Code",
-              "modelId": "moonshotai/kimi-k2.7-code",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 758174,
-              "outputTokens": 24845,
-              "costUsd": 0.0952273,
-              "truncated": false,
-              "error": null,
-              "page": "pages/ringed-giant/kimi-k2.7-code.html"
-            },
-            {
-              "label": "Kimi K2.6",
-              "modelId": "moonshotai/kimi-k2.6",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 41732,
-              "outputTokens": 5810,
-              "costUsd": 0.0272334,
-              "truncated": false,
-              "error": null,
-              "page": "pages/ringed-giant/kimi-k2.6.html"
-            }
-          ],
-          "rendered": 9,
-          "total": 9
-        }
-      ]
-    },
-    {
-      "id": "jupiter",
-      "title": "Jupiter",
-      "description": "The planet Jupiter — detailed turbulent banded atmosphere and the Great Red Spot — in three.js / WebGL.",
-      "prompt": "Render the planet JUPITER as a full-screen three.js scene (100vw × 100vh, auto-starting, no user interaction) — a close-up of the gas giant filling most of the frame. A 5-SECOND CLIP is captured, so the atmospheric motion matters as much as the still.\n\nComposition (match so results are comparable):\n- Jupiter is a large sphere centered in the frame, its diameter about 78% of the viewport height (it dominates the view). Light it from the upper-left with a soft terminator curving into shadow on the lower-right, and gentle limb darkening at the edge.\n- DETAILED BANDED ATMOSPHERE: alternating horizontal ZONES (light: cream, ivory, pale tan) and BELTS (dark: tan, ochre, red-brown, rust) — at least 8–12 bands of varying width across the disc. The band boundaries are NOT clean lines: they are turbulent, with swirling eddies, wisps and festoons where zones and belts shear against each other. Build the surface from a procedurally detailed, high-frequency texture (a canvas-generated turbulence/noise texture), NOT flat stripes.\n- THE GREAT RED SPOT: a large red-orange oval storm in the southern hemisphere (below the equator, offset left or right of center), roughly 22% of the planet's width, ringed by a paler eyewall with an internal spiral swirl. This is the signature 'eye' — make it unmistakable.\n- Coloring: a warm Jovian palette — cream/ivory zones, tan/ochre/rust belts, the Great Red Spot a deeper brick red-orange.\n- Background: near-black space with a sparse, dim starfield; optionally one tiny bright moon.\n\nMotion (the point of this benchmark — clearly visible within the 5-second clip):\n- ZONAL FLOW: the bands stream HORIZONTALLY at different speeds, and adjacent bands flow in OPPOSITE directions (as Jupiter's zones and belts do), so texture detail in neighbouring bands visibly shears past itself during the clip. Give the flow visible structure (clumps, wisps, turbulence) so the motion reads clearly — flat scrolling stripes would look wrong.\n- The Great Red Spot slowly churns / rotates (a counter-clockwise swirl) and drifts with its band.\n- Add subtle turbulent shimmer along the band boundaries. Keep Jupiter centered; the flowing, shearing atmosphere must be the dominant, clearly visible motion.\n\nReturn ONLY a single complete HTML document.",
-      "systemPrompt": "You are a creative WebGL / three.js developer. Output a SINGLE self-contained HTML document. three.js r160 is preloaded; an import map that resolves it is ALREADY injected into your page — you never add it or fetch anything.\n\nIMPORTS — follow this exactly; deviating renders a BLANK page:\n1. Use ONE <script type=\"module\"> for your code. Put EVERY `import` statement at its very top, at module top level.\n2. A static `import` is legal ONLY at module top level — NEVER inside a try/catch, function, if, or any block. `import * as THREE from 'three';` placed inside a try { } is a SYNTAX ERROR that blanks the whole page. This is the single most common failure here — do not do it.\n3. Import the core library with the bare specifier `three`; import add-ons with the `three/addons/…` prefix (the same paths as three r160's examples/jsm/). These bare specifiers are the ONLY thing that resolves:\n     import * as THREE from 'three';\n     import { OrbitControls } from 'three/addons/controls/OrbitControls.js';\n4. Do NOT write your own <script type=\"importmap\">, and do NOT import from any URL or CDN (unpkg, jsdelivr, esm.sh, skypack, cdnjs, or any http(s)://…). The sandbox has NO network — every external request fails, and a second import map breaks module loading. Bare specifiers only.\n5. For error handling, wrap the SCENE SETUP that runs AFTER the imports in try/catch — never the import lines themselves.\n\nExact skeleton to follow:\n<script type=\"module\">\nimport * as THREE from 'three';\n// any other top-level imports here, e.g. three/addons/...\ntry {\n  // ALL renderer + scene setup + the render loop go here\n} catch (e) {\n  // optional; whatever was built above still shows\n}\n</script>\n\nFollow the composition exactly — this is a controlled comparison, do not improvise the layout or camera.\n\nRELIABILITY RULES (the scene is rendered in HEADLESS SOFTWARE WebGL and a 5-second clip is captured frame-by-frame):\n- Do NOT use postprocessing (EffectComposer, RenderPass, UnrealBloomPass, ShaderPass): in software WebGL these run at seconds per frame and the capture times out. Fake glow instead with additive blending, sprite/point textures, emissive colors, and layered transparent meshes — it looks just as good here.\n- Drive ALL motion from the requestAnimationFrame timestamp (or performance.now()), NOT a fixed per-frame increment, so animation speed is framerate-independent.\n- Set renderer clear color / scene background to near-black space FIRST, and start the render loop immediately, so a partial failure still shows a scene rather than a blank page.\n- Keep the scene lightweight (a few thousand vertices, one canvas-generated texture at most). No shadow maps.\n- Keep every `import` at module top level — never inside a try/catch or any block (a static import there is a syntax error that blanks the page; see IMPORTS above). Put try/catch around the scene setup that runs AFTER the imports. Ensure the document is complete with every tag closed; if running long, simplify rather than truncate.",
-      "render": {
-        "viewport": "1280×800",
-        "fullPage": false,
-        "waitMs": 4000,
-        "deterministic": true,
-        "video": {
-          "durationMs": 5000,
-          "fps": 24
-        }
-      },
-      "columns": 3,
-      "runs": [
-        {
-          "label": "Run 1",
-          "grid": {
-            "image": "grids/jupiter.webp",
-            "video": "grids/jupiter.mp4"
-          },
-          "models": [
-            {
-              "label": "Opus 4.8",
-              "modelId": "claude-opus-4-8",
-              "provider": "claude-cli",
-              "status": "rendered",
-              "elapsedMs": 249761,
-              "outputTokens": 19224,
-              "costUsd": null,
-              "truncated": false,
-              "error": null,
-              "page": "pages/jupiter/opus-4.8.html"
-            },
-            {
-              "label": "GPT-5.5 high",
-              "modelId": "gpt-5.5",
-              "provider": "codex-cli",
-              "status": "rendered",
-              "elapsedMs": 72898,
-              "outputTokens": null,
-              "costUsd": null,
-              "truncated": false,
-              "error": null,
-              "page": "pages/jupiter/gpt-5.5-high.html"
-            },
-            {
-              "label": "GLM 5.2",
-              "modelId": "z-ai/glm-5.2",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 173266,
-              "outputTokens": 14052,
-              "costUsd": 0.0635312,
-              "truncated": false,
-              "error": null,
-              "page": "pages/jupiter/glm-5.2.html"
-            },
-            {
-              "label": "Fable 5",
-              "modelId": "claude-fable-5",
-              "provider": "claude-cli",
-              "status": "rendered",
-              "elapsedMs": 312891,
-              "outputTokens": 22101,
-              "costUsd": null,
-              "truncated": false,
-              "error": null,
-              "page": "pages/jupiter/fable-5.html"
-            },
-            {
-              "label": "GPT-5.4 high",
-              "modelId": "gpt-5.4",
-              "provider": "codex-cli",
-              "status": "rendered",
-              "elapsedMs": 79866,
-              "outputTokens": null,
-              "costUsd": null,
-              "truncated": false,
-              "error": null,
-              "page": "pages/jupiter/gpt-5.4-high.html"
-            },
-            {
-              "label": "Qwen3.7 Plus",
-              "modelId": "qwen/qwen3.7-plus",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 276406,
-              "outputTokens": 7520,
-              "costUsd": 0.01002912,
-              "truncated": false,
-              "error": null,
-              "page": "pages/jupiter/qwen3.7-plus.html"
-            },
-            {
-              "label": "Sonnet 5",
-              "modelId": "claude-sonnet-5",
-              "provider": "claude-cli",
-              "status": "rendered",
-              "elapsedMs": 253527,
-              "outputTokens": 23491,
-              "costUsd": null,
-              "truncated": false,
-              "error": null,
-              "page": "pages/jupiter/sonnet-5.html"
-            },
-            {
-              "label": "Grok 4.3",
-              "modelId": "x-ai/grok-4.3",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 27098,
-              "outputTokens": 2768,
-              "costUsd": 0.0084459,
-              "truncated": false,
-              "error": null,
-              "page": "pages/jupiter/grok-4.3.html"
-            },
-            {
-              "label": "Kimi K2.7 Code",
-              "modelId": "moonshotai/kimi-k2.7-code",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 374026,
-              "outputTokens": 22174,
-              "costUsd": 0.07848668,
-              "truncated": false,
-              "error": null,
-              "page": "pages/jupiter/kimi-k2.7-code.html"
-            }
-          ],
-          "rendered": 9,
-          "total": 9
-        }
-      ]
-    },
-    {
-      "id": "black-hole-css",
-      "title": "Black Hole CSS",
-      "description": "The spinning 'Gargantua' black hole built in pure HTML + CSS — no JavaScript, no canvas.",
-      "prompt": "Build a spinning supermassive black hole — the 'Gargantua' look from the film Interstellar — as a full-screen scene in PURE CSS (no JavaScript, no canvas). A 5-second clip is captured and looped, so the rotation matters as much as the still.\n\nSTART FROM THIS EXACT TEMPLATE. The skeleton, CSS reset, dark-space background, starfield, and the centered .blackhole box (sized to the event horizon) are ALREADY DONE — keep them exactly as given. Your only job is the black-hole rendering: write the CSS for the elements inside .blackhole and the rotation animation. Keep it TIGHT — a handful of gradients and shapes is plenty; do NOT write hundreds of lines.\n\n```html\n<!doctype html>\n<html>\n<head>\n<meta charset=\"utf-8\">\n<style>\n  * { margin: 0; box-sizing: border-box; }\n  html, body { width: 100%; height: 100%; overflow: hidden; background: #03040a; }\n  .scene {\n    position: fixed; inset: 0; display: grid; place-items: center;\n    background: radial-gradient(120% 120% at 50% 50%, #0b0d16 0%, #03040a 62%);\n  }\n  /* Starfield — done; leave it as-is. */\n  .stars { position: absolute; inset: 0; opacity: .85;\n    background-image:\n      radial-gradient(1px 1px at 15% 22%, #fff, transparent),\n      radial-gradient(1px 1px at 68% 14%, #cbd5ff, transparent),\n      radial-gradient(1px 1px at 82% 61%, #fff, transparent),\n      radial-gradient(1px 1px at 34% 78%, #e6ecff, transparent),\n      radial-gradient(1px 1px at 52% 41%, #fff, transparent),\n      radial-gradient(1px 1px at 9% 66%, #cfd8ff, transparent),\n      radial-gradient(1px 1px at 91% 33%, #fff, transparent),\n      radial-gradient(1px 1px at 26% 9%, #fff, transparent),\n      radial-gradient(1px 1px at 74% 88%, #dfe6ff, transparent);\n  }\n  /* The black hole is centered here; its size = the event-horizon diameter (~30% of viewport height). */\n  .blackhole { position: relative; width: 30vh; height: 30vh; }\n\n  /* ==================== YOUR CSS BELOW ==================== */\n  /* Style the elements inside .blackhole and animate the disk's rotation —\n     exactly ONE full turn over the 5s clip so it loops seamlessly. */\n\n</style>\n</head>\n<body>\n  <div class=\"scene\">\n    <div class=\"stars\"></div>\n    <div class=\"blackhole\">\n      <!-- Style these (add or rename as you need): -->\n      <div class=\"disk\"></div>         <!-- bright accretion disk, viewed edge-on -->\n      <div class=\"lensing\"></div>      <!-- lensing halo: arcs over the top and mirrored under the bottom -->\n      <div class=\"horizon\"></div>      <!-- the solid-black event-horizon sphere -->\n      <div class=\"photon-ring\"></div>  <!-- thin bright ring hugging the horizon edge -->\n    </div>\n  </div>\n</body>\n</html>\n```\n\nRender this exact composition (everything centered, frame fixed):\n- horizon: a solid-black disc filling .blackhole, with a crisp edge.\n- disk: a bright accretion disk seen nearly EDGE-ON — a wide, flattened bright band crossing the middle of the black disc and extending well past it on both sides (roughly 2.5x wider than the horizon). Hot white-yellow on the inner edge fading outward to amber then deep orange (#fff3d0 -> #ffae3b -> #c8551a). Make one side slightly brighter (relativistic beaming).\n- lensing: the signature halo — bright arcs bending UP and OVER the top of the horizon AND mirrored UNDER the bottom (not just a flat band).\n- photon-ring: a thin, bright ring hugging the very edge of the horizon.\n- Background stays near-black with the faint static starfield from the template (do not animate the stars).\n\nMotion (the point of this benchmark — must read clearly and loop seamlessly in 5s):\n- Give the disk visible azimuthal structure (brightness clumps, streaks, or banding — a conic-gradient works well) and ROTATE it EXACTLY one full turn over the 5-second clip. A featureless band would look static.\n- Optional subtle shimmer on the disk and lensing arcs. The frame stays fixed; keep the black hole centered and the disk horizontal.\n\nReturn the COMPLETE HTML document — the template with your CSS filled in — and nothing else.",
-      "systemPrompt": "You are a master of pure CSS art and animation. Output a SINGLE self-contained HTML document using ONLY HTML and CSS — no JavaScript, no <canvas>, no <script>, no external resources (no images, no web fonts, no network). Every bit of MOTION must come from CSS @keyframes animations or transitions. You may freely use CSS gradients, radial/conic gradients, box-shadow, filter (blur/brightness), clip-path, transforms, mix-blend-mode, and inline SVG shapes styled/animated purely with CSS.\n\nRELIABILITY RULES (a 5-second clip is captured frame-by-frame; the harness drives CSS animation timelines deterministically):\n- Set an explicit dark background on <body> as the very FIRST style rule so the page never renders blank.\n- The scene fills the entire viewport (100vw × 100vh), is centered, auto-starts, and needs no interaction.\n- Make the animation LOOP SEAMLESSLY within the clip: use periods that divide evenly into 5 seconds (e.g. 1s, 2.5s, 5s) and rotations of exactly one full turn (or a whole number of turns) per 5s, so the first and last frame match.\n- Keep it performant: prefer transform/opacity animations; avoid thousands of elements.\n- Ensure the document is complete with every tag closed; if running long, simplify the design rather than let it be cut off. Absolutely NO JavaScript.",
-      "render": {
-        "viewport": "1280×800",
-        "fullPage": false,
-        "waitMs": 4000,
-        "deterministic": true,
-        "video": {
-          "durationMs": 5000,
-          "fps": 24
-        }
-      },
-      "columns": 3,
-      "runs": [
-        {
-          "label": "Run 1",
-          "grid": {
-            "image": "grids/black-hole-css.webp",
-            "video": "grids/black-hole-css.mp4"
-          },
-          "models": [
-            {
-              "label": "GLM 5.2",
-              "modelId": "z-ai/glm-5.2",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 229628,
-              "outputTokens": 13748,
-              "costUsd": 0.0436884,
-              "truncated": false,
-              "error": null,
-              "page": "pages/black-hole-css/glm-5.2.html"
-            },
-            {
-              "label": "Grok 4.3",
-              "modelId": "x-ai/grok-4.3",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 20747,
-              "outputTokens": 1704,
-              "costUsd": 0.00596965,
-              "truncated": false,
-              "error": null,
-              "page": "pages/black-hole-css/grok-4.3.html"
-            },
-            {
-              "label": "GPT-5.4 mini",
-              "modelId": "openai/gpt-5.4-mini",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 13553,
-              "outputTokens": 2080,
-              "costUsd": 0.01038225,
-              "truncated": false,
-              "error": null,
-              "page": "pages/black-hole-css/gpt-5.4-mini.html"
-            },
-            {
-              "label": "Claude Haiku 4.5",
-              "modelId": "anthropic/claude-haiku-4.5",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 28603,
-              "outputTokens": 4565,
-              "costUsd": 0.02439,
-              "truncated": false,
-              "error": null,
-              "page": "pages/black-hole-css/claude-haiku-4.5.html"
-            },
-            {
-              "label": "Qwen3.7 Plus",
-              "modelId": "qwen/qwen3.7-plus",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 713320,
-              "outputTokens": 27175,
-              "costUsd": 0.03525632,
-              "truncated": false,
-              "error": null,
-              "page": "pages/black-hole-css/qwen3.7-plus.html"
-            },
-            {
-              "label": "Gemini 3.1 Flash-Lite",
-              "modelId": "google/gemini-3.1-flash-lite",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 4554,
-              "outputTokens": 1363,
-              "costUsd": 0.0024095,
-              "truncated": false,
-              "error": null,
-              "page": "pages/black-hole-css/gemini-3.1-flash-lite.html"
-            },
-            {
-              "label": "DeepSeek V4 Pro",
-              "modelId": "deepseek/deepseek-v4-pro",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 361097,
-              "outputTokens": 17729,
-              "costUsd": 0.0576451425,
-              "truncated": false,
-              "error": null,
-              "page": "pages/black-hole-css/deepseek-v4-pro.html"
-            },
-            {
-              "label": "Kimi K2.7 Code",
-              "modelId": "moonshotai/kimi-k2.7-code",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 270243,
-              "outputTokens": 10197,
-              "costUsd": 0.040407744,
-              "truncated": false,
-              "error": null,
-              "page": "pages/black-hole-css/kimi-k2.7-code.html"
-            },
-            {
-              "label": "Kimi K2.6",
-              "modelId": "moonshotai/kimi-k2.6",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 687559,
-              "outputTokens": 29190,
-              "costUsd": 0.100302372,
-              "truncated": false,
-              "error": null,
-              "page": "pages/black-hole-css/kimi-k2.6.html"
-            }
-          ],
-          "rendered": 9,
-          "total": 9
-        }
-      ]
-    },
-    {
-      "id": "pulsar-css",
-      "title": "Pulsar CSS",
-      "description": "A pulsing, rotating pulsar (neutron star) built in pure HTML + CSS — no JavaScript, no canvas.",
-      "prompt": "Create a PULSING, ROTATING PULSAR (a spinning neutron star firing lighthouse beams) as a full-screen scene — pure HTML + CSS only. A 5-second clip is captured and looped, so the rhythm and rotation are the whole point.\n\nComposition (match so results are comparable — everything centered, frame fixed):\n- At the exact center, a small intensely bright CORE: a blue-white orb about 9% of the viewport height, hot white at the middle fading through pale blue to a soft outer glow (#f2f6ff → #bcd2ff → #5b7cff), with an additive-looking bloom (layered box-shadow / blur).\n- The core PULSES rhythmically: its brightness and size swell and shrink with a period of exactly 1 second (so ~5 clean pulses across the clip). This pulse is the signature of the benchmark — make it unmistakable.\n- TWO opposing BEAMS (jets) emanate from the core along a single axis tilted about 20° from vertical — long, narrow, tapering cones of cyan-white light (semi-transparent, additive-looking), extending past the top and bottom edges of the frame. The beam axis ROTATES steadily around the center like a lighthouse, completing EXACTLY one full revolution over the 5-second clip (72°/s).\n- Concentric SHOCKWAVE RINGS pulse outward from the core in time with the pulse: on each beat a thin ring is emitted that expands and fades as it grows, so 3–4 rings are visible at different radii at any moment (stagger them with animation-delays). Faint cyan.\n- A thin, bright EQUATORIAL RING/disk hugs the core, seen nearly edge-on as a horizontal bright ellipse, tilted to match the beam axis, steady (not pulsing much).\n- Background: near-black space (#03040a) with a sparse scatter of faint, static stars (small dots via box-shadow or tiny elements) — the stars do NOT move.\n\nMotion recap (must be visible and loop seamlessly in 5s): core pulses once per second; beams make one full rotation over the clip; shockwave rings expand-and-fade on each pulse; equatorial ring holds steady; stars fixed.\n\nReturn ONLY a single complete HTML document — no JavaScript.",
-      "systemPrompt": "You are a master of pure CSS art and animation. Output a SINGLE self-contained HTML document using ONLY HTML and CSS — no JavaScript, no <canvas>, no <script>, no external resources (no images, no web fonts, no network). Every bit of MOTION must come from CSS @keyframes animations or transitions. You may freely use CSS gradients, radial/conic gradients, box-shadow, filter (blur/brightness), clip-path, transforms, mix-blend-mode, and inline SVG shapes styled/animated purely with CSS.\n\nRELIABILITY RULES (a 5-second clip is captured frame-by-frame; the harness drives CSS animation timelines deterministically):\n- Set an explicit dark background on <body> as the very FIRST style rule so the page never renders blank.\n- The scene fills the entire viewport (100vw × 100vh), is centered, auto-starts, and needs no interaction.\n- Make the animation LOOP SEAMLESSLY within the clip: use periods that divide evenly into 5 seconds (e.g. 1s, 2.5s, 5s) and rotations of exactly one full turn (or a whole number of turns) per 5s, so the first and last frame match.\n- Keep it performant: prefer transform/opacity animations; avoid thousands of elements.\n- Ensure the document is complete with every tag closed; if running long, simplify the design rather than let it be cut off. Absolutely NO JavaScript.",
-      "render": {
-        "viewport": "1280×800",
-        "fullPage": false,
-        "waitMs": 4000,
-        "deterministic": true,
-        "video": {
-          "durationMs": 5000,
-          "fps": 24
-        }
-      },
-      "columns": 3,
-      "runs": [
-        {
-          "label": "Run 1",
-          "grid": {
-            "image": "grids/pulsar-css.webp",
-            "video": "grids/pulsar-css.mp4"
-          },
-          "models": [
-            {
-              "label": "GLM 5.2",
-              "modelId": "z-ai/glm-5.2",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 123974,
-              "outputTokens": 7251,
-              "costUsd": 0.033009,
-              "truncated": false,
-              "error": null,
-              "page": "pages/pulsar-css/glm-5.2.html"
-            },
-            {
-              "label": "Grok 4.3",
-              "modelId": "x-ai/grok-4.3",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 42380,
-              "outputTokens": 2651,
-              "costUsd": 0.00762215,
-              "truncated": false,
-              "error": null,
-              "page": "pages/pulsar-css/grok-4.3.html"
-            },
-            {
-              "label": "GPT-5.4 mini",
-              "modelId": "openai/gpt-5.4-mini",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 18155,
-              "outputTokens": 2887,
-              "costUsd": 0.01357875,
-              "truncated": false,
-              "error": null,
-              "page": "pages/pulsar-css/gpt-5.4-mini.html"
-            },
-            {
-              "label": "Claude Haiku 4.5",
-              "modelId": "anthropic/claude-haiku-4.5",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 37078,
-              "outputTokens": 7651,
-              "costUsd": 0.039157,
-              "truncated": false,
-              "error": null,
-              "page": "pages/pulsar-css/claude-haiku-4.5.html"
-            },
-            {
-              "label": "Qwen3.7 Plus",
-              "modelId": "qwen/qwen3.7-plus",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 108492,
-              "outputTokens": 5954,
-              "costUsd": 0.00788128,
-              "truncated": false,
-              "error": null,
-              "page": "pages/pulsar-css/qwen3.7-plus.html"
-            },
-            {
-              "label": "Gemini 3.1 Flash-Lite",
-              "modelId": "google/gemini-3.1-flash-lite",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 4286,
-              "outputTokens": 1486,
-              "costUsd": 0.00243,
-              "truncated": false,
-              "error": null,
-              "page": "pages/pulsar-css/gemini-3.1-flash-lite.html"
-            },
-            {
-              "label": "DeepSeek V4 Pro",
-              "modelId": "deepseek/deepseek-v4-pro",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 286448,
-              "outputTokens": 16881,
-              "costUsd": 0.057026031,
-              "truncated": false,
-              "error": null,
-              "page": "pages/pulsar-css/deepseek-v4-pro.html"
-            },
-            {
-              "label": "Kimi K2.7 Code",
-              "modelId": "moonshotai/kimi-k2.7-code",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 269823,
-              "outputTokens": 14141,
-              "costUsd": 0.054445,
-              "truncated": false,
-              "error": null,
-              "page": "pages/pulsar-css/kimi-k2.7-code.html"
-            },
-            {
-              "label": "Kimi K2.6",
-              "modelId": "moonshotai/kimi-k2.6",
-              "provider": "openrouter",
-              "status": "rendered",
-              "elapsedMs": 35330,
-              "outputTokens": 3526,
-              "costUsd": 0.01254374,
-              "truncated": false,
-              "error": null,
-              "page": "pages/pulsar-css/kimi-k2.6.html"
-            }
-          ],
-          "rendered": 9,
-          "total": 9
-        }
-      ]
-    },
-    {
       "id": "black-hole",
       "title": "Black Hole",
       "description": "A realistic supermassive black hole — the 'Gargantua' look from Interstellar — in three.js / WebGL, as a single still frame.",
@@ -1323,6 +370,959 @@
             }
           ],
           "rendered": 8,
+          "total": 9
+        }
+      ]
+    },
+    {
+      "id": "ringed-giant",
+      "title": "Ringed Giant",
+      "description": "A Saturn-like ringed gas giant rotating on its tilted axis, its ring system orbiting in-plane — three.js / WebGL.",
+      "prompt": "Render a realistic SATURN-LIKE ringed gas giant as a full-screen three.js scene (100vw × 100vh, auto-starting, no user interaction). A 5-SECOND CLIP is captured, so the motion matters as much as the still composition.\n\nComposition (match exactly so results are comparable):\n- The planet is a sphere centered in the frame, its diameter about 34% of the viewport height.\n- Give the planet subtle HORIZONTAL atmospheric bands in a warm palette — cream and pale gold through tan to soft amber (#f3e6c4 → #e6c88f → #c99a5b), with faint darker belts and a slightly lighter equatorial zone. No hard edges; the bands blend.\n- A broad RING SYSTEM lies in the planet's equatorial plane, tilted so we view it about 18–24 degrees above edge-on: the rings read as a wide, flattened ellipse crossing the planet, NOT a head-on circle. Rings extend to roughly 2.2× the planet's radius.\n- The rings clearly pass BEHIND the planet's top half (occluded by the sphere) and IN FRONT of its bottom half (crossing over the lit disc) — so the ellipse is broken by the planet, reading as true 3D, not a flat halo.\n- Include one dark GAP in the rings (a Cassini-division-style black band) about two-thirds of the way out.\n- Cast a soft dark SHADOW BAND from the rings onto the planet on the shadowed side, and darken the arc of ring that passes behind the planet into its shadow (fake it — no shadow maps).\n- Light comes from the upper-left: the planet shows a lit crescent and a soft terminator into shadow on the lower-right; the near/left side of the rings is brighter.\n- Ring coloring: pale icy tan, subtly banded lighter/darker, semi-transparent at the inner and outer edges. Background: near-black space with a sparse, dim starfield.\n\nMotion (the point of this benchmark — clearly visible within the 5-second clip):\n- The planet ROTATES on its (tilted) axis so the atmospheric bands drift horizontally — give the bands visible structure (swirls, spots, or a faint storm oval) so the rotation reads; a featureless sphere would look static. Roughly 20–30 degrees per second.\n- The RINGS orbit in-plane in the same direction: give them faint radial structure / brightness clumps so their revolution is visible, roughly 15–25 degrees per second (inner slightly faster than outer if you can).\n- The camera stays FIXED. Keep the planet centered and the rings horizontal-ish (equatorial).\n\nReturn ONLY a single complete HTML document.",
+      "systemPrompt": "You are a creative WebGL / three.js developer. Output a SINGLE self-contained HTML document. three.js r160 is preloaded; an import map that resolves it is ALREADY injected into your page — you never add it or fetch anything.\n\nIMPORTS — follow this exactly; deviating renders a BLANK page:\n1. Use ONE <script type=\"module\"> for your code. Put EVERY `import` statement at its very top, at module top level.\n2. A static `import` is legal ONLY at module top level — NEVER inside a try/catch, function, if, or any block. `import * as THREE from 'three';` placed inside a try { } is a SYNTAX ERROR that blanks the whole page. This is the single most common failure here — do not do it.\n3. Import the core library with the bare specifier `three`; import add-ons with the `three/addons/…` prefix (the same paths as three r160's examples/jsm/). These bare specifiers are the ONLY thing that resolves:\n     import * as THREE from 'three';\n     import { OrbitControls } from 'three/addons/controls/OrbitControls.js';\n4. Do NOT write your own <script type=\"importmap\">, and do NOT import from any URL or CDN (unpkg, jsdelivr, esm.sh, skypack, cdnjs, or any http(s)://…). The sandbox has NO network — every external request fails, and a second import map breaks module loading. Bare specifiers only.\n5. For error handling, wrap the SCENE SETUP that runs AFTER the imports in try/catch — never the import lines themselves.\n\nExact skeleton to follow:\n<script type=\"module\">\nimport * as THREE from 'three';\n// any other top-level imports here, e.g. three/addons/...\ntry {\n  // ALL renderer + scene setup + the render loop go here\n} catch (e) {\n  // optional; whatever was built above still shows\n}\n</script>\n\nFollow the composition exactly — this is a controlled comparison, do not improvise the layout or camera.\n\nRELIABILITY RULES (the scene is rendered in HEADLESS SOFTWARE WebGL and a 5-second clip is captured frame-by-frame):\n- Do NOT use postprocessing (EffectComposer, RenderPass, UnrealBloomPass, ShaderPass): in software WebGL these run at seconds per frame and the capture times out. Fake glow with additive blending, emissive colors, and layered transparent meshes instead.\n- Do NOT use shadow maps. Fake the ring's shadow on the planet (and the planet's shadow on the rings) with a dark semi-transparent band / gradient, not real shadow casting.\n- Drive ALL motion from the requestAnimationFrame timestamp (or performance.now()), NOT a fixed per-frame increment, so animation speed is framerate-independent.\n- Set renderer clear color / scene background to near-black space FIRST, and start the render loop immediately, so a partial failure still shows a scene rather than a blank page.\n- Keep the scene lightweight (a few thousand vertices, one canvas-generated texture at most).\n- Keep every `import` at module top level — never inside a try/catch or any block (a static import there is a syntax error that blanks the page; see IMPORTS above). Put try/catch around the scene setup that runs AFTER the imports. Ensure the document is complete with every tag closed; if running long, simplify rather than truncate.",
+      "render": {
+        "viewport": "1280×800",
+        "fullPage": false,
+        "waitMs": 4000,
+        "deterministic": true,
+        "video": {
+          "durationMs": 5000,
+          "fps": 24
+        }
+      },
+      "columns": 3,
+      "runs": [
+        {
+          "label": "Run 1",
+          "grid": {
+            "image": "grids/ringed-giant.webp",
+            "video": "grids/ringed-giant.mp4"
+          },
+          "models": [
+            {
+              "label": "GLM 5.2",
+              "modelId": "z-ai/glm-5.2",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 217747,
+              "outputTokens": 16017,
+              "costUsd": 0.0504167,
+              "truncated": false,
+              "error": null,
+              "page": "pages/ringed-giant/glm-5.2.html"
+            },
+            {
+              "label": "Grok 4.3",
+              "modelId": "x-ai/grok-4.3",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 45419,
+              "outputTokens": 3625,
+              "costUsd": 0.0101984,
+              "truncated": false,
+              "error": null,
+              "page": "pages/ringed-giant/grok-4.3.html"
+            },
+            {
+              "label": "GPT-5.4 mini",
+              "modelId": "openai/gpt-5.4-mini",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 37853,
+              "outputTokens": 5532,
+              "costUsd": 0.0255705,
+              "truncated": false,
+              "error": null,
+              "page": "pages/ringed-giant/gpt-5.4-mini.html"
+            },
+            {
+              "label": "Claude Haiku 4.5",
+              "modelId": "anthropic/claude-haiku-4.5",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 19970,
+              "outputTokens": 3520,
+              "costUsd": 0.018645,
+              "truncated": false,
+              "error": null,
+              "page": "pages/ringed-giant/claude-haiku-4.5.html"
+            },
+            {
+              "label": "Qwen3.7 Plus",
+              "modelId": "qwen/qwen3.7-plus",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 150098,
+              "outputTokens": 8162,
+              "costUsd": 0.0107472,
+              "truncated": false,
+              "error": null,
+              "page": "pages/ringed-giant/qwen3.7-plus.html"
+            },
+            {
+              "label": "Gemini 3.1 Flash-Lite",
+              "modelId": "google/gemini-3.1-flash-lite",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 6731,
+              "outputTokens": 2040,
+              "costUsd": 0.0032965,
+              "truncated": false,
+              "error": null,
+              "page": "pages/ringed-giant/gemini-3.1-flash-lite.html"
+            },
+            {
+              "label": "DeepSeek V4 Pro",
+              "modelId": "deepseek/deepseek-v4-pro",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 603504,
+              "outputTokens": 5286,
+              "costUsd": 0.015995472,
+              "truncated": false,
+              "error": null,
+              "page": "pages/ringed-giant/deepseek-v4-pro.html"
+            },
+            {
+              "label": "Kimi K2.7 Code",
+              "modelId": "moonshotai/kimi-k2.7-code",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 758174,
+              "outputTokens": 24845,
+              "costUsd": 0.0952273,
+              "truncated": false,
+              "error": null,
+              "page": "pages/ringed-giant/kimi-k2.7-code.html"
+            },
+            {
+              "label": "Kimi K2.6",
+              "modelId": "moonshotai/kimi-k2.6",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 41732,
+              "outputTokens": 5810,
+              "costUsd": 0.0272334,
+              "truncated": false,
+              "error": null,
+              "page": "pages/ringed-giant/kimi-k2.6.html"
+            }
+          ],
+          "rendered": 9,
+          "total": 9
+        }
+      ]
+    },
+    {
+      "id": "jupiter",
+      "title": "Jupiter",
+      "description": "The planet Jupiter — detailed turbulent banded atmosphere and the Great Red Spot — in three.js / WebGL.",
+      "prompt": "Render the planet JUPITER as a full-screen three.js scene (100vw × 100vh, auto-starting, no user interaction) — a close-up of the gas giant filling most of the frame. A 5-SECOND CLIP is captured, so the atmospheric motion matters as much as the still.\n\nComposition (match so results are comparable):\n- Jupiter is a large sphere centered in the frame, its diameter about 78% of the viewport height (it dominates the view). Light it from the upper-left with a soft terminator curving into shadow on the lower-right, and gentle limb darkening at the edge.\n- DETAILED BANDED ATMOSPHERE: alternating horizontal ZONES (light: cream, ivory, pale tan) and BELTS (dark: tan, ochre, red-brown, rust) — at least 8–12 bands of varying width across the disc. The band boundaries are NOT clean lines: they are turbulent, with swirling eddies, wisps and festoons where zones and belts shear against each other. Build the surface from a procedurally detailed, high-frequency texture (a canvas-generated turbulence/noise texture), NOT flat stripes.\n- THE GREAT RED SPOT: a large red-orange oval storm in the southern hemisphere (below the equator, offset left or right of center), roughly 22% of the planet's width, ringed by a paler eyewall with an internal spiral swirl. This is the signature 'eye' — make it unmistakable.\n- Coloring: a warm Jovian palette — cream/ivory zones, tan/ochre/rust belts, the Great Red Spot a deeper brick red-orange.\n- Background: near-black space with a sparse, dim starfield; optionally one tiny bright moon.\n\nMotion (the point of this benchmark — clearly visible within the 5-second clip):\n- ZONAL FLOW: the bands stream HORIZONTALLY at different speeds, and adjacent bands flow in OPPOSITE directions (as Jupiter's zones and belts do), so texture detail in neighbouring bands visibly shears past itself during the clip. Give the flow visible structure (clumps, wisps, turbulence) so the motion reads clearly — flat scrolling stripes would look wrong.\n- The Great Red Spot slowly churns / rotates (a counter-clockwise swirl) and drifts with its band.\n- Add subtle turbulent shimmer along the band boundaries. Keep Jupiter centered; the flowing, shearing atmosphere must be the dominant, clearly visible motion.\n\nReturn ONLY a single complete HTML document.",
+      "systemPrompt": "You are a creative WebGL / three.js developer. Output a SINGLE self-contained HTML document. three.js r160 is preloaded; an import map that resolves it is ALREADY injected into your page — you never add it or fetch anything.\n\nIMPORTS — follow this exactly; deviating renders a BLANK page:\n1. Use ONE <script type=\"module\"> for your code. Put EVERY `import` statement at its very top, at module top level.\n2. A static `import` is legal ONLY at module top level — NEVER inside a try/catch, function, if, or any block. `import * as THREE from 'three';` placed inside a try { } is a SYNTAX ERROR that blanks the whole page. This is the single most common failure here — do not do it.\n3. Import the core library with the bare specifier `three`; import add-ons with the `three/addons/…` prefix (the same paths as three r160's examples/jsm/). These bare specifiers are the ONLY thing that resolves:\n     import * as THREE from 'three';\n     import { OrbitControls } from 'three/addons/controls/OrbitControls.js';\n4. Do NOT write your own <script type=\"importmap\">, and do NOT import from any URL or CDN (unpkg, jsdelivr, esm.sh, skypack, cdnjs, or any http(s)://…). The sandbox has NO network — every external request fails, and a second import map breaks module loading. Bare specifiers only.\n5. For error handling, wrap the SCENE SETUP that runs AFTER the imports in try/catch — never the import lines themselves.\n\nExact skeleton to follow:\n<script type=\"module\">\nimport * as THREE from 'three';\n// any other top-level imports here, e.g. three/addons/...\ntry {\n  // ALL renderer + scene setup + the render loop go here\n} catch (e) {\n  // optional; whatever was built above still shows\n}\n</script>\n\nFollow the composition exactly — this is a controlled comparison, do not improvise the layout or camera.\n\nRELIABILITY RULES (the scene is rendered in HEADLESS SOFTWARE WebGL and a 5-second clip is captured frame-by-frame):\n- Do NOT use postprocessing (EffectComposer, RenderPass, UnrealBloomPass, ShaderPass): in software WebGL these run at seconds per frame and the capture times out. Fake glow instead with additive blending, sprite/point textures, emissive colors, and layered transparent meshes — it looks just as good here.\n- Drive ALL motion from the requestAnimationFrame timestamp (or performance.now()), NOT a fixed per-frame increment, so animation speed is framerate-independent.\n- Set renderer clear color / scene background to near-black space FIRST, and start the render loop immediately, so a partial failure still shows a scene rather than a blank page.\n- Keep the scene lightweight (a few thousand vertices, one canvas-generated texture at most). No shadow maps.\n- Keep every `import` at module top level — never inside a try/catch or any block (a static import there is a syntax error that blanks the page; see IMPORTS above). Put try/catch around the scene setup that runs AFTER the imports. Ensure the document is complete with every tag closed; if running long, simplify rather than truncate.",
+      "render": {
+        "viewport": "1280×800",
+        "fullPage": false,
+        "waitMs": 4000,
+        "deterministic": true,
+        "video": {
+          "durationMs": 5000,
+          "fps": 24
+        }
+      },
+      "columns": 3,
+      "runs": [
+        {
+          "label": "Run 1",
+          "grid": {
+            "image": "grids/jupiter.webp",
+            "video": "grids/jupiter.mp4"
+          },
+          "models": [
+            {
+              "label": "Fable 5",
+              "modelId": "claude-fable-5",
+              "provider": "claude-cli",
+              "status": "rendered",
+              "elapsedMs": 312891,
+              "outputTokens": 22101,
+              "costUsd": null,
+              "truncated": false,
+              "error": null,
+              "page": "pages/jupiter/fable-5.html"
+            },
+            {
+              "label": "Opus 4.8",
+              "modelId": "claude-opus-4-8",
+              "provider": "claude-cli",
+              "status": "rendered",
+              "elapsedMs": 249761,
+              "outputTokens": 19224,
+              "costUsd": null,
+              "truncated": false,
+              "error": null,
+              "page": "pages/jupiter/opus-4.8.html"
+            },
+            {
+              "label": "Sonnet 5",
+              "modelId": "claude-sonnet-5",
+              "provider": "claude-cli",
+              "status": "rendered",
+              "elapsedMs": 253527,
+              "outputTokens": 23491,
+              "costUsd": null,
+              "truncated": false,
+              "error": null,
+              "page": "pages/jupiter/sonnet-5.html"
+            },
+            {
+              "label": "GPT-5.5 high",
+              "modelId": "gpt-5.5",
+              "provider": "codex-cli",
+              "status": "rendered",
+              "elapsedMs": 72898,
+              "outputTokens": null,
+              "costUsd": null,
+              "truncated": false,
+              "error": null,
+              "page": "pages/jupiter/gpt-5.5-high.html"
+            },
+            {
+              "label": "GPT-5.4 high",
+              "modelId": "gpt-5.4",
+              "provider": "codex-cli",
+              "status": "rendered",
+              "elapsedMs": 79866,
+              "outputTokens": null,
+              "costUsd": null,
+              "truncated": false,
+              "error": null,
+              "page": "pages/jupiter/gpt-5.4-high.html"
+            },
+            {
+              "label": "GLM 5.2",
+              "modelId": "z-ai/glm-5.2",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 173266,
+              "outputTokens": 14052,
+              "costUsd": 0.0635312,
+              "truncated": false,
+              "error": null,
+              "page": "pages/jupiter/glm-5.2.html"
+            },
+            {
+              "label": "Grok 4.3",
+              "modelId": "x-ai/grok-4.3",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 27098,
+              "outputTokens": 2768,
+              "costUsd": 0.0084459,
+              "truncated": false,
+              "error": null,
+              "page": "pages/jupiter/grok-4.3.html"
+            },
+            {
+              "label": "Kimi K2.7 Code",
+              "modelId": "moonshotai/kimi-k2.7-code",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 374026,
+              "outputTokens": 22174,
+              "costUsd": 0.07848668,
+              "truncated": false,
+              "error": null,
+              "page": "pages/jupiter/kimi-k2.7-code.html"
+            },
+            {
+              "label": "Qwen3.7 Plus",
+              "modelId": "qwen/qwen3.7-plus",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 276406,
+              "outputTokens": 7520,
+              "costUsd": 0.01002912,
+              "truncated": false,
+              "error": null,
+              "page": "pages/jupiter/qwen3.7-plus.html"
+            }
+          ],
+          "rendered": 9,
+          "total": 9
+        }
+      ]
+    },
+    {
+      "id": "black-hole-spin",
+      "title": "Black Hole Spin",
+      "description": "The Gargantua black hole in motion — a spinning accretion disk — in three.js / WebGL.",
+      "prompt": "Render a realistic supermassive black hole — the 'Gargantua' look from the film Interstellar — as a full-screen three.js scene (100vw × 100vh, auto-starting, no user interaction). A 5-SECOND CLIP of the scene is captured, so the motion matters as much as the still composition.\n\nComposition (match exactly so results are comparable):\n- The black hole (event horizon) is a perfectly black sphere centered in the frame, its diameter about 28% of the viewport height.\n- A bright, thin accretion disk lies in a HORIZONTAL plane around the sphere and is viewed nearly edge-on: the camera sits only about 5–8 degrees above the disk plane, so the disk reads as a near-horizontal bright band cutting across the sphere's middle and extending well past it on both sides.\n- Gravitational lensing: the far side of the disk appears bent UP and OVER the top of the black sphere AND mirrored UNDER the bottom, forming the signature bright halo arcs above and below the horizon (not merely a flat ring). Approximate this with extra bright arcs wrapping over and under the sphere (partial ring/torus geometry works well).\n- A thin, bright photon ring hugs the very edge of the black sphere.\n- Disk coloring: hot white-yellow on the inner edge fading outward to amber then deep orange (#fff3d0 → #ffae3b → #c8551a). Make one side of the disk slightly brighter than the other (relativistic beaming).\n- Background: near-black space with a sparse, dim starfield.\n\nMotion (the point of this benchmark — must be clearly visible within the 5-second clip):\n- The accretion disk rotates around the black hole at roughly 25–40 degrees per second, so a recognizable feature travels a quarter to half a revolution during the clip. Give the disk visible azimuthal structure (brightness clumps, streaks, or turbulent bands) so the rotation reads clearly — a featureless ring would look static.\n- Add subtle shimmering/flicker in the disk and lensing arcs, and slow drift in the beaming highlight. The camera stays FIXED.\n\nKeep the black hole centered and the disk horizontal. Return ONLY a single complete HTML document.",
+      "systemPrompt": "You are a creative WebGL / three.js developer. Output a SINGLE self-contained HTML document. three.js r160 is preloaded; an import map that resolves it is ALREADY injected into your page — you never add it or fetch anything.\n\nIMPORTS — follow this exactly; deviating renders a BLANK page:\n1. Use ONE <script type=\"module\"> for your code. Put EVERY `import` statement at its very top, at module top level.\n2. A static `import` is legal ONLY at module top level — NEVER inside a try/catch, function, if, or any block. `import * as THREE from 'three';` placed inside a try { } is a SYNTAX ERROR that blanks the whole page. This is the single most common failure here — do not do it.\n3. Import the core library with the bare specifier `three`; import add-ons with the `three/addons/…` prefix (the same paths as three r160's examples/jsm/). These bare specifiers are the ONLY thing that resolves:\n     import * as THREE from 'three';\n     import { OrbitControls } from 'three/addons/controls/OrbitControls.js';\n4. Do NOT write your own <script type=\"importmap\">, and do NOT import from any URL or CDN (unpkg, jsdelivr, esm.sh, skypack, cdnjs, or any http(s)://…). The sandbox has NO network — every external request fails, and a second import map breaks module loading. Bare specifiers only.\n5. For error handling, wrap the SCENE SETUP that runs AFTER the imports in try/catch — never the import lines themselves.\n\nExact skeleton to follow:\n<script type=\"module\">\nimport * as THREE from 'three';\n// any other top-level imports here, e.g. three/addons/...\ntry {\n  // ALL renderer + scene setup + the render loop go here\n} catch (e) {\n  // optional; whatever was built above still shows\n}\n</script>\n\nFollow the composition exactly — this is a controlled comparison, do not improvise the layout or camera.\n\nRELIABILITY RULES (the scene is rendered in HEADLESS SOFTWARE WebGL and a 5-second clip is captured frame-by-frame):\n- Do NOT use postprocessing (EffectComposer, RenderPass, UnrealBloomPass, ShaderPass): in software WebGL these run at seconds per frame and the capture times out. Fake glow instead with additive blending, sprite/point textures, emissive colors, and layered transparent meshes — it looks just as good here.\n- Drive ALL motion from the requestAnimationFrame timestamp (or performance.now()), NOT a fixed per-frame increment, so animation speed is framerate-independent.\n- Set renderer clear color / scene background to near-black space FIRST, and start the render loop immediately, so a partial failure still shows a scene rather than a blank page.\n- Keep the scene lightweight (a few thousand vertices, one canvas-generated texture at most). No shadow maps.\n- Keep every `import` at module top level — never inside a try/catch or any block (a static import there is a syntax error that blanks the page; see IMPORTS above). Put try/catch around the scene setup that runs AFTER the imports. Ensure the document is complete with every tag closed; if running long, simplify rather than truncate.",
+      "render": {
+        "viewport": "1280×800",
+        "fullPage": false,
+        "waitMs": 4000,
+        "deterministic": true,
+        "video": {
+          "durationMs": 5000,
+          "fps": 24
+        }
+      },
+      "columns": 3,
+      "runs": [
+        {
+          "label": "Run 1",
+          "grid": {
+            "image": "grids/black-hole-spin.webp",
+            "video": "grids/black-hole-spin.mp4"
+          },
+          "models": [
+            {
+              "label": "GLM 5.2",
+              "modelId": "z-ai/glm-5.2",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 168781,
+              "outputTokens": 9637,
+              "costUsd": 0.0434934,
+              "truncated": false,
+              "error": null,
+              "page": "pages/black-hole-spin/glm-5.2.html"
+            },
+            {
+              "label": "Grok 4.3",
+              "modelId": "x-ai/grok-4.3",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 20367,
+              "outputTokens": 2593,
+              "costUsd": 0.00745435,
+              "truncated": false,
+              "error": null,
+              "page": "pages/black-hole-spin/grok-4.3.html"
+            },
+            {
+              "label": "GPT-5.4 mini",
+              "modelId": "openai/gpt-5.4-mini",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 26689,
+              "outputTokens": 4969,
+              "costUsd": 0.0229455,
+              "truncated": false,
+              "error": null,
+              "page": "pages/black-hole-spin/gpt-5.4-mini.html"
+            },
+            {
+              "label": "Claude Haiku 4.5",
+              "modelId": "anthropic/claude-haiku-4.5",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 19764,
+              "outputTokens": 3549,
+              "costUsd": 0.018659,
+              "truncated": false,
+              "error": null,
+              "page": "pages/black-hole-spin/claude-haiku-4.5.html"
+            },
+            {
+              "label": "Qwen3.7 Plus",
+              "modelId": "qwen/qwen3.7-plus",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 113747,
+              "outputTokens": 6257,
+              "costUsd": 0.00826752,
+              "truncated": false,
+              "error": null,
+              "page": "pages/black-hole-spin/qwen3.7-plus.html"
+            },
+            {
+              "label": "Gemini 3.1 Flash-Lite",
+              "modelId": "google/gemini-3.1-flash-lite",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 5663,
+              "outputTokens": 1901,
+              "costUsd": 0.00305125,
+              "truncated": false,
+              "error": null,
+              "page": "pages/black-hole-spin/gemini-3.1-flash-lite.html"
+            },
+            {
+              "label": "DeepSeek V4 Pro",
+              "modelId": "deepseek/deepseek-v4-pro",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 672206,
+              "outputTokens": 17437,
+              "costUsd": 0.05591488,
+              "truncated": false,
+              "error": null,
+              "page": "pages/black-hole-spin/deepseek-v4-pro.html"
+            },
+            {
+              "label": "Kimi K2.7 Code",
+              "modelId": "moonshotai/kimi-k2.7-code",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 221798,
+              "outputTokens": 21070,
+              "costUsd": 0.0814037,
+              "truncated": false,
+              "error": null,
+              "page": "pages/black-hole-spin/kimi-k2.7-code.html"
+            },
+            {
+              "label": "Kimi K2.6",
+              "modelId": "moonshotai/kimi-k2.6",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 134254,
+              "outputTokens": 5748,
+              "costUsd": 0.02011812,
+              "truncated": false,
+              "error": null,
+              "page": "pages/black-hole-spin/kimi-k2.6.html"
+            }
+          ],
+          "rendered": 9,
+          "total": 9
+        },
+        {
+          "label": "Run 2",
+          "grid": {
+            "image": "grids/black-hole-spin-2.webp",
+            "video": "grids/black-hole-spin-2.mp4"
+          },
+          "models": [
+            {
+              "label": "GLM 5.2",
+              "modelId": "z-ai/glm-5.2",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 554956,
+              "outputTokens": 11571,
+              "costUsd": null,
+              "truncated": false,
+              "error": null,
+              "page": "pages/black-hole-spin-2/glm-5.2.html"
+            },
+            {
+              "label": "Grok 4.3",
+              "modelId": "x-ai/grok-4.3",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 22694,
+              "outputTokens": 3135,
+              "costUsd": null,
+              "truncated": false,
+              "error": null,
+              "page": "pages/black-hole-spin-2/grok-4.3.html"
+            },
+            {
+              "label": "GPT-5.4 mini",
+              "modelId": "openai/gpt-5.4-mini",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 42863,
+              "outputTokens": 4806,
+              "costUsd": null,
+              "truncated": false,
+              "error": null,
+              "page": "pages/black-hole-spin-2/gpt-5.4-mini.html"
+            },
+            {
+              "label": "Claude Haiku 4.5",
+              "modelId": "anthropic/claude-haiku-4.5",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 23042,
+              "outputTokens": 4029,
+              "costUsd": null,
+              "truncated": false,
+              "error": null,
+              "page": "pages/black-hole-spin-2/claude-haiku-4.5.html"
+            },
+            {
+              "label": "Qwen3.7 Plus",
+              "modelId": "qwen/qwen3.7-plus",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 144715,
+              "outputTokens": 6092,
+              "costUsd": null,
+              "truncated": false,
+              "error": null,
+              "page": "pages/black-hole-spin-2/qwen3.7-plus.html"
+            },
+            {
+              "label": "Gemini 3.1 Flash-Lite",
+              "modelId": "google/gemini-3.1-flash-lite",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 5182,
+              "outputTokens": 1711,
+              "costUsd": null,
+              "truncated": false,
+              "error": null,
+              "page": "pages/black-hole-spin-2/gemini-3.1-flash-lite.html"
+            },
+            {
+              "label": "DeepSeek V4 Pro",
+              "modelId": "deepseek/deepseek-v4-pro",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 827149,
+              "outputTokens": 3690,
+              "costUsd": null,
+              "truncated": false,
+              "error": null,
+              "page": "pages/black-hole-spin-2/deepseek-v4-pro.html"
+            },
+            {
+              "label": "Kimi K2.6",
+              "modelId": "moonshotai/kimi-k2.6",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 79427,
+              "outputTokens": 4713,
+              "costUsd": null,
+              "truncated": false,
+              "error": null,
+              "page": "pages/black-hole-spin-2/kimi-k2.6.html"
+            },
+            {
+              "label": "Mistral Small 4",
+              "modelId": "mistralai/mistral-small-2603",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 73751,
+              "outputTokens": 13144,
+              "costUsd": null,
+              "truncated": false,
+              "error": null,
+              "page": "pages/black-hole-spin-2/mistral-small-4.html"
+            }
+          ],
+          "rendered": 9,
+          "total": 9
+        }
+      ]
+    },
+    {
+      "id": "black-hole-spin-sota",
+      "title": "Black Hole Spin SOTA",
+      "description": "The spinning Gargantua black hole in three.js / WebGL — the same scene as black-hole-spin, run by the SOTA lineup.",
+      "prompt": "Render a realistic supermassive black hole — the 'Gargantua' look from the film Interstellar — as a full-screen three.js scene (100vw × 100vh, auto-starting, no user interaction). A 5-SECOND CLIP of the scene is captured, so the motion matters as much as the still composition.\n\nComposition (match exactly so results are comparable):\n- The black hole (event horizon) is a perfectly black sphere centered in the frame, its diameter about 28% of the viewport height.\n- A bright, thin accretion disk lies in a HORIZONTAL plane around the sphere and is viewed nearly edge-on: the camera sits only about 5–8 degrees above the disk plane, so the disk reads as a near-horizontal bright band cutting across the sphere's middle and extending well past it on both sides.\n- Gravitational lensing: the far side of the disk appears bent UP and OVER the top of the black sphere AND mirrored UNDER the bottom, forming the signature bright halo arcs above and below the horizon (not merely a flat ring). Approximate this with extra bright arcs wrapping over and under the sphere (partial ring/torus geometry works well).\n- A thin, bright photon ring hugs the very edge of the black sphere.\n- Disk coloring: hot white-yellow on the inner edge fading outward to amber then deep orange (#fff3d0 → #ffae3b → #c8551a). Make one side of the disk slightly brighter than the other (relativistic beaming).\n- Background: near-black space with a sparse, dim starfield.\n\nMotion (the point of this benchmark — must be clearly visible within the 5-second clip):\n- The accretion disk rotates around the black hole at roughly 25–40 degrees per second, so a recognizable feature travels a quarter to half a revolution during the clip. Give the disk visible azimuthal structure (brightness clumps, streaks, or turbulent bands) so the rotation reads clearly — a featureless ring would look static.\n- Add subtle shimmering/flicker in the disk and lensing arcs, and slow drift in the beaming highlight. The camera stays FIXED.\n\nKeep the black hole centered and the disk horizontal. Return ONLY a single complete HTML document.",
+      "systemPrompt": "You are a creative WebGL / three.js developer. Output a SINGLE self-contained HTML document. three.js r160 is preloaded; an import map that resolves it is ALREADY injected into your page — you never add it or fetch anything.\n\nIMPORTS — follow this exactly; deviating renders a BLANK page:\n1. Use ONE <script type=\"module\"> for your code. Put EVERY `import` statement at its very top, at module top level.\n2. A static `import` is legal ONLY at module top level — NEVER inside a try/catch, function, if, or any block. `import * as THREE from 'three';` placed inside a try { } is a SYNTAX ERROR that blanks the whole page. This is the single most common failure here — do not do it.\n3. Import the core library with the bare specifier `three`; import add-ons with the `three/addons/…` prefix (the same paths as three r160's examples/jsm/). These bare specifiers are the ONLY thing that resolves:\n     import * as THREE from 'three';\n     import { OrbitControls } from 'three/addons/controls/OrbitControls.js';\n4. Do NOT write your own <script type=\"importmap\">, and do NOT import from any URL or CDN (unpkg, jsdelivr, esm.sh, skypack, cdnjs, or any http(s)://…). The sandbox has NO network — every external request fails, and a second import map breaks module loading. Bare specifiers only.\n5. For error handling, wrap the SCENE SETUP that runs AFTER the imports in try/catch — never the import lines themselves.\n\nExact skeleton to follow:\n<script type=\"module\">\nimport * as THREE from 'three';\n// any other top-level imports here, e.g. three/addons/...\ntry {\n  // ALL renderer + scene setup + the render loop go here\n} catch (e) {\n  // optional; whatever was built above still shows\n}\n</script>\n\nFollow the composition exactly — this is a controlled comparison, do not improvise the layout or camera.\n\nRELIABILITY RULES (the scene is rendered in HEADLESS SOFTWARE WebGL and a 5-second clip is captured frame-by-frame):\n- Do NOT use postprocessing (EffectComposer, RenderPass, UnrealBloomPass, ShaderPass): in software WebGL these run at seconds per frame and the capture times out. Fake glow instead with additive blending, sprite/point textures, emissive colors, and layered transparent meshes — it looks just as good here.\n- Drive ALL motion from the requestAnimationFrame timestamp (or performance.now()), NOT a fixed per-frame increment, so animation speed is framerate-independent.\n- Set renderer clear color / scene background to near-black space FIRST, and start the render loop immediately, so a partial failure still shows a scene rather than a blank page.\n- Keep the scene lightweight (a few thousand vertices, one canvas-generated texture at most). No shadow maps.\n- Keep every `import` at module top level — never inside a try/catch or any block (a static import there is a syntax error that blanks the page; see IMPORTS above). Put try/catch around the scene setup that runs AFTER the imports. Ensure the document is complete with every tag closed; if running long, simplify rather than truncate.",
+      "render": {
+        "viewport": "1280×800",
+        "fullPage": false,
+        "waitMs": 4000,
+        "deterministic": true,
+        "video": {
+          "durationMs": 5000,
+          "fps": 24
+        }
+      },
+      "columns": 3,
+      "runs": [
+        {
+          "label": "Run 1",
+          "grid": {
+            "image": "grids/black-hole-spin-sota.webp",
+            "video": "grids/black-hole-spin-sota.mp4"
+          },
+          "models": [
+            {
+              "label": "Fable 5",
+              "modelId": "claude-fable-5",
+              "provider": "claude-cli",
+              "status": "rendered",
+              "elapsedMs": 169496,
+              "outputTokens": 13474,
+              "costUsd": null,
+              "truncated": false,
+              "error": null,
+              "page": "pages/black-hole-spin-sota/fable-5.html"
+            },
+            {
+              "label": "Opus 4.8",
+              "modelId": "claude-opus-4-8",
+              "provider": "claude-cli",
+              "status": "rendered",
+              "elapsedMs": 157992,
+              "outputTokens": 11949,
+              "costUsd": null,
+              "truncated": false,
+              "error": null,
+              "page": "pages/black-hole-spin-sota/opus-4.8.html"
+            },
+            {
+              "label": "Sonnet 5",
+              "modelId": "claude-sonnet-5",
+              "provider": "claude-cli",
+              "status": "rendered",
+              "elapsedMs": 216632,
+              "outputTokens": 20204,
+              "costUsd": null,
+              "truncated": false,
+              "error": null,
+              "page": "pages/black-hole-spin-sota/sonnet-5.html"
+            },
+            {
+              "label": "GPT-5.5 high",
+              "modelId": "gpt-5.5",
+              "provider": "codex-cli",
+              "status": "rendered",
+              "elapsedMs": 87483,
+              "outputTokens": null,
+              "costUsd": null,
+              "truncated": false,
+              "error": null,
+              "page": "pages/black-hole-spin-sota/gpt-5.5-high.html"
+            },
+            {
+              "label": "GPT-5.4 high",
+              "modelId": "gpt-5.4",
+              "provider": "codex-cli",
+              "status": "rendered",
+              "elapsedMs": 166380,
+              "outputTokens": null,
+              "costUsd": null,
+              "truncated": false,
+              "error": null,
+              "page": "pages/black-hole-spin-sota/gpt-5.4-high.html"
+            },
+            {
+              "label": "GLM 5.2",
+              "modelId": "z-ai/glm-5.2",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 1143960,
+              "outputTokens": 13418,
+              "costUsd": 0.0424662,
+              "truncated": false,
+              "error": null,
+              "page": "pages/black-hole-spin-sota/glm-5.2.html"
+            },
+            {
+              "label": "Grok 4.3",
+              "modelId": "x-ai/grok-4.3",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 42489,
+              "outputTokens": 3004,
+              "costUsd": 0.00896465,
+              "truncated": false,
+              "error": null,
+              "page": "pages/black-hole-spin-sota/grok-4.3.html"
+            },
+            {
+              "label": "Kimi K2.7 Code",
+              "modelId": "moonshotai/kimi-k2.7-code",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 229414,
+              "outputTokens": 15926,
+              "costUsd": 0.05601434,
+              "truncated": false,
+              "error": null,
+              "page": "pages/black-hole-spin-sota/kimi-k2.7-code.html"
+            },
+            {
+              "label": "Qwen3.7 Plus",
+              "modelId": "qwen/qwen3.7-plus",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 146672,
+              "outputTokens": 5238,
+              "costUsd": 0.00709152,
+              "truncated": false,
+              "error": null,
+              "page": "pages/black-hole-spin-sota/qwen3.7-plus.html"
+            }
+          ],
+          "rendered": 9,
+          "total": 9
+        }
+      ]
+    },
+    {
+      "id": "black-hole-css",
+      "title": "Black Hole CSS",
+      "description": "The spinning 'Gargantua' black hole built in pure HTML + CSS — no JavaScript, no canvas.",
+      "prompt": "Build a spinning supermassive black hole — the 'Gargantua' look from the film Interstellar — as a full-screen scene in PURE CSS (no JavaScript, no canvas). A 5-second clip is captured and looped, so the rotation matters as much as the still.\n\nSTART FROM THIS EXACT TEMPLATE. The skeleton, CSS reset, dark-space background, starfield, and the centered .blackhole box (sized to the event horizon) are ALREADY DONE — keep them exactly as given. Your only job is the black-hole rendering: write the CSS for the elements inside .blackhole and the rotation animation. Keep it TIGHT — a handful of gradients and shapes is plenty; do NOT write hundreds of lines.\n\n```html\n<!doctype html>\n<html>\n<head>\n<meta charset=\"utf-8\">\n<style>\n  * { margin: 0; box-sizing: border-box; }\n  html, body { width: 100%; height: 100%; overflow: hidden; background: #03040a; }\n  .scene {\n    position: fixed; inset: 0; display: grid; place-items: center;\n    background: radial-gradient(120% 120% at 50% 50%, #0b0d16 0%, #03040a 62%);\n  }\n  /* Starfield — done; leave it as-is. */\n  .stars { position: absolute; inset: 0; opacity: .85;\n    background-image:\n      radial-gradient(1px 1px at 15% 22%, #fff, transparent),\n      radial-gradient(1px 1px at 68% 14%, #cbd5ff, transparent),\n      radial-gradient(1px 1px at 82% 61%, #fff, transparent),\n      radial-gradient(1px 1px at 34% 78%, #e6ecff, transparent),\n      radial-gradient(1px 1px at 52% 41%, #fff, transparent),\n      radial-gradient(1px 1px at 9% 66%, #cfd8ff, transparent),\n      radial-gradient(1px 1px at 91% 33%, #fff, transparent),\n      radial-gradient(1px 1px at 26% 9%, #fff, transparent),\n      radial-gradient(1px 1px at 74% 88%, #dfe6ff, transparent);\n  }\n  /* The black hole is centered here; its size = the event-horizon diameter (~30% of viewport height). */\n  .blackhole { position: relative; width: 30vh; height: 30vh; }\n\n  /* ==================== YOUR CSS BELOW ==================== */\n  /* Style the elements inside .blackhole and animate the disk's rotation —\n     exactly ONE full turn over the 5s clip so it loops seamlessly. */\n\n</style>\n</head>\n<body>\n  <div class=\"scene\">\n    <div class=\"stars\"></div>\n    <div class=\"blackhole\">\n      <!-- Style these (add or rename as you need): -->\n      <div class=\"disk\"></div>         <!-- bright accretion disk, viewed edge-on -->\n      <div class=\"lensing\"></div>      <!-- lensing halo: arcs over the top and mirrored under the bottom -->\n      <div class=\"horizon\"></div>      <!-- the solid-black event-horizon sphere -->\n      <div class=\"photon-ring\"></div>  <!-- thin bright ring hugging the horizon edge -->\n    </div>\n  </div>\n</body>\n</html>\n```\n\nRender this exact composition (everything centered, frame fixed):\n- horizon: a solid-black disc filling .blackhole, with a crisp edge.\n- disk: a bright accretion disk seen nearly EDGE-ON — a wide, flattened bright band crossing the middle of the black disc and extending well past it on both sides (roughly 2.5x wider than the horizon). Hot white-yellow on the inner edge fading outward to amber then deep orange (#fff3d0 -> #ffae3b -> #c8551a). Make one side slightly brighter (relativistic beaming).\n- lensing: the signature halo — bright arcs bending UP and OVER the top of the horizon AND mirrored UNDER the bottom (not just a flat band).\n- photon-ring: a thin, bright ring hugging the very edge of the horizon.\n- Background stays near-black with the faint static starfield from the template (do not animate the stars).\n\nMotion (the point of this benchmark — must read clearly and loop seamlessly in 5s):\n- Give the disk visible azimuthal structure (brightness clumps, streaks, or banding — a conic-gradient works well) and ROTATE it EXACTLY one full turn over the 5-second clip. A featureless band would look static.\n- Optional subtle shimmer on the disk and lensing arcs. The frame stays fixed; keep the black hole centered and the disk horizontal.\n\nReturn the COMPLETE HTML document — the template with your CSS filled in — and nothing else.",
+      "systemPrompt": "You are a master of pure CSS art and animation. Output a SINGLE self-contained HTML document using ONLY HTML and CSS — no JavaScript, no <canvas>, no <script>, no external resources (no images, no web fonts, no network). Every bit of MOTION must come from CSS @keyframes animations or transitions. You may freely use CSS gradients, radial/conic gradients, box-shadow, filter (blur/brightness), clip-path, transforms, mix-blend-mode, and inline SVG shapes styled/animated purely with CSS.\n\nRELIABILITY RULES (a 5-second clip is captured frame-by-frame; the harness drives CSS animation timelines deterministically):\n- Set an explicit dark background on <body> as the very FIRST style rule so the page never renders blank.\n- The scene fills the entire viewport (100vw × 100vh), is centered, auto-starts, and needs no interaction.\n- Make the animation LOOP SEAMLESSLY within the clip: use periods that divide evenly into 5 seconds (e.g. 1s, 2.5s, 5s) and rotations of exactly one full turn (or a whole number of turns) per 5s, so the first and last frame match.\n- Keep it performant: prefer transform/opacity animations; avoid thousands of elements.\n- Ensure the document is complete with every tag closed; if running long, simplify the design rather than let it be cut off. Absolutely NO JavaScript.",
+      "render": {
+        "viewport": "1280×800",
+        "fullPage": false,
+        "waitMs": 4000,
+        "deterministic": true,
+        "video": {
+          "durationMs": 5000,
+          "fps": 24
+        }
+      },
+      "columns": 3,
+      "runs": [
+        {
+          "label": "Run 1",
+          "grid": {
+            "image": "grids/black-hole-css.webp",
+            "video": "grids/black-hole-css.mp4"
+          },
+          "models": [
+            {
+              "label": "GLM 5.2",
+              "modelId": "z-ai/glm-5.2",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 229628,
+              "outputTokens": 13748,
+              "costUsd": 0.0436884,
+              "truncated": false,
+              "error": null,
+              "page": "pages/black-hole-css/glm-5.2.html"
+            },
+            {
+              "label": "Grok 4.3",
+              "modelId": "x-ai/grok-4.3",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 20747,
+              "outputTokens": 1704,
+              "costUsd": 0.00596965,
+              "truncated": false,
+              "error": null,
+              "page": "pages/black-hole-css/grok-4.3.html"
+            },
+            {
+              "label": "GPT-5.4 mini",
+              "modelId": "openai/gpt-5.4-mini",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 13553,
+              "outputTokens": 2080,
+              "costUsd": 0.01038225,
+              "truncated": false,
+              "error": null,
+              "page": "pages/black-hole-css/gpt-5.4-mini.html"
+            },
+            {
+              "label": "Claude Haiku 4.5",
+              "modelId": "anthropic/claude-haiku-4.5",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 28603,
+              "outputTokens": 4565,
+              "costUsd": 0.02439,
+              "truncated": false,
+              "error": null,
+              "page": "pages/black-hole-css/claude-haiku-4.5.html"
+            },
+            {
+              "label": "Qwen3.7 Plus",
+              "modelId": "qwen/qwen3.7-plus",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 713320,
+              "outputTokens": 27175,
+              "costUsd": 0.03525632,
+              "truncated": false,
+              "error": null,
+              "page": "pages/black-hole-css/qwen3.7-plus.html"
+            },
+            {
+              "label": "Gemini 3.1 Flash-Lite",
+              "modelId": "google/gemini-3.1-flash-lite",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 4554,
+              "outputTokens": 1363,
+              "costUsd": 0.0024095,
+              "truncated": false,
+              "error": null,
+              "page": "pages/black-hole-css/gemini-3.1-flash-lite.html"
+            },
+            {
+              "label": "DeepSeek V4 Pro",
+              "modelId": "deepseek/deepseek-v4-pro",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 361097,
+              "outputTokens": 17729,
+              "costUsd": 0.0576451425,
+              "truncated": false,
+              "error": null,
+              "page": "pages/black-hole-css/deepseek-v4-pro.html"
+            },
+            {
+              "label": "Kimi K2.7 Code",
+              "modelId": "moonshotai/kimi-k2.7-code",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 270243,
+              "outputTokens": 10197,
+              "costUsd": 0.040407744,
+              "truncated": false,
+              "error": null,
+              "page": "pages/black-hole-css/kimi-k2.7-code.html"
+            },
+            {
+              "label": "Kimi K2.6",
+              "modelId": "moonshotai/kimi-k2.6",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 687559,
+              "outputTokens": 29190,
+              "costUsd": 0.100302372,
+              "truncated": false,
+              "error": null,
+              "page": "pages/black-hole-css/kimi-k2.6.html"
+            }
+          ],
+          "rendered": 9,
+          "total": 9
+        }
+      ]
+    },
+    {
+      "id": "pulsar-css",
+      "title": "Pulsar CSS",
+      "description": "A pulsing, rotating pulsar (neutron star) built in pure HTML + CSS — no JavaScript, no canvas.",
+      "prompt": "Create a PULSING, ROTATING PULSAR (a spinning neutron star firing lighthouse beams) as a full-screen scene — pure HTML + CSS only. A 5-second clip is captured and looped, so the rhythm and rotation are the whole point.\n\nComposition (match so results are comparable — everything centered, frame fixed):\n- At the exact center, a small intensely bright CORE: a blue-white orb about 9% of the viewport height, hot white at the middle fading through pale blue to a soft outer glow (#f2f6ff → #bcd2ff → #5b7cff), with an additive-looking bloom (layered box-shadow / blur).\n- The core PULSES rhythmically: its brightness and size swell and shrink with a period of exactly 1 second (so ~5 clean pulses across the clip). This pulse is the signature of the benchmark — make it unmistakable.\n- TWO opposing BEAMS (jets) emanate from the core along a single axis tilted about 20° from vertical — long, narrow, tapering cones of cyan-white light (semi-transparent, additive-looking), extending past the top and bottom edges of the frame. The beam axis ROTATES steadily around the center like a lighthouse, completing EXACTLY one full revolution over the 5-second clip (72°/s).\n- Concentric SHOCKWAVE RINGS pulse outward from the core in time with the pulse: on each beat a thin ring is emitted that expands and fades as it grows, so 3–4 rings are visible at different radii at any moment (stagger them with animation-delays). Faint cyan.\n- A thin, bright EQUATORIAL RING/disk hugs the core, seen nearly edge-on as a horizontal bright ellipse, tilted to match the beam axis, steady (not pulsing much).\n- Background: near-black space (#03040a) with a sparse scatter of faint, static stars (small dots via box-shadow or tiny elements) — the stars do NOT move.\n\nMotion recap (must be visible and loop seamlessly in 5s): core pulses once per second; beams make one full rotation over the clip; shockwave rings expand-and-fade on each pulse; equatorial ring holds steady; stars fixed.\n\nReturn ONLY a single complete HTML document — no JavaScript.",
+      "systemPrompt": "You are a master of pure CSS art and animation. Output a SINGLE self-contained HTML document using ONLY HTML and CSS — no JavaScript, no <canvas>, no <script>, no external resources (no images, no web fonts, no network). Every bit of MOTION must come from CSS @keyframes animations or transitions. You may freely use CSS gradients, radial/conic gradients, box-shadow, filter (blur/brightness), clip-path, transforms, mix-blend-mode, and inline SVG shapes styled/animated purely with CSS.\n\nRELIABILITY RULES (a 5-second clip is captured frame-by-frame; the harness drives CSS animation timelines deterministically):\n- Set an explicit dark background on <body> as the very FIRST style rule so the page never renders blank.\n- The scene fills the entire viewport (100vw × 100vh), is centered, auto-starts, and needs no interaction.\n- Make the animation LOOP SEAMLESSLY within the clip: use periods that divide evenly into 5 seconds (e.g. 1s, 2.5s, 5s) and rotations of exactly one full turn (or a whole number of turns) per 5s, so the first and last frame match.\n- Keep it performant: prefer transform/opacity animations; avoid thousands of elements.\n- Ensure the document is complete with every tag closed; if running long, simplify the design rather than let it be cut off. Absolutely NO JavaScript.",
+      "render": {
+        "viewport": "1280×800",
+        "fullPage": false,
+        "waitMs": 4000,
+        "deterministic": true,
+        "video": {
+          "durationMs": 5000,
+          "fps": 24
+        }
+      },
+      "columns": 3,
+      "runs": [
+        {
+          "label": "Run 1",
+          "grid": {
+            "image": "grids/pulsar-css.webp",
+            "video": "grids/pulsar-css.mp4"
+          },
+          "models": [
+            {
+              "label": "GLM 5.2",
+              "modelId": "z-ai/glm-5.2",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 123974,
+              "outputTokens": 7251,
+              "costUsd": 0.033009,
+              "truncated": false,
+              "error": null,
+              "page": "pages/pulsar-css/glm-5.2.html"
+            },
+            {
+              "label": "Grok 4.3",
+              "modelId": "x-ai/grok-4.3",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 42380,
+              "outputTokens": 2651,
+              "costUsd": 0.00762215,
+              "truncated": false,
+              "error": null,
+              "page": "pages/pulsar-css/grok-4.3.html"
+            },
+            {
+              "label": "GPT-5.4 mini",
+              "modelId": "openai/gpt-5.4-mini",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 18155,
+              "outputTokens": 2887,
+              "costUsd": 0.01357875,
+              "truncated": false,
+              "error": null,
+              "page": "pages/pulsar-css/gpt-5.4-mini.html"
+            },
+            {
+              "label": "Claude Haiku 4.5",
+              "modelId": "anthropic/claude-haiku-4.5",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 37078,
+              "outputTokens": 7651,
+              "costUsd": 0.039157,
+              "truncated": false,
+              "error": null,
+              "page": "pages/pulsar-css/claude-haiku-4.5.html"
+            },
+            {
+              "label": "Qwen3.7 Plus",
+              "modelId": "qwen/qwen3.7-plus",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 108492,
+              "outputTokens": 5954,
+              "costUsd": 0.00788128,
+              "truncated": false,
+              "error": null,
+              "page": "pages/pulsar-css/qwen3.7-plus.html"
+            },
+            {
+              "label": "Gemini 3.1 Flash-Lite",
+              "modelId": "google/gemini-3.1-flash-lite",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 4286,
+              "outputTokens": 1486,
+              "costUsd": 0.00243,
+              "truncated": false,
+              "error": null,
+              "page": "pages/pulsar-css/gemini-3.1-flash-lite.html"
+            },
+            {
+              "label": "DeepSeek V4 Pro",
+              "modelId": "deepseek/deepseek-v4-pro",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 286448,
+              "outputTokens": 16881,
+              "costUsd": 0.057026031,
+              "truncated": false,
+              "error": null,
+              "page": "pages/pulsar-css/deepseek-v4-pro.html"
+            },
+            {
+              "label": "Kimi K2.7 Code",
+              "modelId": "moonshotai/kimi-k2.7-code",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 269823,
+              "outputTokens": 14141,
+              "costUsd": 0.054445,
+              "truncated": false,
+              "error": null,
+              "page": "pages/pulsar-css/kimi-k2.7-code.html"
+            },
+            {
+              "label": "Kimi K2.6",
+              "modelId": "moonshotai/kimi-k2.6",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 35330,
+              "outputTokens": 3526,
+              "costUsd": 0.01254374,
+              "truncated": false,
+              "error": null,
+              "page": "pages/pulsar-css/kimi-k2.6.html"
+            }
+          ],
+          "rendered": 9,
           "total": 9
         }
       ]

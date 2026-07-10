@@ -20,13 +20,13 @@ const ROOT = resolve(dirname(new URL(import.meta.url).pathname), "..");
 // benchmark's run tabs — the first entry becomes the default-selected tab;
 // labels stay tied to each run's chronological identity (Run 1/2/3).
 const BENCHES = [
-  { configPath: "config/examples/black-hole-spin.config.json" },
-  { configPath: "config/examples/black-hole-spin-sota.config.json" },
+  { configPath: "config/examples/black-hole.config.json" },
   { configPath: "config/examples/ringed-giant.config.json" },
   { configPath: "config/examples/jupiter.config.json" },
+  { configPath: "config/examples/black-hole-spin.config.json" },
+  { configPath: "config/examples/black-hole-spin-sota.config.json" },
   { configPath: "config/examples/black-hole-css.config.json" },
   { configPath: "config/examples/pulsar-css.config.json" },
-  { configPath: "config/examples/black-hole.config.json" },
 ];
 // How many additional runs (run-2, run-3, …) to look for beyond the top-level run.
 const MAX_EXTRA_RUNS = 8;

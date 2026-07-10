@@ -1,8 +1,28 @@
 {
   "name": "black-hole-spin-sota",
   "prompt": "Render a realistic supermassive black hole — the 'Gargantua' look from the film Interstellar — as a full-screen three.js scene (100vw × 100vh, auto-starting, no user interaction). A 5-SECOND CLIP of the scene is captured, so the motion matters as much as the still composition.\n\nComposition (match exactly so results are comparable):\n- The black hole (event horizon) is a perfectly black sphere centered in the frame, its diameter about 28% of the viewport height.\n- A bright, thin accretion disk lies in a HORIZONTAL plane around the sphere and is viewed nearly edge-on: the camera sits only about 5–8 degrees above the disk plane, so the disk reads as a near-horizontal bright band cutting across the sphere's middle and extending well past it on both sides.\n- Gravitational lensing: the far side of the disk appears bent UP and OVER the top of the black sphere AND mirrored UNDER the bottom, forming the signature bright halo arcs above and below the horizon (not merely a flat ring). Approximate this with extra bright arcs wrapping over and under the sphere (partial ring/torus geometry works well).\n- A thin, bright photon ring hugs the very edge of the black sphere.\n- Disk coloring: hot white-yellow on the inner edge fading outward to amber then deep orange (#fff3d0 → #ffae3b → #c8551a). Make one side of the disk slightly brighter than the other (relativistic beaming).\n- Background: near-black space with a sparse, dim starfield.\n\nMotion (the point of this benchmark — must be clearly visible within the 5-second clip):\n- The accretion disk rotates around the black hole at roughly 25–40 degrees per second, so a recognizable feature travels a quarter to half a revolution during the clip. Give the disk visible azimuthal structure (brightness clumps, streaks, or turbulent bands) so the rotation reads clearly — a featureless ring would look static.\n- Add subtle shimmering/flicker in the disk and lensing arcs, and slow drift in the beaming highlight. The camera stays FIXED.\n\nKeep the black hole centered and the disk horizontal. Return ONLY a single complete HTML document.",
-  "generatedAt": "2026-07-10T10:55:32.748Z",
+  "generatedAt": "2026-07-10T11:06:19.661Z",
   "models": [
+    {
+      "slug": "fable-5",
+      "label": "Fable 5",
+      "provider": "claude-cli",
+      "modelId": "claude-fable-5",
+      "ok": true,
+      "htmlExtracted": true,
+      "finishReason": "end_turn",
+      "truncated": false,
+      "elapsedMs": 169496,
+      "usage": {
+        "promptTokens": 2749,
+        "completionTokens": 13474
+      },
+      "startedAt": "2026-07-10T10:12:58.857Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
+    },
     {
       "slug": "opus-4.8",
       "label": "Opus 4.8",
@@ -18,6 +38,26 @@
         "completionTokens": 11949
       },
       "startedAt": "2026-07-10T10:11:31.368Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
+    },
+    {
+      "slug": "sonnet-5",
+      "label": "Sonnet 5",
+      "provider": "claude-cli",
+      "modelId": "claude-sonnet-5",
+      "ok": true,
+      "htmlExtracted": true,
+      "finishReason": "end_turn",
+      "truncated": false,
+      "elapsedMs": 216632,
+      "usage": {
+        "promptTokens": 3568,
+        "completionTokens": 20204
+      },
+      "startedAt": "2026-07-10T10:16:55.742Z",
       "render": {
         "rendered": true,
         "blank": false
@@ -40,48 +80,6 @@
       }
     },
     {
-      "slug": "glm-5.2",
-      "label": "GLM 5.2",
-      "provider": "openrouter",
-      "modelId": "z-ai/glm-5.2",
-      "ok": true,
-      "htmlExtracted": true,
-      "finishReason": "stop",
-      "truncated": false,
-      "elapsedMs": 1143960,
-      "usage": {
-        "promptTokens": 1162,
-        "completionTokens": 13418,
-        "totalTokens": 14580,
-        "costUsd": 0.0424662
-      },
-      "startedAt": "2026-07-10T10:11:31.380Z",
-      "render": {
-        "rendered": true,
-        "blank": false
-      }
-    },
-    {
-      "slug": "fable-5",
-      "label": "Fable 5",
-      "provider": "claude-cli",
-      "modelId": "claude-fable-5",
-      "ok": true,
-      "htmlExtracted": true,
-      "finishReason": "end_turn",
-      "truncated": false,
-      "elapsedMs": 169496,
-      "usage": {
-        "promptTokens": 2749,
-        "completionTokens": 13474
-      },
-      "startedAt": "2026-07-10T10:12:58.857Z",
-      "render": {
-        "rendered": true,
-        "blank": false
-      }
-    },
-    {
       "slug": "gpt-5.4-high",
       "label": "GPT-5.4 high",
       "provider": "codex-cli",
@@ -98,42 +96,22 @@
       }
     },
     {
-      "slug": "qwen3.7-plus",
-      "label": "Qwen3.7 Plus",
+      "slug": "glm-5.2",
+      "label": "GLM 5.2",
       "provider": "openrouter",
-      "modelId": "qwen/qwen3.7-plus",
+      "modelId": "z-ai/glm-5.2",
       "ok": true,
       "htmlExtracted": true,
       "finishReason": "stop",
       "truncated": false,
-      "elapsedMs": 146672,
+      "elapsedMs": 1143960,
       "usage": {
-        "promptTokens": 1209,
-        "completionTokens": 5238,
-        "totalTokens": 6447,
-        "costUsd": 0.00709152
+        "promptTokens": 1162,
+        "completionTokens": 13418,
+        "totalTokens": 14580,
+        "costUsd": 0.0424662
       },
-      "startedAt": "2026-07-10T10:50:42.557Z",
-      "render": {
-        "rendered": true,
-        "blank": false
-      }
-    },
-    {
-      "slug": "sonnet-5",
-      "label": "Sonnet 5",
-      "provider": "claude-cli",
-      "modelId": "claude-sonnet-5",
-      "ok": true,
-      "htmlExtracted": true,
-      "finishReason": "end_turn",
-      "truncated": false,
-      "elapsedMs": 216632,
-      "usage": {
-        "promptTokens": 3568,
-        "completionTokens": 20204
-      },
-      "startedAt": "2026-07-10T10:16:55.742Z",
+      "startedAt": "2026-07-10T10:11:31.380Z",
       "render": {
         "rendered": true,
         "blank": false
@@ -178,6 +156,28 @@
         "costUsd": 0.05601434
       },
       "startedAt": "2026-07-10T10:46:19.405Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
+    },
+    {
+      "slug": "qwen3.7-plus",
+      "label": "Qwen3.7 Plus",
+      "provider": "openrouter",
+      "modelId": "qwen/qwen3.7-plus",
+      "ok": true,
+      "htmlExtracted": true,
+      "finishReason": "stop",
+      "truncated": false,
+      "elapsedMs": 146672,
+      "usage": {
+        "promptTokens": 1209,
+        "completionTokens": 5238,
+        "totalTokens": 6447,
+        "costUsd": 0.00709152
+      },
+      "startedAt": "2026-07-10T10:50:42.557Z",
       "render": {
         "rendered": true,
         "blank": false

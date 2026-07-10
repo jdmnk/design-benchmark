@@ -34,6 +34,54 @@ three.js/WebGL or in pure CSS.
 
 ---
 
+## black-hole — Interstellar "Gargantua" in three.js / WebGL
+
+The same composition as a single deterministic still frame. A hard, very prescriptive 3D
+brief: black event-horizon sphere, near-edge-on accretion disk, gravitational-lensing halo
+arcs, photon ring, specific colors and camera. It discriminates sharply — quality ranges
+from photoreal-ish lensing to bare rings, and the occasional model still fails outright
+(recorded per model in the summary). Config:
+[`config/examples/black-hole.config.json`](../config/examples/black-hole.config.json).
+
+![black-hole](black-hole/grid.webp)
+
+**Run #2** — same prompt and models, a fresh set of generations (temperature 0.7, so the
+sampling varies run to run). Switch between runs in the [web app](../web).
+
+![black-hole run 2](black-hole/run-2/grid.webp)
+
+**Run #3** — the original run from before the lineup swap (Mistral Small 4 instead of
+Kimi K2.7 Code), recovered from git history and re-rendered through the current pipeline
+so the labels match. Switch between runs in the [web app](../web).
+
+![black-hole run 3](black-hole/run-3/grid.webp)
+
+## ringed-giant — a Saturn-like ringed gas giant in three.js 🎬
+
+A second animated three.js brief, sibling to black-hole-spin: a banded gas giant rotating
+on its tilted axis while its ring system orbits in-plane. Prescriptive composition (ring
+tilt ~18–24° off edge-on, rings occluding the planet's top half and crossing in front of
+its lower half, a Cassini-style gap, a faked ring shadow) so results line up. It tests 3D
+ring geometry and occlusion — where black-hole tests lensing. Captured as a 5-second, 24 fps
+deterministic clip and composed into one **[grid video](ringed-giant/grid.mp4)**; per-model
+clips in [`ringed-giant/clips/`](ringed-giant/clips). Config:
+[`config/examples/ringed-giant.config.json`](../config/examples/ringed-giant.config.json).
+
+[![ringed-giant — animated grid](ringed-giant/grid-anim.webp)](ringed-giant/grid.mp4)
+
+## jupiter — a turbulent gas giant + the Great Red Spot in three.js 🎬
+
+A close-up of Jupiter: a detailed, turbulent banded atmosphere (zones and belts
+shearing past each other in opposite-direction zonal flow) with the Great Red Spot as the
+signature "eye". This is the first benchmark run by a **frontier-model lineup** — Opus 4.8,
+Fable 5 and Sonnet 5 through the local Claude CLI subscription, GPT-5.5 high and GPT-5.4 high
+through the Codex CLI, alongside GLM 5.2, Qwen3.7 Plus, Grok 4.3 and Kimi K2.7 Code. Captured
+as a 5-second, 24 fps deterministic clip. **[Grid video](jupiter/grid.mp4)** · per-model clips
+in [`jupiter/clips/`](jupiter/clips). Config:
+[`config/examples/jupiter.config.json`](../config/examples/jupiter.config.json).
+
+[![jupiter — animated grid](jupiter/grid-anim.webp)](jupiter/grid.mp4)
+
 ## black-hole-spin — the animated one 🎬
 
 The Gargantua composition judged in motion: a **5-second clip** (24 fps) is
@@ -65,32 +113,6 @@ clips in [`black-hole-spin-sota/clips/`](black-hole-spin-sota/clips). Config:
 
 [![black-hole-spin-sota — animated grid](black-hole-spin-sota/grid-anim.webp)](black-hole-spin-sota/grid.mp4)
 
-## ringed-giant — a Saturn-like ringed gas giant in three.js 🎬
-
-A second animated three.js brief, sibling to black-hole-spin: a banded gas giant rotating
-on its tilted axis while its ring system orbits in-plane. Prescriptive composition (ring
-tilt ~18–24° off edge-on, rings occluding the planet's top half and crossing in front of
-its lower half, a Cassini-style gap, a faked ring shadow) so results line up. It tests 3D
-ring geometry and occlusion — where black-hole tests lensing. Captured as a 5-second, 24 fps
-deterministic clip and composed into one **[grid video](ringed-giant/grid.mp4)**; per-model
-clips in [`ringed-giant/clips/`](ringed-giant/clips). Config:
-[`config/examples/ringed-giant.config.json`](../config/examples/ringed-giant.config.json).
-
-[![ringed-giant — animated grid](ringed-giant/grid-anim.webp)](ringed-giant/grid.mp4)
-
-## jupiter — a turbulent gas giant + the Great Red Spot in three.js 🎬
-
-A close-up of Jupiter: a detailed, turbulent banded atmosphere (zones and belts
-shearing past each other in opposite-direction zonal flow) with the Great Red Spot as the
-signature "eye". This is the first benchmark run by a **frontier-model lineup** — Opus 4.8,
-Fable 5 and Sonnet 5 through the local Claude CLI subscription, GPT-5.5 high and GPT-5.4 high
-through the Codex CLI, alongside GLM 5.2, Qwen3.7 Plus, Grok 4.3 and Kimi K2.7 Code. Captured
-as a 5-second, 24 fps deterministic clip. **[Grid video](jupiter/grid.mp4)** · per-model clips
-in [`jupiter/clips/`](jupiter/clips). Config:
-[`config/examples/jupiter.config.json`](../config/examples/jupiter.config.json).
-
-[![jupiter — animated grid](jupiter/grid-anim.webp)](jupiter/grid.mp4)
-
 ## black-hole-css — the same spinning black hole, in pure CSS 🎬
 
 The black-hole-spin scene with **no JavaScript, no canvas, no three.js** — a spinning
@@ -114,28 +136,6 @@ per-model clips in [`pulsar-css/clips/`](pulsar-css/clips). Config:
 [`config/examples/pulsar-css.config.json`](../config/examples/pulsar-css.config.json).
 
 [![pulsar-css — animated grid](pulsar-css/grid-anim.webp)](pulsar-css/grid.mp4)
-
-## black-hole — Interstellar "Gargantua" in three.js / WebGL
-
-The same composition as a single deterministic still frame. A hard, very prescriptive 3D
-brief: black event-horizon sphere, near-edge-on accretion disk, gravitational-lensing halo
-arcs, photon ring, specific colors and camera. It discriminates sharply — quality ranges
-from photoreal-ish lensing to bare rings, and the occasional model still fails outright
-(recorded per model in the summary). Config:
-[`config/examples/black-hole.config.json`](../config/examples/black-hole.config.json).
-
-![black-hole](black-hole/grid.webp)
-
-**Run #2** — same prompt and models, a fresh set of generations (temperature 0.7, so the
-sampling varies run to run). Switch between runs in the [web app](../web).
-
-![black-hole run 2](black-hole/run-2/grid.webp)
-
-**Run #3** — the original run from before the lineup swap (Mistral Small 4 instead of
-Kimi K2.7 Code), recovered from git history and re-rendered through the current pipeline
-so the labels match. Switch between runs in the [web app](../web).
-
-![black-hole run 3](black-hole/run-3/grid.webp)
 
 ---
 
