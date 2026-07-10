@@ -59,6 +59,17 @@ clips in [`ringed-giant/clips/`](ringed-giant/clips). Config:
 
 [![ringed-giant — animated grid](ringed-giant/grid-anim.webp)](ringed-giant/grid.mp4)
 
+## ringed-giant-sota — the same Saturn, run by frontier models 🎬
+
+The ringed-giant brief run by the **SOTA lineup** ([`config/models/sota-9.json`](../config/models/sota-9.json)):
+Opus 4.8, Fable 5, Sonnet 5 (Claude CLI), GPT-5.5 high, GPT-5.4 high (Codex CLI), plus GLM 5.2,
+Grok 4.3, Kimi K2.7 Code and Qwen3.7 Plus. The frontier models produce clean, photoreal-ish
+tilted ring systems. **[Grid video](ringed-giant-sota/grid.mp4)** · per-model clips in
+[`ringed-giant-sota/clips/`](ringed-giant-sota/clips). Config:
+[`config/examples/ringed-giant-sota.config.json`](../config/examples/ringed-giant-sota.config.json).
+
+[![ringed-giant-sota — animated grid](ringed-giant-sota/grid-anim.webp)](ringed-giant-sota/grid.mp4)
+
 ## jupiter — a turbulent gas giant + the Great Red Spot in three.js 🎬
 
 A close-up of Jupiter: a detailed, turbulent banded atmosphere (zones and belts

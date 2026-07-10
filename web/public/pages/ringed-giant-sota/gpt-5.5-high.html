@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ringed Gas Giant</title>
+  <style>
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: #020309;
+    }
+    canvas {
+      display: block;
+      width: 100vw;
+      height: 100vh;
+    }
+  </style>
+</head>
+<body>
+<script type="module">
+import * as THREE from 'three';
+
+try {
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'high-performance' });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setClearColor(0x020309, 1);
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  document.body.appendChild(renderer.domElement);
+
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x020309);
+
+  const camera = new THREE.PerspectiveCamera(34, window.innerWidth / window.innerHeight, 0.1, 100);
+  camera.position.set(0, 0, 9.8);
+  camera.lookAt(0, 0, 0);
+
+  let planet = null;
+  let ringMaterial = null;
+  let starField = null;
+  let atmosphere = null;
+
+  function animate(now) {
+    const t = now * 0.001;
+    if (planet) planet.rotation.y = t * THREE.MathUtils.degToRad(26);
+    if (ringMaterial) ringMaterial.uniforms.uTime.value = t;
+    if (starField) {
+      starField.rotation.y = t * 0.004;
+      starField.rotation.z = Math.sin(t * 0.12) * 0.003;
+    }
+    if (atmosphere) atmosphere.material.uniforms.uTime.value = t;
+    renderer.render(scene, camera);
+    requestAnimationFrame(animate);
+  }
+  requestAnimationFrame(animate);
+
+  const saturn = new THREE.Group();
+  saturn.rotation.x = THREE.MathUtils.degToRad(20);
+  scene.add(saturn);
+
+  function hexToRgb(hex) {
+    const n = parseInt(hex.slice(1), 16);
+    return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+  }
+
+  function mixColor(a, b, t) {
+    return [
+      a[0] + (b[0] - a[0]) * t,
+      a[1] + (b[1] - a[1]) * t,
+      a[2] + (b[2] - a[2]) * t
+    ];
+  }
+
+  function makePlanetTexture() {
+    const w = 1024;
+    const h = 512;
+    const canvas = document.createElement('canvas');
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext('2d');
+    const img = ctx.createImageData(w, h);
+
+    const cream = hexToRgb('#f3e6c4');
+    const gold = hexToRgb('#e6c88f');
+    const amber = hexToRgb('#c99a5b');
+    const dark = hexToRgb('#9f7141');
+
+    for (let y = 0; y < h; y++) {
+      const v = y / h;
+      const lat = Math.abs(v - 0.5) * 2;
+      const equator = 1 - Math.min(1, Math.abs(v - 0.5) / 0.18);
+      const bandA = Math.sin(v * Math.PI * 18.0 + Math.sin(v * 31.0) * 0.6);
+      const bandB = Math.sin(v * Math.PI * 42.0 + 1.7);
+      const belt = Math.max(0, bandA * 0.5 + bandB * 0.18);
+      let base = mixColor(cream, gold, 0.35 + lat * 0.42);
+      base = mixColor(base, amber, Math.max(0, bandA) * 0.22 + lat * 0.12);
+      base = mixColor(base, cream, equator * 0.28);
+      base = mixColor(base, dark, belt * 0.16);
+
+      for (let x = 0; x < w; x++) {
+        const u = x / w;
+        const flow =
+          Math.sin((u * 6.0 + v * 2.7) * Math.PI * 2.0) * 0.030 +
+          Math.sin((u * 13.0 - v * 4.0) * Math.PI * 2.0) * 0.018 +
+          Math.sin((u * 31.0 + Math.sin(v * 18.0)) * Math.PI * 2.0) * 0.010;
+
+        let storm = 0;
+        const storms = [
+          [0.67, 0.585, 0.080, 0.032, 1.0],
+          [0.22, 0.430, 0.055, 0.023, 0.55],
+          [0.83, 0.515, 0.040, 0.018, 0.45]
+        ];
+        for (const s of storms) {
+          let dx = Math.abs(u - s[0]);
+          dx = Math.min(dx, 1 - dx);
+          const dy = v - s[1];
+          const d = Math.sqrt((dx / s[2]) * (dx / s[2]) + (dy / s[3]) * (dy / s[3]));
+          storm += Math.max(0, 1 - d) * s[4];
+          storm -= Math.max(0, 1 - Math.abs(d - 0.78) / 0.22) * s[4] * 0.38;
+        }
+
+        const streak = Math.sin((u * 18.0 + v * 11.0 + flow * 5.0) * Math.PI * 2.0) * 0.5 + 0.5;
+        const fine = (streak - 0.5) * 12 + flow * 255;
+
+        let c = base.slice();
+        c = mixColor(c, cream, Math.max(0, flow) * 0.22);
+        c = mixColor(c, amber, Math.max(0, -flow) * 0.18);
+        c = mixColor(c, dark, (1 - streak) * 0.035);
+        c = mixColor(c, [205, 136, 78], Math.max(0, storm) * 0.55);
+        c = mixColor(c, [250, 225, 178], Math.max(0, storm - 0.45) * 0.42);
+
+        const i = (y * w + x) * 4;
+        img.data[i] = Math.max(0, Math.min(255, c[0] + fine));
+        img.data[i + 1] = Math.max(0, Math.min(255, c[1] + fine * 0.75));
+        img.data[i + 2] = Math.max(0, Math.min(255, c[2] + fine * 0.45));
+        img.data[i + 3] = 255;
+      }
+    }
+
+    ctx.putImageData(img, 0, 0);
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.colorSpace = THREE.SRGBColorSpace;
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.ClampToEdgeWrapping;
+    texture.anisotropy = 4;
+    return texture;
+  }
+
+  const ringNormal = new THREE.Vector3(0, 1, 0).applyEuler(saturn.rotation).normalize();
+
+  const planetMaterial = new THREE.ShaderMaterial({
+    uniforms: {
+      uMap: { value: makePlanetTexture() },
+      uLightDir: { value: new THREE.Vector3(-0.58, 0.72, 0.52).normalize() },
+      uRingNormal: { value: ringNormal }
+    },
+    vertexShader: `
+      varying vec2 vUv;
+      varying vec3 vWorldPos;
+      varying vec3 vNormalW;
+      void main() {
+        vUv = uv;
+        vec4 wp = modelMatrix * vec4(position, 1.0);
+        vWorldPos = wp.xyz;
+        vNormalW = normalize(mat3(modelMatrix) * normal);
+        gl_Position = projectionMatrix * viewMatrix * wp;
+      }
+    `,
+    fragmentShader: `
+      uniform sampler2D uMap;
+      uniform vec3 uLightDir;
+      uniform vec3 uRingNormal;
+      varying vec2 vUv;
+      varying vec3 vWorldPos;
+      varying vec3 vNormalW;
+      void main() {
+        vec3 n = normalize(vNormalW);
+        float ndl = dot(n, normalize(uLightDir));
+        float diffuse = smoothstep(-0.32, 0.86, ndl);
+        vec3 base = texture2D(uMap, vUv).rgb;
+
+        float planeDistance = abs(dot(vWorldPos, normalize(uRingNormal)));
+        float ringBand = 1.0 - smoothstep(0.025, 0.155, planeDistance);
+        float darkSide = smoothstep(-0.10, 0.78, -ndl);
+        float lowerRight = smoothstep(-0.45, 0.82, dot(normalize(vWorldPos), normalize(vec3(0.62, -0.42, 0.10))));
+        float ringShadow = ringBand * clamp(darkSide * 0.78 + lowerRight * 0.20, 0.0, 1.0);
+
+        float viewRim = pow(1.0 - clamp(dot(n, normalize(cameraPosition - vWorldPos)), 0.0, 1.0), 2.2);
+        vec3 lit = base * (0.23 + diffuse * 0.96);
+        lit *= 1.0 - ringShadow * 0.40;
+        lit += vec3(0.13, 0.105, 0.065) * pow(max(ndl, 0.0), 2.0);
+        lit += vec3(0.18, 0.14, 0.08) * viewRim * 0.16;
+        gl_FragColor = vec4(lit, 1.0);
+      }
+    `
+  });
+
+  planet = new THREE.Mesh(new THREE.SphereGeometry(1, 96, 48), planetMaterial);
+  saturn.add(planet);
+
+  const atmosphereMaterial = new THREE.ShaderMaterial({
+    uniforms: {
+      uTime: { value: 0 },
+      uLightDir: { value: new THREE.Vector3(-0.58, 0.72, 0.52).normalize() }
+    },
+    transparent: true,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+    side: THREE.BackSide,
+    vertexShader: `
+      varying vec3 vWorldPos;
+      varying vec3 vNormalW;
+      void main() {
+        vec4 wp = modelMatrix * vec4(position, 1.0);
+        vWorldPos = wp.xyz;
+        vNormalW = normalize(mat3(modelMatrix) * normal);
+        gl_Position = projectionMatrix * viewMatrix * wp;
+      }
+    `,
+    fragmentShader: `
+      uniform float uTime;
+      uniform vec3 uLightDir;
+      varying vec3 vWorldPos;
+      varying vec3 vNormalW;
+      void main() {
+        vec3 n = normalize(vNormalW);
+        vec3 v = normalize(cameraPosition - vWorldPos);
+        float rim = pow(1.0 - clamp(dot(n, v), 0.0, 1.0), 2.6);
+        float light = smoothstep(-0.30, 0.85, dot(n, normalize(uLightDir)));
+        float pulse = 0.94 + 0.06 * sin(uTime * 1.4);
+        gl_FragColor = vec4(vec3(0.55, 0.43, 0.22) * rim * (0.55 + light), rim * 0.30 * pulse);
+      }
+    `
+  });
+  atmosphere = new THREE.Mesh(new THREE.SphereGeometry(1.026, 96, 48), atmosphereMaterial);
+  saturn.add(atmosphere);
+
+  function makeRingGeometry(inner, outer, radialSegments, angularSegments) {
+    const positions = [];
+    const indices = [];
+    for (let i = 0; i <= radialSegments; i++) {
+      const r = inner + (outer - inner) * (i / radialSegments);
+      for (let j = 0; j <= angularSegments; j++) {
+        const a = (j / angularSegments) * Math.PI * 2;
+        positions.push(Math.cos(a) * r, 0, Math.sin(a) * r);
+      }
+    }
+    const row = angularSegments + 1;
+    for (let i = 0; i < radialSegments; i++) {
+      for (let j = 0; j < angularSegments; j++) {
+        const a = i * row + j;
+        const b = a + 1;
+        const c = (i + 1) * row + j;
+        const d = c + 1;
+        indices.push(a, c, b, b, c, d);
+      }
+    }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+    geo.setIndex(indices);
+    geo.computeBoundingSphere();
+    return geo;
+  }
+
+  ringMaterial = new THREE.ShaderMaterial({
+    uniforms: {
+      uTime: { value: 0 }
+    },
+    transparent: true,
+    depthTest: true,
+    depthWrite: false,
+    side: THREE.DoubleSide,
+    vertexShader: `
+      varying vec3 vLocalPos;
+      varying vec3 vWorldPos;
+      void main() {
+        vLocalPos = position;
+        vec4 wp = modelMatrix * vec4(position, 1.0);
+        vWorldPos = wp.xyz;
+        gl_Position = projectionMatrix * viewMatrix * wp;
+      }
+    `,
+    fragmentShader: `
+      uniform float uTime;
+      varying vec3 vLocalPos;
+      varying vec3 vWorldPos;
+
+      void main() {
+        float r = length(vLocalPos.xz);
+        float rn = clamp((r - 1.18) / (2.22 - 1.18), 0.0, 1.0);
+        float theta = atan(vLocalPos.z, vLocalPos.x);
+        float speed = radians(15.0 + (1.0 - rn) * 10.0);
+        float orbit = theta + uTime * speed;
+
+        float edge = smoothstep(1.18, 1.34, r) * (1.0 - smoothstep(2.05, 2.22, r));
+        float cassini = smoothstep(1.690, 1.725, r) * (1.0 - smoothstep(1.785, 1.825, r));
+        float radialBands =
+          0.50 +
+          0.20 * sin(r * 31.0) +
+          0.13 * sin(r * 67.0 + 1.8) +
+          0.06 * sin(r * 147.0);
+
+        float clumps =
+          0.55 +
+          0.17 * sin(orbit * 7.0 + sin(r * 8.0)) +
+          0.10 * sin(orbit * 15.0 + r * 5.0) +
+          0.06 * sin(orbit * 29.0 - r * 13.0);
+
+        vec3 darkTan = vec3(0.55, 0.44, 0.30);
+        vec3 iceTan = vec3(0.98, 0.86, 0.60);
+        vec3 pale = vec3(1.00, 0.93, 0.76);
+        vec3 col = mix(darkTan, iceTan, clamp(radialBands, 0.0, 1.0));
+        col = mix(col, pale, clamp(clumps - 0.48, 0.0, 1.0) * 0.42);
+
+        vec3 dir = normalize(vWorldPos + vec3(0.0001));
+        float litSide = smoothstep(-0.48, 0.95, dot(dir, normalize(vec3(-0.78, -0.05, 0.58))));
+        float planetShadow = smoothstep(0.03, 0.85, dot(dir, normalize(vec3(0.82, 0.02, -0.38))));
+        col *= 0.70 + litSide * 0.42;
+        col *= 1.0 - planetShadow * 0.58;
+        col *= 1.0 - cassini * 0.92;
+
+        float alpha = 0.62 * edge;
+        alpha *= 0.80 + radialBands * 0.22;
+        alpha *= 1.0 - cassini * 0.96;
+        alpha *= 1.0 - planetShadow * 0.12;
+
+        if (alpha < 0.012) discard;
+        gl_FragColor = vec4(col, alpha);
+      }
+    `
+  });
+
+  const rings = new THREE.Mesh(makeRingGeometry(1.18, 2.22, 28, 320), ringMaterial);
+  rings.renderOrder = 2;
+  saturn.add(rings);
+
+  const shadowArcMaterial = new THREE.ShaderMaterial({
+    transparent: true,
+    depthWrite: false,
+    depthTest: true,
+    side: THREE.DoubleSide,
+    uniforms: {},
+    vertexShader: `
+      varying vec3 vWorldPos;
+      varying vec3 vLocalPos;
+      void main() {
+        vLocalPos = position;
+        vec4 wp = modelMatrix * vec4(position, 1.0);
+        vWorldPos = wp.xyz;
+        gl_Position = projectionMatrix * viewMatrix * wp;
+      }
+    `,
+    fragmentShader: `
+      varying vec3 vWorldPos;
+      varying vec3 vLocalPos;
+      void main() {
+        float r = length(vLocalPos.xz);
+        vec3 d = normalize(vWorldPos + vec3(0.0001));
+        float arc = smoothstep(0.30, 0.92, dot(d, normalize(vec3(0.78, 0.02, -0.42))));
+        float radial = smoothstep(1.20, 1.38, r) * (1.0 - smoothstep(2.02, 2.22, r));
+        gl_FragColor = vec4(0.015, 0.012, 0.010, arc * radial * 0.24);
+      }
+    `
+  });
+  const ringShadowArc = new THREE.Mesh(makeRingGeometry(1.18, 2.22, 2, 192), shadowArcMaterial);
+  ringShadowArc.renderOrder = 3;
+  saturn.add(ringShadowArc);
+
+  function makeStars() {
+    const count = 850;
+    const positions = [];
+    const colors = [];
+    for (let i = 0; i < count; i++) {
+      const z = -18 - Math.random() * 52;
+      const spread = 13 + Math.abs(z) * 0.34;
+      positions.push((Math.random() - 0.5) * spread * 2.2, (Math.random() - 0.5) * spread, z);
+      const b = 0.35 + Math.random() * 0.45;
+      colors.push(b, b * (0.90 + Math.random() * 0.10), b * (0.82 + Math.random() * 0.18));
+    }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+    geo.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+    const mat = new THREE.PointsMaterial({
+      size: 0.026,
+      sizeAttenuation: true,
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.72,
+      depthWrite: false
+    });
+    return new THREE.Points(geo, mat);
+  }
+
+  starField = makeStars();
+  scene.add(starField);
+
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+} catch (e) {
+  const fallback = document.createElement('pre');
+  fallback.style.position = 'fixed';
+  fallback.style.left = '16px';
+  fallback.style.bottom = '16px';
+  fallback.style.color = '#d8c08a';
+  fallback.style.font = '12px monospace';
+  fallback.textContent = e && e.message ? e.message : String(e);
+  document.body.appendChild(fallback);
+}
+</script>
+</body>
+</html>

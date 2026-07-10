@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saturn</title>
+    <style>
+        body { margin: 0; overflow: hidden; background: #000; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+    <script type="module">
+        import * as THREE from 'three';
+
+        try {
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.setClearColor(0x000000, 1);
+            document.body.appendChild(renderer.domElement);
+
+            // Resize handler
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+
+            // Starfield
+            const starsGeometry = new THREE.BufferGeometry();
+            const starCount = 800;
+            const positions = new Float32Array(starCount * 3);
+            for (let i = 0; i < starCount * 3; i += 3) {
+                const radius = 80 + Math.random() * 120;
+                const theta = Math.random() * Math.PI * 2;
+                const phi = Math.acos(2 * Math.random() - 1);
+                positions[i] = radius * Math.sin(phi) * Math.cos(theta);
+                positions[i + 1] = radius * Math.sin(phi) * Math.sin(theta);
+                positions[i + 2] = radius * Math.cos(phi);
+            }
+            starsGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            const starsMaterial = new THREE.PointsMaterial({ color: 0x888899, size: 0.6, transparent: true, opacity: 0.7 });
+            const stars = new THREE.Points(starsGeometry, starsMaterial);
+            scene.add(stars);
+
+            // Planet size (34% viewport height)
+            const planetRadius = window.innerHeight * 0.17;
+            const planetGeometry = new THREE.SphereGeometry(planetRadius, 96, 64);
+
+            // Canvas texture for bands + features
+            const canvas = document.createElement('canvas');
+            canvas.width = 1024;
+            canvas.height = 512;
+            const ctx = canvas.getContext('2d', { alpha: true });
+
+            // Gradient base bands
+            const grad = ctx.createLinearGradient(0, 0, 0, 512);
+            grad.addColorStop(0, '#c99a5b');
+            grad.addColorStop(0.22, '#e6c88f');
+            grad.addColorStop(0.35, '#f3e6c4');
+            grad.addColorStop(0.48, '#e6c88f');
+            grad.addColorStop(0.5, '#f3e6c4');
+            grad.addColorStop(0.65, '#c99a5b');
+            grad.addColorStop(0.82, '#e6c88f');
+            grad.addColorStop(1, '#c99a5b');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, 1024, 512);
+
+            // Dark belts
+            ctx.fillStyle = 'rgba(90, 65, 45, 0.35)';
+            ctx.fillRect(0, 80, 1024, 38);
+            ctx.fillRect(0, 195, 1024, 27);
+            ctx.fillRect(0, 315, 1024, 31);
+            ctx.fillRect(0, 420, 1024, 44);
+
+            // Light equatorial zone
+            ctx.fillStyle = 'rgba(250, 240, 210, 0.15)';
+            ctx.fillRect(0, 245, 1024, 35);
+
+            // Storm oval
+            ctx.fillStyle = 'rgba(170, 120, 70, 0.6)';
+            ctx.beginPath();
+            ctx.ellipse(280, 260, 65, 28, 0.3, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Swirls
+            ctx.strokeStyle = 'rgba(110, 80, 50, 0.25)';
+            ctx.lineWidth = 4;
+            for (let i = 0; i < 5; i++) {
+                ctx.beginPath();
+                ctx.ellipse(150 + i * 170, 130 + Math.sin(i) * 30, 45, 18, i * 0.4, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+
+            const planetTexture = new THREE.CanvasTexture(canvas);
+            planetTexture.wrapS = planetTexture.wrapT = THREE.RepeatWrapping;
+            planetTexture.repeat.set(1, 1);
+
+            const planetMaterial = new THREE.MeshPhongMaterial({
+                map: planetTexture,
+                shininess: 6,
+                specular: 0x332211,
+                emissive: 0x110a05
+            });
+
+            const planet = new THREE.Mesh(planetGeometry, planetMaterial);
+            const tilt = THREE.MathUtils.degToRad(21);
+            planet.rotation.x = tilt;
+            scene.add(planet);
+
+            // Rings
+            const ringInner = planetRadius * 1.35;
+            const ringOuter = planetRadius * 2.2;
+            const ringGeometry = new THREE.RingGeometry(ringInner, ringOuter, 128, 1);
+
+            // Ring texture (banding + gap)
+            const ringCanvas = document.createElement('canvas');
+            ringCanvas.width = 512;
+            ringCanvas.height = 64;
+            const rctx = ringCanvas.getContext('2d');
+            
+            const rgrad = rctx.createLinearGradient(0, 0, 512, 0);
+            rgrad.addColorStop(0, 'rgba(210, 195, 165, 0.15)');
+            rgrad.addColorStop(0.22, 'rgba(225, 210, 175, 0.65)');
+            rgrad.addColorStop(0.38, 'rgba(200, 185, 155, 0.85)');
+            rgrad.addColorStop(0.42, 'rgba(40, 30, 20, 0.95)'); // Cassini gap
+            rgrad.addColorStop(0.46, 'rgba(200, 185, 155, 0.85)');
+            rgrad.addColorStop(0.72, 'rgba(215, 200, 165, 0.75)');
+            rgrad.addColorStop(1, 'rgba(195, 180, 150, 0.25)');
+            rctx.fillStyle = rgrad;
+            rctx.fillRect(0, 0, 512, 64);
+
+            const ringTexture = new THREE.CanvasTexture(ringCanvas);
+            ringTexture.wrapS = THREE.RepeatWrapping;
+
+            const ringMaterial = new THREE.MeshPhongMaterial({
+                map: ringTexture,
+                side: THREE.DoubleSide,
+                transparent: true,
+                opacity: 0.92,
+                shininess: 12,
+                specular: 0x665544
+            });
+
+            const rings = new THREE.Mesh(ringGeometry, ringMaterial);
+            rings.rotation.x = Math.PI / 2 + tilt;
+            scene.add(rings);
+
+            // Ring shadow band on planet (fake)
+            const shadowGeometry = new THREE.SphereGeometry(planetRadius * 1.001, 96, 48, 0, Math.PI * 2, Math.PI * 0.38, Math.PI * 0.24);
+            const shadowMaterial = new THREE.MeshBasicMaterial({
+                color: 0x0a0603,
+                transparent: true,
+                opacity: 0.55,
+                side: THREE.FrontSide
+            });
+            const ringShadow = new THREE.Mesh(shadowGeometry, shadowMaterial);
+            ringShadow.rotation.x = tilt;
+            ringShadow.rotation.z = tilt * 0.6;
+            scene.add(ringShadow);
+
+            // Lighting (upper-left)
+            const keyLight = new THREE.DirectionalLight(0xfff4e0, 1.15);
+            keyLight.position.set(-45, 38, 55);
+            scene.add(keyLight);
+
+            const fillLight = new THREE.DirectionalLight(0x998866, 0.25);
+            fillLight.position.set(25, -30, -40);
+            scene.add(fillLight);
+
+            // Camera
+            camera.position.set(0, 0, planetRadius * 5.8);
+            camera.lookAt(0, 0, 0);
+
+            // Animation
+            const clock = new THREE.Clock();
+            const planetAngularSpeed = THREE.MathUtils.degToRad(25);
+            const ringAngularSpeed = THREE.MathUtils.degToRad(19.5);
+
+            function animate() {
+                requestAnimationFrame(animate);
+                const t = clock.getElapsedTime();
+
+                // Planet rotation (axis already tilted)
+                planet.rotation.y = t * planetAngularSpeed;
+
+                // Ring orbital motion (differential)
+                rings.rotation.z = tilt * 0.6 + t * ringAngularSpeed;
+
+                // Subtle inner ring faster differential (via texture offset)
+                ringTexture.offset.x = (t * 0.035) % 1;
+
+                renderer.render(scene, camera);
+            }
+
+            animate();
+
+        } catch (e) {
+            console.error(e);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Saturn</title>
+<style>html,body{margin:0;padding:0;overflow:hidden;background:#000;width:100%;height:100%}</style>
+</head>
+<body>
+<script type="module">
+import * as THREE from 'three';
+
+try {
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x05050a);
+
+  const camera = new THREE.PerspectiveCamera(45, innerWidth / innerHeight, 0.1, 2000);
+  // Planet diameter ~34% of viewport height at fov 45:
+  // 2R / (2*d*tan(22.5°)) = 0.34  =>  d ≈ 7.1 R
+  const d = 7.1;
+  const viewTilt = 21 * Math.PI / 180; // 21° above edge-on
+  camera.position.set(0, d * Math.sin(viewTilt), d * Math.cos(viewTilt));
+  camera.lookAt(0, 0, 0);
+
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setSize(innerWidth, innerHeight);
+  renderer.setPixelRatio(1);
+  document.body.appendChild(renderer.domElement);
+
+  window.addEventListener('resize', () => {
+    camera.aspect = innerWidth / innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(innerWidth, innerHeight);
+  });
+
+  // ---------- TEXTURES ----------
+  function makePlanetTexture() {
+    const W = 1024, H = 512;
+    const c = document.createElement('canvas');
+    c.width = W; c.height = H;
+    const ctx = c.getContext('2d');
+
+    // Base gradient of warm bands
+    const bands = [
+      { y: 0.00, col: [180, 140, 90] },
+      { y: 0.08, col: [230, 200, 143] },
+      { y: 0.18, col: [201, 154, 91] },
+      { y: 0.28, col: [243, 230, 196] },
+      { y: 0.38, col: [215, 175, 120] },
+      { y: 0.48, col: [245, 232, 198] }, // lighter equatorial zone
+      { y: 0.52, col: [245, 232, 198] },
+      { y: 0.62, col: [215, 175, 120] },
+      { y: 0.72, col: [243, 230, 196] },
+      { y: 0.82, col: [201, 154, 91] },
+      { y: 0.92, col: [230, 200, 143] },
+      { y: 1.00, col: [180, 140, 90] },
+    ];
+    for (let y = 0; y < H; y++) {
+      const t = y / H;
+      let i = 0;
+      while (i < bands.length - 1 && bands[i + 1].y < t) i++;
+      const b1 = bands[i], b2 = bands[Math.min(i + 1, bands.length - 1)];
+      const f = (b2.y - b1.y) < 1e-6 ? 0 : (t - b1.y) / (b2.y - b1.y);
+      const r = b1.col[0] + (b2.col[0] - b1.col[0]) * f;
+      const g = b1.col[1] + (b2.col[1] - b1.col[1]) * f;
+      const b = b1.col[2] + (b2.col[2] - b1.col[2]) * f;
+      // Subtle horizontal wobble + belt darkening
+      const wobble = Math.sin(t * 40 + Math.sin(t * 120) * 0.3) * 8;
+      const belt = Math.sin(t * Math.PI * 14) * 0.08;
+      const fine = Math.sin(t * 200) * 3;
+      ctx.fillStyle = `rgb(${(r + wobble + fine) * (1 - Math.abs(belt)) | 0},${(g + wobble * 0.8 + fine) * (1 - Math.abs(belt)) | 0},${(b + wobble * 0.5 + fine) * (1 - Math.abs(belt)) | 0})`;
+      ctx.fillRect(0, y, W, 1);
+    }
+
+    // Swirls / feathery streaks
+    for (let i = 0; i < 60; i++) {
+      const sx = Math.random() * W;
+      const sy = Math.random() * H;
+      const sw = 40 + Math.random() * 160;
+      const sh = 3 + Math.random() * 10;
+      const bright = Math.random() > 0.5;
+      ctx.fillStyle = bright
+        ? `rgba(255,240,200,${0.06 + Math.random() * 0.1})`
+        : `rgba(140,95,55,${0.05 + Math.random() * 0.1})`;
+      ctx.beginPath();
+      ctx.ellipse(sx, sy, sw, sh, (Math.random() - 0.5) * 0.3, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // Storm oval (Great Spot analogue)
+    const cx = W * 0.3, cy = H * 0.58;
+    const grd = ctx.createRadialGradient(cx, cy, 2, cx, cy, 90);
+    grd.addColorStop(0, 'rgba(190, 110, 65, 0.85)');
+    grd.addColorStop(0.5, 'rgba(170, 95, 55, 0.55)');
+    grd.addColorStop(1, 'rgba(170, 95, 55, 0)');
+    ctx.fillStyle = grd;
+    ctx.beginPath();
+    ctx.ellipse(cx, cy, 95, 32, 0, 0, Math.PI * 2);
+    ctx.fill();
+    // Inner bright eye
+    const grd2 = ctx.createRadialGradient(cx, cy, 1, cx, cy, 30);
+    grd2.addColorStop(0, 'rgba(240, 210, 170, 0.6)');
+    grd2.addColorStop(1, 'rgba(240, 210, 170, 0)');
+    ctx.fillStyle = grd2;
+    ctx.beginPath();
+    ctx.ellipse(cx, cy, 30, 12, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    const tex = new THREE.CanvasTexture(c);
+    tex.anisotropy = 4;
+    return tex;
+  }
+
+  function makeRingTexture() {
+    const W = 1024, H = 256;
+    const c = document.createElement('canvas');
+    c.width = W; c.height = H;
+    const ctx = c.getContext('2d');
+
+    // Radial band profile (y = radius: 0 inner, 1 outer)
+    // Cassini gap at ~2/3 of the way out => v ≈ 0.66
+    const profile = [
+      { v: 0.00, b: 0.0, a: 0.0 },
+      { v: 0.04, b: 0.3, a: 0.3 },
+      { v: 0.10, b: 0.55, a: 0.7 },
+      { v: 0.18, b: 0.85, a: 0.9 },
+      { v: 0.28, b: 0.7, a: 0.85 },
+      { v: 0.38, b: 0.95, a: 0.95 }, // bright B ring inner
+      { v: 0.50, b: 0.9, a: 0.95 },
+      { v: 0.60, b: 0.85, a: 0.9 },
+      { v: 0.64, b: 0.15, a: 0.5 }, // Cassini gap start
+      { v: 0.69, b: 0.05, a: 0.2 }, // Cassini gap deepest
+      { v: 0.73, b: 0.2, a: 0.55 }, // Cassini gap end
+      { v: 0.80, b: 0.7, a: 0.85 }, // A ring
+      { v: 0.88, b: 0.55, a: 0.7 },
+      { v: 0.95, b: 0.3, a: 0.4 },
+      { v: 1.00, b: 0.0, a: 0.0 },
+    ];
+    function sampleProfile(v) {
+      let i = 0;
+      while (i < profile.length - 1 && profile[i + 1].v < v) i++;
+      if (i >= profile.length - 1) return profile[profile.length - 1];
+      const p1 = profile[i], p2 = profile[i + 1];
+      const f = (v - p1.v) / (p2.v - p1.v + 1e-6);
+      return {
+        b: p1.b + (p2.b - p1.b) * f,
+        a: p1.a + (p2.a - p1.a) * f,
+      };
+    }
+
+    // Fill row by row (radius)
+    for (let y = 0; y < H; y++) {
+      const v = y / H;
+      const { b, a } = sampleProfile(v);
+      // Icy tan base: (225, 205, 165)
+      const r = 225 * b, g = 205 * b, bl = 165 * b;
+      ctx.fillStyle = `rgba(${r | 0},${g | 0},${bl | 0},${a})`;
+      ctx.fillRect(0, y, W, 1);
+    }
+
+    // Angular clumps / radial streaks for visible rotation
+    for (let i = 0; i < 80; i++) {
+      const x = Math.random() * W;
+      const w = 1 + Math.random() * 6;
+      const bright = Math.random() > 0.5;
+      ctx.fillStyle = bright
+        ? `rgba(255,240,200,${0.04 + Math.random() * 0.08})`
+        : `rgba(100,80,55,${0.04 + Math.random() * 0.08})`;
+      ctx.fillRect(x, 0, w, H);
+    }
+    // A few brighter clumps
+    for (let i = 0; i < 25; i++) {
+      const x = Math.random() * W;
+      const y = 30 + Math.random() * (H - 60);
+      const r = 3 + Math.random() * 10;
+      const grd = ctx.createRadialGradient(x, y, 0, x, y, r);
+      grd.addColorStop(0, 'rgba(255,240,210,0.25)');
+      grd.addColorStop(1, 'rgba(255,240,210,0)');
+      ctx.fillStyle = grd;
+      ctx.fillRect(x - r, y - r, r * 2, r * 2);
+    }
+
+    const tex = new THREE.CanvasTexture(c);
+    tex.anisotropy = 4;
+    return tex;
+  }
+
+  const planetTex = makePlanetTexture();
+  const ringTex = makeRingTexture();
+
+  // ---------- PLANET ----------
+  const planetMat = new THREE.MeshPhongMaterial({
+    map: planetTex,
+    shininess: 18,
+    specular: new THREE.Color(0x222018),
+  });
+  const planet = new THREE.Mesh(new THREE.SphereGeometry(1, 96, 64), planetMat);
+  // Tilt axis ~10° from vertical (world Y) -> rotate around X
+  planet.rotation.x = 10 * Math.PI / 180;
+  scene.add(planet);
+
+  // Fake shadow band on planet (cast by rings): thin dark ring at equator
+  // Only bright side shows it (shadow side is already dark).
+  const shadowGeom = new THREE.RingGeometry(0.992, 1.008, 192, 1);
+  const shadowMat = new THREE.MeshBasicMaterial({
+    color: 0x1a1208,
+    transparent: true,
+    opacity: 0.55,
+    side: THREE.DoubleSide,
+    depthWrite: false,
+    depthTest: true,
+  });
+  const shadowBand = new THREE.Mesh(shadowGeom, shadowMat);
+  shadowBand.rotation.x = -Math.PI / 2; // in xz plane (equatorial / ring plane)
+  scene.add(shadowBand);
+
+  // ---------- RINGS ----------
+  // Split into back (z<0, far from camera) and front (z>0, near camera) halves.
+  // Camera at +z, so back half is theta in [0, PI], front in [PI, 2PI].
+  const ringMatFront = new THREE.MeshBasicMaterial({
+    map: ringTex,
+    side: THREE.DoubleSide,
+    transparent: true,
+    depthWrite: false,
+  });
+  const ringMatBack = new THREE.MeshBasicMaterial({
+    map: ringTex,
+    side: THREE.DoubleSide,
+    transparent: true,
+    depthWrite: false,
+    color: 0x9a9080, // darker (planet-shadowed side)
+  });
+
+  const ringGroup = new THREE.Group();
+
+  const ringBack = new THREE.Mesh(
+    new THREE.RingGeometry(1.1, 2.2, 256, 1, 0, Math.PI),
+    ringMatBack
+  );
+  ringBack.rotation.x = -Math.PI / 2;
+  ringGroup.add(ringBack);
+
+  const ringFront = new THREE.Mesh(
+    new THREE.RingGeometry(1.1, 2.2, 256, 1, Math.PI, Math.PI),
+    ringMatFront
+  );
+  ringFront.rotation.x = -Math.PI / 2;
+  ringGroup.add(ringFront);
+
+  scene.add(ringGroup);
+
+  // ---------- LIGHTING ----------
+  const ambient = new THREE.AmbientLight(0x3a3848, 0.55);
+  scene.add(ambient);
+  const sun = new THREE.DirectionalLight(0xfff1d0, 1.35);
+  sun.position.set(-1, 1, 0.5).normalize();
+  scene.add(sun);
+  // Subtle fill from the right to soften terminator
+  const fill = new THREE.DirectionalLight(0x8899bb, 0.15);
+  fill.position.set(1, -0.3, 0.5).normalize();
+  scene.add(fill);
+
+  // ---------- STARFIELD ----------
+  const starCount = 500;
+  const starPos = new Float32Array(starCount * 3);
+  const starCol = new Float32Array(starCount * 3);
+  for (let i = 0; i < starCount; i++) {
+    const theta = Math.random() * Math.PI * 2;
+    const phi = Math.acos(2 * Math.random() - 1);
+    const r = 500;
+    starPos[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+    starPos[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+    starPos[i * 3 + 2] = r * Math.cos(phi);
+    const tint = 0.4 + Math.random() * 0.6;
+    const warm = Math.random();
+    starCol[i * 3] = tint * (0.8 + warm * 0.2);
+    starCol[i * 3 + 1] = tint * (0.85 + warm * 0.1);
+    starCol[i * 3 + 2] = tint;
+  }
+  const starGeom = new THREE.BufferGeometry();
+  starGeom.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+  starGeom.setAttribute('color', new THREE.BufferAttribute(starCol, 3));
+  const starMat = new THREE.PointsMaterial({
+    size: 1.6,
+    sizeAttenuation: false,
+    vertexColors: true,
+    transparent: true,
+    opacity: 0.85,
+  });
+  const stars = new THREE.Points(starGeom, starMat);
+  scene.add(stars);
+
+  // ---------- ANIMATION ----------
+  const PLANET_SPIN = 26 * Math.PI / 180; // rad/sec (~26°/s)
+  const RING_SPIN = 20 * Math.PI / 180;   // rad/sec (~20°/s)
+  let lastT = performance.now();
+
+  function animate() {
+    const now = performance.now();
+    const dt = Math.min(0.05, (now - lastT) / 1000);
+    lastT = now;
+
+    // Rotate planet around its tilted axis.
+    // Tilt is stored in rotation.x; spinning around the tilted axis = increment rotation.y.
+    planet.rotation.y += PLANET_SPIN * dt;
+
+    // Orbit rings in their plane (around world Y)
+    ringGroup.rotation.y += RING_SPIN * dt;
+
+    renderer.render(scene, camera);
+    requestAnimationFrame(animate);
+  }
+  animate();
+
+} catch (e) {
+  console.error(e);
+  document.body.style.color = '#fff';
+  document.body.style.fontFamily = 'monospace';
+  document.body.style.padding = '20px';
+  document.body.textContent = 'Error: ' + (e && e.message);
+}
+</script>
+</body>
+</html>

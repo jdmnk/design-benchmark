@@ -22,6 +22,7 @@ const ROOT = resolve(dirname(new URL(import.meta.url).pathname), "..");
 const BENCHES = [
   { configPath: "config/examples/black-hole-spin-sota.config.json" },
   { configPath: "config/examples/ringed-giant.config.json" },
+  { configPath: "config/examples/ringed-giant-sota.config.json" },
   { configPath: "config/examples/jupiter.config.json" },
   { configPath: "config/examples/black-hole-spin.config.json" },
   { configPath: "config/examples/black-hole-css.config.json" },

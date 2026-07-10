@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ringed Gas Giant</title>
+  <style>
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #030508;
+    }
+    canvas {
+      display: block;
+      width: 100vw;
+      height: 100vh;
+    }
+  </style>
+</head>
+<body>
+<script type="module">
+import * as THREE from 'three';
+
+try {
+  const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.0;
+  renderer.setClearColor(0x030508, 1);
+  document.body.appendChild(renderer.domElement);
+
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x030508);
+
+  const camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 100);
+  camera.position.set(0, 2.55, 7.65);
+  camera.lookAt(0, 0, 0);
+
+  let animateScene = () => {};
+  function render(ms) {
+    animateScene(ms * 0.001);
+    renderer.render(scene, camera);
+    requestAnimationFrame(render);
+  }
+  requestAnimationFrame(render);
+
+  function onResize() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  }
+  window.addEventListener('resize', onResize);
+  onResize();
+
+  const ambient = new THREE.AmbientLight(0x1c130d, 0.16);
+  scene.add(ambient);
+
+  const lightDir = new THREE.Vector3(-6.0, 4.2, 1.8).normalize();
+  const keyLight = new THREE.DirectionalLight(0xfff3d6, 2.4);
+  keyLight.position.copy(lightDir.clone().multiplyScalar(10));
+  scene.add(keyLight);
+
+  const starCount = 260;
+  const starPositions = new Float32Array(starCount * 3);
+  const starColors = new Float32Array(starCount * 3);
+  for (let i = 0; i < starCount; i++) {
+    const r = 30 + Math.random() * 30;
+    const u = Math.random();
+    const v = Math.random();
+    const theta = 2 * Math.PI * u;
+    const phi = Math.acos(2 * v - 1);
+    const s = Math.sin(phi);
+    starPositions[i * 3 + 0] = r * s * Math.cos(theta);
+    starPositions[i * 3 + 1] = r * Math.cos(phi);
+    starPositions[i * 3 + 2] = r * s * Math.sin(theta);
+
+    const b = 0.22 + Math.pow(Math.random(), 2.5) * 0.5;
+    const tint = Math.random();
+    starColors[i * 3 + 0] = b * (tint > 0.75 ? 0.82 : 1.0);
+    starColors[i * 3 + 1] = b * (tint < 0.2 ? 0.88 : 0.96);
+    starColors[i * 3 + 2] = b * (tint < 0.15 ? 1.0 : 0.92);
+  }
+  const starGeo = new THREE.BufferGeometry();
+  starGeo.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
+  starGeo.setAttribute('color', new THREE.BufferAttribute(starColors, 3));
+  const starMat = new THREE.PointsMaterial({
+    size: 0.12,
+    sizeAttenuation: true,
+    transparent: true,
+    opacity: 0.9,
+    vertexColors: true,
+    depthWrite: false
+  });
+  const stars = new THREE.Points(starGeo, starMat);
+  scene.add(stars);
+
+  function samplePalette(t) {
+    const stops = [
+      { t: 0.0, c: [243, 230, 196] },
+      { t: 0.35, c: [230, 200, 143] },
+      { t: 0.72, c: [201, 154, 91] },
+      { t: 1.0, c: [170, 123, 70] }
+    ];
+    t = Math.max(0, Math.min(1, t));
+    for (let i = 0; i < stops.length - 1; i++) {
+      const a = stops[i];
+      const b = stops[i + 1];
+      if (t >= a.t && t <= b.t) {
+        const f = (t - a.t) / (b.t - a.t);
+        return [
+          a.c[0] + (b.c[0] - a.c[0]) * f,
+          a.c[1] + (b.c[1] - a.c[1]) * f,
+          a.c[2] + (b.c[2] - a.c[2]) * f
+        ];
+      }
+    }
+    return stops[stops.length - 1].c.slice();
+  }
+
+  function makePlanetTexture() {
+    const w = 1024;
+    const h = 512;
+    const canvas = document.createElement('canvas');
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext('2d');
+    const img = ctx.createImageData(w, h);
+    const data = img.data;
+
+    for (let y = 0; y < h; y++) {
+      const v = y / (h - 1);
+      const lat = (v - 0.5) * Math.PI;
+      const eq = Math.exp(-Math.pow((v - 0.5) / 0.11, 2.0));
+      const beltA = Math.exp(-Math.pow((v - 0.33) / 0.045, 2.0));
+      const beltB = Math.exp(-Math.pow((v - 0.67) / 0.055, 2.0));
+      const beltC = Math.exp(-Math.pow((v - 0.20) / 0.040, 2.0));
+      const beltD = Math.exp(-Math.pow((v - 0.80) / 0.040, 2.0));
+      const latWave =
+        0.20 * Math.sin(lat * 8.0 + 0.45 * Math.sin(lat * 3.0)) +
+        0.10 * Math.sin(lat * 22.0) +
+        0.05 * Math.sin(lat * 54.0);
+
+      for (let x = 0; x < w; x++) {
+        const u = x / (w - 1);
+        const swirl =
+          0.04 * Math.sin(u * 18.0 * Math.PI + lat * 7.0) +
+          0.02 * Math.sin(u * 54.0 * Math.PI - lat * 15.0) +
+          0.01 * Math.sin(u * 140.0 * Math.PI + lat * 19.0);
+        const streak = 0.015 * Math.sin(u * 250.0 * Math.PI + lat * 11.0);
+
+        let t = 0.42 + latWave + swirl + streak;
+        t += 0.16 * eq;
+        t -= 0.15 * beltA + 0.13 * beltB + 0.08 * beltC + 0.08 * beltD;
+
+        const storm1 =
+          Math.exp(
+            -(
+              Math.pow((u - 0.69 - 0.015 * Math.sin(lat * 6.0)) / 0.040, 2.0) +
+              Math.pow((v - 0.59) / 0.065, 2.0)
+            )
+          );
+        const storm2 =
+          Math.exp(
+            -(
+              Math.pow((u - 0.28 + 0.008 * Math.sin(lat * 10.0)) / 0.030, 2.0) +
+              Math.pow((v - 0.41) / 0.045, 2.0)
+            )
+          );
+
+        const rgb = samplePalette(t);
+        rgb[0] += 18 * storm1 - 10 * storm2;
+        rgb[1] += 14 * storm1 - 8 * storm2;
+        rgb[2] += 8 * storm1 - 6 * storm2;
+
+        const idx = (y * w + x) * 4;
+        data[idx + 0] = Math.max(0, Math.min(255, rgb[0]));
+        data[idx + 1] = Math.max(0, Math.min(255, rgb[1]));
+        data[idx + 2] = Math.max(0, Math.min(255, rgb[2]));
+        data[idx + 3] = 255;
+      }
+    }
+
+    ctx.putImageData(img, 0, 0);
+    const tex = new THREE.CanvasTexture(canvas);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    tex.wrapS = THREE.RepeatWrapping;
+    tex.wrapT = THREE.ClampToEdgeWrapping;
+    tex.anisotropy = Math.min(renderer.capabilities.getMaxAnisotropy(), 8);
+    return tex;
+  }
+
+  const system = new THREE.Group();
+  system.rotation.z = -0.08;
+  scene.add(system);
+
+  const planetRadius = 0.86;
+  const sphereGeo = new THREE.SphereGeometry(planetRadius, 96, 64);
+
+  const planetSpin = new THREE.Group();
+  system.add(planetSpin);
+
+  const planetTexture = makePlanetTexture();
+  const planetMat = new THREE.MeshStandardMaterial({
+    map: planetTexture,
+    roughness: 1.0,
+    metalness: 0.0
+  });
+  const planet = new THREE.Mesh(sphereGeo, planetMat);
+  planetSpin.add(planet);
+
+  const shadowBandMat = new THREE.ShaderMaterial({
+    transparent: true,
+    depthWrite: false,
+    uniforms: {
+      uRadius: { value: planetRadius },
+      uLightDir: { value: lightDir.clone() }
+    },
+    vertexShader: `
+      varying vec3 vLocalPos;
+      varying vec3 vWorldNormal;
+      void main() {
+        vLocalPos = position;
+        vWorldNormal = normalize(mat3(modelMatrix) * normal);
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `,
+    fragmentShader: `
+      uniform float uRadius;
+      uniform vec3 uLightDir;
+      varying vec3 vLocalPos;
+      varying vec3 vWorldNormal;
+      void main() {
+        float center = -0.04 * uRadius;
+        float band = exp(-pow((vLocalPos.y - center) / (0.15 * uRadius), 2.0));
+        float shadowed = smoothstep(0.24, -0.18, dot(normalize(vWorldNormal), normalize(uLightDir)));
+        float alpha = band * shadowed * 0.30;
+        gl_FragColor = vec4(0.03, 0.025, 0.02, alpha);
+      }
+    `
+  });
+  const shadowBand = new THREE.Mesh(sphereGeo, shadowBandMat);
+  shadowBand.scale.setScalar(1.003);
+  system.add(shadowBand);
+
+  const atmosphereMat = new THREE.ShaderMaterial({
+    side: THREE.BackSide,
+    transparent: true,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false,
+    uniforms: {
+      uColor: { value: new THREE.Color(0xe7d1a0) },
+      uCameraPos: { value: camera.position.clone() },
+      uLightDir: { value: lightDir.clone() }
+    },
+    vertexShader: `
+      varying vec3 vWorldPos;
+      varying vec3 vWorldNormal;
+      void main() {
+        vec4 worldPos = modelMatrix * vec4(position, 1.0);
+        vWorldPos = worldPos.xyz;
+        vWorldNormal = normalize(mat3(modelMatrix) * normal);
+        gl_Position = projectionMatrix * viewMatrix * worldPos;
+      }
+    `,
+    fragmentShader: `
+      uniform vec3 uColor;
+      uniform vec3 uCameraPos;
+      uniform vec3 uLightDir;
+      varying vec3 vWorldPos;
+      varying vec3 vWorldNormal;
+      void main() {
+        vec3 viewDir = normalize(uCameraPos - vWorldPos);
+        float fresnel = pow(1.0 - max(dot(viewDir, normalize(vWorldNormal)), 0.0), 3.4);
+        float lit = 0.45 + 0.55 * max(dot(normalize(vWorldNormal), normalize(uLightDir)), 0.0);
+        float alpha = fresnel * lit * 0.20;
+        gl_FragColor = vec4(uColor, alpha);
+      }
+    `
+  });
+  const atmosphere = new THREE.Mesh(sphereGeo, atmosphereMat);
+  atmosphere.scale.setScalar(1.08);
+  system.add(atmosphere);
+
+  function makeRingMaterial(inner, outer, opacity, phase) {
+    return new THREE.ShaderMaterial({
+      side: THREE.DoubleSide,
+      transparent: true,
+      depthWrite: false,
+      uniforms: {
+        uInner: { value: inner },
+        uOuter: { value: outer },
+        uOpacity: { value: opacity },
+        uPhase: { value: phase }
+      },
+      vertexShader: `
+        varying vec3 vLocalPos;
+        varying vec3 vWorldPos;
+        void main() {
+          vLocalPos = position;
+          vec4 worldPos = modelMatrix * vec4(position, 1.0);
+          vWorldPos = worldPos.xyz;
+          gl_Position = projectionMatrix * viewMatrix * worldPos;
+        }
+      `,
+      fragmentShader: `
+        uniform float uInner;
+        uniform float uOuter;
+        uniform float uOpacity;
+        uniform float uPhase;
+        varying vec3 vLocalPos;
+        varying vec3 vWorldPos;
+
+        void main() {
+          float r = length(vLocalPos.xy);
+          float edgeIn = smoothstep(uInner, uInner + 0.06, r);
+          float edgeOut = 1.0 - smoothstep(uOuter - 0.07, uOuter, r);
+          float edgeFade = edgeIn * edgeOut;
+          float rn = (r - uInner) / max(uOuter - uInner, 0.0001);
+          float angle = atan(vLocalPos.y, vLocalPos.x);
+
+          float radialBands =
+            0.88 +
+            0.10 * sin(r * 28.0 + uPhase) +
+            0.06 * sin(r * 61.0 - uPhase * 0.6) +
+            0.03 * sin(r * 110.0 + uPhase * 1.3);
+
+          float clumps =
+            0.90 +
+            0.10 * sin(angle * 6.0 + r * 10.0 + uPhase) * sin(angle * 3.0 - r * 14.0 + uPhase * 0.7);
+
+          float leftBright = smoothstep(1.1, -1.1, vWorldPos.x / uOuter);
+          float nearBright = smoothstep(-1.1, 1.1, vWorldPos.z / uOuter);
+          float sideLight = 0.68 + 0.22 * leftBright + 0.10 * nearBright;
+
+          float behind = smoothstep(0.0, -0.42, vWorldPos.z);
+          float shadowArc = behind * smoothstep(-0.15, 0.85, vWorldPos.x / uOuter);
+          float shadowDimming = 1.0 - 0.44 * shadowArc;
+
+          vec3 darkCol = vec3(0.67, 0.61, 0.50);
+          vec3 lightCol = vec3(0.92, 0.86, 0.73);
+          vec3 color = mix(darkCol, lightCol, 0.45 + 0.25 * radialBands);
+          color *= clumps * sideLight * shadowDimming;
+
+          float alpha = edgeFade * (0.56 + 0.22 * radialBands) * uOpacity;
+          gl_FragColor = vec4(color, alpha);
+        }
+      `
+    });
+  }
+
+  function makeRing(inner, outer, opacity, phase) {
+    const geo = new THREE.RingGeometry(inner, outer, 256, 1);
+    const mat = makeRingMaterial(inner, outer, opacity, phase);
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.rotation.x = Math.PI * 0.5;
+    return mesh;
+  }
+
+  const ringInnerA = makeRing(planetRadius * 1.12, planetRadius * 1.48, 0.78, 0.6);
+  const ringInnerB = makeRing(planetRadius * 1.48, planetRadius * 1.83, 0.72, 2.1);
+  const ringOuter = makeRing(planetRadius * 1.98, planetRadius * 2.20, 0.58, 4.4);
+
+  system.add(ringInnerA);
+  system.add(ringInnerB);
+  system.add(ringOuter);
+
+  const dustRing = makeRing(planetRadius * 1.03, planetRadius * 1.16, 0.25, 1.1);
+  system.add(dustRing);
+
+  animateScene = (t) => {
+    planetSpin.rotation.y = t * 0.43;
+    ringInnerA.rotation.z = t * 0.40;
+    ringInnerB.rotation.z = t * 0.34;
+    ringOuter.rotation.z = t * 0.28;
+    dustRing.rotation.z = t * 0.47;
+    stars.rotation.y = t * 0.01;
+    atmosphereMat.uniforms.uCameraPos.value.copy(camera.position);
+  };
+} catch (e) {
+  console.error(e);
+}
+</script>
+</body>
+</html>

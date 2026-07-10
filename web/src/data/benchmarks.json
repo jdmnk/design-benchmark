@@ -279,6 +279,145 @@
       ]
     },
     {
+      "id": "ringed-giant-sota",
+      "title": "Ringed Giant SOTA",
+      "description": "A Saturn-like ringed gas giant rotating on its tilted axis — the same scene as ringed-giant, run by the SOTA lineup.",
+      "prompt": "Render a realistic SATURN-LIKE ringed gas giant as a full-screen three.js scene (100vw × 100vh, auto-starting, no user interaction). A 5-SECOND CLIP is captured, so the motion matters as much as the still composition.\n\nComposition (match exactly so results are comparable):\n- The planet is a sphere centered in the frame, its diameter about 34% of the viewport height.\n- Give the planet subtle HORIZONTAL atmospheric bands in a warm palette — cream and pale gold through tan to soft amber (#f3e6c4 → #e6c88f → #c99a5b), with faint darker belts and a slightly lighter equatorial zone. No hard edges; the bands blend.\n- A broad RING SYSTEM lies in the planet's equatorial plane, tilted so we view it about 18–24 degrees above edge-on: the rings read as a wide, flattened ellipse crossing the planet, NOT a head-on circle. Rings extend to roughly 2.2× the planet's radius.\n- The rings clearly pass BEHIND the planet's top half (occluded by the sphere) and IN FRONT of its bottom half (crossing over the lit disc) — so the ellipse is broken by the planet, reading as true 3D, not a flat halo.\n- Include one dark GAP in the rings (a Cassini-division-style black band) about two-thirds of the way out.\n- Cast a soft dark SHADOW BAND from the rings onto the planet on the shadowed side, and darken the arc of ring that passes behind the planet into its shadow (fake it — no shadow maps).\n- Light comes from the upper-left: the planet shows a lit crescent and a soft terminator into shadow on the lower-right; the near/left side of the rings is brighter.\n- Ring coloring: pale icy tan, subtly banded lighter/darker, semi-transparent at the inner and outer edges. Background: near-black space with a sparse, dim starfield.\n\nMotion (the point of this benchmark — clearly visible within the 5-second clip):\n- The planet ROTATES on its (tilted) axis so the atmospheric bands drift horizontally — give the bands visible structure (swirls, spots, or a faint storm oval) so the rotation reads; a featureless sphere would look static. Roughly 20–30 degrees per second.\n- The RINGS orbit in-plane in the same direction: give them faint radial structure / brightness clumps so their revolution is visible, roughly 15–25 degrees per second (inner slightly faster than outer if you can).\n- The camera stays FIXED. Keep the planet centered and the rings horizontal-ish (equatorial).\n\nReturn ONLY a single complete HTML document.",
+      "systemPrompt": "You are a creative WebGL / three.js developer. Output a SINGLE self-contained HTML document. three.js r160 is preloaded; an import map that resolves it is ALREADY injected into your page — you never add it or fetch anything.\n\nIMPORTS — follow this exactly; deviating renders a BLANK page:\n1. Use ONE <script type=\"module\"> for your code. Put EVERY `import` statement at its very top, at module top level.\n2. A static `import` is legal ONLY at module top level — NEVER inside a try/catch, function, if, or any block. `import * as THREE from 'three';` placed inside a try { } is a SYNTAX ERROR that blanks the whole page. This is the single most common failure here — do not do it.\n3. Import the core library with the bare specifier `three`; import add-ons with the `three/addons/…` prefix (the same paths as three r160's examples/jsm/). These bare specifiers are the ONLY thing that resolves:\n     import * as THREE from 'three';\n     import { OrbitControls } from 'three/addons/controls/OrbitControls.js';\n4. Do NOT write your own <script type=\"importmap\">, and do NOT import from any URL or CDN (unpkg, jsdelivr, esm.sh, skypack, cdnjs, or any http(s)://…). The sandbox has NO network — every external request fails, and a second import map breaks module loading. Bare specifiers only.\n5. For error handling, wrap the SCENE SETUP that runs AFTER the imports in try/catch — never the import lines themselves.\n\nExact skeleton to follow:\n<script type=\"module\">\nimport * as THREE from 'three';\n// any other top-level imports here, e.g. three/addons/...\ntry {\n  // ALL renderer + scene setup + the render loop go here\n} catch (e) {\n  // optional; whatever was built above still shows\n}\n</script>\n\nFollow the composition exactly — this is a controlled comparison, do not improvise the layout or camera.\n\nRELIABILITY RULES (the scene is rendered in HEADLESS SOFTWARE WebGL and a 5-second clip is captured frame-by-frame):\n- Do NOT use postprocessing (EffectComposer, RenderPass, UnrealBloomPass, ShaderPass): in software WebGL these run at seconds per frame and the capture times out. Fake glow with additive blending, emissive colors, and layered transparent meshes instead.\n- Do NOT use shadow maps. Fake the ring's shadow on the planet (and the planet's shadow on the rings) with a dark semi-transparent band / gradient, not real shadow casting.\n- Drive ALL motion from the requestAnimationFrame timestamp (or performance.now()), NOT a fixed per-frame increment, so animation speed is framerate-independent.\n- Set renderer clear color / scene background to near-black space FIRST, and start the render loop immediately, so a partial failure still shows a scene rather than a blank page.\n- Keep the scene lightweight (a few thousand vertices, one canvas-generated texture at most).\n- Keep every `import` at module top level — never inside a try/catch or any block (a static import there is a syntax error that blanks the page; see IMPORTS above). Put try/catch around the scene setup that runs AFTER the imports. Ensure the document is complete with every tag closed; if running long, simplify rather than truncate.",
+      "render": {
+        "viewport": "1280×800",
+        "fullPage": false,
+        "waitMs": 4000,
+        "deterministic": true,
+        "video": {
+          "durationMs": 5000,
+          "fps": 24
+        }
+      },
+      "columns": 3,
+      "runs": [
+        {
+          "label": "Run 1",
+          "grid": {
+            "image": "grids/ringed-giant-sota.webp",
+            "video": "grids/ringed-giant-sota.mp4"
+          },
+          "models": [
+            {
+              "label": "Fable 5",
+              "modelId": "claude-fable-5",
+              "provider": "claude-cli",
+              "status": "rendered",
+              "elapsedMs": 307276,
+              "outputTokens": 23015,
+              "costUsd": null,
+              "truncated": false,
+              "error": null,
+              "page": "pages/ringed-giant-sota/fable-5.html"
+            },
+            {
+              "label": "Opus 4.8",
+              "modelId": "claude-opus-4-8",
+              "provider": "claude-cli",
+              "status": "rendered",
+              "elapsedMs": 368134,
+              "outputTokens": 24183,
+              "costUsd": null,
+              "truncated": false,
+              "error": null,
+              "page": "pages/ringed-giant-sota/opus-4.8.html"
+            },
+            {
+              "label": "Sonnet 5",
+              "modelId": "claude-sonnet-5",
+              "provider": "claude-cli",
+              "status": "rendered",
+              "elapsedMs": 193254,
+              "outputTokens": 17005,
+              "costUsd": null,
+              "truncated": false,
+              "error": null,
+              "page": "pages/ringed-giant-sota/sonnet-5.html"
+            },
+            {
+              "label": "GPT-5.5 high",
+              "modelId": "gpt-5.5",
+              "provider": "codex-cli",
+              "status": "rendered",
+              "elapsedMs": 332294,
+              "outputTokens": null,
+              "costUsd": null,
+              "truncated": false,
+              "error": null,
+              "page": "pages/ringed-giant-sota/gpt-5.5-high.html"
+            },
+            {
+              "label": "GPT-5.4 high",
+              "modelId": "gpt-5.4",
+              "provider": "codex-cli",
+              "status": "rendered",
+              "elapsedMs": 267507,
+              "outputTokens": null,
+              "costUsd": null,
+              "truncated": false,
+              "error": null,
+              "page": "pages/ringed-giant-sota/gpt-5.4-high.html"
+            },
+            {
+              "label": "GLM 5.2",
+              "modelId": "z-ai/glm-5.2",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 483839,
+              "outputTokens": 30599,
+              "costUsd": 0.074436824,
+              "truncated": false,
+              "error": null,
+              "page": "pages/ringed-giant-sota/glm-5.2.html"
+            },
+            {
+              "label": "Grok 4.3",
+              "modelId": "x-ai/grok-4.3",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 21305,
+              "outputTokens": 2576,
+              "costUsd": 0.00804965,
+              "truncated": false,
+              "error": null,
+              "page": "pages/ringed-giant-sota/grok-4.3.html"
+            },
+            {
+              "label": "Kimi K2.7 Code",
+              "modelId": "moonshotai/kimi-k2.7-code",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 344475,
+              "outputTokens": 29428,
+              "costUsd": 0.10396775,
+              "truncated": false,
+              "error": null,
+              "page": "pages/ringed-giant-sota/kimi-k2.7-code.html"
+            },
+            {
+              "label": "Qwen3.7 Plus",
+              "modelId": "qwen/qwen3.7-plus",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 281249,
+              "outputTokens": 15544,
+              "costUsd": 0.02032448,
+              "truncated": false,
+              "error": null,
+              "page": "pages/ringed-giant-sota/qwen3.7-plus.html"
+            }
+          ],
+          "rendered": 9,
+          "total": 9
+        }
+      ]
+    },
+    {
       "id": "jupiter",
       "title": "Jupiter",
       "description": "The planet Jupiter — detailed turbulent banded atmosphere and the Great Red Spot — in three.js / WebGL.",
