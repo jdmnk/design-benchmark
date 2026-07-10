@@ -13,8 +13,8 @@ Most examples use the **same 9 models** (see
 Sonnet 5 (via the local Claude CLI subscription), GPT-5.5 high and GPT-5.4 high (via the Codex
 CLI), plus GLM 5.2, Qwen3.7 Plus, Grok 4.3 and Kimi K2.7 Code.
 
-(black-hole's **Run #3** predates this lineup and used Mistral Small 4 in place of Kimi K2.7 Code —
-kept as-is since it's an archived run, not reshot with the current lineup.)
+(black-hole-spin's **Run #2** predates this lineup and used Mistral Small 4 in place of Kimi K2.7
+Code — kept as-is since it's an archived run, not reshot with the current lineup.)
 
 Each folder has the grid (lossless `grid.png` + a ~10× smaller `grid.webp`), a `report.md`, a `summary.json`
 (per-model time + tokens + status), and `pages/` (the actual HTML each model produced —
@@ -22,9 +22,9 @@ open them in a browser). Each grid cell carries a thin top-bar label: model name
 output tokens. Reproduce any with:
 
 ```bash
-npm run bench -- --config config/examples/black-hole-spin.config.json   # animated
-npm run bench -- --config config/examples/black-hole.config.json        # still frame
+npm run bench -- --config config/examples/black-hole-spin.config.json   # animated (default)
 npm run bench -- --config config/examples/ringed-giant.config.json      # animated
+npm run bench -- --config config/examples/jupiter.config.json           # animated, frontier lineup
 npm run bench -- --config config/examples/pulsar-css.config.json        # animated, pure CSS
 ```
 
@@ -34,27 +34,17 @@ three.js/WebGL or in pure CSS.
 
 ---
 
-## black-hole — Interstellar "Gargantua" in three.js / WebGL
+## black-hole-spin-sota — the same scene, run by frontier models 🎬
 
-The same composition as a single deterministic still frame. A hard, very prescriptive 3D
-brief: black event-horizon sphere, near-edge-on accretion disk, gravitational-lensing halo
-arcs, photon ring, specific colors and camera. It discriminates sharply — quality ranges
-from photoreal-ish lensing to bare rings, and the occasional model still fails outright
-(recorded per model in the summary). Config:
-[`config/examples/black-hole.config.json`](../config/examples/black-hole.config.json).
+The exact black-hole-spin brief, but run by the **SOTA lineup** ([`config/models/sota-9.json`](../config/models/sota-9.json)):
+Opus 4.8, Fable 5, Sonnet 5 through the local Claude CLI subscription; GPT-5.5 high and
+GPT-5.4 high through the Codex CLI; plus GLM 5.2, Qwen3.7 Plus, Grok 4.3 and Kimi K2.7 Code.
+A side-by-side of frontier models on the Gargantua scene — the strongest here produce clean
+lensing halos and beamed disks. **[Grid video](black-hole-spin-sota/grid.mp4)** · per-model
+clips in [`black-hole-spin-sota/clips/`](black-hole-spin-sota/clips). Config:
+[`config/examples/black-hole-spin-sota.config.json`](../config/examples/black-hole-spin-sota.config.json).
 
-![black-hole](black-hole/grid.webp)
-
-**Run #2** — same prompt and models, a fresh set of generations (temperature 0.7, so the
-sampling varies run to run). Switch between runs in the [web app](../web).
-
-![black-hole run 2](black-hole/run-2/grid.webp)
-
-**Run #3** — the original run from before the lineup swap (Mistral Small 4 instead of
-Kimi K2.7 Code), recovered from git history and re-rendered through the current pipeline
-so the labels match. Switch between runs in the [web app](../web).
-
-![black-hole run 3](black-hole/run-3/grid.webp)
+[![black-hole-spin-sota — animated grid](black-hole-spin-sota/grid-anim.webp)](black-hole-spin-sota/grid.mp4)
 
 ## ringed-giant — a Saturn-like ringed gas giant in three.js 🎬
 
@@ -62,7 +52,7 @@ A second animated three.js brief, sibling to black-hole-spin: a banded gas giant
 on its tilted axis while its ring system orbits in-plane. Prescriptive composition (ring
 tilt ~18–24° off edge-on, rings occluding the planet's top half and crossing in front of
 its lower half, a Cassini-style gap, a faked ring shadow) so results line up. It tests 3D
-ring geometry and occlusion — where black-hole tests lensing. Captured as a 5-second, 24 fps
+ring geometry and occlusion — where the black-hole scenes test lensing. Captured as a 5-second, 24 fps
 deterministic clip and composed into one **[grid video](ringed-giant/grid.mp4)**; per-model
 clips in [`ringed-giant/clips/`](ringed-giant/clips). Config:
 [`config/examples/ringed-giant.config.json`](../config/examples/ringed-giant.config.json).
@@ -100,18 +90,6 @@ pipeline ([grid video](black-hole-spin/run-2/grid.mp4)). Switch between runs in 
 [web app](../web).
 
 [![black-hole-spin run 2 — animated grid](black-hole-spin/run-2/grid-anim.webp)](black-hole-spin/run-2/grid.mp4)
-
-## black-hole-spin-sota — the same scene, run by frontier models 🎬
-
-The exact black-hole-spin brief, but run by the **SOTA lineup** ([`config/models/sota-9.json`](../config/models/sota-9.json)):
-Opus 4.8, Fable 5, Sonnet 5 through the local Claude CLI subscription; GPT-5.5 high and
-GPT-5.4 high through the Codex CLI; plus GLM 5.2, Qwen3.7 Plus, Grok 4.3 and Kimi K2.7 Code.
-A side-by-side of frontier models on the Gargantua scene — the strongest here produce clean
-lensing halos and beamed disks. **[Grid video](black-hole-spin-sota/grid.mp4)** · per-model
-clips in [`black-hole-spin-sota/clips/`](black-hole-spin-sota/clips). Config:
-[`config/examples/black-hole-spin-sota.config.json`](../config/examples/black-hole-spin-sota.config.json).
-
-[![black-hole-spin-sota — animated grid](black-hole-spin-sota/grid-anim.webp)](black-hole-spin-sota/grid.mp4)
 
 ## black-hole-css — the same spinning black hole, in pure CSS 🎬
 

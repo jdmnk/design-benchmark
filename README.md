@@ -12,9 +12,10 @@ particle systems, hand-coded SVG art, pure-CSS scenes**, anything that renders.
 
 > The animated benchmarks in motion (click for the [higher-quality mp4](docs/preview.mp4);
 > regenerate with `node scripts/make-preview.mjs`). See **[`examples/`](examples/)** for
-> all runs — a set of space scenes: an Interstellar-style black hole (still + spinning), a
-> Saturn-like ringed gas giant, and a pure-CSS pulsar — including the actual HTML each model
-> produced. There's also a **[showcase web app](web/)** (React/Vite, deployable to Vercel)
+> all runs — a set of space scenes: an Interstellar-style spinning black hole (in three.js
+> and in pure CSS), a Saturn-like ringed gas giant, Jupiter with its Great Red Spot, and a
+> pure-CSS pulsar — including the actual HTML each model produced. There's also a
+> **[showcase web app](web/)** (React/Vite, deployable to Vercel)
 > that presents the runs with their prompts and per-model metadata.
 
 ---
@@ -61,7 +62,7 @@ config ──▶ ① generate ──▶ ② render ──▶ ③ grid ──▶ 
 ### The config is the run
 
 Everything about a run lives in one JSON file (the default is
-[`config/examples/black-hole.config.json`](config/examples/black-hole.config.json)) — the
+[`config/examples/black-hole-spin.config.json`](config/examples/black-hole-spin.config.json)) — the
 prompt, system prompt, model list, render settings, and grid layout. To run a different
 benchmark, write a different config. See [`config/examples/`](config/examples) for the
 three.js and pure-CSS space-scene configs. A [JSON schema](config/schema.json) is wired in via `$schema` for
@@ -295,7 +296,7 @@ design-bench/
 │   ├── schema.json               # JSON schema for configs
 │   ├── importmap.json            # bare-specifier → vendored-lib map
 │   ├── models/standard-9.json    # the shared 9-model lineup
-│   └── examples/*.config.json    # black-hole (3D, default), pulsar-css (CSS)…
+│   └── examples/*.config.json    # black-hole-spin (3D, default), pulsar-css (CSS)…
 ├── web/                          # showcase app (React/Vite/TS, deploy to Vercel)
 ├── scripts/
 │   ├── setup-browser-deps.sh     # rootless Chromium deps installer
