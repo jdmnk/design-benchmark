@@ -43,11 +43,18 @@ if (webpOnly) args.splice(webpOnlyIdx, 1);
 
 let inputs = args;
 if (inputs.length === 0) {
-  const exDir = join(ROOT, "examples");
-  inputs = readdirSync(exDir)
-    .map((d) => join(exDir, d, "grid.mp4"))
-    .filter((p) => existsSync(p))
-    .sort();
+  // Curated showcase for the README preview — a handful of the strongest
+  // animated benchmarks, in this order. (Pass explicit mp4 paths to override.)
+  const FEATURED = [
+    "black-hole-spin-sota",
+    "ringed-giant-sota",
+    "jupiter",
+    "black-hole-spin",
+    "pulsar-css",
+  ];
+  inputs = FEATURED.map((id) => join(ROOT, "examples", id, "grid.mp4")).filter((p) =>
+    existsSync(p),
+  );
 }
 if (inputs.length === 0) {
   console.error("No grid.mp4 inputs found (run an animated benchmark first).");
