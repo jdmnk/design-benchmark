@@ -16,6 +16,12 @@ CLI), plus GLM 5.2, Qwen3.7 Plus, Grok 4.3 and Kimi K2.7 Code.
 (black-hole-spin's **Run #2** predates this lineup and used Mistral Small 4 in place of Kimi K2.7
 Code — kept as-is since it's an archived run, not reshot with the current lineup.)
 
+**black-hole-spin's Run #1 has a 10th model**: Ox Alpha (`stealth/ox-alpha`, OpenRouter's free
+stealth model), added incrementally — only its own generation/render was computed, the other
+nine cells (and their video frames, restored from each `clip.mp4`) were reused from disk. That's
+the trial-model flow: flag a lineup entry `"skipByDefault": true`, run it with `--model`, promote
+with `scripts/promote-run.mjs` — see the main README's *Adding a model to a finished run*.
+
 Each folder has the grid (lossless `grid.png` + a ~10× smaller `grid.webp`), a `report.md`, a `summary.json`
 (per-model time + tokens + status), and `pages/` (the actual HTML each model produced —
 open them in a browser). Each grid cell carries a thin top-bar label: model name · time ·

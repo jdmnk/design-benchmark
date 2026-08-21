@@ -48,14 +48,20 @@ Usage:
 Options:
   -c, --config <path>   Config file (default: config/examples/black-hole-spin.config.json)
   -s, --stage <stage>   all | generate | render | grid | video | report (default: all)
-  -m, --model <slug>    Only run these models (comma-separated, repeatable)
+  -m, --model <slug>    Only generate/render these models (comma-separated, repeatable)
       --dry-run         Skip API calls; emit placeholder HTML to test the pipeline
   -h, --help            Show this help
 
 Stages run in order: generate → render → grid → video → report.
 (video only runs for configs with render.video.) Running a later stage alone
-reuses artifacts already on disk — note the video stage needs the render
-stage's frame captures, which are deleted after a successful encode.`);
+reuses artifacts already on disk.
+
+--model only scopes the generate and render stages. Grid, video and report
+always cover the full default lineup plus any config model with results on
+disk, so adding one model to a finished run is incremental: add it to the
+lineup, run \`npm run bench -- --model <slug>\`, and the composites are rebuilt
+with every earlier model's cells intact (video frames are restored from each
+model's clip.mp4).`);
 }
 
 async function main() {
@@ -87,26 +93,44 @@ async function main() {
 
   if (run("grid")) {
     console.log("\n③ Grid — composing side-by-side PNG");
-    const gridPath = await buildGrid(cfg, models);
+    const gridPath = await buildGrid(cfg, compositeLineup(cfg));
     console.log(`  → ${gridPath}`);
   }
 
   if (cfg.render.video && run("video")) {
     console.log("\n③b Video — encoding per-model clips + grid.mp4");
-    await buildVideos(cfg, models);
+    await buildVideos(cfg, compositeLineup(cfg));
   }
 
   if (run("report")) {
     console.log("\n④ Report — writing report.md + summary.json");
     // Reload from disk so the report picks up the render stage's findings
     // (render status, blank, etc.) which were persisted into result.json.
-    const fromDisk = loadResults(cfg, models);
+    const fromDisk = loadResults(cfg, compositeLineup(cfg));
     const reportResults = fromDisk.length ? fromDisk : results;
     const { reportPath } = writeReport(cfg, reportResults);
     console.log(`  → ${reportPath}`);
   }
 
   console.log(`\n✓ Done. Artifacts in ${paths.root}\n`);
+}
+
+/**
+ * The models the composite artifacts (grid, video, report) span: the default
+ * lineup plus any other config model that already has results on disk. So a
+ * `--model` run (or a skipByDefault model run explicitly) merges into the
+ * existing composites instead of shrinking them to the selection.
+ *
+ * Must be evaluated at each composite stage, not at startup: during a
+ * first-time `--model` run the new model's result.json only appears on disk
+ * once the generate stage has run.
+ */
+function compositeLineup(cfg: BenchmarkConfig): ModelEntry[] {
+  const paths = runPaths(cfg.name);
+  const defaults = new Set(selectModels(cfg).map((m) => m.slug));
+  return (cfg.models as ModelEntry[]).filter(
+    (m) => defaults.has(m.slug) || existsSync(paths.result(m.slug)),
+  );
 }
 
 /** Re-load previously written result.json files for later-stage-only runs. */

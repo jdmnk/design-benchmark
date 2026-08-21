@@ -688,10 +688,22 @@
               "truncated": false,
               "error": null,
               "page": "pages/black-hole-spin/kimi-k2.6.html"
+            },
+            {
+              "label": "Ox Alpha",
+              "modelId": "stealth/ox-alpha",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 62050,
+              "outputTokens": 3195,
+              "costUsd": 0,
+              "truncated": false,
+              "error": null,
+              "page": "pages/black-hole-spin/ox-alpha.html"
             }
           ],
-          "rendered": 9,
-          "total": 9
+          "rendered": 10,
+          "total": 10
         },
         {
           "label": "Run 2",

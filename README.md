@@ -96,7 +96,10 @@ caption strip above each cell, used with full-page website screenshots).
 the same models — the examples all use
 [`config/models/standard-9.json`](config/models/standard-9.json): GLM 5.2, Grok 4.3,
 GPT-5.4 mini, Claude Haiku 4.5, Qwen3.7 Plus, Gemini 3.1 Flash-Lite, DeepSeek V4 Pro,
-Kimi K2.6, Mistral Small 4.
+Kimi K2.7 Code, Kimi K2.6. A lineup can also carry **trial models** flagged
+`"skipByDefault": true` (currently Ox Alpha, OpenRouter's `stealth/ox-alpha`): excluded
+from full runs, but run one explicitly with `--model` and it joins that run's grid, video
+and report — see *Adding a model to a finished run* below.
 
 ---
 
@@ -252,8 +255,29 @@ npm run bench -- --stage grid                                      # re-run one 
 npm run bench -- --dry-run                                         # no API calls (smoke test)
 ```
 
-CLI: `--config/-c`, `--stage/-s` (`all|generate|render|grid|report`), `--model/-m`,
+CLI: `--config/-c`, `--stage/-s` (`all|generate|render|grid|video|report`), `--model/-m`,
 `--dry-run`, `--help`.
+
+### Adding a model to a finished run (incremental)
+
+`--model` scopes only the expensive stages (generate + render). The composite artifacts —
+`grid.png`, `grid.mp4`, `report.md`, `summary.json` — always span the full default lineup
+**plus any config model that already has results on disk**, and are rebuilt from those
+on-disk results. So adding a model never recomputes the others:
+
+```bash
+# 1. Add the model to the lineup (config/models/standard-9.json or the config's inline array).
+#    Give it "skipByDefault": true to keep it out of default full runs while you trial it.
+# 2. Generate + render just that model; grid/video/report rebuild with everyone's cells intact
+#    (video frames for earlier models are restored from their clip.mp4):
+npm run bench -- --model ox-alpha
+# 3. Publish to the committed showcase + web app:
+node scripts/promote-run.mjs black-hole-spin
+node scripts/build-web-data.mjs
+```
+
+A `skipByDefault` model joins the composites of exactly the runs you've executed it on;
+remove the flag to promote it into the default lineup for future full runs.
 
 ---
 

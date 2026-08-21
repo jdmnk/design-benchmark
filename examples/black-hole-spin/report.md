@@ -1,8 +1,8 @@
 # black-hole-spin
 
-Animated version of the black-hole benchmark: a 5-second clip of the spinning accretion disk is captured frame-by-frame on the deterministic virtual clock, then composed into one grid video (grid.mp4).
+The Gargantua black hole in motion — a spinning accretion disk — in three.js / WebGL.
 
-**Models:** 9 · **Rendered:** 9/9
+**Models:** 10 · **Rendered:** 10/10
 
 ## Prompt
 
@@ -43,5 +43,6 @@ Raw copyable version: [prompt.txt](./prompt.txt) · [system-prompt.txt](./system
 | DeepSeek V4 Pro | `deepseek/deepseek-v4-pro` | openrouter | ✅ rendered | 672.2s | 18223 |  |
 | Kimi K2.7 Code | `moonshotai/kimi-k2.7-code` | openrouter | ✅ rendered | 221.8s | 21854 |  |
 | Kimi K2.6 | `moonshotai/kimi-k2.6` | openrouter | ✅ rendered | 134.3s | 6532 |  |
+| Ox Alpha | `stealth/ox-alpha` | openrouter | ✅ rendered | 62.0s | 4432 |  |
 
 Per-model artifacts live in `models/<slug>/` (`raw.txt`, `output.html`, `screenshot.png`, `result.json`).
