@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Gargantua</title>
+<style>html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#000;}canvas{display:block;}</style>
+</head>
+<body>
+<script type="module">
+import * as THREE from 'three';
+
+try {
+  const renderer = new THREE.WebGLRenderer({antialias:true});
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+  renderer.setClearColor(0x000003, 1);
+  document.body.appendChild(renderer.domElement);
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 0.1, 200);
+  // ~7 degrees above disk plane
+  const camDist = 11;
+  camera.position.set(0, Math.sin(THREE.MathUtils.degToRad(7))*camDist, Math.cos(THREE.MathUtils.degToRad(7))*camDist);
+  camera.lookAt(0,0,0);
+
+  // ---------- starfield ----------
+  {
+    const n = 900;
+    const pos = new Float32Array(n*3);
+    for(let i=0;i<n;i++){
+      const r = 60+Math.random()*60;
+      const th = Math.random()*Math.PI*2;
+      const ph = Math.acos(2*Math.random()-1);
+      pos[i*3]=r*Math.sin(ph)*Math.cos(th);
+      pos[i*3+1]=r*Math.cos(ph);
+      pos[i*3+2]=r*Math.sin(ph)*Math.sin(th);
+    }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.BufferAttribute(pos,3));
+    const m = new THREE.PointsMaterial({color:0x9aa8c8,size:0.35,sizeAttenuation:true,transparent:true,opacity:0.8});
+    scene.add(new THREE.Points(g,m));
+  }
+
+  // ---------- event horizon (black sphere) ----------
+  const BH_R = 1.55; // diameter ~28% of viewport height at this fov/dist
+  scene.add(new THREE.Mesh(
+    new THREE.SphereGeometry(BH_R,48,32),
+    new THREE.MeshBasicMaterial({color:0x000000})
+  ));
+
+  // ---------- accretion disk (flat, horizontal, textured) ----------
+  function makeDiskTexture(){
+    const c = document.createElement('canvas');
+    c.width = 1024; c.height = 256;
+    const x = c.getContext('2d');
+    // radial gradient mapped along Y (v = radius)
+    const grad = x.createLinearGradient(0,0,0,256);
+    grad.addColorStop(0.00,'#fff3d0');
+    grad.addColorStop(0.25,'#ffdf9a');
+    grad.addColorStop(0.55,'#ffae3b');
+    grad.addColorStop(0.85,'#e07a24');
+    grad.addColorStop(1.00,'#c8551a');
+    x.fillStyle = grad;
+    x.fillRect(0,0,1024,256);
+    // azimuthal turbulent streaks (along X)
+    x.globalCompositeOperation='lighter';
+    for(let i=0;i<160;i++){
+      const sx = Math.random()*1024;
+      const w = 20+Math.random()*90;
+      const h = 4+Math.random()*22;
+      const sy = Math.random()*256;
+      const a = 0.04+Math.random()*0.16;
+      const g2 = x.createLinearGradient(sx-w/2,0,sx+w/2,0);
+      g2.addColorStop(0,'rgba(255,220,150,0)');
+      g2.addColorStop(0.5,'rgba(255,235,190,'+a+')');
+      g2.addColorStop(1,'rgba(255,220,150,0)');
+      x.fillStyle=g2;
+      x.fillRect(sx-w/2,sy-h/2,w,h);
+    }
+    // dark gaps
+    x.globalCompositeOperation='source-over';
+    for(let i=0;i<40;i++){
+      const sx=Math.random()*1024, w=10+Math.random()*50;
+      x.fillStyle='rgba(30,10,0,0.18)';
+      x.fillRect(sx,0,w,256);
+    }
+    // relativistic beaming: left side brighter
+    const beam = x.createLinearGradient(0,0,1024,0);
+    beam.addColorStop(0,'rgba(255,255,240,0.28)');
+    beam.addColorStop(0.5,'rgba(255,255,240,0)');
+    beam.addColorStop(1,'rgba(0,0,0,0.22)');
+    x.globalCompositeOperation='lighter';
+    x.fillStyle=beam; x.fillRect(0,0,1024,256);
+    return new THREE.CanvasTexture(c);
+  }
+  const diskTex = makeDiskTexture();
+  diskTex.wrapS = THREE.RepeatWrapping;
+
+  const diskGeo = new THREE.RingGeometry(BH_R*1.15, BH_R*3.4, 128, 4);
+  // remap UVs so u wraps azimuthally, v radially
+  {
+    const p = diskGeo.attributes.position, uv = diskGeo.attributes.uv;
+    const v3 = new THREE.Vector3();
+    for(let i=0;i<p.count;i++){
+      v3.fromBufferAttribute(p,i);
+      const ang = Math.atan2(v3.y,v3.x)/(Math.PI*2)+0.5;
+      const rad = (v3.length()-BH_R*1.15)/(BH_R*3.4-BH_R*1.15);
+      uv.setXY(i,ang,rad);
+    }
+  }
+  const diskMat = new THREE.MeshBasicMaterial({
+    map:diskTex, transparent:true, side:THREE.DoubleSide,
+    blending:THREE.AdditiveBlending, depthWrite:false
+  });
+  const disk = new THREE.Mesh(diskGeo,diskMat);
+  disk.rotation.x = -Math.PI/2;
+  scene.add(disk);
+
+  // ---------- lensing halo arcs (over top & under bottom) ----------
+  function makeArcTexture(){
+    const c=document.createElement('canvas'); c.width=512;c.height=64;
+    const x=c.getContext('2d');
+    const g=x.createLinearGradient(0,0,512,0);
+    g.addColorStop(0,'#fff3d0');g.addColorStop(0.5,'#ffcf70');g.addColorStop(1,'#ffae3b');
+    x.fillStyle=g;x.fillRect(0,0,512,64);
+    // streak variation
+    for(let i=0;i<50;i++){
+      x.fillStyle='rgba(255,255,230,'+(0.05+Math.random()*0.12)+')';
+      x.fillRect(Math.random()*512,0,2+Math.random()*14,64);
+    }
+    return new THREE.CanvasTexture(c);
+  }
+  const arcTex = makeArcTexture();
+
+  function makeHaloArc(radius, tube, arcLen, rotZ){
+    const geo = new THREE.TorusGeometry(radius, tube, 12, 96, arcLen);
+    const mat = new THREE.MeshBasicMaterial({
+      map:arcTex, transparent:true, blending:THREE.AdditiveBlending,
+      depthWrite:false, side:THREE.DoubleSide
+    });
+    const m = new THREE.Mesh(geo,mat);
+    m.rotation.z = rotZ;
+    return m;
+  }
+  // arcs lie in planes tilted toward camera so they read as wrapping over/under the sphere
+  const haloTop = makeHaloArc(BH_R*1.28, BH_R*0.16, Math.PI*1.15, -Math.PI*0.08);
+  haloTop.position.y = BH_R*0.42;
+  haloTop.rotation.x = -0.35;
+  scene.add(haloTop);
+
+  const haloBot = makeHaloArc(BH_R*1.26, BH_R*0.13, Math.PI*1.05, Math.PI-Math.PI*0.06);
+  haloBot.position.y = -BH_R*0.38;
+  haloBot.rotation.x = 0.35;
+  scene.add(haloBot);
+
+  // ---------- photon ring ----------
+  const photonMat = new THREE.MeshBasicMaterial({
+    color:0xfff6dd, transparent:true, blending:THREE.AdditiveBlending, depthWrite:false
+  });
+  const photon = new THREE.Mesh(new THREE.TorusGeometry(BH_R*1.02, BH_R*0.022, 8, 128), photonMat);
+  scene.add(photon); // faces camera by default
+
+  // soft glow sprite behind photon ring
+  function makeGlowSprite(){
+    const c=document.createElement('canvas');c.width=c.height=128;
+    const x=c.getContext('2d');
+    const g=x.createRadialGradient(64,64,0,64,64,64);
+    g.addColorStop(0,'rgba(255,240,210,0.85)');
+    g.addColorStop(0.4,'rgba(255,190,110,0.25)');
+    g.addColorStop(1,'rgba(255,150,60,0)');
+    x.fillStyle=g;x.fillRect(0,0,128,128);
+    return new THREE.CanvasTexture(c);
+  }
+  const glow = new THREE.Sprite(new THREE.SpriteMaterial({
+    map:makeGlowSprite(), transparent:true, blending:THREE.AdditiveBlending, depthWrite:false
+  }));
+  glow.scale.setScalar(BH_R*3.1);
+  scene.add(glow);
+
+  // ---------- animation ----------
+  const clock = new THREE.Clock();
+  function animate(){
+    requestAnimationFrame(animate);
+    const t = clock.getElapsedTime();
+
+    // disk rotation ~32 deg/s
+    disk.rotation.z = t * THREE.MathUtils.degToRad(32);
+    // slow beaming-highlight drift: subtle extra brightness modulation on one side
+    diskMat.opacity = 0.95 + 0.05*Math.sin(t*2.1);
+
+    // shimmer / flicker in halos
+    haloTop.material.opacity = 0.75 + 0.18*Math.sin(t*7.3) * Math.sin(t*2.7+1.3);
+    haloBot.material.opacity = 0.65 + 0.16*Math.sin(t*6.1+2.0) * Math.sin(t*3.3);
+    haloTop.rotation.z += 0.0012;
+    haloBot.rotation.z -= 0.0010;
+
+    // photon ring flicker
+    photonMat.opacity = 0.85 + 0.15*Math.sin(t*9.7)*Math.sin(t*1.9);
+    glow.material.opacity = 0.55 + 0.12*Math.sin(t*4.4+0.7);
+
+    renderer.render(scene,camera);
+  }
+  animate();
+
+  window.addEventListener('resize',()=>{
+    camera.aspect = window.innerWidth/window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth,window.innerHeight);
+  });
+} catch(e){ console.error(e); }
+</script>
+</body>
+</html>

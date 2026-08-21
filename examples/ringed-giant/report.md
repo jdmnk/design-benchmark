@@ -2,7 +2,7 @@
 
 A Saturn-like ringed gas giant rotating on its tilted axis, its ring system orbiting in-plane — three.js / WebGL.
 
-**Models:** 9 · **Rendered:** 9/9
+**Models:** 10 · **Rendered:** 10/10
 
 ## Prompt
 
@@ -46,5 +46,6 @@ Raw copyable version: [prompt.txt](./prompt.txt) · [system-prompt.txt](./system
 | DeepSeek V4 Pro | `deepseek/deepseek-v4-pro` | openrouter | ✅ rendered | 603.5s | 6205 |  |
 | Kimi K2.7 Code | `moonshotai/kimi-k2.7-code` | openrouter | ✅ rendered | 758.2s | 25752 |  |
 | Kimi K2.6 | `moonshotai/kimi-k2.6` | openrouter | ✅ rendered | 41.7s | 6717 |  |
+| Ox Alpha | `stealth/ox-alpha` | openrouter | ✅ rendered | 86.2s | 5244 |  |
 
 Per-model artifacts live in `models/<slug>/` (`raw.txt`, `output.html`, `screenshot.png`, `result.json`).

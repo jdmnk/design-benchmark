@@ -2,7 +2,7 @@
 
 The spinning 'Gargantua' black hole built in pure HTML + CSS — no JavaScript, no canvas.
 
-**Models:** 9 · **Rendered:** 9/9
+**Models:** 10 · **Rendered:** 10/10
 
 ## Prompt
 
@@ -93,5 +93,6 @@ Raw copyable version: [prompt.txt](./prompt.txt) · [system-prompt.txt](./system
 | DeepSeek V4 Pro | `deepseek/deepseek-v4-pro` | openrouter | ✅ rendered | 361.1s | 19104 |  |
 | Kimi K2.7 Code | `moonshotai/kimi-k2.7-code` | openrouter | ✅ rendered | 270.2s | 11569 |  |
 | Kimi K2.6 | `moonshotai/kimi-k2.6` | openrouter | ✅ rendered | 687.6s | 30563 |  |
+| Ox Alpha | `stealth/ox-alpha` | openrouter | ✅ rendered | 28.7s | 2908 |  |
 
 Per-model artifacts live in `models/<slug>/` (`raw.txt`, `output.html`, `screenshot.png`, `result.json`).

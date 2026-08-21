@@ -1,0 +1,128 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; box-sizing: border-box; }
+  html, body { width: 100%; height: 100%; overflow: hidden; background: #03040a; }
+  .scene {
+    position: fixed; inset: 0; display: grid; place-items: center;
+    background: radial-gradient(120% 120% at 50% 50%, #0b0d16 0%, #03040a 62%);
+  }
+  /* Starfield — done; leave it as-is. */
+  .stars { position: absolute; inset: 0; opacity: .85;
+    background-image:
+      radial-gradient(1px 1px at 15% 22%, #fff, transparent),
+      radial-gradient(1px 1px at 68% 14%, #cbd5ff, transparent),
+      radial-gradient(1px 1px at 82% 61%, #fff, transparent),
+      radial-gradient(1px 1px at 34% 78%, #e6ecff, transparent),
+      radial-gradient(1px 1px at 52% 41%, #fff, transparent),
+      radial-gradient(1px 1px at 9% 66%, #cfd8ff, transparent),
+      radial-gradient(1px 1px at 91% 33%, #fff, transparent),
+      radial-gradient(1px 1px at 26% 9%, #fff, transparent),
+      radial-gradient(1px 1px at 74% 88%, #dfe6ff, transparent);
+  }
+  .blackhole { position: relative; width: 30vh; height: 30vh; }
+
+  /* ==================== BLACK HOLE ==================== */
+
+  /* Event horizon: solid black disc */
+  .horizon {
+    position: absolute; inset: 0;
+    border-radius: 50%;
+    background: #000;
+    box-shadow: 0 0 6vh 1.5vh rgba(0,0,0,.9);
+  }
+
+  /* Photon ring hugging the horizon edge */
+  .photon-ring {
+    position: absolute; inset: -2%;
+    border-radius: 50%;
+    border: .45vh solid #ffe9b8;
+    filter: blur(.35vh) brightness(1.15);
+    box-shadow:
+      0 0 2.5vh .4vh rgba(255,190,90,.55),
+      0 0 7vh 1vh rgba(255,150,60,.25);
+    animation: shimmer 2.5s ease-in-out infinite alternate;
+  }
+
+  /* Accretion disk: wide flattened band crossing the middle, rotating once per 5s.
+     Conic gradient gives azimuthal clumps/streaks; radial mask flattens it edge-on. */
+  .disk {
+    position: absolute;
+    left: 50%; top: 50%;
+    width: 260%; height: 260%;
+    transform: translate(-50%, -50%) scaleY(.16);
+    border-radius: 50%;
+    background:
+      conic-gradient(from 0deg,
+        rgba(255,243,208,.95) 0deg,
+        rgba(255,174,59,.75) 40deg,
+        rgba(200,85,26,.35) 80deg,
+        rgba(255,220,160,.9) 120deg,
+        rgba(255,174,59,.6) 170deg,
+        rgba(200,85,26,.3) 210deg,
+        rgba(255,235,190,.85) 250deg,
+        rgba(255,174,59,.7) 300deg,
+        rgba(200,85,26,.4) 340deg,
+        rgba(255,243,208,.95) 360deg);
+    -webkit-mask: radial-gradient(closest-side,
+        transparent 18%, #000 24%, #000 62%, rgba(0,0,0,.35) 82%, transparent 96%);
+            mask: radial-gradient(closest-side,
+        transparent 18%, #000 24%, #000 62%, rgba(0,0,0,.35) 82%, transparent 96%);
+    filter: blur(.4vh);
+    animation: spin 5s linear infinite;
+  }
+
+  /* Relativistic beaming: brighter on one side of the disk */
+  .disk::after {
+    content: "";
+    position: absolute; inset: 0;
+    border-radius: 50%;
+    background: linear-gradient(90deg,
+      rgba(255,255,240,.55) 0%,
+      rgba(255,255,240,0) 38%,
+      rgba(0,0,0,.35) 72%,
+      rgba(0,0,0,.5) 100%);
+    mix-blend-mode: screen;
+  }
+
+  /* Lensing halo: arcs bending over the top and mirrored under the bottom */
+  .lensing {
+    position: absolute; left: 50%; top: 50%;
+    width: 130%; height: 130%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+  .lensing::before, .lensing::after {
+    content: "";
+    position: absolute; left: 50%;
+    width: 100%; height: 46%;
+    border-radius: 50%;
+    border-top: 1.1vh solid rgba(255,214,140,.8);
+    border-left: .5vh solid rgba(255,180,90,.35);
+    border-right: .5vh solid rgba(255,180,90,.35);
+    border-bottom: none;
+    filter: blur(.5vh);
+    transform: translateX(-50%);
+    animation: shimmer 2.5s ease-in-out infinite alternate;
+  }
+  .lensing::before { top: -4%; }                 /* arc over the top */
+  .lensing::after { bottom: -4%; transform: translateX(-50%) scaleY(-1); opacity:.65; }
+
+  @keyframes spin   { to { transform: translate(-50%, -50%) scaleY(.16) rotate(360deg); } }
+  @keyframes shimmer{ from { opacity: .85; } to { opacity: 1; } }
+</style>
+</head>
+<body>
+  <div class="scene">
+    <div class="stars"></div>
+    <div class="blackhole">
+      <div class="disk"></div>
+      <div class="lensing"></div>
+      <div class="horizon"></div>
+      <div class="photon-ring"></div>
+    </div>
+  </div>
+</body>
+</html>

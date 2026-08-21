@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Pulsar</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background:#03040a;
+    width:100vw; height:100vh;
+    overflow:hidden;
+    position:relative;
+  }
+  .scene {
+    position:absolute; inset:0;
+    display:flex; align-items:center; justify-content:center;
+  }
+
+  /* ---------- static stars ---------- */
+  .stars {
+    position:absolute; inset:0;
+    width:2px; height:2px; border-radius:50%;
+    background:transparent;
+    box-shadow:
+      8vw 12vh 1px 0 rgba(200,215,255,.7),
+      22vw 30vh 1px 0 rgba(180,200,255,.5),
+      35vw 8vh 1px 0 rgba(220,230,255,.6),
+      48vw 18vh 1px 0 rgba(190,205,255,.4),
+      60vw 10vh 1px 0 rgba(210,225,255,.65),
+      74vw 26vh 1px 0 rgba(185,200,255,.5),
+      88vw 14vh 1px 0 rgba(200,215,255,.55),
+      93vw 42vh 1px 0 rgba(175,195,255,.45),
+      15vw 52vh 1px 0 rgba(195,210,255,.5),
+      28vw 70vh 1px 0 rgba(205,220,255,.6),
+      41vw 88vh 1px 0 rgba(180,198,255,.45),
+      55vw 62vh 1px 0 rgba(215,228,255,.55),
+      68vw 80vh 1px 0 rgba(190,206,255,.5),
+      82vw 66vh 1px 0 rgba(200,214,255,.4),
+      90vw 86vh 1px 0 rgba(185,202,255,.55),
+      5vw 78vh 1px 0 rgba(210,222,255,.5),
+      33vw 44vh 1px 0 rgba(170,192,255,.35),
+      63vw 40vh 1px 0 rgba(195,212,255,.45);
+  }
+
+  /* ---------- rotating beam assembly ---------- */
+  .spinner {
+    position:absolute;
+    width:100vmax; height:100vmax;
+    left:50%; top:50%;
+    transform:translate(-50%,-50%);
+    animation:spin 5s linear infinite;
+  }
+  @keyframes spin {
+    from { transform:translate(-50%,-50%) rotate(20deg); }
+    to   { transform:translate(-50%,-50%) rotate(380deg); }
+  }
+
+  /* two opposing tapering beams along the vertical axis of the spinner */
+  .beam {
+    position:absolute;
+    left:50%; top:50%;
+    width:9vmax; height:110vmax;
+    transform-origin:50% 50%;
+    mix-blend-mode:screen;
+    opacity:.85;
+  }
+  .beam.up   { transform:translate(-50%,-100%); }
+  .beam.down { transform:translate(-50%,0) scaleY(-1); }
+
+  /* cone shape via clip-path on gradient */
+  .beam::before {
+    content:"";
+    position:absolute; inset:0;
+    background:linear-gradient(to top,
+      rgba(160,240,255,.95) 0%,
+      rgba(120,220,255,.55) 12%,
+      rgba(90,190,255,.28) 35%,
+      rgba(70,170,255,.12) 65%,
+      rgba(60,150,255,0) 100%);
+    clip-path:polygon(50% 100%, 38% 96%, 46% 0%, 54% 0%, 62% 96%);
+    filter:blur(2px);
+  }
+  /* bright inner filament */
+  .beam::after {
+    content:"";
+    position:absolute; inset:0;
+    background:linear-gradient(to top,
+      rgba(235,252,255,.95) 0%,
+      rgba(200,245,255,.5) 10%,
+      rgba(170,230,255,.18) 40%,
+      rgba(150,215,255,0) 75%);
+    clip-path:polygon(50% 100%, 47% 92%, 49% 0%, 51% 0%, 53% 92%);
+    filter:blur(1px);
+  }
+
+  /* ---------- shockwave rings ---------- */
+  .ring {
+    position:absolute;
+    left:50%; top:50%;
+    width:20vmin; height:20vmin;
+    border-radius:50%;
+    border:2px solid rgba(140,235,255,.8);
+    transform:translate(-50%,-50%) scale(.2);
+    opacity:0;
+    mix-blend-mode:screen;
+    animation:shock 1s linear infinite;
+  }
+  @keyframes shock {
+    0%   { transform:translate(-50%,-50%) scale(.15); opacity:0; }
+    8%   { opacity:.9; }
+    100% { transform:translate(-50%,-50%) scale(3.2); opacity:0; }
+  }
+  .r1 { animation-delay:0s; }
+  .r2 { animation-delay:-.25s; }
+  .r3 { animation-delay:-.5s; }
+  .r4 { animation-delay:-.75s; }
+
+  /* ---------- equatorial disk (edge-on ellipse) ---------- */
+  .disk {
+    position:absolute;
+    left:50%; top:50%;
+    width:34vmin; height:34vmin;
+    transform:translate(-50%,-50%) rotate(20deg);
+    pointer-events:none;
+  }
+  .disk::before {
+    content:"";
+    position:absolute; inset:0;
+    border-radius:50%;
+    border:3px solid rgba(150,225,255,.75);
+    transform:scaleY(.16);
+    box-shadow:
+      0 0 12px rgba(130,220,255,.8),
+      0 0 30px rgba(100,190,255,.45),
+      inset 0 0 18px rgba(140,225,255,.6);
+    mix-blend-mode:screen;
+  }
+
+  /* ---------- pulsing core ---------- */
+  .core {
+    position:absolute;
+    left:50%; top:50%;
+    width:9vmin; height:9vmin;
+    border-radius:50%;
+    transform:translate(-50%,-50%);
+    background:radial-gradient(circle,
+      #ffffff 0%,
+      #f2f6ff 30%,
+      #bcd2ff 60%,
+      #5b7cff 85%,
+      rgba(91,124,255,0) 100%);
+    box-shadow:
+      0 0 3vmin 1vmin rgba(242,246,255,.9),
+      0 0 8vmin 3vmin rgba(188,210,255,.55),
+      0 0 18vmin 6vmin rgba(91,124,255,.35);
+    mix-blend-mode:screen;
+    animation:pulse 1s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { transform:translate(-50%,-50%) scale(.72); filter:brightness(.75); }
+    50%      { transform:translate(-50%,-50%) scale(1.18); filter:brightness(1.5); }
+  }
+
+  /* hot center dot that flashes with the pulse */
+  .core-hot {
+    position:absolute;
+    left:50%; top:50%;
+    width:3.5vmin; height:3.5vmin;
+    border-radius:50%;
+    transform:translate(-50%,-50%);
+    background:radial-gradient(circle,#fff 0%,rgba(255,255,255,0) 70%);
+    mix-blend-mode:screen;
+    animation:hotflash 1s ease-in-out infinite;
+  }
+  @keyframes hotflash {
+    0%, 100% { opacity:.4; transform:translate(-50%,-50%) scale(.8); }
+    50%      { opacity:1;  transform:translate(-50%,-50%) scale(1.4); }
+  }
+</style>
+</head>
+<body>
+  <div class="scene">
+    <div class="stars"></div>
+
+    <div class="spinner">
+      <div class="beam up"></div>
+      <div class="beam down"></div>
+    </div>
+
+    <div class="ring r1"></div>
+    <div class="ring r2"></div>
+    <div class="ring r3"></div>
+    <div class="ring r4"></div>
+
+    <div class="disk"></div>
+    <div class="core"></div>
+    <div class="core-hot"></div>
+  </div>
+</body>
+</html>

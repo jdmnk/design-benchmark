@@ -2,7 +2,7 @@
 
 A Saturn-like ringed gas giant rotating on its tilted axis — the same scene as ringed-giant, run by the SOTA lineup.
 
-**Models:** 9 · **Rendered:** 9/9
+**Models:** 10 · **Rendered:** 10/10
 
 ## Prompt
 
@@ -46,5 +46,6 @@ Raw copyable version: [prompt.txt](./prompt.txt) · [system-prompt.txt](./system
 | Grok 4.3 | `x-ai/grok-4.3` | openrouter | ✅ rendered | 21.3s | 4025 |  |
 | Kimi K2.7 Code | `moonshotai/kimi-k2.7-code` | openrouter | ✅ rendered | 344.5s | 30721 |  |
 | Qwen3.7 Plus | `qwen/qwen3.7-plus` | openrouter | ✅ rendered | 281.2s | 16882 |  |
+| Ox Alpha | `stealth/ox-alpha` | openrouter | ✅ rendered | 94.2s | 6706 |  |
 
 Per-model artifacts live in `models/<slug>/` (`raw.txt`, `output.html`, `screenshot.png`, `result.json`).

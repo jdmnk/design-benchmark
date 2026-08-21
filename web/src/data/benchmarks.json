@@ -132,10 +132,22 @@
               "truncated": false,
               "error": null,
               "page": "pages/black-hole-spin-sota/qwen3.7-plus.html"
+            },
+            {
+              "label": "Ox Alpha",
+              "modelId": "stealth/ox-alpha",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 63691,
+              "outputTokens": 2787,
+              "costUsd": 0,
+              "truncated": false,
+              "error": null,
+              "page": "pages/black-hole-spin-sota/ox-alpha.html"
             }
           ],
-          "rendered": 9,
-          "total": 9
+          "rendered": 10,
+          "total": 10
         }
       ]
     },
@@ -271,10 +283,22 @@
               "truncated": false,
               "error": null,
               "page": "pages/ringed-giant/kimi-k2.6.html"
+            },
+            {
+              "label": "Ox Alpha",
+              "modelId": "stealth/ox-alpha",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 86228,
+              "outputTokens": 3886,
+              "costUsd": 0,
+              "truncated": false,
+              "error": null,
+              "page": "pages/ringed-giant/ox-alpha.html"
             }
           ],
-          "rendered": 9,
-          "total": 9
+          "rendered": 10,
+          "total": 10
         }
       ]
     },
@@ -410,10 +434,22 @@
               "truncated": false,
               "error": null,
               "page": "pages/ringed-giant-sota/qwen3.7-plus.html"
+            },
+            {
+              "label": "Ox Alpha",
+              "modelId": "stealth/ox-alpha",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 94191,
+              "outputTokens": 5348,
+              "costUsd": 0,
+              "truncated": false,
+              "error": null,
+              "page": "pages/ringed-giant-sota/ox-alpha.html"
             }
           ],
-          "rendered": 9,
-          "total": 9
+          "rendered": 10,
+          "total": 10
         }
       ]
     },
@@ -549,10 +585,22 @@
               "truncated": false,
               "error": null,
               "page": "pages/jupiter/qwen3.7-plus.html"
+            },
+            {
+              "label": "Ox Alpha",
+              "modelId": "stealth/ox-alpha",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 58275,
+              "outputTokens": 2808,
+              "costUsd": 0,
+              "truncated": false,
+              "error": null,
+              "page": "pages/jupiter/ox-alpha.html"
             }
           ],
-          "rendered": 9,
-          "total": 9
+          "rendered": 10,
+          "total": 10
         }
       ]
     },
@@ -958,10 +1006,22 @@
               "truncated": false,
               "error": null,
               "page": "pages/black-hole-css/kimi-k2.6.html"
+            },
+            {
+              "label": "Ox Alpha",
+              "modelId": "stealth/ox-alpha",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 28676,
+              "outputTokens": 1461,
+              "costUsd": 0,
+              "truncated": false,
+              "error": null,
+              "page": "pages/black-hole-css/ox-alpha.html"
             }
           ],
-          "rendered": 9,
-          "total": 9
+          "rendered": 10,
+          "total": 10
         }
       ]
     },
@@ -1097,10 +1157,22 @@
               "truncated": false,
               "error": null,
               "page": "pages/pulsar-css/kimi-k2.6.html"
+            },
+            {
+              "label": "Ox Alpha",
+              "modelId": "stealth/ox-alpha",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 41220,
+              "outputTokens": 2092,
+              "costUsd": 0,
+              "truncated": false,
+              "error": null,
+              "page": "pages/pulsar-css/ox-alpha.html"
             }
           ],
-          "rendered": 9,
-          "total": 9
+          "rendered": 10,
+          "total": 10
         }
       ]
     }

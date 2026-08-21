@@ -1,7 +1,7 @@
 {
   "name": "jupiter",
   "prompt": "Render the planet JUPITER as a full-screen three.js scene (100vw × 100vh, auto-starting, no user interaction) — a close-up of the gas giant filling most of the frame. A 5-SECOND CLIP is captured, so the atmospheric motion matters as much as the still.\n\nComposition (match so results are comparable):\n- Jupiter is a large sphere centered in the frame, its diameter about 78% of the viewport height (it dominates the view). Light it from the upper-left with a soft terminator curving into shadow on the lower-right, and gentle limb darkening at the edge.\n- DETAILED BANDED ATMOSPHERE: alternating horizontal ZONES (light: cream, ivory, pale tan) and BELTS (dark: tan, ochre, red-brown, rust) — at least 8–12 bands of varying width across the disc. The band boundaries are NOT clean lines: they are turbulent, with swirling eddies, wisps and festoons where zones and belts shear against each other. Build the surface from a procedurally detailed, high-frequency texture (a canvas-generated turbulence/noise texture), NOT flat stripes.\n- THE GREAT RED SPOT: a large red-orange oval storm in the southern hemisphere (below the equator, offset left or right of center), roughly 22% of the planet's width, ringed by a paler eyewall with an internal spiral swirl. This is the signature 'eye' — make it unmistakable.\n- Coloring: a warm Jovian palette — cream/ivory zones, tan/ochre/rust belts, the Great Red Spot a deeper brick red-orange.\n- Background: near-black space with a sparse, dim starfield; optionally one tiny bright moon.\n\nMotion (the point of this benchmark — clearly visible within the 5-second clip):\n- ZONAL FLOW: the bands stream HORIZONTALLY at different speeds, and adjacent bands flow in OPPOSITE directions (as Jupiter's zones and belts do), so texture detail in neighbouring bands visibly shears past itself during the clip. Give the flow visible structure (clumps, wisps, turbulence) so the motion reads clearly — flat scrolling stripes would look wrong.\n- The Great Red Spot slowly churns / rotates (a counter-clockwise swirl) and drifts with its band.\n- Add subtle turbulent shimmer along the band boundaries. Keep Jupiter centered; the flowing, shearing atmosphere must be the dominant, clearly visible motion.\n\nReturn ONLY a single complete HTML document.",
-  "generatedAt": "2026-07-10T11:05:03.510Z",
+  "generatedAt": "2026-08-21T22:09:18.780Z",
   "models": [
     {
       "slug": "fable-5",
@@ -178,6 +178,28 @@
         "costUsd": 0.01002912
       },
       "startedAt": "2026-07-10T09:46:20.794Z",
+      "render": {
+        "rendered": true,
+        "blank": false
+      }
+    },
+    {
+      "slug": "ox-alpha",
+      "label": "Ox Alpha",
+      "provider": "openrouter",
+      "modelId": "stealth/ox-alpha",
+      "ok": true,
+      "htmlExtracted": true,
+      "finishReason": "stop",
+      "truncated": false,
+      "elapsedMs": 58275,
+      "usage": {
+        "promptTokens": 1291,
+        "completionTokens": 2808,
+        "totalTokens": 4099,
+        "costUsd": 0
+      },
+      "startedAt": "2026-08-21T22:05:53.774Z",
       "render": {
         "rendered": true,
         "blank": false

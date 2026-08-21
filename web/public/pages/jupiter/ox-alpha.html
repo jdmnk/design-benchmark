@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Jupiter</title>
+<style>
+  html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#000;}
+  canvas{display:block;width:100vw;height:100vh;}
+</style>
+</head>
+<body>
+<script type="module">
+import * as THREE from 'three';
+
+try {
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setClearColor(0x020204, 1);
+  document.body.appendChild(renderer.domElement);
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(38, window.innerWidth / window.innerHeight, 0.1, 100);
+  camera.position.set(0, 0, 3.05);
+  camera.lookAt(0, 0, 0);
+
+  // ---------- starfield ----------
+  const starGeo = new THREE.BufferGeometry();
+  const N = 900;
+  const pos = new Float32Array(N * 3);
+  const col = new Float32Array(N * 3);
+  for (let i = 0; i < N; i++) {
+    const r = 40 + Math.random() * 20;
+    const th = Math.random() * Math.PI * 2;
+    const ph = Math.acos(2 * Math.random() - 1);
+    pos[i*3]   = r * Math.sin(ph) * Math.cos(th);
+    pos[i*3+1] = r * Math.cos(ph);
+    pos[i*3+2] = r * Math.sin(ph) * Math.sin(th);
+    const b = 0.25 + Math.random() * 0.75;
+    col[i*3] = b; col[i*3+1] = b * (0.9 + Math.random()*0.1); col[i*3+2] = b;
+  }
+  starGeo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  starGeo.setAttribute('color', new THREE.BufferAttribute(col, 3));
+  scene.add(new THREE.Points(starGeo, new THREE.PointsMaterial({
+    size: 0.09, vertexColors: true, sizeAttenuation: true,
+    transparent: true, opacity: 0.9, depthWrite: false
+  })));
+
+  // tiny moon
+  const moon = new THREE.Mesh(
+    new THREE.SphereGeometry(0.045, 24, 16),
+    new THREE.MeshStandardMaterial({ color: 0xb8b0a4, roughness: 1 })
+  );
+  moon.position.set(-1.55, 0.85, 1.6);
+  scene.add(moon);
+  const sunLight = new THREE.DirectionalLight(0xfff4e0, 2.2);
+  sunLight.position.set(-3, 2, 2.5);
+  scene.add(sunLight);
+  scene.add(new THREE.AmbientLight(0x223344, 0.35));
+
+  // ---------- Jupiter ----------
+  const uniforms = {
+    uTime: { value: 0 },
+    uLightDir: { value: new THREE.Vector3(-0.62, 0.5, 0.6).normalize() }
+  };
+
+  const vert = `
+    varying vec3 vNormal;
+    varying vec3 vPos;
+    varying vec2 vUv;
+    void main() {
+      vUv = uv;
+      vNormal = normalize(normalMatrix * normal);
+      vPos = position;
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }
+  `;
+
+  const frag = `
+    precision highp float;
+    varying vec3 vNormal;
+    varying vec3 vPos;
+    varying vec2 vUv;
+    uniform float uTime;
+    uniform vec3 uLightDir;
+
+    // ---- value noise / fbm ----
+    float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123); }
+    float vnoise(vec2 p){
+      vec2 i = floor(p), f = fract(p);
+      f = f*f*(3.0-2.0*f);
+      return mix(mix(hash(i), hash(i+vec2(1,0)), f.x),
+                 mix(hash(i+vec2(0,1)), hash(i+vec2(1,1)), f.x), f.y);
+    }
+    float fbm(vec2 p){
+      float s = 0.0, a = 0.5;
+      for(int i=0;i<5;i++){ s += a*vnoise(p); p *= 2.03; a *= 0.5; }
+      return s;
+    }
+    // ridged turbulence for wisps
+    float turb(vec2 p){
+      float s = 0.0, a = 0.5;
+      for(int i=0;i<4;i++){ s += a*abs(vnoise(p)*2.0-1.0); p *= 2.11; a *= 0.5; }
+      return s;
+    }
+
+    // zonal flow profile: alternating direction & speed by latitude
+    float flowSpeed(float lat){
+      return sin(lat * 21.0) * 0.9 + sin(lat * 47.0 + 1.7) * 0.35;
+    }
+
+    void main(){
+      float u = vUv.x;
+      float v = vUv.y;              // 0 south pole .. 1 north pole
+      float lat = (v - 0.5) * 3.14159;
+
+      // ---- zonal flow: horizontal advection, opposite directions per band ----
+      float spd = flowSpeed(v);
+      float t = uTime;
+      // slight vertical wobble so boundaries shimmer
+      float wob = fbm(vec2(u*6.0 + t*0.15, v*14.0)) - 0.5;
+      float vv = v + wob * 0.006;
+
+      vec2 p = vec2(u * 10.0 + spd * t * 0.55, vv * 26.0);
+      float n1 = fbm(p);
+      float n2 = turb(p * 2.7 + vec2(t*0.06, 0.0));
+
+      // ---- base band palette (zones light, belts dark) ----
+      float bandCoord = vv * 13.0;
+      float bandPhase = sin(bandCoord * 3.14159 + n1 * 1.4);
+      // mix cream zone vs rust belt
+      vec3 zoneCol = vec3(0.93, 0.88, 0.78);
+      vec3 beltCol = vec3(0.62, 0.42, 0.28);
+      float m = smoothstep(-0.55, 0.55, bandPhase);
+      vec3 col = mix(beltCol, zoneCol, m);
+      // extra ochre/rust variation
+      col = mix(col, vec3(0.72, 0.50, 0.30), 0.35 * fbm(vec2(u*18.0 + spd*t*0.4, vv*40.0)));
+      col = mix(col, vec3(0.45, 0.28, 0.20), 0.30 * n2 * (1.0 - m));
+      // polar darkening/haze
+      float pol = smoothstep(0.32, 0.02, abs(vv - 0.5));
+      col = mix(col, vec3(0.55, 0.48, 0.42), pol * 0.55);
+
+      // ---- Great Red Spot (southern hemisphere, right of center) ----
+      float grsLat = 0.36;                       // below equator
+      float grsLon = mod(0.68 + t * 0.010, 1.0); // drifts with its band
+      vec2 d = vec2((u - grsLon) * 2.0, (vv - grsLat) * 5.2);
+      // wrap longitude
+      if(d.x > 1.0) d.x -= 2.0;
+      if(d.x < -1.0) d.x += 2.0;
+      float ang = atan(d.y, d.x);
+      float rad = length(d);
+      // counter-clockwise churn: rotate sampling angle over time
+      float swirlA = ang + t * 0.35 + rad * 3.0;
+      vec2 sp = vec2(cos(swirlA), sin(swirlA)) * rad;
+      float sn = fbm(sp * 9.0 + vec2(t*0.08, 0.0));
+      float oval = length(vec2(d.x / 0.115, d.y / 0.075)); // ~22% width
+      float body = smoothstep(1.15, 0.75, oval);
+      float eyeWall = smoothstep(1.15, 0.95, oval) * smoothstep(0.55, 0.8, oval);
+      vec3 spotCore = vec3(0.72, 0.27, 0.16);
+      vec3 spotMid  = vec3(0.80, 0.38, 0.22);
+      vec3 wallCol  = vec3(0.90, 0.80, 0.66);
+      vec3 spotCol = mix(spotCore, spotMid, sn);
+      spotCol = mix(spotCol, wallCol, eyeWall * 0.7);
+      // pale collar around the storm
+      float collar = smoothstep(1.7, 1.15, oval) * smoothstep(1.0, 1.2, oval);
+      col = mix(col, vec3(0.92, 0.86, 0.74), collar * 0.5);
+      col = mix(col, spotCol, body);
+
+      // fine turbulent shimmer everywhere along boundaries
+      col *= 0.94 + 0.12 * n2;
+
+      // ---- lighting: upper-left key, soft terminator, limb darkening ----
+      vec3 N = normalize(vNormal);
+      vec3 V = vec3(0.0, 0.0, 1.0);
+      float diff = clamp(dot(N, uLightDir), 0.0, 1.0);
+      diff = pow(diff, 0.85);
+      float rim = pow(1.0 - abs(dot(N, V)), 2.2);       // limb darkening
+      float terminator = smoothstep(-0.15, 0.35, dot(N, uLightDir));
+      vec3 lit = col * (0.06 + 1.05 * diff);
+      lit *= 1.0 - rim * 0.65;
+      lit *= mix(0.04, 1.0, terminator);
+      // faint warm scatter on lit limb
+      lit += col * rim * diff * 0.15;
+
+      gl_FragColor = vec4(lit, 1.0);
+    }
+  `;
+
+  const jupiter = new THREE.Mesh(
+    new THREE.SphereGeometry(1.17, 128, 96),
+    new THREE.ShaderMaterial({ uniforms, vertexShader: vert, fragmentShader: frag })
+  );
+  scene.add(jupiter);
+
+  const clock = new THREE.Clock();
+  function loop() {
+    requestAnimationFrame(loop);
+    uniforms.uTime.value = clock.getElapsedTime();
+    renderer.render(scene, camera);
+  }
+  loop();
+
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+} catch (e) {
+  console.error(e);
+}
+</script>
+</body>
+</html>

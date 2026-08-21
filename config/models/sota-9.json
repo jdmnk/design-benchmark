@@ -7,5 +7,7 @@
   { "slug": "glm-5.2",        "label": "GLM 5.2",        "provider": "openrouter", "id": "z-ai/glm-5.2", "reasoningEffort": "low" },
   { "slug": "grok-4.3",       "label": "Grok 4.3",       "provider": "openrouter", "id": "x-ai/grok-4.3", "reasoningEffort": "low" },
   { "slug": "kimi-k2.7-code", "label": "Kimi K2.7 Code", "provider": "openrouter", "id": "moonshotai/kimi-k2.7-code", "reasoningEffort": "low" },
-  { "slug": "qwen3.7-plus",   "label": "Qwen3.7 Plus",   "provider": "openrouter", "id": "qwen/qwen3.7-plus", "reasoningEffort": "low" }
+  { "slug": "qwen3.7-plus",   "label": "Qwen3.7 Plus",   "provider": "openrouter", "id": "qwen/qwen3.7-plus", "reasoningEffort": "low" },
+
+  { "slug": "ox-alpha",       "label": "Ox Alpha",       "provider": "openrouter", "id": "stealth/ox-alpha", "skipByDefault": true }
 ]
