@@ -41,6 +41,6 @@ Raw copyable version: [prompt.txt](./prompt.txt) · [system-prompt.txt](./system
 | DeepSeek V4 Pro | `deepseek/deepseek-v4-pro` | openrouter | ✅ rendered | 286.4s | 17670 |  |
 | Kimi K2.7 Code | `moonshotai/kimi-k2.7-code` | openrouter | ✅ rendered | 269.8s | 14929 |  |
 | Kimi K2.6 | `moonshotai/kimi-k2.6` | openrouter | ✅ rendered | 35.3s | 4314 |  |
-| Ox Alpha | `stealth/ox-alpha` | openrouter | ✅ rendered | 41.2s | 2956 |  |
+| Ox Alpha (Aug 21) | `stealth/ox-alpha` | openrouter | ✅ rendered | 41.2s | 2956 |  |
 
 Per-model artifacts live in `models/<slug>/` (`raw.txt`, `output.html`, `screenshot.png`, `result.json`).

@@ -153,7 +153,7 @@
             },
             {
               "slug": "ox-alpha",
-              "label": "Ox Alpha",
+              "label": "Ox Alpha (Aug 21)",
               "modelId": "stealth/ox-alpha",
               "provider": "openrouter",
               "status": "rendered",
@@ -324,7 +324,7 @@
             },
             {
               "slug": "ox-alpha",
-              "label": "Ox Alpha",
+              "label": "Ox Alpha (Aug 21)",
               "modelId": "stealth/ox-alpha",
               "provider": "openrouter",
               "status": "rendered",
@@ -495,7 +495,7 @@
             },
             {
               "slug": "ox-alpha",
-              "label": "Ox Alpha",
+              "label": "Ox Alpha (Aug 21)",
               "modelId": "stealth/ox-alpha",
               "provider": "openrouter",
               "status": "rendered",
@@ -666,7 +666,7 @@
             },
             {
               "slug": "ox-alpha",
-              "label": "Ox Alpha",
+              "label": "Ox Alpha (Aug 21)",
               "modelId": "stealth/ox-alpha",
               "provider": "openrouter",
               "status": "rendered",
@@ -837,7 +837,7 @@
             },
             {
               "slug": "ox-alpha",
-              "label": "Ox Alpha",
+              "label": "Ox Alpha (Aug 21)",
               "modelId": "stealth/ox-alpha",
               "provider": "openrouter",
               "status": "rendered",
@@ -848,10 +848,24 @@
               "error": null,
               "page": "pages/black-hole-spin/ox-alpha.html",
               "clip": "clips/black-hole-spin/ox-alpha.mp4"
+            },
+            {
+              "slug": "ox-alpha-2",
+              "label": "Ox Alpha (Aug 25)",
+              "modelId": "stealth/ox-alpha",
+              "provider": "openrouter",
+              "status": "rendered",
+              "elapsedMs": 74360,
+              "outputTokens": 2971,
+              "costUsd": 0,
+              "truncated": false,
+              "error": null,
+              "page": "pages/black-hole-spin/ox-alpha-2.html",
+              "clip": "clips/black-hole-spin/ox-alpha-2.mp4"
             }
           ],
-          "rendered": 10,
-          "total": 10
+          "rendered": 11,
+          "total": 11
         },
         {
           "label": "Run 2",
@@ -1145,7 +1159,7 @@
             },
             {
               "slug": "ox-alpha",
-              "label": "Ox Alpha",
+              "label": "Ox Alpha (Aug 21)",
               "modelId": "stealth/ox-alpha",
               "provider": "openrouter",
               "status": "rendered",
@@ -1316,7 +1330,7 @@
             },
             {
               "slug": "ox-alpha",
-              "label": "Ox Alpha",
+              "label": "Ox Alpha (Aug 21)",
               "modelId": "stealth/ox-alpha",
               "provider": "openrouter",
               "status": "rendered",

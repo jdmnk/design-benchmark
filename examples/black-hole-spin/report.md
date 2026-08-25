@@ -2,7 +2,7 @@
 
 The Gargantua black hole in motion — a spinning accretion disk — in three.js / WebGL.
 
-**Models:** 10 · **Rendered:** 10/10
+**Models:** 11 · **Rendered:** 11/11
 
 ## Prompt
 
@@ -43,6 +43,7 @@ Raw copyable version: [prompt.txt](./prompt.txt) · [system-prompt.txt](./system
 | DeepSeek V4 Pro | `deepseek/deepseek-v4-pro` | openrouter | ✅ rendered | 672.2s | 18223 |  |
 | Kimi K2.7 Code | `moonshotai/kimi-k2.7-code` | openrouter | ✅ rendered | 221.8s | 21854 |  |
 | Kimi K2.6 | `moonshotai/kimi-k2.6` | openrouter | ✅ rendered | 134.3s | 6532 |  |
-| Ox Alpha | `stealth/ox-alpha` | openrouter | ✅ rendered | 62.0s | 4432 |  |
+| Ox Alpha (Aug 21) | `stealth/ox-alpha` | openrouter | ✅ rendered | 62.0s | 4432 |  |
+| Ox Alpha (Aug 25) | `stealth/ox-alpha` | openrouter | ✅ rendered | 74.4s | 4208 |  |
 
 Per-model artifacts live in `models/<slug>/` (`raw.txt`, `output.html`, `screenshot.png`, `result.json`).

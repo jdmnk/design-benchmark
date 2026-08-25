@@ -279,6 +279,18 @@ node scripts/build-web-data.mjs
 A `skipByDefault` model joins the composites of exactly the runs you've executed it on;
 remove the flag to promote it into the default lineup for future full runs.
 
+The same mechanism tracks **one model over time** (e.g. a stealth model that gets silently
+updated): add another lineup entry with the same `id` but a new slug and a dated label —
+
+```jsonc
+{ "slug": "ox-alpha",   "label": "Ox Alpha (Aug 21)", "id": "stealth/ox-alpha", "skipByDefault": true },
+{ "slug": "ox-alpha-2", "label": "Ox Alpha (Aug 25)", "id": "stealth/ox-alpha", "skipByDefault": true }
+```
+
+— and run the new slug. Each dated attempt keeps its own artifacts and appears as an
+adjacent, labelled cell in the grid (and card in the web app), so the model's evolution is
+directly comparable.
+
 ---
 
 ## Showcase web app

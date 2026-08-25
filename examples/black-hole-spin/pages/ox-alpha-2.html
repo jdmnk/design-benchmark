@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Gargantua</title>
+<style>
+  html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#000;}
+  canvas{display:block;}
+</style>
+</head>
+<body>
+<script type="module">
+import * as THREE from 'three';
+
+try {
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setClearColor(0x000005, 1);
+  document.body.appendChild(renderer.domElement);
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 200);
+  // ~6 degrees above disk plane
+  const camDist = 7.7;
+  camera.position.set(0, camDist * Math.sin(THREE.MathUtils.degToRad(6)), camDist * Math.cos(THREE.MathUtils.degToRad(6)));
+  camera.lookAt(0, 0, 0);
+
+  // ---------- Starfield ----------
+  {
+    const N = 1200;
+    const pos = new Float32Array(N * 3);
+    const col = new Float32Array(N * 3);
+    for (let i = 0; i < N; i++) {
+      const v = new THREE.Vector3().randomDirection().multiplyScalar(60 + Math.random() * 60);
+      pos.set([v.x, v.y, v.z], i * 3);
+      const b = 0.15 + Math.random() * 0.35;
+      col.set([b, b, b * (0.9 + Math.random() * 0.2)], i * 3);
+    }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    g.setAttribute('color', new THREE.BufferAttribute(col, 3));
+    const m = new THREE.PointsMaterial({ size: 0.12, vertexColors: true, sizeAttenuation: true, transparent: true, opacity: 0.9 });
+    scene.add(new THREE.Points(g, m));
+  }
+
+  // ---------- Event horizon ----------
+  const horizonR = 1.0;
+  const horizon = new THREE.Mesh(
+    new THREE.SphereGeometry(horizonR, 48, 48),
+    new THREE.MeshBasicMaterial({ color: 0x000000 })
+  );
+  scene.add(horizon);
+
+  // ---------- Accretion disk (flat, horizontal, textured) ----------
+  function makeDiskTexture() {
+    const S = 1024;
+    const c = document.createElement('canvas');
+    c.width = c.height = S;
+    const ctx = c.getContext('2d');
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, S, S);
+    const cx = S / 2;
+    // radial color gradient: inner hot -> outer deep orange
+    const grad = ctx.createRadialGradient(cx, cx, S * 0.13, cx, cx, S * 0.5);
+    grad.addColorStop(0.00, '#fff3d0');
+    grad.addColorStop(0.18, '#fff3d0');
+    grad.addColorStop(0.38, '#ffae3b');
+    grad.addColorStop(0.70, '#c8551a');
+    grad.addColorStop(1.00, '#401405');
+    ctx.globalCompositeOperation = 'lighter';
+    // turbulent azimuthal streaks
+    for (let i = 0; i < 260; i++) {
+      const a0 = Math.random() * Math.PI * 2;
+      const len = 0.15 + Math.random() * 0.9;
+      const rIn = S * (0.135 + Math.random() * 0.33);
+      const w = 2 + Math.random() * 10;
+      const bright = 0.05 + Math.random() * 0.35;
+      ctx.beginPath();
+      ctx.arc(cx, cx, rIn + w / 2, a0, a0 + len);
+      ctx.strokeStyle = `rgba(255,220,160,${bright})`;
+      ctx.lineWidth = w;
+      ctx.stroke();
+    }
+    // base radial glow on top
+    ctx.globalAlpha = 0.85;
+    ctx.fillStyle = grad;
+    ctx.beginPath(); ctx.arc(cx, cx, S * 0.5, 0, Math.PI * 2); ctx.fill();
+    ctx.globalAlpha = 1;
+    // darken center hole cleanly
+    ctx.globalCompositeOperation = 'destination-out';
+    ctx.beginPath(); ctx.arc(cx, cx, S * 0.128, 0, Math.PI * 2); ctx.fill();
+    ctx.globalCompositeOperation = 'source-over';
+    const tex = new THREE.CanvasTexture(c);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    return tex;
+  }
+  const diskTex = makeDiskTexture();
+  const diskGeo = new THREE.RingGeometry(horizonR * 1.3, horizonR * 4.2, 128, 1);
+  const diskMat = new THREE.MeshBasicMaterial({
+    map: diskTex, transparent: true, side: THREE.DoubleSide,
+    blending: THREE.AdditiveBlending, depthWrite: false
+  });
+  const disk = new THREE.Mesh(diskGeo, diskMat);
+  disk.rotation.x = -Math.PI / 2;
+  scene.add(disk);
+
+  // ---------- Relativistic beaming highlight (static, drifting) ----------
+  const beamCv = document.createElement('canvas');
+  beamCv.width = beamCv.height = 512;
+  {
+    const ctx = beamCv.getContext('2d');
+    const g = ctx.createLinearGradient(0, 256, 512, 256);
+    g.addColorStop(0.0, 'rgba(255,246,220,0)');
+    g.addColorStop(0.30, 'rgba(255,240,210,0)');
+    g.addColorStop(0.55, 'rgba(255,235,190,0.35)');
+    g.addColorStop(0.78, 'rgba(255,225,170,0.75)');
+    g.addColorStop(1.0, 'rgba(255,215,150,0)');
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, 512, 512);
+  }
+  const beamTex = new THREE.CanvasTexture(beamCv);
+  const beam = new THREE.Mesh(
+    new THREE.RingGeometry(horizonR * 1.3, horizonR * 4.2, 96, 1),
+    new THREE.MeshBasicMaterial({
+      map: beamTex, transparent: true, side: THREE.DoubleSide,
+      blending: THREE.AdditiveBlending, depthWrite: false, opacity: 0.85
+    })
+  );
+  beam.rotation.x = -Math.PI / 2;
+  scene.add(beam);
+
+  // ---------- Lensing halo arcs (over top + under bottom) ----------
+  function haloArc(rotZ, tiltX) {
+    const m = new THREE.Mesh(
+      new THREE.TorusGeometry(horizonR * 1.22, 0.055, 12, 64, Math.PI),
+      new THREE.MeshBasicMaterial({
+        color: 0xffd9a0, transparent: true,
+        blending: THREE.AdditiveBlending, depthWrite: false
+      })
+    );
+    m.rotation.z = rotZ;
+    m.rotation.x = tiltX;
+    return m;
+  }
+  const arcTop = haloArc(Math.PI, 0.35);   // wraps over the top
+  const arcBot = haloArc(0, 0.35);         // mirrored under the bottom
+  scene.add(arcTop, arcBot);
+
+  // faint secondary lensed arcs (wider, dimmer)
+  const arcTop2 = new THREE.Mesh(
+    new THREE.TorusGeometry(horizonR * 1.45, 0.09, 10, 64, Math.PI),
+    new THREE.MeshBasicMaterial({ color: 0xff9c3a, transparent: true, opacity: 0.35, blending: THREE.AdditiveBlending, depthWrite: false })
+  );
+  arcTop2.rotation.z = Math.PI; arcTop2.rotation.x = 0.35;
+  const arcBot2 = arcTop2.clone();
+  arcBot2.rotation.z = 0;
+  scene.add(arcTop2, arcBot2);
+
+  // ---------- Photon ring ----------
+  const photonRing = new THREE.Mesh(
+    new THREE.TorusGeometry(horizonR * 1.06, 0.022, 10, 96),
+    new THREE.MeshBasicMaterial({ color: 0xfff6e0, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false })
+  );
+  photonRing.lookAt(camera.position); // face camera
+  scene.add(photonRing);
+
+  // soft glow sprite behind photon ring
+  const glowCv = document.createElement('canvas');
+  glowCv.width = glowCv.height = 256;
+  {
+    const ctx = glowCv.getContext('2d');
+    const g = ctx.createRadialGradient(128, 128, 20, 128, 128, 128);
+    g.addColorStop(0, 'rgba(255,235,200,0.5)');
+    g.addColorStop(0.4, 'rgba(255,180,90,0.15)');
+    g.addColorStop(1, 'rgba(255,140,50,0)');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, 256, 256);
+  }
+  const glow = new THREE.Sprite(new THREE.SpriteMaterial({
+    map: new THREE.CanvasTexture(glowCv), transparent: true,
+    blending: THREE.AdditiveBlending, depthWrite: false
+  }));
+  glow.scale.setScalar(horizonR * 3.4);
+  scene.add(glow);
+
+  // ---------- Animation loop ----------
+  const clock = { start: performance.now() };
+  function animate(now) {
+    requestAnimationFrame(animate);
+    const t = (now - clock.start) / 1000;
+
+    // disk rotation ~32 deg/s
+    disk.rotation.z = THREE.MathUtils.degToRad(t * 32);
+    // beaming highlight slow drift
+    beam.rotation.z = THREE.MathUtils.degToRad(t * 4);
+    beam.material.opacity = 0.7 + 0.25 * Math.sin(t * 1.7);
+
+    // shimmering flicker in halo arcs
+    arcTop.material.opacity = 0.85 + 0.15 * Math.sin(t * 6.3) * Math.sin(t * 2.1 + 1);
+    arcBot.material.opacity = 0.80 + 0.18 * Math.sin(t * 5.1 + 2) * Math.cos(t * 1.4);
+    arcTop2.material.opacity = 0.30 + 0.12 * Math.sin(t * 3.7 + 0.5);
+    arcBot2.material.opacity = 0.30 + 0.12 * Math.sin(t * 4.3 + 1.5);
+    photonRing.material.opacity = 0.9 + 0.1 * Math.sin(t * 7.7);
+    glow.material.opacity = 0.75 + 0.15 * Math.sin(t * 2.6);
+
+    renderer.render(scene, camera);
+  }
+  requestAnimationFrame(animate);
+
+} catch (e) {
+  console.error(e);
+}
+</script>
+</body>
+</html>

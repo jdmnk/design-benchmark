@@ -43,6 +43,6 @@ Raw copyable version: [prompt.txt](./prompt.txt) · [system-prompt.txt](./system
 | Grok 4.3 | `x-ai/grok-4.3` | openrouter | ✅ rendered | 42.5s | 4329 |  |
 | Kimi K2.7 Code | `moonshotai/kimi-k2.7-code` | openrouter | ✅ rendered | 229.4s | 17096 |  |
 | Qwen3.7 Plus | `qwen/qwen3.7-plus` | openrouter | ✅ rendered | 146.7s | 6447 |  |
-| Ox Alpha | `stealth/ox-alpha` | openrouter | ✅ rendered | 63.7s | 4024 |  |
+| Ox Alpha (Aug 21) | `stealth/ox-alpha` | openrouter | ✅ rendered | 63.7s | 4024 |  |
 
 Per-model artifacts live in `models/<slug>/` (`raw.txt`, `output.html`, `screenshot.png`, `result.json`).
