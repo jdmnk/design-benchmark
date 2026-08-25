@@ -47,10 +47,13 @@ function statusOf(m) {
 
 const gridsDir = join(ROOT, "web/public/grids");
 const pagesDir = join(ROOT, "web/public/pages");
+const clipsDir = join(ROOT, "web/public/clips");
 if (existsSync(gridsDir)) rmSync(gridsDir, { recursive: true });
 mkdirSync(gridsDir, { recursive: true });
 if (existsSync(pagesDir)) rmSync(pagesDir, { recursive: true });
 mkdirSync(pagesDir, { recursive: true });
+if (existsSync(clipsDir)) rmSync(clipsDir, { recursive: true });
+mkdirSync(clipsDir, { recursive: true });
 
 /**
  * Build one run from an example directory. `key` is the unique filesystem
@@ -82,7 +85,22 @@ function buildRun(exDir, key, label) {
     }
   }
 
+  // per-model clips (animated benchmarks) — the separate-videos view plays and
+  // downloads these individually
+  const clipsSrc = join(ROOT, exDir, "clips");
+  const clipSet = new Set();
+  if (existsSync(clipsSrc)) {
+    mkdirSync(join(clipsDir, key), { recursive: true });
+    for (const f of readdirSync(clipsSrc)) {
+      if (f.endsWith(".mp4")) {
+        copyFileSync(join(clipsSrc, f), join(clipsDir, key, f));
+        clipSet.add(basename(f, ".mp4"));
+      }
+    }
+  }
+
   const models = summary.models.map((m) => ({
+    slug: m.slug,
     label: m.label,
     modelId: m.modelId,
     provider: m.provider,
@@ -93,6 +111,7 @@ function buildRun(exDir, key, label) {
     truncated: Boolean(m.truncated),
     error: cleanError(m.error ?? m.render?.error),
     page: pageSet.has(m.slug) ? `pages/${key}/${m.slug}.html` : null,
+    clip: clipSet.has(m.slug) ? `clips/${key}/${m.slug}.mp4` : null,
   }));
 
   return {
@@ -169,6 +188,6 @@ writeFileSync(join(outDir, "benchmarks.json"), JSON.stringify({ benchmarks }, nu
 console.log(`Wrote ${benchmarks.length} benchmarks → web/src/data/benchmarks.json`);
 for (const b of benchmarks) {
   for (const r of b.runs) {
-    console.log(`  • ${b.id} ${r.label}: ${r.rendered}/${r.total} rendered, ${r.models.filter((m) => m.page).length} pages`);
+    console.log(`  • ${b.id} ${r.label}: ${r.rendered}/${r.total} rendered, ${r.models.filter((m) => m.page).length} pages, ${r.models.filter((m) => m.clip).length} clips`);
   }
 }

@@ -26,6 +26,7 @@
           },
           "models": [
             {
+              "slug": "fable-5",
               "label": "Fable 5",
               "modelId": "claude-fable-5",
               "provider": "claude-cli",
@@ -35,9 +36,11 @@
               "costUsd": null,
               "truncated": false,
               "error": null,
-              "page": "pages/black-hole-spin-sota/fable-5.html"
+              "page": "pages/black-hole-spin-sota/fable-5.html",
+              "clip": "clips/black-hole-spin-sota/fable-5.mp4"
             },
             {
+              "slug": "opus-4.8",
               "label": "Opus 4.8",
               "modelId": "claude-opus-4-8",
               "provider": "claude-cli",
@@ -47,9 +50,11 @@
               "costUsd": null,
               "truncated": false,
               "error": null,
-              "page": "pages/black-hole-spin-sota/opus-4.8.html"
+              "page": "pages/black-hole-spin-sota/opus-4.8.html",
+              "clip": "clips/black-hole-spin-sota/opus-4.8.mp4"
             },
             {
+              "slug": "sonnet-5",
               "label": "Sonnet 5",
               "modelId": "claude-sonnet-5",
               "provider": "claude-cli",
@@ -59,9 +64,11 @@
               "costUsd": null,
               "truncated": false,
               "error": null,
-              "page": "pages/black-hole-spin-sota/sonnet-5.html"
+              "page": "pages/black-hole-spin-sota/sonnet-5.html",
+              "clip": "clips/black-hole-spin-sota/sonnet-5.mp4"
             },
             {
+              "slug": "gpt-5.5-high",
               "label": "GPT-5.5 high",
               "modelId": "gpt-5.5",
               "provider": "codex-cli",
@@ -71,9 +78,11 @@
               "costUsd": null,
               "truncated": false,
               "error": null,
-              "page": "pages/black-hole-spin-sota/gpt-5.5-high.html"
+              "page": "pages/black-hole-spin-sota/gpt-5.5-high.html",
+              "clip": "clips/black-hole-spin-sota/gpt-5.5-high.mp4"
             },
             {
+              "slug": "gpt-5.4-high",
               "label": "GPT-5.4 high",
               "modelId": "gpt-5.4",
               "provider": "codex-cli",
@@ -83,9 +92,11 @@
               "costUsd": null,
               "truncated": false,
               "error": null,
-              "page": "pages/black-hole-spin-sota/gpt-5.4-high.html"
+              "page": "pages/black-hole-spin-sota/gpt-5.4-high.html",
+              "clip": "clips/black-hole-spin-sota/gpt-5.4-high.mp4"
             },
             {
+              "slug": "glm-5.2",
               "label": "GLM 5.2",
               "modelId": "z-ai/glm-5.2",
               "provider": "openrouter",
@@ -95,9 +106,11 @@
               "costUsd": 0.0424662,
               "truncated": false,
               "error": null,
-              "page": "pages/black-hole-spin-sota/glm-5.2.html"
+              "page": "pages/black-hole-spin-sota/glm-5.2.html",
+              "clip": "clips/black-hole-spin-sota/glm-5.2.mp4"
             },
             {
+              "slug": "grok-4.3",
               "label": "Grok 4.3",
               "modelId": "x-ai/grok-4.3",
               "provider": "openrouter",
@@ -107,9 +120,11 @@
               "costUsd": 0.00896465,
               "truncated": false,
               "error": null,
-              "page": "pages/black-hole-spin-sota/grok-4.3.html"
+              "page": "pages/black-hole-spin-sota/grok-4.3.html",
+              "clip": "clips/black-hole-spin-sota/grok-4.3.mp4"
             },
             {
+              "slug": "kimi-k2.7-code",
               "label": "Kimi K2.7 Code",
               "modelId": "moonshotai/kimi-k2.7-code",
               "provider": "openrouter",
@@ -119,9 +134,11 @@
               "costUsd": 0.05601434,
               "truncated": false,
               "error": null,
-              "page": "pages/black-hole-spin-sota/kimi-k2.7-code.html"
+              "page": "pages/black-hole-spin-sota/kimi-k2.7-code.html",
+              "clip": "clips/black-hole-spin-sota/kimi-k2.7-code.mp4"
             },
             {
+              "slug": "qwen3.7-plus",
               "label": "Qwen3.7 Plus",
               "modelId": "qwen/qwen3.7-plus",
               "provider": "openrouter",
@@ -131,9 +148,11 @@
               "costUsd": 0.00709152,
               "truncated": false,
               "error": null,
-              "page": "pages/black-hole-spin-sota/qwen3.7-plus.html"
+              "page": "pages/black-hole-spin-sota/qwen3.7-plus.html",
+              "clip": "clips/black-hole-spin-sota/qwen3.7-plus.mp4"
             },
             {
+              "slug": "ox-alpha",
               "label": "Ox Alpha",
               "modelId": "stealth/ox-alpha",
               "provider": "openrouter",
@@ -143,7 +162,8 @@
               "costUsd": 0,
               "truncated": false,
               "error": null,
-              "page": "pages/black-hole-spin-sota/ox-alpha.html"
+              "page": "pages/black-hole-spin-sota/ox-alpha.html",
+              "clip": "clips/black-hole-spin-sota/ox-alpha.mp4"
             }
           ],
           "rendered": 10,
@@ -177,6 +197,7 @@
           },
           "models": [
             {
+              "slug": "glm-5.2",
               "label": "GLM 5.2",
               "modelId": "z-ai/glm-5.2",
               "provider": "openrouter",
@@ -186,9 +207,11 @@
               "costUsd": 0.0504167,
               "truncated": false,
               "error": null,
-              "page": "pages/ringed-giant/glm-5.2.html"
+              "page": "pages/ringed-giant/glm-5.2.html",
+              "clip": "clips/ringed-giant/glm-5.2.mp4"
             },
             {
+              "slug": "grok-4.3",
               "label": "Grok 4.3",
               "modelId": "x-ai/grok-4.3",
               "provider": "openrouter",
@@ -198,9 +221,11 @@
               "costUsd": 0.0101984,
               "truncated": false,
               "error": null,
-              "page": "pages/ringed-giant/grok-4.3.html"
+              "page": "pages/ringed-giant/grok-4.3.html",
+              "clip": "clips/ringed-giant/grok-4.3.mp4"
             },
             {
+              "slug": "gpt-5.4-mini",
               "label": "GPT-5.4 mini",
               "modelId": "openai/gpt-5.4-mini",
               "provider": "openrouter",
@@ -210,9 +235,11 @@
               "costUsd": 0.0255705,
               "truncated": false,
               "error": null,
-              "page": "pages/ringed-giant/gpt-5.4-mini.html"
+              "page": "pages/ringed-giant/gpt-5.4-mini.html",
+              "clip": "clips/ringed-giant/gpt-5.4-mini.mp4"
             },
             {
+              "slug": "claude-haiku-4.5",
               "label": "Claude Haiku 4.5",
               "modelId": "anthropic/claude-haiku-4.5",
               "provider": "openrouter",
@@ -222,9 +249,11 @@
               "costUsd": 0.018645,
               "truncated": false,
               "error": null,
-              "page": "pages/ringed-giant/claude-haiku-4.5.html"
+              "page": "pages/ringed-giant/claude-haiku-4.5.html",
+              "clip": "clips/ringed-giant/claude-haiku-4.5.mp4"
             },
             {
+              "slug": "qwen3.7-plus",
               "label": "Qwen3.7 Plus",
               "modelId": "qwen/qwen3.7-plus",
               "provider": "openrouter",
@@ -234,9 +263,11 @@
               "costUsd": 0.0107472,
               "truncated": false,
               "error": null,
-              "page": "pages/ringed-giant/qwen3.7-plus.html"
+              "page": "pages/ringed-giant/qwen3.7-plus.html",
+              "clip": "clips/ringed-giant/qwen3.7-plus.mp4"
             },
             {
+              "slug": "gemini-3.1-flash-lite",
               "label": "Gemini 3.1 Flash-Lite",
               "modelId": "google/gemini-3.1-flash-lite",
               "provider": "openrouter",
@@ -246,9 +277,11 @@
               "costUsd": 0.0032965,
               "truncated": false,
               "error": null,
-              "page": "pages/ringed-giant/gemini-3.1-flash-lite.html"
+              "page": "pages/ringed-giant/gemini-3.1-flash-lite.html",
+              "clip": "clips/ringed-giant/gemini-3.1-flash-lite.mp4"
             },
             {
+              "slug": "deepseek-v4-pro",
               "label": "DeepSeek V4 Pro",
               "modelId": "deepseek/deepseek-v4-pro",
               "provider": "openrouter",
@@ -258,9 +291,11 @@
               "costUsd": 0.015995472,
               "truncated": false,
               "error": null,
-              "page": "pages/ringed-giant/deepseek-v4-pro.html"
+              "page": "pages/ringed-giant/deepseek-v4-pro.html",
+              "clip": "clips/ringed-giant/deepseek-v4-pro.mp4"
             },
             {
+              "slug": "kimi-k2.7-code",
               "label": "Kimi K2.7 Code",
               "modelId": "moonshotai/kimi-k2.7-code",
               "provider": "openrouter",
@@ -270,9 +305,11 @@
               "costUsd": 0.0952273,
               "truncated": false,
               "error": null,
-              "page": "pages/ringed-giant/kimi-k2.7-code.html"
+              "page": "pages/ringed-giant/kimi-k2.7-code.html",
+              "clip": "clips/ringed-giant/kimi-k2.7-code.mp4"
             },
             {
+              "slug": "kimi-k2.6",
               "label": "Kimi K2.6",
               "modelId": "moonshotai/kimi-k2.6",
               "provider": "openrouter",
@@ -282,9 +319,11 @@
               "costUsd": 0.0272334,
               "truncated": false,
               "error": null,
-              "page": "pages/ringed-giant/kimi-k2.6.html"
+              "page": "pages/ringed-giant/kimi-k2.6.html",
+              "clip": "clips/ringed-giant/kimi-k2.6.mp4"
             },
             {
+              "slug": "ox-alpha",
               "label": "Ox Alpha",
               "modelId": "stealth/ox-alpha",
               "provider": "openrouter",
@@ -294,7 +333,8 @@
               "costUsd": 0,
               "truncated": false,
               "error": null,
-              "page": "pages/ringed-giant/ox-alpha.html"
+              "page": "pages/ringed-giant/ox-alpha.html",
+              "clip": "clips/ringed-giant/ox-alpha.mp4"
             }
           ],
           "rendered": 10,
@@ -328,6 +368,7 @@
           },
           "models": [
             {
+              "slug": "fable-5",
               "label": "Fable 5",
               "modelId": "claude-fable-5",
               "provider": "claude-cli",
@@ -337,9 +378,11 @@
               "costUsd": null,
               "truncated": false,
               "error": null,
-              "page": "pages/ringed-giant-sota/fable-5.html"
+              "page": "pages/ringed-giant-sota/fable-5.html",
+              "clip": "clips/ringed-giant-sota/fable-5.mp4"
             },
             {
+              "slug": "opus-4.8",
               "label": "Opus 4.8",
               "modelId": "claude-opus-4-8",
               "provider": "claude-cli",
@@ -349,9 +392,11 @@
               "costUsd": null,
               "truncated": false,
               "error": null,
-              "page": "pages/ringed-giant-sota/opus-4.8.html"
+              "page": "pages/ringed-giant-sota/opus-4.8.html",
+              "clip": "clips/ringed-giant-sota/opus-4.8.mp4"
             },
             {
+              "slug": "sonnet-5",
               "label": "Sonnet 5",
               "modelId": "claude-sonnet-5",
               "provider": "claude-cli",
@@ -361,9 +406,11 @@
               "costUsd": null,
               "truncated": false,
               "error": null,
-              "page": "pages/ringed-giant-sota/sonnet-5.html"
+              "page": "pages/ringed-giant-sota/sonnet-5.html",
+              "clip": "clips/ringed-giant-sota/sonnet-5.mp4"
             },
             {
+              "slug": "gpt-5.5-high",
               "label": "GPT-5.5 high",
               "modelId": "gpt-5.5",
               "provider": "codex-cli",
@@ -373,9 +420,11 @@
               "costUsd": null,
               "truncated": false,
               "error": null,
-              "page": "pages/ringed-giant-sota/gpt-5.5-high.html"
+              "page": "pages/ringed-giant-sota/gpt-5.5-high.html",
+              "clip": "clips/ringed-giant-sota/gpt-5.5-high.mp4"
             },
             {
+              "slug": "gpt-5.4-high",
               "label": "GPT-5.4 high",
               "modelId": "gpt-5.4",
               "provider": "codex-cli",
@@ -385,9 +434,11 @@
               "costUsd": null,
               "truncated": false,
               "error": null,
-              "page": "pages/ringed-giant-sota/gpt-5.4-high.html"
+              "page": "pages/ringed-giant-sota/gpt-5.4-high.html",
+              "clip": "clips/ringed-giant-sota/gpt-5.4-high.mp4"
             },
             {
+              "slug": "glm-5.2",
               "label": "GLM 5.2",
               "modelId": "z-ai/glm-5.2",
               "provider": "openrouter",
@@ -397,9 +448,11 @@
               "costUsd": 0.074436824,
               "truncated": false,
               "error": null,
-              "page": "pages/ringed-giant-sota/glm-5.2.html"
+              "page": "pages/ringed-giant-sota/glm-5.2.html",
+              "clip": "clips/ringed-giant-sota/glm-5.2.mp4"
             },
             {
+              "slug": "grok-4.3",
               "label": "Grok 4.3",
               "modelId": "x-ai/grok-4.3",
               "provider": "openrouter",
@@ -409,9 +462,11 @@
               "costUsd": 0.00804965,
               "truncated": false,
               "error": null,
-              "page": "pages/ringed-giant-sota/grok-4.3.html"
+              "page": "pages/ringed-giant-sota/grok-4.3.html",
+              "clip": "clips/ringed-giant-sota/grok-4.3.mp4"
             },
             {
+              "slug": "kimi-k2.7-code",
               "label": "Kimi K2.7 Code",
               "modelId": "moonshotai/kimi-k2.7-code",
               "provider": "openrouter",
@@ -421,9 +476,11 @@
               "costUsd": 0.10396775,
               "truncated": false,
               "error": null,
-              "page": "pages/ringed-giant-sota/kimi-k2.7-code.html"
+              "page": "pages/ringed-giant-sota/kimi-k2.7-code.html",
+              "clip": "clips/ringed-giant-sota/kimi-k2.7-code.mp4"
             },
             {
+              "slug": "qwen3.7-plus",
               "label": "Qwen3.7 Plus",
               "modelId": "qwen/qwen3.7-plus",
               "provider": "openrouter",
@@ -433,9 +490,11 @@
               "costUsd": 0.02032448,
               "truncated": false,
               "error": null,
-              "page": "pages/ringed-giant-sota/qwen3.7-plus.html"
+              "page": "pages/ringed-giant-sota/qwen3.7-plus.html",
+              "clip": "clips/ringed-giant-sota/qwen3.7-plus.mp4"
             },
             {
+              "slug": "ox-alpha",
               "label": "Ox Alpha",
               "modelId": "stealth/ox-alpha",
               "provider": "openrouter",
@@ -445,7 +504,8 @@
               "costUsd": 0,
               "truncated": false,
               "error": null,
-              "page": "pages/ringed-giant-sota/ox-alpha.html"
+              "page": "pages/ringed-giant-sota/ox-alpha.html",
+              "clip": "clips/ringed-giant-sota/ox-alpha.mp4"
             }
           ],
           "rendered": 10,
@@ -479,6 +539,7 @@
           },
           "models": [
             {
+              "slug": "fable-5",
               "label": "Fable 5",
               "modelId": "claude-fable-5",
               "provider": "claude-cli",
@@ -488,9 +549,11 @@
               "costUsd": null,
               "truncated": false,
               "error": null,
-              "page": "pages/jupiter/fable-5.html"
+              "page": "pages/jupiter/fable-5.html",
+              "clip": "clips/jupiter/fable-5.mp4"
             },
             {
+              "slug": "opus-4.8",
               "label": "Opus 4.8",
               "modelId": "claude-opus-4-8",
               "provider": "claude-cli",
@@ -500,9 +563,11 @@
               "costUsd": null,
               "truncated": false,
               "error": null,
-              "page": "pages/jupiter/opus-4.8.html"
+              "page": "pages/jupiter/opus-4.8.html",
+              "clip": "clips/jupiter/opus-4.8.mp4"
             },
             {
+              "slug": "sonnet-5",
               "label": "Sonnet 5",
               "modelId": "claude-sonnet-5",
               "provider": "claude-cli",
@@ -512,9 +577,11 @@
               "costUsd": null,
               "truncated": false,
               "error": null,
-              "page": "pages/jupiter/sonnet-5.html"
+              "page": "pages/jupiter/sonnet-5.html",
+              "clip": "clips/jupiter/sonnet-5.mp4"
             },
             {
+              "slug": "gpt-5.5-high",
               "label": "GPT-5.5 high",
               "modelId": "gpt-5.5",
               "provider": "codex-cli",
@@ -524,9 +591,11 @@
               "costUsd": null,
               "truncated": false,
               "error": null,
-              "page": "pages/jupiter/gpt-5.5-high.html"
+              "page": "pages/jupiter/gpt-5.5-high.html",
+              "clip": "clips/jupiter/gpt-5.5-high.mp4"
             },
             {
+              "slug": "gpt-5.4-high",
               "label": "GPT-5.4 high",
               "modelId": "gpt-5.4",
               "provider": "codex-cli",
@@ -536,9 +605,11 @@
               "costUsd": null,
               "truncated": false,
               "error": null,
-              "page": "pages/jupiter/gpt-5.4-high.html"
+              "page": "pages/jupiter/gpt-5.4-high.html",
+              "clip": "clips/jupiter/gpt-5.4-high.mp4"
             },
             {
+              "slug": "glm-5.2",
               "label": "GLM 5.2",
               "modelId": "z-ai/glm-5.2",
               "provider": "openrouter",
@@ -548,9 +619,11 @@
               "costUsd": 0.0635312,
               "truncated": false,
               "error": null,
-              "page": "pages/jupiter/glm-5.2.html"
+              "page": "pages/jupiter/glm-5.2.html",
+              "clip": "clips/jupiter/glm-5.2.mp4"
             },
             {
+              "slug": "grok-4.3",
               "label": "Grok 4.3",
               "modelId": "x-ai/grok-4.3",
               "provider": "openrouter",
@@ -560,9 +633,11 @@
               "costUsd": 0.0084459,
               "truncated": false,
               "error": null,
-              "page": "pages/jupiter/grok-4.3.html"
+              "page": "pages/jupiter/grok-4.3.html",
+              "clip": "clips/jupiter/grok-4.3.mp4"
             },
             {
+              "slug": "kimi-k2.7-code",
               "label": "Kimi K2.7 Code",
               "modelId": "moonshotai/kimi-k2.7-code",
               "provider": "openrouter",
@@ -572,9 +647,11 @@
               "costUsd": 0.07848668,
               "truncated": false,
               "error": null,
-              "page": "pages/jupiter/kimi-k2.7-code.html"
+              "page": "pages/jupiter/kimi-k2.7-code.html",
+              "clip": "clips/jupiter/kimi-k2.7-code.mp4"
             },
             {
+              "slug": "qwen3.7-plus",
               "label": "Qwen3.7 Plus",
               "modelId": "qwen/qwen3.7-plus",
               "provider": "openrouter",
@@ -584,9 +661,11 @@
               "costUsd": 0.01002912,
               "truncated": false,
               "error": null,
-              "page": "pages/jupiter/qwen3.7-plus.html"
+              "page": "pages/jupiter/qwen3.7-plus.html",
+              "clip": "clips/jupiter/qwen3.7-plus.mp4"
             },
             {
+              "slug": "ox-alpha",
               "label": "Ox Alpha",
               "modelId": "stealth/ox-alpha",
               "provider": "openrouter",
@@ -596,7 +675,8 @@
               "costUsd": 0,
               "truncated": false,
               "error": null,
-              "page": "pages/jupiter/ox-alpha.html"
+              "page": "pages/jupiter/ox-alpha.html",
+              "clip": "clips/jupiter/ox-alpha.mp4"
             }
           ],
           "rendered": 10,
@@ -630,6 +710,7 @@
           },
           "models": [
             {
+              "slug": "glm-5.2",
               "label": "GLM 5.2",
               "modelId": "z-ai/glm-5.2",
               "provider": "openrouter",
@@ -639,9 +720,11 @@
               "costUsd": 0.0434934,
               "truncated": false,
               "error": null,
-              "page": "pages/black-hole-spin/glm-5.2.html"
+              "page": "pages/black-hole-spin/glm-5.2.html",
+              "clip": "clips/black-hole-spin/glm-5.2.mp4"
             },
             {
+              "slug": "grok-4.3",
               "label": "Grok 4.3",
               "modelId": "x-ai/grok-4.3",
               "provider": "openrouter",
@@ -651,9 +734,11 @@
               "costUsd": 0.00745435,
               "truncated": false,
               "error": null,
-              "page": "pages/black-hole-spin/grok-4.3.html"
+              "page": "pages/black-hole-spin/grok-4.3.html",
+              "clip": "clips/black-hole-spin/grok-4.3.mp4"
             },
             {
+              "slug": "gpt-5.4-mini",
               "label": "GPT-5.4 mini",
               "modelId": "openai/gpt-5.4-mini",
               "provider": "openrouter",
@@ -663,9 +748,11 @@
               "costUsd": 0.0229455,
               "truncated": false,
               "error": null,
-              "page": "pages/black-hole-spin/gpt-5.4-mini.html"
+              "page": "pages/black-hole-spin/gpt-5.4-mini.html",
+              "clip": "clips/black-hole-spin/gpt-5.4-mini.mp4"
             },
             {
+              "slug": "claude-haiku-4.5",
               "label": "Claude Haiku 4.5",
               "modelId": "anthropic/claude-haiku-4.5",
               "provider": "openrouter",
@@ -675,9 +762,11 @@
               "costUsd": 0.018659,
               "truncated": false,
               "error": null,
-              "page": "pages/black-hole-spin/claude-haiku-4.5.html"
+              "page": "pages/black-hole-spin/claude-haiku-4.5.html",
+              "clip": "clips/black-hole-spin/claude-haiku-4.5.mp4"
             },
             {
+              "slug": "qwen3.7-plus",
               "label": "Qwen3.7 Plus",
               "modelId": "qwen/qwen3.7-plus",
               "provider": "openrouter",
@@ -687,9 +776,11 @@
               "costUsd": 0.00826752,
               "truncated": false,
               "error": null,
-              "page": "pages/black-hole-spin/qwen3.7-plus.html"
+              "page": "pages/black-hole-spin/qwen3.7-plus.html",
+              "clip": "clips/black-hole-spin/qwen3.7-plus.mp4"
             },
             {
+              "slug": "gemini-3.1-flash-lite",
               "label": "Gemini 3.1 Flash-Lite",
               "modelId": "google/gemini-3.1-flash-lite",
               "provider": "openrouter",
@@ -699,9 +790,11 @@
               "costUsd": 0.00305125,
               "truncated": false,
               "error": null,
-              "page": "pages/black-hole-spin/gemini-3.1-flash-lite.html"
+              "page": "pages/black-hole-spin/gemini-3.1-flash-lite.html",
+              "clip": "clips/black-hole-spin/gemini-3.1-flash-lite.mp4"
             },
             {
+              "slug": "deepseek-v4-pro",
               "label": "DeepSeek V4 Pro",
               "modelId": "deepseek/deepseek-v4-pro",
               "provider": "openrouter",
@@ -711,9 +804,11 @@
               "costUsd": 0.05591488,
               "truncated": false,
               "error": null,
-              "page": "pages/black-hole-spin/deepseek-v4-pro.html"
+              "page": "pages/black-hole-spin/deepseek-v4-pro.html",
+              "clip": "clips/black-hole-spin/deepseek-v4-pro.mp4"
             },
             {
+              "slug": "kimi-k2.7-code",
               "label": "Kimi K2.7 Code",
               "modelId": "moonshotai/kimi-k2.7-code",
               "provider": "openrouter",
@@ -723,9 +818,11 @@
               "costUsd": 0.0814037,
               "truncated": false,
               "error": null,
-              "page": "pages/black-hole-spin/kimi-k2.7-code.html"
+              "page": "pages/black-hole-spin/kimi-k2.7-code.html",
+              "clip": "clips/black-hole-spin/kimi-k2.7-code.mp4"
             },
             {
+              "slug": "kimi-k2.6",
               "label": "Kimi K2.6",
               "modelId": "moonshotai/kimi-k2.6",
               "provider": "openrouter",
@@ -735,9 +832,11 @@
               "costUsd": 0.02011812,
               "truncated": false,
               "error": null,
-              "page": "pages/black-hole-spin/kimi-k2.6.html"
+              "page": "pages/black-hole-spin/kimi-k2.6.html",
+              "clip": "clips/black-hole-spin/kimi-k2.6.mp4"
             },
             {
+              "slug": "ox-alpha",
               "label": "Ox Alpha",
               "modelId": "stealth/ox-alpha",
               "provider": "openrouter",
@@ -747,7 +846,8 @@
               "costUsd": 0,
               "truncated": false,
               "error": null,
-              "page": "pages/black-hole-spin/ox-alpha.html"
+              "page": "pages/black-hole-spin/ox-alpha.html",
+              "clip": "clips/black-hole-spin/ox-alpha.mp4"
             }
           ],
           "rendered": 10,
@@ -761,6 +861,7 @@
           },
           "models": [
             {
+              "slug": "glm-5.2",
               "label": "GLM 5.2",
               "modelId": "z-ai/glm-5.2",
               "provider": "openrouter",
@@ -770,9 +871,11 @@
               "costUsd": null,
               "truncated": false,
               "error": null,
-              "page": "pages/black-hole-spin-2/glm-5.2.html"
+              "page": "pages/black-hole-spin-2/glm-5.2.html",
+              "clip": "clips/black-hole-spin-2/glm-5.2.mp4"
             },
             {
+              "slug": "grok-4.3",
               "label": "Grok 4.3",
               "modelId": "x-ai/grok-4.3",
               "provider": "openrouter",
@@ -782,9 +885,11 @@
               "costUsd": null,
               "truncated": false,
               "error": null,
-              "page": "pages/black-hole-spin-2/grok-4.3.html"
+              "page": "pages/black-hole-spin-2/grok-4.3.html",
+              "clip": "clips/black-hole-spin-2/grok-4.3.mp4"
             },
             {
+              "slug": "gpt-5.4-mini",
               "label": "GPT-5.4 mini",
               "modelId": "openai/gpt-5.4-mini",
               "provider": "openrouter",
@@ -794,9 +899,11 @@
               "costUsd": null,
               "truncated": false,
               "error": null,
-              "page": "pages/black-hole-spin-2/gpt-5.4-mini.html"
+              "page": "pages/black-hole-spin-2/gpt-5.4-mini.html",
+              "clip": "clips/black-hole-spin-2/gpt-5.4-mini.mp4"
             },
             {
+              "slug": "claude-haiku-4.5",
               "label": "Claude Haiku 4.5",
               "modelId": "anthropic/claude-haiku-4.5",
               "provider": "openrouter",
@@ -806,9 +913,11 @@
               "costUsd": null,
               "truncated": false,
               "error": null,
-              "page": "pages/black-hole-spin-2/claude-haiku-4.5.html"
+              "page": "pages/black-hole-spin-2/claude-haiku-4.5.html",
+              "clip": "clips/black-hole-spin-2/claude-haiku-4.5.mp4"
             },
             {
+              "slug": "qwen3.7-plus",
               "label": "Qwen3.7 Plus",
               "modelId": "qwen/qwen3.7-plus",
               "provider": "openrouter",
@@ -818,9 +927,11 @@
               "costUsd": null,
               "truncated": false,
               "error": null,
-              "page": "pages/black-hole-spin-2/qwen3.7-plus.html"
+              "page": "pages/black-hole-spin-2/qwen3.7-plus.html",
+              "clip": "clips/black-hole-spin-2/qwen3.7-plus.mp4"
             },
             {
+              "slug": "gemini-3.1-flash-lite",
               "label": "Gemini 3.1 Flash-Lite",
               "modelId": "google/gemini-3.1-flash-lite",
               "provider": "openrouter",
@@ -830,9 +941,11 @@
               "costUsd": null,
               "truncated": false,
               "error": null,
-              "page": "pages/black-hole-spin-2/gemini-3.1-flash-lite.html"
+              "page": "pages/black-hole-spin-2/gemini-3.1-flash-lite.html",
+              "clip": "clips/black-hole-spin-2/gemini-3.1-flash-lite.mp4"
             },
             {
+              "slug": "deepseek-v4-pro",
               "label": "DeepSeek V4 Pro",
               "modelId": "deepseek/deepseek-v4-pro",
               "provider": "openrouter",
@@ -842,9 +955,11 @@
               "costUsd": null,
               "truncated": false,
               "error": null,
-              "page": "pages/black-hole-spin-2/deepseek-v4-pro.html"
+              "page": "pages/black-hole-spin-2/deepseek-v4-pro.html",
+              "clip": "clips/black-hole-spin-2/deepseek-v4-pro.mp4"
             },
             {
+              "slug": "kimi-k2.6",
               "label": "Kimi K2.6",
               "modelId": "moonshotai/kimi-k2.6",
               "provider": "openrouter",
@@ -854,9 +969,11 @@
               "costUsd": null,
               "truncated": false,
               "error": null,
-              "page": "pages/black-hole-spin-2/kimi-k2.6.html"
+              "page": "pages/black-hole-spin-2/kimi-k2.6.html",
+              "clip": "clips/black-hole-spin-2/kimi-k2.6.mp4"
             },
             {
+              "slug": "mistral-small-4",
               "label": "Mistral Small 4",
               "modelId": "mistralai/mistral-small-2603",
               "provider": "openrouter",
@@ -866,7 +983,8 @@
               "costUsd": null,
               "truncated": false,
               "error": null,
-              "page": "pages/black-hole-spin-2/mistral-small-4.html"
+              "page": "pages/black-hole-spin-2/mistral-small-4.html",
+              "clip": "clips/black-hole-spin-2/mistral-small-4.mp4"
             }
           ],
           "rendered": 9,
@@ -900,6 +1018,7 @@
           },
           "models": [
             {
+              "slug": "glm-5.2",
               "label": "GLM 5.2",
               "modelId": "z-ai/glm-5.2",
               "provider": "openrouter",
@@ -909,9 +1028,11 @@
               "costUsd": 0.0436884,
               "truncated": false,
               "error": null,
-              "page": "pages/black-hole-css/glm-5.2.html"
+              "page": "pages/black-hole-css/glm-5.2.html",
+              "clip": "clips/black-hole-css/glm-5.2.mp4"
             },
             {
+              "slug": "grok-4.3",
               "label": "Grok 4.3",
               "modelId": "x-ai/grok-4.3",
               "provider": "openrouter",
@@ -921,9 +1042,11 @@
               "costUsd": 0.00596965,
               "truncated": false,
               "error": null,
-              "page": "pages/black-hole-css/grok-4.3.html"
+              "page": "pages/black-hole-css/grok-4.3.html",
+              "clip": "clips/black-hole-css/grok-4.3.mp4"
             },
             {
+              "slug": "gpt-5.4-mini",
               "label": "GPT-5.4 mini",
               "modelId": "openai/gpt-5.4-mini",
               "provider": "openrouter",
@@ -933,9 +1056,11 @@
               "costUsd": 0.01038225,
               "truncated": false,
               "error": null,
-              "page": "pages/black-hole-css/gpt-5.4-mini.html"
+              "page": "pages/black-hole-css/gpt-5.4-mini.html",
+              "clip": "clips/black-hole-css/gpt-5.4-mini.mp4"
             },
             {
+              "slug": "claude-haiku-4.5",
               "label": "Claude Haiku 4.5",
               "modelId": "anthropic/claude-haiku-4.5",
               "provider": "openrouter",
@@ -945,9 +1070,11 @@
               "costUsd": 0.02439,
               "truncated": false,
               "error": null,
-              "page": "pages/black-hole-css/claude-haiku-4.5.html"
+              "page": "pages/black-hole-css/claude-haiku-4.5.html",
+              "clip": "clips/black-hole-css/claude-haiku-4.5.mp4"
             },
             {
+              "slug": "qwen3.7-plus",
               "label": "Qwen3.7 Plus",
               "modelId": "qwen/qwen3.7-plus",
               "provider": "openrouter",
@@ -957,9 +1084,11 @@
               "costUsd": 0.03525632,
               "truncated": false,
               "error": null,
-              "page": "pages/black-hole-css/qwen3.7-plus.html"
+              "page": "pages/black-hole-css/qwen3.7-plus.html",
+              "clip": "clips/black-hole-css/qwen3.7-plus.mp4"
             },
             {
+              "slug": "gemini-3.1-flash-lite",
               "label": "Gemini 3.1 Flash-Lite",
               "modelId": "google/gemini-3.1-flash-lite",
               "provider": "openrouter",
@@ -969,9 +1098,11 @@
               "costUsd": 0.0024095,
               "truncated": false,
               "error": null,
-              "page": "pages/black-hole-css/gemini-3.1-flash-lite.html"
+              "page": "pages/black-hole-css/gemini-3.1-flash-lite.html",
+              "clip": "clips/black-hole-css/gemini-3.1-flash-lite.mp4"
             },
             {
+              "slug": "deepseek-v4-pro",
               "label": "DeepSeek V4 Pro",
               "modelId": "deepseek/deepseek-v4-pro",
               "provider": "openrouter",
@@ -981,9 +1112,11 @@
               "costUsd": 0.0576451425,
               "truncated": false,
               "error": null,
-              "page": "pages/black-hole-css/deepseek-v4-pro.html"
+              "page": "pages/black-hole-css/deepseek-v4-pro.html",
+              "clip": "clips/black-hole-css/deepseek-v4-pro.mp4"
             },
             {
+              "slug": "kimi-k2.7-code",
               "label": "Kimi K2.7 Code",
               "modelId": "moonshotai/kimi-k2.7-code",
               "provider": "openrouter",
@@ -993,9 +1126,11 @@
               "costUsd": 0.040407744,
               "truncated": false,
               "error": null,
-              "page": "pages/black-hole-css/kimi-k2.7-code.html"
+              "page": "pages/black-hole-css/kimi-k2.7-code.html",
+              "clip": "clips/black-hole-css/kimi-k2.7-code.mp4"
             },
             {
+              "slug": "kimi-k2.6",
               "label": "Kimi K2.6",
               "modelId": "moonshotai/kimi-k2.6",
               "provider": "openrouter",
@@ -1005,9 +1140,11 @@
               "costUsd": 0.100302372,
               "truncated": false,
               "error": null,
-              "page": "pages/black-hole-css/kimi-k2.6.html"
+              "page": "pages/black-hole-css/kimi-k2.6.html",
+              "clip": "clips/black-hole-css/kimi-k2.6.mp4"
             },
             {
+              "slug": "ox-alpha",
               "label": "Ox Alpha",
               "modelId": "stealth/ox-alpha",
               "provider": "openrouter",
@@ -1017,7 +1154,8 @@
               "costUsd": 0,
               "truncated": false,
               "error": null,
-              "page": "pages/black-hole-css/ox-alpha.html"
+              "page": "pages/black-hole-css/ox-alpha.html",
+              "clip": "clips/black-hole-css/ox-alpha.mp4"
             }
           ],
           "rendered": 10,
@@ -1051,6 +1189,7 @@
           },
           "models": [
             {
+              "slug": "glm-5.2",
               "label": "GLM 5.2",
               "modelId": "z-ai/glm-5.2",
               "provider": "openrouter",
@@ -1060,9 +1199,11 @@
               "costUsd": 0.033009,
               "truncated": false,
               "error": null,
-              "page": "pages/pulsar-css/glm-5.2.html"
+              "page": "pages/pulsar-css/glm-5.2.html",
+              "clip": "clips/pulsar-css/glm-5.2.mp4"
             },
             {
+              "slug": "grok-4.3",
               "label": "Grok 4.3",
               "modelId": "x-ai/grok-4.3",
               "provider": "openrouter",
@@ -1072,9 +1213,11 @@
               "costUsd": 0.00762215,
               "truncated": false,
               "error": null,
-              "page": "pages/pulsar-css/grok-4.3.html"
+              "page": "pages/pulsar-css/grok-4.3.html",
+              "clip": "clips/pulsar-css/grok-4.3.mp4"
             },
             {
+              "slug": "gpt-5.4-mini",
               "label": "GPT-5.4 mini",
               "modelId": "openai/gpt-5.4-mini",
               "provider": "openrouter",
@@ -1084,9 +1227,11 @@
               "costUsd": 0.01357875,
               "truncated": false,
               "error": null,
-              "page": "pages/pulsar-css/gpt-5.4-mini.html"
+              "page": "pages/pulsar-css/gpt-5.4-mini.html",
+              "clip": "clips/pulsar-css/gpt-5.4-mini.mp4"
             },
             {
+              "slug": "claude-haiku-4.5",
               "label": "Claude Haiku 4.5",
               "modelId": "anthropic/claude-haiku-4.5",
               "provider": "openrouter",
@@ -1096,9 +1241,11 @@
               "costUsd": 0.039157,
               "truncated": false,
               "error": null,
-              "page": "pages/pulsar-css/claude-haiku-4.5.html"
+              "page": "pages/pulsar-css/claude-haiku-4.5.html",
+              "clip": "clips/pulsar-css/claude-haiku-4.5.mp4"
             },
             {
+              "slug": "qwen3.7-plus",
               "label": "Qwen3.7 Plus",
               "modelId": "qwen/qwen3.7-plus",
               "provider": "openrouter",
@@ -1108,9 +1255,11 @@
               "costUsd": 0.00788128,
               "truncated": false,
               "error": null,
-              "page": "pages/pulsar-css/qwen3.7-plus.html"
+              "page": "pages/pulsar-css/qwen3.7-plus.html",
+              "clip": "clips/pulsar-css/qwen3.7-plus.mp4"
             },
             {
+              "slug": "gemini-3.1-flash-lite",
               "label": "Gemini 3.1 Flash-Lite",
               "modelId": "google/gemini-3.1-flash-lite",
               "provider": "openrouter",
@@ -1120,9 +1269,11 @@
               "costUsd": 0.00243,
               "truncated": false,
               "error": null,
-              "page": "pages/pulsar-css/gemini-3.1-flash-lite.html"
+              "page": "pages/pulsar-css/gemini-3.1-flash-lite.html",
+              "clip": "clips/pulsar-css/gemini-3.1-flash-lite.mp4"
             },
             {
+              "slug": "deepseek-v4-pro",
               "label": "DeepSeek V4 Pro",
               "modelId": "deepseek/deepseek-v4-pro",
               "provider": "openrouter",
@@ -1132,9 +1283,11 @@
               "costUsd": 0.057026031,
               "truncated": false,
               "error": null,
-              "page": "pages/pulsar-css/deepseek-v4-pro.html"
+              "page": "pages/pulsar-css/deepseek-v4-pro.html",
+              "clip": "clips/pulsar-css/deepseek-v4-pro.mp4"
             },
             {
+              "slug": "kimi-k2.7-code",
               "label": "Kimi K2.7 Code",
               "modelId": "moonshotai/kimi-k2.7-code",
               "provider": "openrouter",
@@ -1144,9 +1297,11 @@
               "costUsd": 0.054445,
               "truncated": false,
               "error": null,
-              "page": "pages/pulsar-css/kimi-k2.7-code.html"
+              "page": "pages/pulsar-css/kimi-k2.7-code.html",
+              "clip": "clips/pulsar-css/kimi-k2.7-code.mp4"
             },
             {
+              "slug": "kimi-k2.6",
               "label": "Kimi K2.6",
               "modelId": "moonshotai/kimi-k2.6",
               "provider": "openrouter",
@@ -1156,9 +1311,11 @@
               "costUsd": 0.01254374,
               "truncated": false,
               "error": null,
-              "page": "pages/pulsar-css/kimi-k2.6.html"
+              "page": "pages/pulsar-css/kimi-k2.6.html",
+              "clip": "clips/pulsar-css/kimi-k2.6.mp4"
             },
             {
+              "slug": "ox-alpha",
               "label": "Ox Alpha",
               "modelId": "stealth/ox-alpha",
               "provider": "openrouter",
@@ -1168,7 +1325,8 @@
               "costUsd": 0,
               "truncated": false,
               "error": null,
-              "page": "pages/pulsar-css/ox-alpha.html"
+              "page": "pages/pulsar-css/ox-alpha.html",
+              "clip": "clips/pulsar-css/ox-alpha.mp4"
             }
           ],
           "rendered": 10,

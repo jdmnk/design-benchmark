@@ -4,6 +4,7 @@ import data from "./data/benchmarks.json";
 type Status = "rendered" | "truncated" | "blank" | "no-html" | "render-failed" | "error";
 
 interface Model {
+  slug?: string;
   label: string;
   modelId: string;
   provider: string;
@@ -14,6 +15,7 @@ interface Model {
   truncated?: boolean;
   error: string | null;
   page: string | null;
+  clip?: string | null;
 }
 
 interface Run {
@@ -125,7 +127,56 @@ function ModelTable({ models }: { models: Model[] }) {
   );
 }
 
-function GridView({ run, title }: { run: Run; title: string }) {
+/**
+ * Separated view: one card per model, each with its own (larger) video player
+ * and a download link. Models without a clip (failed generations) are listed
+ * as a quiet placeholder so the lineup stays complete.
+ */
+function ClipsView({ run, benchId }: { run: Run; benchId: string }) {
+  return (
+    <div className="clips">
+      {run.models.map((m) => (
+        <div className="clip-card" key={m.modelId}>
+          <div className="clip-head">
+            <span className="clip-label">{m.label}</span>
+            <span className="clip-stats">
+              {fmtTime(m.elapsedMs)} · {fmtTokens(m.outputTokens)} tok · {fmtCost(m.costUsd)}
+            </span>
+          </div>
+          {m.clip ? (
+            <video
+              src={m.clip}
+              preload="metadata"
+              loop
+              muted
+              playsInline
+              controls
+              controlsList="nodownload"
+            />
+          ) : (
+            <div className="clip-missing">
+              <StatusDot status={m.status} />
+            </div>
+          )}
+          <div className="clip-actions">
+            {m.clip && (
+              <a href={m.clip} download={`${benchId}-${m.slug ?? m.label}.mp4`}>
+                download ↓
+              </a>
+            )}
+            {m.page && (
+              <a href={m.page} target="_blank" rel="noreferrer">
+                live page ↗
+              </a>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function GridView({ run, title, benchId }: { run: Run; title: string; benchId: string }) {
   if (run.grid.video) {
     // Native controls so play/pause works inline on mobile (where muted-autoplay
     // is often blocked). The video is NOT wrapped in a link — that used to hijack
@@ -147,15 +198,25 @@ function GridView({ run, title }: { run: Run; title: string }) {
             e.currentTarget.play().catch(() => {});
           }}
         />
-        <a
-          className="grid-open"
-          href={run.grid.video}
-          target="_blank"
-          rel="noreferrer"
-          title="Open full-size video"
-        >
-          open ↗
-        </a>
+        <div className="grid-corner">
+          <a
+            className="grid-open"
+            href={run.grid.video}
+            download={`${benchId}-grid.mp4`}
+            title="Download the combined grid video"
+          >
+            download ↓
+          </a>
+          <a
+            className="grid-open"
+            href={run.grid.video}
+            target="_blank"
+            rel="noreferrer"
+            title="Open full-size video"
+          >
+            open ↗
+          </a>
+        </div>
       </div>
     );
   }
@@ -170,6 +231,11 @@ function BenchmarkSection({ b }: { b: Benchmark }) {
   const [active, setActive] = useState(0);
   const run = b.runs[active] ?? b.runs[0];
   const multi = b.runs.length > 1;
+  // Separate per-model players are the main visualization; the combined grid
+  // video is kept as a secondary view / downloadable artifact.
+  const hasClips = run.models.some((m) => m.clip);
+  const [view, setView] = useState<"separate" | "combined">("separate");
+  const showSeparate = hasClips && view === "separate";
 
   return (
     <section className="bench" id={b.id}>
@@ -179,23 +245,48 @@ function BenchmarkSection({ b }: { b: Benchmark }) {
       </div>
       <p className="desc">{b.description}</p>
 
-      {multi && (
-        <div className="runtabs" role="tablist">
-          {b.runs.map((r, i) => (
-            <button
-              key={r.label}
-              role="tab"
-              aria-selected={i === active}
-              className={i === active ? "active" : ""}
-              onClick={() => setActive(i)}
-            >
-              {r.label}
-            </button>
-          ))}
+      {(multi || hasClips) && (
+        <div className="tabsrow">
+          {multi ? (
+            <div className="runtabs" role="tablist">
+              {b.runs.map((r, i) => (
+                <button
+                  key={r.label}
+                  role="tab"
+                  aria-selected={i === active}
+                  className={i === active ? "active" : ""}
+                  onClick={() => setActive(i)}
+                >
+                  {r.label}
+                </button>
+              ))}
+            </div>
+          ) : (
+            <span />
+          )}
+          {hasClips && (
+            <div className="runtabs" role="tablist">
+              {(["separate", "combined"] as const).map((v) => (
+                <button
+                  key={v}
+                  role="tab"
+                  aria-selected={view === v}
+                  className={view === v ? "active" : ""}
+                  onClick={() => setView(v)}
+                >
+                  {v === "separate" ? "Each model" : "Combined grid"}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       )}
 
-      <GridView run={run} title={b.title} />
+      {showSeparate ? (
+        <ClipsView run={run} benchId={b.id} />
+      ) : (
+        <GridView run={run} title={b.title} benchId={b.id} />
+      )}
 
       <p className="meta">
         {b.render.viewport}

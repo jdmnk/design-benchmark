@@ -162,6 +162,16 @@ h2 {
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
 }
 
+/* run switcher + view switcher share one row (either may be absent) */
+.tabsrow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 12px;
+}
+.tabsrow .runtabs { margin: 0; }
+
 .grid-link { display: block; line-height: 0; }
 .grid-link img {
   width: 100%;
@@ -181,10 +191,14 @@ h2 {
   border-radius: 6px;
   background: #000;
 }
-.grid-open {
+.grid-corner {
   position: absolute;
   top: 8px;
   right: 8px;
+  display: flex;
+  gap: 6px;
+}
+.grid-open {
   font-size: 12px;
   line-height: 1;
   padding: 4px 8px;
@@ -199,6 +213,64 @@ h2 {
 /* Touch devices have no hover — keep the open link visible so it's discoverable. */
 @media (hover: none) {
   .grid-open { opacity: 0.9; }
+}
+
+/* ---- separated per-model clips ---- */
+
+.clips {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 12px;
+}
+.clip-card { min-width: 0; }
+.clip-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+.clip-label {
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.clip-stats {
+  font-size: 11.5px;
+  color: var(--faint);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.clip-card video {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  display: block;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: #000;
+}
+.clip-missing {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: #fafafa;
+}
+.clip-actions {
+  display: flex;
+  gap: 14px;
+  margin-top: 4px;
+  font-size: 12px;
+}
+
+@media (max-width: 560px) {
+  .clips { grid-template-columns: 1fr; }
+  .tabsrow { flex-wrap: wrap; }
 }
 
 .meta {
