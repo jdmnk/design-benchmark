@@ -103,7 +103,7 @@ function ModelTable({ models }: { models: Model[] }) {
       </thead>
       <tbody>
         {models.map((m) => (
-          <tr key={m.modelId}>
+          <tr key={m.slug ?? m.modelId}>
             <td>
               <div className="model-label">{m.label}</div>
               <code className="model-id">{m.modelId}</code>
@@ -136,7 +136,7 @@ function ClipsView({ run, benchId }: { run: Run; benchId: string }) {
   return (
     <div className="clips">
       {run.models.map((m) => (
-        <div className="clip-card" key={m.modelId}>
+        <div className="clip-card" key={m.slug ?? m.modelId}>
           <div className="clip-head">
             <span className="clip-label">{m.label}</span>
             <span className="clip-stats">

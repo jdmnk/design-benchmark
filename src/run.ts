@@ -93,13 +93,13 @@ async function main() {
 
   if (run("grid")) {
     console.log("\n③ Grid — composing side-by-side PNG");
-    const gridPath = await buildGrid(cfg, compositeLineup(cfg));
+    const gridPath = await buildGrid(cfg, latestPerId(compositeLineup(cfg)));
     console.log(`  → ${gridPath}`);
   }
 
   if (cfg.render.video && run("video")) {
     console.log("\n③b Video — encoding per-model clips + grid.mp4");
-    await buildVideos(cfg, compositeLineup(cfg));
+    await buildVideos(cfg, latestPerId(compositeLineup(cfg)));
   }
 
   if (run("report")) {
@@ -131,6 +131,18 @@ function compositeLineup(cfg: BenchmarkConfig): ModelEntry[] {
   return (cfg.models as ModelEntry[]).filter(
     (m) => defaults.has(m.slug) || existsSync(paths.result(m.slug)),
   );
+}
+
+/**
+ * Collapse dated re-runs of the same model (same provider + id, distinct
+ * slugs) to the LAST lineup occurrence — by convention the latest attempt.
+ * The combined grid/video shows only that one; the report and web app list
+ * every dated attempt.
+ */
+function latestPerId(models: ModelEntry[]): ModelEntry[] {
+  const lastIdx = new Map<string, number>();
+  models.forEach((m, i) => lastIdx.set(`${m.provider}:${m.id}`, i));
+  return models.filter((m, i) => lastIdx.get(`${m.provider}:${m.id}`) === i);
 }
 
 /** Re-load previously written result.json files for later-stage-only runs. */

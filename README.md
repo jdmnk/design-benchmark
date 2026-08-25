@@ -287,9 +287,10 @@ updated): add another lineup entry with the same `id` but a new slug and a dated
 { "slug": "ox-alpha-2", "label": "Ox Alpha (Aug 25)", "id": "stealth/ox-alpha", "skipByDefault": true }
 ```
 
-— and run the new slug. Each dated attempt keeps its own artifacts and appears as an
-adjacent, labelled cell in the grid (and card in the web app), so the model's evolution is
-directly comparable.
+— and run the new slug. Each dated attempt keeps its own artifacts; the report and the web
+app's "Each model" view list every attempt side by side, while the **combined grid/video
+shows only the latest attempt per model id** (the last lineup occurrence), so the headline
+comparison stays one-cell-per-model.
 
 ---
 
