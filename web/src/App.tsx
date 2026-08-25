@@ -231,10 +231,10 @@ function BenchmarkSection({ b }: { b: Benchmark }) {
   const [active, setActive] = useState(0);
   const run = b.runs[active] ?? b.runs[0];
   const multi = b.runs.length > 1;
-  // Separate per-model players are the main visualization; the combined grid
-  // video is kept as a secondary view / downloadable artifact.
+  // The combined grid is the default view; "Each model" switches to separate
+  // per-model players (larger, individually downloadable).
   const hasClips = run.models.some((m) => m.clip);
-  const [view, setView] = useState<"separate" | "combined">("separate");
+  const [view, setView] = useState<"separate" | "combined">("combined");
   const showSeparate = hasClips && view === "separate";
 
   return (
